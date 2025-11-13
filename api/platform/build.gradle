@@ -1,0 +1,7 @@
+apply from: '../api-common.gradle'
+
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+}
+

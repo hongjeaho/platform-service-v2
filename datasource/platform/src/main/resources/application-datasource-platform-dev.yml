@@ -1,0 +1,18 @@
+
+platform:
+  domain:
+    datasource:
+      poolName: platform-domain-cp
+      type: com.zaxxer.hikari.HikariDataSource
+      driverClassName: com.mysql.cj.jdbc.Driver
+      jdbcUrl: "jdbc:mysql://localhost:3306/store?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowMultiQueries=true&allowPublicKeyRetrieval=true&useSSL=false"
+      username: store
+      password: passwordPassword123!
+      auto-commit: false
+      connectionTimeout: 30000
+      maxLifetime: 1800000
+      maximumPoolSize: 15
+
+logging:
+  level:
+    org.jooq.tools.LoggerListener: DEBUG

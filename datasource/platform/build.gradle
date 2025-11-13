@@ -1,0 +1,137 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.flywaydb:flyway-mysql:9.22.0")
+    }
+}
+
+plugins {
+    id "org.flywaydb.flyway" version "9.22.0"
+    id "nu.studer.jooq" version "9.0"
+}
+
+description = "platform-datasource module"
+
+dependencies {
+    // spring transaction (to fix compilation warnings)
+    api 'org.springframework:spring-tx'
+
+    // mybatis
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4")
+
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // jooq
+    implementation('org.springframework.boot:spring-boot-starter-jooq') {
+        exclude group: 'org.jooq'
+    }
+
+    implementation "org.jooq:jooq-codegen:${jooqVersion}"
+    implementation "org.jooq:jooq:${jooqVersion}"
+    jooqGenerator(project(":common-jooq"))
+    jooqGenerator 'com.mysql:mysql-connector-j'
+    jooqGenerator "org.jooq:jooq:${jooqVersion}"
+    jooqGenerator "org.jooq:jooq-meta:${jooqVersion}"
+
+    testImplementation(testFixtures(project(":common-core")))
+}
+
+var DATABASE_DRIVER = "com.mysql.cj.jdbc.Driver"
+var PLATFORM_DB_URL = System.getenv("PLATFORM_DB_URL") ?: "jdbc:mysql://localhost:3306/store?useSSL=false&allowPublicKeyRetrieval=true"
+var PLATFORM_DB_USER = System.getenv("PLATFORM_DB_USER") ?: "root"
+var PLATFORM_DB_PWD = System.getenv("PLATFORM_DB_PWD") ?: "root"
+
+jooq {
+    version = jooqVersion
+    edition = nu.studer.gradle.jooq.JooqEdition.OSS // the default (can be omitted)
+
+    configurations {
+        main {
+            generateSchemaSourceOnCompilation = true
+
+            generationTool {
+                jdbc {
+                    driver = DATABASE_DRIVER
+                    url = PLATFORM_DB_URL
+                    user = PLATFORM_DB_USER
+                    password = PLATFORM_DB_PWD
+                    properties {
+                        property {
+                            key = 'ssl'
+                            value = 'true'
+                        }
+                    }
+                }
+
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+
+                    database {
+                        name = "org.jooq.meta.mysql.MySQLDatabase"
+                        inputSchema = "store"
+                        unsignedTypes = true
+                        excludes = """
+                            flyway_schema_history
+                            | batch_job_.*
+                            | batch_step_.*
+                        """
+                        forcedTypes {
+                            forcedType {
+                                name = "BOOLEAN"
+                                includeTypes = "(?i:(TINY|SMALL|MEDIUM|BIG)?INT(UNSIGNED)?\\(1\\))"
+                            }
+                        }
+                    }
+
+                    generate {
+                        daos = true                       // DSL 생성시 dao 생성 여부
+                        records = true                    // DSL 생성시 record 생성 여부
+                        fluentSetters = true              // 메서드 체이닝 가능한 setter 생성
+                        javaTimeTypes = true              // Java 8 날짜/시간 타입 사용
+                        deprecated = false                // deprecated 코드 생성 안함
+                        pojos = true                      // POJO 생성 추가
+                        interfaces = true                 // 인터페이스 생성 추가
+                    }
+
+                    target {
+                        directory = "src/generated"
+                        packageName = "com.platform.datasource.platform.jooq.generated"
+                    }
+
+                    strategy.name = "com.platform.common.jooq.CustomGeneratorStrategy"
+                }
+            }
+        }
+    }
+}
+
+flyway {
+    url = PLATFORM_DB_URL
+    user = PLATFORM_DB_USER
+    password = PLATFORM_DB_PWD
+    locations = ["filesystem:${file('flyway').absolutePath}"]
+    encoding = 'UTF-8'
+    cleanDisabled = false
+    validateOnMigrate = true
+    outOfOrder = true
+    validateOnMigrate = true
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src/main/java", "src/generated"]
+        }
+    }
+}
+
+tasks.register("generateJooqWithFlyway") {
+    group = "jooq"
+    description = "Runs Flyway migration first, then generates JOOQ code."
+
+    // 순서 보장을 위해 실행 전 순서 명시
+    dependsOn("flywayMigrate")
+    dependsOn("generateJooq")
+}

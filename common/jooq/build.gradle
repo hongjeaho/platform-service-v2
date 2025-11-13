@@ -1,0 +1,5 @@
+dependencies {
+    api 'com.google.code.gson:gson:2.12.1'
+
+    implementation "org.jooq:jooq-codegen:${jooqVersion}"
+}

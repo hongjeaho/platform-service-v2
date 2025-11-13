@@ -1,0 +1,85 @@
+buildscript {
+    ext {
+        spring = "3.4.2"
+        boot = "org.springframework.boot"
+    }
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath("$boot:spring-boot-gradle-plugin:$spring")
+    }
+}
+
+ext {
+    jooqVersion = '3.19.18'
+    lombok = "org.projectlombok:lombok"
+}
+
+allprojects {
+    group = 'com.platform'
+    version = '1.0.0'
+}
+
+subprojects {
+    apply plugin: "java"
+    apply plugin: 'java-library'
+    apply plugin: boot
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: "idea"
+    apply plugin: 'groovy'
+
+    repositories {
+        mavenCentral()
+    }
+
+    configurations {
+        developmentOnly
+        runtimeClasspath {
+            extendsFrom developmentOnly
+        }
+    }
+
+    dependencies {
+        developmentOnly "$boot:spring-boot-devtools"
+        implementation "$boot:spring-boot-starter-security"
+        implementation 'com.fasterxml.jackson.core:jackson-annotations'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+        compileOnly lombok
+        testCompileOnly lombok
+        annotationProcessor lombok
+        testAnnotationProcessor lombok
+
+        testImplementation "$boot:spring-boot-starter-test"
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+["common", "datasource"].each {
+    def subProjectDir = new File(projectDir, it)
+    subProjectDir.eachDir { dir ->
+        def projectName = ":${it}-${dir.name}"
+        project(projectName) {
+            bootJar.enabled(false)
+            jar.enabled(true)
+        }
+    }
+}
+
+["api", "batch"].each {
+    def subProjectDir = new File(projectDir, it)
+    subProjectDir.eachDir { dir ->
+        def projectName = ":${it}-${dir.name}"
+        project(projectName) {
+
+        }
+    }
+}
+
+help.enabled(false)
+

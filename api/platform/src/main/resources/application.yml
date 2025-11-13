@@ -1,0 +1,27 @@
+server:
+  port: 8080
+  tomcat:
+    accept-count: 100       # 커넥션 큐 사이즈 (스레드가 부족할 때 요청을 대기시키는 큐의 크기)
+    max-connections: 200    # 최대 커넥션 수 (최대 TCP 커넥션 수 (클라이언트 연결 수))
+    connection-timeout: 20000  # 커넥션 타임아웃 (ms)
+    threads:
+      max: 200 # 동시에 처리 가능한 요청 수
+      min-spare: 20 # 기본 대기 스레드 수
+
+spring:
+  profiles:
+    active: local
+    group:
+      local: core, datasource-platform, web-base
+      dev: core, datasource-platform, web-base, datasource-platform-dev
+
+file:
+  upload-path: C:\filedownload/
+
+
+jwt:
+  expiration:
+    period: 86400000 # 24 * 60 * 60 * 1000 (하루)
+    #    period: 60000 # 60 * 1000 : 테스트용 (1분)
+    renew-before: 432000000 # 1 * 60 * 60 * 1000 (한시간)
+    #    renew-before: 20000 # 20 * 1000 : 테스트용 (20초)
