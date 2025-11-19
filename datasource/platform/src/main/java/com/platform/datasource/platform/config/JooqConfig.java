@@ -88,7 +88,7 @@ public class JooqConfig {
      * DSLContext는 타입 안전한 SQL 쿼리를 구축하고 실행하기 위한 유연한 API를 제공합니다.
      * 
      * @param connectionProvider 데이터베이스 액세스를 위한 연결 제공자
-     * @param defaultConfigurationCustomizer JOOQ 구성 설정을 위한 사용자 정의자
+     * @param configurationCustomizer JOOQ 구성 설정을 위한 사용자 정의자
      * @return 데이터베이스 작업을 위해 완전히 구성된 DSLContext
      */
     @Bean(PLATFORM_DSL_CONTEXT)
