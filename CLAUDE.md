@@ -664,21 +664,6 @@ long count = dslContext.selectCount()
     .fetchOne(count());
 ```
 
-## Next Steps for Implementation
-
-The following need to be implemented to complete the platform:
-
-1. **Spring Security Configuration** - JWT filter, authentication provider, security rules
-2. **REST Controllers** - ~38 endpoints defined in `docs/api.md`
-3. **Service Layer** - Business logic and LTIS/KAPA integration
-4. **Repository Layer** - Data access patterns using JOOQ and MyBatis
-5. **Flyway Migrations** - Actual schema creation scripts
-6. **Unit & Integration Tests** - Following TDD methodology
-7. **Frontend Application** - React application in `front-platform` module
-8. **OpenAPI Client Generation** - Using Orval with generated OpenAPI spec
-9. **Batch Jobs** - Spring Batch jobs for scheduled sync with external APIs
-10. **Error Handling & Validation** - Request validation, exception handling, error responses
-
 ## Important Notes
 
 - The `docs/prd.md` contains the detailed product requirements (in Korean)

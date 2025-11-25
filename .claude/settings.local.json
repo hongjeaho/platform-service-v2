@@ -7,7 +7,12 @@
       "Bash(cat:*)",
       "Bash(tree:*)",
       "Bash(dir:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nchore: 플랫폼 서비스 프로젝트 초기 설정\n\nSpring Boot 멀티모듈 기반 플랫폼 서비스의 초기 프로젝트 구조와 인프라를 설정합니다.\n\n주요 변경사항:\n- Gradle 멀티모듈 프로젝트 구조 구성 (api, batch, common, datasource)\n- Spring Boot 3.4.2, JOOQ 3.19.18, MyBatis 3.0.4, Flyway 9.22.0 설정\n- 데이터베이스 스키마 (51개 테이블) JOOQ 코드 생성\n- JOOQ 커스텀 네이밍 전략 (J prefix, Entity suffix)\n- 데이터베이스 설정 (HikariCP, MySQL 8.0.31)\n- 프로젝트 문서 (PRD, ERD, API, TDD 가이드, CLAUDE.md)\n- Git 설정 (.gitignore, .gitattributes)\n\n기술 스택:\n- Spring Boot 3.4.2, Spring Security, Spring Batch\n- JOOQ 3.19.18 (type-safe SQL), MyBatis 3.0.4\n- Flyway 9.22.0, MySQL 8.0.31\n- Lombok, Caffeine, Apache PDFBox\n\n현재 상태:\n- 초기 스캐폴딩 완료, 인프라 설정 완료\n- 비즈니스 로직, 컨트롤러, 프론트엔드 미구현\n- JOOQ 생성 코드 포함 (Tables, Records, POJOs, DAOs)\nEOF\n)\")",
+      "Bash(yarn add:*)",
+      "Bash(yarn format:*)",
+      "Bash(yarn lint:fix:*)",
+      "Bash(yarn lint:*)"
     ],
     "deny": [],
     "ask": [],

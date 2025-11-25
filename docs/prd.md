@@ -124,10 +124,11 @@ platform-service-master/
 │
 ├── front/platform/           # React 프론트엔드
 │   ├── src/
-│   │   ├── api/             # 자동 생성된 API 클라이언트
-│   │   ├── model/           # 자동 생성된 타입 정의
-│   │   └── ...
-│   └── orval.config.ts      # API 클라이언트 생성 설정
+│   │    ├── gen/
+│   │    │   ├── api/       # 자동 생성된 API 클라이언트
+│   │    │   └── model/     # 자동 생성된 타입 정의
+│   │    └──  ...   
+│   └── vite.config.ts      # vite 설정
 │
 └── docker/                   # Docker 설정
 ```
