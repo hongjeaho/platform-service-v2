@@ -39,4 +39,3 @@ export interface PermissionResult {
   requiredRoles?: UserRole[]
   userRoles?: UserRole[]
 }
-
