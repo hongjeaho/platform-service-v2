@@ -28,7 +28,10 @@
       "mcp__upstash-context-7-mcp__resolve-library-id",
       "mcp__upstash-context-7-mcp__get-library-docs",
       "Bash(git add:*)",
-      "Bash(npx shadcn@latest --help)"
+      "Bash(npx shadcn@latest --help)",
+      "Bash(git commit:*)",
+      "Bash(del \"C:\\workspace\\spring-platform-v2\\front\\platform\\src\\lib\\design-tokens.ts\")",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []

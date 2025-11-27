@@ -1,6 +1,6 @@
 import { BookOpen, CheckCircle, DollarSign, FileText, Gavel, Settings } from 'lucide-react'
 
-import { iconSizes } from '@/lib/design-tokens'
+import { iconSizes } from '@/constants/design'
 
 /**
  * 홈 페이지 컴포넌트입니다.
