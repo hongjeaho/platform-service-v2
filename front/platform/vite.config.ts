@@ -38,31 +38,8 @@ export default defineConfig(({ mode }) => {
     build: {
       sourcemap: isDev, // 개발 모드에서만 소스맵 생성
       minify: !isDev, // 개발 모드에서는 압축하지 않음
-      rollupOptions: {
-        output: {
-          manualChunks(id) {
-            if (id.includes('node_modules')) {
-              if (id.includes('/react/')) return 'react'
-              if (id.includes('/react-dom/')) return 'react-dom'
-              if (id.includes('/react-router-dom/')) return 'react-router-dom'
-              if (
-                id.includes('@tanstack/react-query') ||
-                id.includes('jotai') ||
-                id.includes('axios')
-              ) {
-                return 'state'
-              }
-              if (id.includes('date-fns')) return 'date-fns'
-              if (id.includes('react-hook-form')) return 'form'
-              if (id.includes('react-kakao-maps-sdk')) return 'kakao-maps'
-              if (id.includes('lucide-react')) return 'icons'
-
-              // 기본적으로 기타 node_modules 들은 vendor로 묶음
-              return 'vendor'
-            }
-          },
-        },
-      },
+      // Vite의 기본 청크 분리 전략 사용 (manualChunks 제거)
+      // React 19의 scheduler 등 복잡한 의존성 체인을 Vite가 자동으로 올바른 순서로 처리
       // chunkSizeWarningLimit: 1000, // 필요하면 경고 한도 늘리기
     },
   }
