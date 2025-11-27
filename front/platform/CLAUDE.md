@@ -83,6 +83,42 @@ yarn orval:watch              # Watch mode for continuous regeneration
 - React Query DevTools - Development diagnostics
 - TailwindCSS Vite plugin - Optimized CSS generation
 
+## 디자인 시스템
+
+프로젝트는 **TypeScript 기반 디자인 토큰 시스템**을 통해 일관된 UI/UX를 제공합니다.
+
+**핵심 원칙:**
+- CSS 변수 기반 색상 (OKLCH 색상 공간, WCAG AA 준수)
+- 4px 단위 간격 체계 (TailwindCSS 표준)
+- TypeScript 타입 안전성 보장
+- 하드코딩된 스타일 값 사용 금지
+
+**디자인 토큰 위치:** `src/constants/design/`
+- `color.ts` - Brand, Semantic, Status 색상
+- `typography.ts` - 텍스트 스케일, 폰트 웨이트, 조합
+- `spacing.ts` - Padding, Margin, Gap, Border Radius
+- `icons.ts` - lucide-react 아이콘 매핑
+
+**자주 사용하는 import:**
+```typescript
+// 색상
+import { buttonVariants, statusColors, semanticColors } from '@/constants/design/color'
+
+// 타이포그래피
+import { textCombinations, textScale, fontWeights } from '@/constants/design/typography'
+
+// 간격
+import { padding, gap, borderRadius, layouts } from '@/constants/design/spacing'
+
+// 아이콘
+import { icons, iconSizes, iconVariants } from '@/constants/design/icons'
+
+// 스타일 조합 유틸리티
+import { cn } from '@/lib/utils'
+```
+
+**상세 가이드:** [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) 참조
+
 ## Project Structure
 
 ### Directory Layout
