@@ -1,3 +1,4 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
@@ -23,9 +24,18 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -42,38 +52,66 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Border Radius */
+  --radius: 0.5rem;
+
+  /* Brand Colors - 정부 플랫폼 아이덴티티 */
+  --primary: oklch(0.45 0.15 240);
+  --primary-foreground: oklch(0.98 0 0);
+
+  /* Accent Colors - 강조 및 인터랙션 */
+  --accent: oklch(0.55 0.18 220);
+  --accent-foreground: oklch(0.98 0 0);
+
+  /* Secondary Colors - 보조 액션 */
+  --secondary: oklch(0.9 0.02 240);
+  --secondary-foreground: oklch(0.25 0.05 240);
+
+  /* Semantic Colors - 상태 표시 */
+  --success: oklch(0.6 0.15 145);
+  --success-foreground: oklch(0.98 0 0);
+  --warning: oklch(0.7 0.15 70);
+  --warning-foreground: oklch(0.2 0 0);
+  --error: oklch(0.577 0.245 27.325);
+  --error-foreground: oklch(0.98 0 0);
+  --info: oklch(0.6 0.12 230);
+  --info-foreground: oklch(0.98 0 0);
+
+  /* Neutral Colors - 배경, 텍스트 */
+  --background: oklch(0.98 0 0);
+  --foreground: oklch(0.2 0.02 240);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.2 0.02 240);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.2 0.02 240);
+  --muted: oklch(0.95 0.005 240);
+  --muted-foreground: oklch(0.5 0.02 240);
+
+  /* Border & Input */
+  --border: oklch(0.88 0.01 240);
+  --input: oklch(0.96 0.005 240);
+  --ring: oklch(0.45 0.15 240);
+
+  /* Destructive - 삭제, 거부 등 */
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --destructive-foreground: oklch(0.98 0 0);
+
+  /* Chart Colors */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
+
+  /* Sidebar Colors */
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary: oklch(0.45 0.15 240);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-accent: oklch(0.55 0.18 220);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(0.88 0.01 240);
+  --sidebar-ring: oklch(0.45 0.15 240);
 }
 
 .dark {
@@ -114,7 +152,29 @@
   * {
     @apply border-border outline-ring/50;
   }
+
+  *:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2;
+  }
+
   body {
     @apply bg-background text-foreground;
+    font-family:
+      'Pretendard Variable',
+      -apple-system,
+      BlinkMacSystemFont,
+      'Apple SD Gothic Neo',
+      'Malgun Gothic',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .container {
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 }
