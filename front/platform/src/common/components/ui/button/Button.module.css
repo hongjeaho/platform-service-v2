@@ -1,0 +1,156 @@
+/* Button 기본 스타일 */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition:
+    background-color 200ms,
+    color 200ms;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+/* Size: Small */
+.buttonSm {
+  /* 디자인 토큰: padding.buttonSm = 0.375rem 0.75rem */
+  /* 디자인 토큰: fontSize.bodySm = 0.875rem */
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+/* Size: Medium (기본값) */
+.buttonMd {
+  /* 디자인 토큰: padding.buttonMd = 0.5rem 1rem */
+  /* 디자인 토큰: fontSize.bodyBase = 1rem */
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+/* Size: Large */
+.buttonLg {
+  /* 디자인 토큰: padding.buttonLg = 0.75rem 1.5rem */
+  /* 디자인 토큰: fontSize.bodyBase = 1rem */
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+/* Variant: Primary */
+.primary {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.primary:hover:not(:disabled) {
+  background-color: color-mix(in oklch, var(--primary) 90%, black);
+}
+
+.primary:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Variant: Secondary */
+.secondary {
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: color-mix(in oklch, var(--secondary) 80%, black);
+}
+
+.secondary:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Variant: Outline */
+.outline {
+  border: 1px solid var(--border);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.outline:hover:not(:disabled) {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.outline:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Variant: Ghost */
+.ghost {
+  background-color: transparent;
+  color: var(--foreground);
+}
+
+.ghost:hover:not(:disabled) {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.ghost:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Variant: Destructive */
+.destructive {
+  background-color: var(--destructive);
+  color: var(--destructive-foreground);
+}
+
+.destructive:hover:not(:disabled) {
+  background-color: color-mix(in oklch, var(--destructive) 90%, black);
+}
+
+.destructive:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Variant: Link */
+.link {
+  background-color: transparent;
+  color: var(--primary);
+  text-decoration: underline;
+  text-decoration-offset: 0.25rem;
+}
+
+.link:hover:not(:disabled) {
+  text-decoration: none;
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* State: Disabled */
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* State: Loading */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Icon spacing */
+.icon {
+  display: inline-flex;
+  margin-right: 0.5rem;
+}

@@ -1,0 +1,123 @@
+/* RadioGroup 컨테이너 */
+.group {
+  /* 디자인 토큰: gap.md = 0.5rem */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* RadioGroup horizontal */
+.groupHorizontal {
+  /* 디자인 토큰: gap.lg = 1rem */
+  flex-direction: row;
+  gap: 1rem;
+}
+
+/* RadioGroup 라벨 */
+.groupLabel {
+  /* 디자인 토큰: fontSize.bodySm = 0.875rem */
+  /* 디자인 토큰: fontWeight.medium = 500 */
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--foreground);
+  margin-bottom: 0.25rem;
+}
+
+/* Radio 항목 */
+.item {
+  /* 디자인 토큰: gap.md = 0.5rem */
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+/* Radio input (숨김) */
+.input {
+  /* 디자인 토큰: size.radio = 1.25rem */
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  background-color: var(--background);
+  cursor: pointer;
+  transition: all 200ms;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+/* Radio 기본 상태 */
+.input:hover:not(:disabled) {
+  border-color: var(--primary);
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Radio 선택된 상태 */
+.input:checked {
+  border-color: var(--primary);
+  background: radial-gradient(circle at center, var(--primary) 35%, transparent 35%);
+}
+
+.input:checked:hover:not(:disabled) {
+  border-color: color-mix(in oklch, var(--primary) 90%, black);
+  background: radial-gradient(
+    circle at center,
+    color-mix(in oklch, var(--primary) 90%, black) 35%,
+    transparent 35%
+  );
+}
+
+/* Radio disabled 상태 */
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Radio 콘텐츠 (라벨과 설명) */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: 0.125rem;
+}
+
+/* Radio 라벨 */
+.label {
+  /* 디자인 토큰: fontSize.bodyBase = 1rem */
+  /* 디자인 토큰: fontWeight.medium = 500 */
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--foreground);
+  user-select: none;
+}
+
+/* Radio 설명 */
+.description {
+  /* 디자인 토큰: fontSize.bodySm = 0.875rem */
+  font-size: 0.875rem;
+  line-height: 1.25;
+  color: var(--muted-foreground);
+}
+
+/* 에러 메시지 */
+.error {
+  /* 디자인 토큰: fontSize.bodySm = 0.875rem */
+  /* 디자인 토큰: color.error */
+  font-size: 0.875rem;
+  line-height: 1.25;
+  color: var(--error);
+  margin-top: 0.25rem;
+}
+
+/* Radio 항목 disabled */
+.item:has(.input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
