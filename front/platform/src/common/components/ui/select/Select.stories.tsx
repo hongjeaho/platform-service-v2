@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
+import { useForm, Controller } from 'react-hook-form'
 
+import { Button } from '../button/Button'
 import { Select } from './Select'
 
 const meta = {
@@ -22,15 +24,67 @@ const options = [
   { label: '선택 옵션 4', value: '4' },
 ]
 
+const longOptions = [
+  { label: '서울특별시', value: 'seoul' },
+  { label: '부산광역시', value: 'busan' },
+  { label: '대구광역시', value: 'daegu' },
+  { label: '인천광역시', value: 'incheon' },
+  { label: '광주광역시', value: 'gwangju' },
+  { label: '대전광역시', value: 'daejeon' },
+  { label: '울산광역시', value: 'ulsan' },
+  { label: '세종특별자치시', value: 'sejong' },
+  { label: '경기도', value: 'gyeonggi' },
+  { label: '강원도', value: 'gangwon' },
+  { label: '충청북도', value: 'chungbuk' },
+  { label: '충청남도', value: 'chungnam' },
+  { label: '전라북도', value: 'jeonbuk' },
+  { label: '전라남도', value: 'jeonnam' },
+  { label: '경상북도', value: 'gyeongbuk' },
+  { label: '경상남도', value: 'gyeongnam' },
+  { label: '제주특별자치도', value: 'jeju' },
+]
+
 /**
  * 기본 Select 컴포넌트
  */
-export const Default: Story = {
+export const Basic: Story = {
+  render: (args) => {
+    const [value, setValue] = useState<string>()
+
+    return (
+      <div style={{ width: '300px' }}>
+        <Select {...args} value={value} onChange={setValue} />
+      </div>
+    )
+  },
   args: {
     options,
     placeholder: '선택해주세요',
     label: '선택 항목',
-    name: 'select-default',
+    name: 'select-basic',
+  },
+}
+
+/**
+ * 검색 가능한 Select
+ */
+export const Searchable: Story = {
+  render: (args) => {
+    const [value, setValue] = useState<string>()
+
+    return (
+      <div style={{ width: '300px' }}>
+        <Select {...args} value={value} onChange={setValue} />
+      </div>
+    )
+  },
+  args: {
+    options: longOptions,
+    placeholder: '지역을 선택해주세요',
+    label: '지역 선택',
+    name: 'select-searchable',
+    searchable: true,
+    searchPlaceholder: '지역명을 입력하세요',
   },
 }
 
@@ -38,6 +92,15 @@ export const Default: Story = {
  * 라벨이 없는 Select
  */
 export const WithoutLabel: Story = {
+  render: (args) => {
+    const [value, setValue] = useState<string>()
+
+    return (
+      <div style={{ width: '300px' }}>
+        <Select {...args} value={value} onChange={setValue} />
+      </div>
+    )
+  },
   args: {
     options,
     placeholder: '선택해주세요',
@@ -49,6 +112,15 @@ export const WithoutLabel: Story = {
  * 필수 필드 표시
  */
 export const Required: Story = {
+  render: (args) => {
+    const [value, setValue] = useState<string>()
+
+    return (
+      <div style={{ width: '300px' }}>
+        <Select {...args} value={value} onChange={setValue} />
+      </div>
+    )
+  },
   args: {
     options,
     label: '필수 항목',
@@ -62,6 +134,15 @@ export const Required: Story = {
  * 에러 상태
  */
 export const WithError: Story = {
+  render: (args) => {
+    const [value, setValue] = useState<string>()
+
+    return (
+      <div style={{ width: '300px' }}>
+        <Select {...args} value={value} onChange={setValue} />
+      </div>
+    )
+  },
   args: {
     options,
     label: '선택 항목',
@@ -75,6 +156,15 @@ export const WithError: Story = {
  * 비활성화 상태
  */
 export const Disabled: Story = {
+  render: (args) => {
+    const [value, setValue] = useState<string>()
+
+    return (
+      <div style={{ width: '300px' }}>
+        <Select {...args} value={value} onChange={setValue} />
+      </div>
+    )
+  },
   args: {
     options,
     label: '비활성화된 Select',
@@ -85,22 +175,18 @@ export const Disabled: Story = {
 }
 
 /**
- * 값이 선택된 상태
- */
-export const WithValue: Story = {
-  args: {
-    options,
-    label: '선택 항목',
-    value: '2',
-    placeholder: '선택해주세요',
-    name: 'select-with-value',
-  },
-}
-
-/**
  * 비활성화된 옵션이 있는 Select
  */
 export const WithDisabledOptions: Story = {
+  render: (args) => {
+    const [value, setValue] = useState<string>()
+
+    return (
+      <div style={{ width: '300px' }}>
+        <Select {...args} value={value} onChange={setValue} />
+      </div>
+    )
+  },
   args: {
     options: [
       { label: '활성화된 옵션 1', value: '1' },
@@ -115,16 +201,64 @@ export const WithDisabledOptions: Story = {
 }
 
 /**
- * 대화형 Select (상태 관리)
+ * 긴 옵션 리스트 (스크롤 테스트)
  */
-export const Interactive: Story = {
+export const LongList: Story = {
   render: (args) => {
-    const [value, setValue] = useState<string>('')
+    const [value, setValue] = useState<string>()
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <Select {...args} value={value} onChange={(val) => setValue(val)} />
-        {value && <p>선택된 값: {value}</p>}
+      <div style={{ width: '300px' }}>
+        <Select {...args} value={value} onChange={setValue} />
+      </div>
+    )
+  },
+  args: {
+    options: longOptions,
+    label: '지역 선택',
+    placeholder: '지역을 선택해주세요',
+    name: 'select-long-list',
+    maxHeight: '200px',
+  },
+}
+
+/**
+ * 검색 가능한 긴 리스트
+ */
+export const SearchableLongList: Story = {
+  render: (args) => {
+    const [value, setValue] = useState<string>()
+
+    return (
+      <div style={{ width: '300px' }}>
+        <Select {...args} value={value} onChange={setValue} />
+      </div>
+    )
+  },
+  args: {
+    options: longOptions,
+    label: '지역 선택',
+    placeholder: '지역을 선택해주세요',
+    name: 'select-searchable-long',
+    searchable: true,
+    searchPlaceholder: '지역명 검색...',
+    maxHeight: '250px',
+  },
+}
+
+/**
+ * 검색 결과 없음 상태 테스트
+ */
+export const EmptySearchResult: Story = {
+  render: (args) => {
+    const [value, setValue] = useState<string>()
+
+    return (
+      <div style={{ width: '300px' }}>
+        <Select {...args} value={value} onChange={setValue} />
+        <p style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#666' }}>
+          힌트: 'xyz'를 검색해보세요
+        </p>
       </div>
     )
   },
@@ -132,7 +266,10 @@ export const Interactive: Story = {
     options,
     label: '선택 항목',
     placeholder: '선택해주세요',
-    name: 'select-interactive',
+    name: 'select-empty-search',
+    searchable: true,
+    searchPlaceholder: '검색...',
+    emptyMessage: '검색 결과가 없습니다',
   },
 }
 
@@ -140,28 +277,179 @@ export const Interactive: Story = {
  * 숫자 값을 가진 Select
  */
 export const WithNumberValues: Story = {
-  render: (args) => {
-    const [value, setValue] = useState<number>()
+  render: () => {
+    const [value, setValue] = useState<string>()
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div style={{ width: '300px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         <Select
-          {...args}
           value={value}
-          onChange={(val) => setValue(Number(val))}
+          onChange={setValue}
           options={[
             { label: '10개', value: '10' },
             { label: '20개', value: '20' },
             { label: '50개', value: '50' },
+            { label: '100개', value: '100' },
           ]}
+          label="페이지당 항목 수"
+          placeholder="선택해주세요"
+          name="select-number"
         />
-        {value && <p>선택된 값: {value}</p>}
+        {value && <p style={{ fontSize: '0.875rem' }}>선택된 값: {value}</p>}
       </div>
     )
   },
   args: {
-    label: '페이지당 항목 수',
-    placeholder: '선택해주세요',
-    name: 'select-number',
+    options: [],
+  },
+}
+
+/**
+ * React Hook Form 통합 예제
+ */
+export const ReactHookFormIntegration: Story = {
+  render: () => {
+    interface FormData {
+      region: string
+      category: string
+      priority: string
+    }
+
+    const {
+      control,
+      handleSubmit,
+      formState: { errors },
+      watch,
+    } = useForm<FormData>({
+      defaultValues: {
+        region: '',
+        category: '',
+        priority: '',
+      },
+    })
+
+    const formValues = watch()
+
+    const onSubmit = (data: FormData) => {
+      alert(`폼 제출 성공!\n${JSON.stringify(data, null, 2)}`)
+    }
+
+    return (
+      <div style={{ width: '500px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+        >
+          <Controller
+            name="region"
+            control={control}
+            rules={{ required: '지역을 선택해주세요' }}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={longOptions}
+                label="지역"
+                placeholder="지역을 선택해주세요"
+                required
+                searchable
+                searchPlaceholder="지역명 검색..."
+                error={errors.region?.message}
+              />
+            )}
+          />
+
+          <Controller
+            name="category"
+            control={control}
+            rules={{ required: '카테고리를 선택해주세요' }}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={options}
+                label="카테고리"
+                placeholder="카테고리를 선택해주세요"
+                required
+                error={errors.category?.message}
+              />
+            )}
+          />
+
+          <Controller
+            name="priority"
+            control={control}
+            rules={{ required: '우선순위를 선택해주세요' }}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={[
+                  { label: '낮음', value: 'low' },
+                  { label: '보통', value: 'medium' },
+                  { label: '높음', value: 'high' },
+                ]}
+                label="우선순위"
+                placeholder="우선순위를 선택해주세요"
+                required
+                error={errors.priority?.message}
+              />
+            )}
+          />
+
+          <Button type="submit" variant="primary" size="lg">
+            제출
+          </Button>
+        </form>
+
+        <div
+          style={{
+            padding: '1rem',
+            backgroundColor: '#f5f5f5',
+            borderRadius: 'var(--radius-md)',
+          }}
+        >
+          <div style={{ fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
+            현재 폼 값:
+          </div>
+          <pre style={{ fontSize: '0.75rem', margin: 0 }}>
+            {JSON.stringify(formValues, null, 2)}
+          </pre>
+        </div>
+
+        <div
+          style={{
+            padding: '1rem',
+            backgroundColor: '#e3f2fd',
+            borderRadius: 'var(--radius-md)',
+            fontSize: '0.75rem',
+          }}
+        >
+          <div style={{ fontWeight: '600', marginBottom: '0.5rem' }}>사용법:</div>
+          <pre
+            style={{
+              backgroundColor: 'white',
+              padding: '0.5rem',
+              borderRadius: '4px',
+              margin: 0,
+              overflow: 'auto',
+            }}
+          >
+            {`<Controller
+  name="fieldName"
+  control={control}
+  rules={{ required: '필수' }}
+  render={({ field }) => (
+    <Select
+      {...field}
+      options={options}
+      error={errors.fieldName?.message}
+    />
+  )}
+/>`}
+          </pre>
+        </div>
+      </div>
+    )
+  },
+  args: {
+    options: [],
   },
 }

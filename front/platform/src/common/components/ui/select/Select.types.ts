@@ -34,4 +34,12 @@ export interface SelectProps<T = string> {
   name?: string
   /** CSS 클래스 */
   className?: string
+  /** 검색 기능 활성화 여부 */
+  searchable?: boolean
+  /** 검색 입력창 플레이스홀더 */
+  searchPlaceholder?: string
+  /** 검색 결과 없을 때 메시지 */
+  emptyMessage?: string
+  /** 드롭다운 최대 높이 */
+  maxHeight?: string
 }
