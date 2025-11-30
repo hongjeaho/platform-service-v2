@@ -18,6 +18,9 @@ nul
 # 자동 생성된 파일 (Orval)
 src/gen/
 
+# Storybook
+storybook-static/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

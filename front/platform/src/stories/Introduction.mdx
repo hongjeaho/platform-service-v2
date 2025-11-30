@@ -1,0 +1,47 @@
+import { Meta } from '@storybook/blocks'
+
+<Meta title="디자인 시스템/소개" />
+
+# 정부 플랫폼 디자인 시스템
+
+이 문서는 정부 토지보상 심의 플랫폼의 공식 디자인 시스템입니다.
+
+## 주요 컴포넌트
+
+- **Button**: 7개 variant (primary, secondary, outline, ghost, destructive, link, accent)
+- **Checkbox**: Indeterminate 상태 지원
+- **RadioGroup**: 수평/수직 레이아웃
+- **Select**: 제네릭 타입 지원
+- **DatePicker**: 한국어 포맷팅
+- **Upload**: 드래그앤드롭 지원
+- **Table**: 정렬, 페이지네이션, 행 선택
+
+## 디자인 원칙
+
+1. **접근성 우선**: WCAG AA 준수
+2. **일관성**: 디자인 토큰 기반 스타일링
+3. **타입 안전성**: TypeScript strict mode
+4. **반응형**: Mobile-first 디자인
+
+## 시작하기
+
+왼쪽 사이드바에서 각 컴포넌트를 탐색하고, Controls 패널에서 props를 실시간으로 조작해보세요.
+
+### Storybook 기능
+
+- **Controls**: 컴포넌트 props를 실시간으로 변경
+- **Actions**: 이벤트 핸들러 로그 확인
+- **Accessibility**: WCAG AA 준수 여부 자동 검사
+- **Viewport**: 모바일/태블릿/데스크톱 반응형 테스트
+- **Docs**: 자동 생성된 컴포넌트 문서
+
+## 디자인 토큰
+
+모든 컴포넌트는 중앙 집중식 디자인 토큰을 사용합니다:
+
+- **색상**: OKLCH 색상 공간 (언어 독립적, 접근성 우선)
+- **타이포그래피**: Pretendard Variable 폰트
+- **간격**: 4px 단위 체계 (TailwindCSS 표준)
+- **아이콘**: lucide-react 24개 아이콘
+
+자세한 내용은 "디자인 시스템/디자인 토큰" 페이지를 참조하세요.

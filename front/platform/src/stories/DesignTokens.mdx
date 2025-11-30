@@ -1,0 +1,100 @@
+import { Meta, ColorPalette, ColorItem, Typeset } from '@storybook/blocks'
+
+<Meta title="디자인 시스템/디자인 토큰" />
+
+# 디자인 토큰
+
+## 색상 시스템 (OKLCH)
+
+### Brand Colors
+
+<ColorPalette>
+  <ColorItem
+    title="Primary"
+    subtitle="신뢰감 있는 네이비 블루"
+    colors={{ Primary: 'oklch(0.45 0.15 240)' }}
+  />
+  <ColorItem
+    title="Accent"
+    subtitle="강조 및 인터랙션"
+    colors={{ Accent: 'oklch(0.55 0.18 220)' }}
+  />
+</ColorPalette>
+
+### Semantic Colors
+
+<ColorPalette>
+  <ColorItem
+    title="Success"
+    subtitle="승인, 완료"
+    colors={{ Success: 'oklch(0.60 0.15 145)' }}
+  />
+  <ColorItem
+    title="Warning"
+    subtitle="경고, 대기"
+    colors={{ Warning: 'oklch(0.70 0.15 70)' }}
+  />
+  <ColorItem
+    title="Error"
+    subtitle="오류, 거부"
+    colors={{ Error: 'oklch(0.577 0.245 27.325)' }}
+  />
+  <ColorItem
+    title="Info"
+    subtitle="정보"
+    colors={{ Info: 'oklch(0.60 0.12 230)' }}
+  />
+</ColorPalette>
+
+## 타이포그래피
+
+**폰트**: Pretendard Variable
+
+<Typeset
+  fontSizes={[12, 14, 16, 18, 20, 24, 32, 40]}
+  fontWeight={400}
+  sampleText="대한민국 정부 플랫폼"
+  fontFamily="'Pretendard Variable', sans-serif"
+/>
+
+## 간격 체계 (4px 단위)
+
+- `4px` - 최소 간격
+- `8px` - 밀집 간격
+- `12px` - 입력 필드 padding
+- `16px` - 기본 간격 (카드, 섹션)
+- `24px` - 큰 간격
+- `32px` - 페이지 레벨 간격
+
+## 사용 예제
+
+```typescript
+import { buttonVariants } from '@/constants/design/color'
+import { textCombinations } from '@/constants/design/typography'
+import { padding, gap } from '@/constants/design/spacing'
+
+// 색상 사용
+<button className={buttonVariants.primary}>버튼</button>
+
+// 타이포그래피 사용
+<h1 className={textCombinations.h1}>제목</h1>
+
+// 간격 사용
+<div className={`${padding.card} ${gap.default}`}>컨텐츠</div>
+```
+
+## 디자인 토큰 위치
+
+모든 디자인 토큰은 `/src/constants/design/` 디렉토리에 TypeScript로 정의되어 있습니다:
+
+- **color.ts**: Brand, Semantic, Status 색상 및 buttonVariants
+- **typography.ts**: 텍스트 스케일, 폰트 웨이트, textCombinations
+- **spacing.ts**: Padding, Margin, Gap, Border Radius
+- **icons.ts**: lucide-react 아이콘 매핑 (24개)
+
+## 접근성 준수
+
+모든 색상은 WCAG AA 기준을 준수합니다:
+- 일반 텍스트: 최소 4.5:1 대비율
+- 큰 텍스트 (18px+): 최소 3:1 대비율
+- UI 컴포넌트: 최소 3:1 대비율
