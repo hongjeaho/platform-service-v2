@@ -9,11 +9,9 @@
     "lint:fix": "eslint --fix src/**/*.{ts,tsx}",
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "orval": "orval --config config/orval.config.ts",
     "orval:watch": "orval --config config/orval.config.ts --watch",
     "storybook": "storybook dev -p 6006 --no-open",
-    "storybook:dev": "storybook dev -p 6006",
     "storybook:build": "storybook build -o storybook-static"
   },
   "dependencies": {

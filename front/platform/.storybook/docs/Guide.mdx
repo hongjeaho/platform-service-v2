@@ -1,0 +1,163 @@
+import { Meta } from '@storybook/blocks'
+
+<Meta title="신규 개발자를 위한 온보딩 가이드" />
+
+# 신규 개발자 온보딩 가이드
+
+신규 개발자가 디자인 시스템과 컴포넌트를 빠르게 학습하고 실제 업무에 적용하는 방법을 안내합니다.
+
+
+## 🚀 30분 만에 첫 페이지 만들기
+
+이 가이드를 따르면 신규 개발자도 30분 만에 첫 페이지를 만들 수 있습니다.
+
+
+### Step 1: 기본 설정 확인 (5분)
+
+#### ✅ 필수 확인 사항
+- [ ] Node.js 18+ 설치 확인
+- [ ] Yarn 1.22+ 설치 확인
+- [ ] VS Code 확장 프로그램 설치
+  - ESLint (코드 품질 검사)
+  - Prettier (코드 자동 포맷팅)
+  - TailwindCSS IntelliSense (CSS 클래스 자동 완성)
+  - Storybook 확장 프로그램
+
+#### 🎯 확인 방법
+```bash
+# Node.js 버전 확인
+node --version
+
+# Yarn 버전 확인
+yarn --version
+
+# 프로젝트 시작
+yarn storybook
+```
+
+### Step 2: 디자인 토큰 확인 (10분)
+
+#### 🎨 디자인 시스템 둘러보기
+```
+src/constants/design/
+├── color.ts          # 색상 시스템 (Brand, Semantic, Status)
+├── typography.ts       # 폰트 시스템 (스케일, 웨이트, 조합)
+├── spacing.ts         # 간격 시스템 (4px 단위, 반응형)
+└── icons.ts          # 아이콘 매핑 (lucide-react)
+```
+
+#### 🔍 핵심 디자인 토큰
+- **컬러**: `primary`, `secondary`, `success`, `warning`, `error`
+- **스케일**: `h1`, `h2`, `body`, `caption`
+- **간격**: `p-1`, `p-4`, `m-2`, `gap-2`
+- **아이콘**: `Search`, `FileUpload`, `Download`, `Settings`
+
+### Step 3: 필요한 컴포넌트 선택 (10분)
+
+#### 🧩 자주 사용되는 컴포넌트 조합
+
+```typescript
+import { Button } from '@/components/ui/button'
+import { Select } from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
+import { Table } from '@/components/ui/table'
+import { Upload } from '@/components/ui/upload'
+
+interface OpinionTemplateCodeSelectBoxProps {}
+
+// 예시
+const OpinionTemplateCodeSelectBox: React.FC<OpinionTemplateCodeSelectBoxProps> = () => {
+  return (
+    <form className="space-y-4">
+      <Input label="신청인" required />
+      <Select label="지역 선택" options={regionOptions} />
+      <Upload label="관련 서류" accept=".pdf,.hwp" />
+
+      <div className="flex gap-2">
+        <Button variant="primary" size="lg">
+          신청서 제출
+        </Button>
+        <Button variant="secondary">
+          임시 저장
+        </Button>
+      </div>
+    </form>
+  )
+}
+export default OpinionTemplateCodeSelectBox
+
+```
+
+#### 📋 컴포넌트 선택 가이드
+
+<table>
+  <thead>
+  <tr>
+    <th>목적</th>
+    <th>추천 컴포넌트</th>
+    <th>사용 예시</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>폼 구성</td>
+    <td>Input, Select, Upload</td>
+    <td><code>{'<Input label="이름" />'}</code></td>
+  </tr>
+  <tr>
+    <td>내비게이션</td>
+    <td>Button, Select</td>
+    <td><code>{'<Button>다음 →</Button>'}</code></td>
+  </tr>
+  <tr>
+    <td>데이터 표시</td>
+    <td>Table, Pagination</td>
+    <td><code>{'<Table data={data} />'}</code></td>
+  </tr>
+  </tbody>
+</table>
+
+
+### Step 4: 스토리북에서 실습 (5분)
+
+#### 🎮 스토리북 탐색 방법
+1. **Sidebar**: 왼쪽 패널에서 컴포넌트 카테고리 선택
+2. **검색 기능**: 상단 검색창에서 컴포넌트 이름으로 검색
+3. **실시간 미리보기**: 코드 예제 즉시 확인 및 수정
+
+#### 📝 추천 실습 순서
+1. **Button 컴포넌트** - 가장 기본적이면서 다양한 variant 학습
+2. **Select 컴포넌트** - 검색 기능과 폼 연동 방법 학습
+3. **ApplicationForm 조합** - 실제 폼 구성 패턴 학습
+
+---
+
+## 🎯 주의사항
+
+### ⚠️ 중요 원칙
+- **모든 컴포넌트는 KWCAG 2.1을 준수합니다** (색상 대비, 키보드 접근, 스크린 리더 지원)
+- **반응형 디자인은 자동으로 처리됩니다** (모바일/태블릿/데스크톱)
+- **복잡한 로직은 service 레이어로 분리하여 구현하세요**
+- **문제 발생 시 먼저 스토리북 예제를 확인하세요**
+
+### 💡 팁
+- **단축키**: `Cmd/Ctrl + S` 로 스토리북 검색
+- **테마 전환**: 상단 툴바에서 Light/Dark 모드 전환 가능
+- **코드 복사**: 각 스토리의 'Show code' 버튼으로 전체 코드 복사
+
+---
+
+## 🎉 성공 기준
+
+### ✅ 30분 후 할 수 있는 것
+- [ ] 기본 UI 컴포넌트 3개 조합하여 페이지 구성
+- [ ] 디자인 토큰 시스템에 맞는 스타일 적용
+- [ ] KWCAG 접근성 가이드라인 준수
+- [ ] 스토리북에서 자유롭게 컴포넌트 조합 실습
+
+### 🚀 다음 단계
+온보딩 완료 후, 실제 프로젝트 페이지 구현을 시작할 수 있습니다.
+
+- **실제 토지보상 심의 신청서 페이지**: `src/views/land-compensation/Application.tsx`
+- **위원회 심의 일정 관리**: `src/views/committee/Schedule.tsx`
+- **문서 관리 시스템**: `src/views/documents/Management.tsx`

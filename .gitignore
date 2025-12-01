@@ -36,3 +36,4 @@ out/
 ### VS Code ###
 .vscode/
 front/platform/stats.html
+.claude/settings.local.json

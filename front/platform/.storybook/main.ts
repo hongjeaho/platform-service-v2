@@ -4,7 +4,10 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 const config: StorybookConfig = {
   // 스토리 파일 위치
-  stories: ['../src/**/*.stories.@(ts|tsx)'],
+  stories: [
+    '../src/**/*.stories.@(ts|tsx)', // 기존 컴포넌트 스토리
+    './**/*.mdx', // MDX 파일 추가
+  ],
 
   // 애드온 (접근성 우선)
   addons: [
@@ -25,7 +28,7 @@ const config: StorybookConfig = {
     reactDocgenTypescriptOptions: {
       shouldExtractLiteralValuesFromEnum: true,
       shouldRemoveUndefinedFromOptional: true,
-      propFilter: (prop) => {
+      propFilter: prop => {
         // Private props 제외
         if (prop.name.startsWith('_')) return false
         // node_modules props 제외

@@ -62,23 +62,6 @@ const preview: Preview = {
     },
   },
 
-  // 글로벌 데코레이터
-  // Pretendard 폰트는 index.css에서 이미 글로벌로 적용되므로 데코레이터 제거
-  // decorators: [
-  //   (Story) => (
-  //     <div
-  //       style={{
-  //         fontFamily:
-  //           "'Pretendard Variable', -apple-system, sans-serif",
-  //         WebkitFontSmoothing: 'antialiased',
-  //         MozOsxFontSmoothing: 'grayscale',
-  //       }}
-  //     >
-  //       <Story />
-  //     </div>
-  //   ),
-  // ],
-
   // 자동 문서 생성
   tags: ['autodocs'],
 }
