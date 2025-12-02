@@ -1,4 +1,4 @@
-import { forwardRef, useEffect,useRef } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
 import { textCombinations } from '@/constants/design/typography'
 import { cn } from '@/lib/utils'
@@ -26,14 +26,16 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     ref,
   ) => {
     const internalRef = useRef<HTMLInputElement>(null)
-    const inputRef = ref || internalRef
 
-    // indeterminate 상태 처리
+    // useImperativeHandle로 ref 통합 관리
+    useImperativeHandle(ref, () => internalRef.current!, [])
+
+    // indeterminate 상태 처리 - ref 직접 사용으로 안전성 확보
     useEffect(() => {
-      if (typeof inputRef === 'object' && inputRef !== null) {
-        inputRef.current!.indeterminate = indeterminate
+      if (internalRef.current) {
+        internalRef.current.indeterminate = indeterminate
       }
-    }, [indeterminate, inputRef])
+    }, [indeterminate])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       onChange?.(e.target.checked)
@@ -44,29 +46,31 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     if (!hasContent) {
       return (
         <input
-          ref={inputRef}
+          ref={internalRef}
           type='checkbox'
           checked={checked}
           onChange={handleChange}
           disabled={disabled}
           className={cn(styles.input, className)}
-          aria-checked={indeterminate ? 'mixed' : checked}
+          aria-checked={indeterminate ? ('mixed' as const) : checked}
           {...props}
         />
       )
     }
 
+    const wrapperProps = disabled ? { 'data-disabled': 'true' } : {}
+
     return (
       <div className={styles.container}>
-        <label className={styles.wrapper}>
+        <label className={styles.wrapper} {...wrapperProps}>
           <input
-            ref={inputRef}
+            ref={internalRef}
             type='checkbox'
             checked={checked}
             onChange={handleChange}
             disabled={disabled}
             className={styles.input}
-            aria-checked={indeterminate ? 'mixed' : checked}
+            aria-checked={indeterminate ? ('mixed' as const) : checked}
             {...props}
           />
           {(label || description) && (

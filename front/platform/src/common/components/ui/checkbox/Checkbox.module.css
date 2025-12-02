@@ -102,8 +102,8 @@
   margin-top: 0.25rem;
 }
 
-/* Wrapper disabled 상태 */
-.wrapper:has(.input:disabled) {
+/* Wrapper disabled 상태 - data-attribute로 호환성 개선 */
+.wrapper[data-disabled='true'] {
   opacity: 0.5;
   cursor: not-allowed;
 }

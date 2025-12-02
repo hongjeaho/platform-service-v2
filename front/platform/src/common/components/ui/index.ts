@@ -17,7 +17,7 @@ export { RadioGroup } from './radio/RadioGroup'
 
 // Select
 export { Select } from './select/Select'
-export type { SelectOption,SelectProps } from './select/Select.types'
+export type { SelectOption, SelectProps } from './select/Select.types'
 
 // DatePicker
 export { DatePicker } from './date-picker/DatePicker'
@@ -30,7 +30,7 @@ export { DateRangePicker } from './date-picker/DateRangePicker'
 
 // Upload
 export { Upload } from './upload/Upload'
-export type { UploadMultiProps,UploadProps } from './upload/Upload.types'
+export type { UploadMultiProps, UploadProps } from './upload/Upload.types'
 export { UploadMulti } from './upload/UploadMulti'
 
 // Table
