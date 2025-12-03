@@ -37,3 +37,7 @@ export type {
 // DatePicker
 export { DatePicker } from './date-picker/DatePicker'
 export type { DatePickerProps } from './date-picker/DatePicker.types'
+
+// DateRangePicker
+export { DateRangePicker } from './date-picker/DateRangePicker'
+export type { DateRange, DateRangePickerProps } from './date-picker/DateRangePicker.types'
