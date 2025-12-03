@@ -35,9 +35,12 @@ export type {
 } from './table/Table.types'
 
 // DatePicker
-export { DatePicker } from './date-picker/DatePicker'
-export type { DatePickerProps } from './date-picker/DatePicker.types'
+export { DatePicker } from '@/common/components/ui/datePicker/DatePicker'
+export type { DatePickerProps } from '@/common/components/ui/datePicker/DatePicker.types'
 
 // DateRangePicker
-export { DateRangePicker } from './date-picker/DateRangePicker'
-export type { DateRange, DateRangePickerProps } from './date-picker/DateRangePicker.types'
+export { DateRangePicker } from '@/common/components/ui/dateRangePicker/DateRangePicker.tsx'
+export type {
+  DateRange,
+  DateRangePickerProps,
+} from '@/common/components/ui/dateRangePicker/DateRangePicker.types.ts'

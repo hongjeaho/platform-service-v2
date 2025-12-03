@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { DateRangePicker } from './DateRangePicker'
-import type { DateRange } from './DateRangePicker.types'
+import { DateRangePicker } from './DateRangePicker.tsx'
+import type { DateRange } from './DateRangePicker.types.ts'
 
 const meta = {
   title: 'Components/DateRangePicker',

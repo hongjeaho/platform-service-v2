@@ -1,3 +1,5 @@
+import { icons, iconSizes } from '@constants/design/icons.ts'
+import { textCombinations } from '@constants/design/typography.ts'
 import {
   autoUpdate,
   flip,
@@ -25,12 +27,10 @@ import {
 import { ko } from 'date-fns/locale/ko'
 import { forwardRef, memo, useEffect, useMemo, useState } from 'react'
 
-import { icons, iconSizes } from '@/constants/design/icons'
-import { textCombinations } from '@/constants/design/typography'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils.ts'
 
 import styles from './DateRangePicker.module.css'
-import type { DateRangePickerProps } from './DateRangePicker.types'
+import type { DateRangePickerProps } from './DateRangePicker.types.ts'
 
 /**
  * CalendarHeader 컴포넌트
