@@ -19,15 +19,6 @@ export { RadioGroup } from './radio/RadioGroup'
 export { Select } from './select/Select'
 export type { SelectOption, SelectProps } from './select/Select.types'
 
-// DatePicker
-export { DatePicker } from './date-picker/DatePicker'
-export type {
-  DatePickerProps,
-  DateRangePickerProps,
-  DateRangeValue,
-} from './date-picker/DatePicker.types'
-export { DateRangePicker } from './date-picker/DateRangePicker'
-
 // Upload
 export { Upload } from './upload/Upload'
 export type { UploadMultiProps, UploadProps } from './upload/Upload.types'
@@ -42,3 +33,7 @@ export type {
   TableProps,
   TableSortConfig,
 } from './table/Table.types'
+
+// DatePicker
+export { DatePicker } from './date-picker/DatePicker'
+export type { DatePickerProps } from './date-picker/DatePicker.types'
