@@ -1,6 +1,8 @@
 import {
   autoUpdate,
   flip,
+  FloatingFocusManager,
+  FloatingPortal,
   offset,
   size,
   useClick,
@@ -8,10 +10,8 @@ import {
   useFloating,
   useInteractions,
   useRole,
-  FloatingPortal,
-  FloatingFocusManager,
 } from '@floating-ui/react'
-import { forwardRef, useMemo, useRef, useState, useEffect } from 'react'
+import { forwardRef, useEffect,useMemo, useRef, useState } from 'react'
 
 import { icons, iconSizes } from '@/constants/design/icons'
 import { textCombinations } from '@/constants/design/typography'

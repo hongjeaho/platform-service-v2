@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import { Controller,useForm } from 'react-hook-form'
 
 import { Button } from '../button/Button'
 import { Select } from './Select'

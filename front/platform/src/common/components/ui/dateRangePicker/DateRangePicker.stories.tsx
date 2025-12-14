@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { DateRangePicker } from './DateRangePicker.tsx'
 import type { DateRange } from './DateRangePicker.types.ts'
+import { FormDateRangePicker } from './FormDateRangePicker'
 
 const meta = {
   title: 'Components/DateRangePicker',
@@ -153,64 +155,39 @@ export const WithMinMaxDate: Story = {
   },
 }
 
-/**
- * React Hook Form 연동 예제
- */
-export const WithReactHookForm: Story = {
-  render: () => {
-    interface FormData {
-      reviewPeriod: DateRange
-      decisionPeriod: DateRange
-    }
+// ===== FormDateRangePicker Stories =====
 
-    const {
-      register,
-      handleSubmit,
-      setValue,
-      watch,
-      formState: { errors },
-    } = useForm<FormData>({
+/**
+ * FormDateRangePicker 기본 사용 예시
+ */
+export const FormDateRangePickerBasic: Story = {
+  render: () => {
+    const { control, handleSubmit, watch } = useForm<{
+      reviewPeriod: DateRange
+    }>({
       defaultValues: {
         reviewPeriod: { startDate: null, endDate: null },
-        decisionPeriod: { startDate: null, endDate: null },
       },
     })
 
-    const reviewPeriod = watch('reviewPeriod')
-    const decisionPeriod = watch('decisionPeriod')
-
-    const onSubmit = (data: FormData) => {
+    const onSubmit = (data: { reviewPeriod: DateRange }) => {
       alert(
-        `심의 기간: ${data.reviewPeriod.startDate?.toLocaleDateString()} ~ ${data.reviewPeriod.endDate?.toLocaleDateString()}\n결정 기간: ${data.decisionPeriod.startDate?.toLocaleDateString()} ~ ${data.decisionPeriod.endDate?.toLocaleDateString()}`,
+        `심의 기간: ${data.reviewPeriod.startDate?.toLocaleDateString()} ~ ${data.reviewPeriod.endDate?.toLocaleDateString()}`,
       )
     }
+
+    const reviewPeriod = watch('reviewPeriod')
 
     return (
       <form
         onSubmit={handleSubmit(onSubmit)}
         style={{ width: '500px', display: 'flex', flexDirection: 'column', gap: '1rem' }}
       >
-        <DateRangePicker
-          {...register('reviewPeriod', {
-            validate: value =>
-              value.startDate && value.endDate ? true : '심의 기간을 선택해주세요',
-          })}
+        <FormDateRangePicker
+          name='reviewPeriod'
+          control={control}
           label='심의 기간'
-          required
-          value={reviewPeriod}
-          onChange={range => setValue('reviewPeriod', range)}
-          error={errors.reviewPeriod?.message}
-        />
-        <DateRangePicker
-          {...register('decisionPeriod', {
-            validate: value =>
-              value.startDate && value.endDate ? true : '결정 기간을 선택해주세요',
-          })}
-          label='결정 기간'
-          required
-          value={decisionPeriod}
-          onChange={range => setValue('decisionPeriod', range)}
-          error={errors.decisionPeriod?.message}
+          placeholder='기간을 선택하세요'
         />
         <button
           type='submit'
@@ -225,6 +202,87 @@ export const WithReactHookForm: Story = {
         >
           제출
         </button>
+        {reviewPeriod.startDate && reviewPeriod.endDate && (
+          <p style={{ fontSize: '0.875rem', color: '#666' }}>
+            선택된 기간: {reviewPeriod.startDate.toLocaleDateString()} ~{' '}
+            {reviewPeriod.endDate.toLocaleDateString()}
+          </p>
+        )}
+      </form>
+    )
+  },
+}
+
+/**
+ * FormDateRangePicker 유효성 검증 예시
+ */
+export const FormDateRangePickerValidation: Story = {
+  render: () => {
+    const {
+      control,
+      handleSubmit,
+      formState: { errors },
+    } = useForm<{
+      reviewPeriod: DateRange
+      decisionPeriod: DateRange
+    }>({
+      defaultValues: {
+        reviewPeriod: { startDate: null, endDate: null },
+        decisionPeriod: { startDate: null, endDate: null },
+      },
+      mode: 'onChange',
+    })
+
+    const onSubmit = (data: { reviewPeriod: DateRange; decisionPeriod: DateRange }) => {
+      alert(
+        `심의 기간: ${data.reviewPeriod.startDate?.toLocaleDateString()} ~ ${data.reviewPeriod.endDate?.toLocaleDateString()}\n결정 기간: ${data.decisionPeriod.startDate?.toLocaleDateString()} ~ ${data.decisionPeriod.endDate?.toLocaleDateString()}`,
+      )
+    }
+
+    return (
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{ width: '500px', display: 'flex', flexDirection: 'column', gap: '1rem' }}
+      >
+        <FormDateRangePicker
+          name='reviewPeriod'
+          control={control}
+          label='심의 기간'
+          required
+          rules={{
+            validate: value =>
+              value.startDate && value.endDate ? true : '심의 기간을 선택해주세요',
+          }}
+          placeholder='심의 기간을 선택하세요'
+        />
+        <FormDateRangePicker
+          name='decisionPeriod'
+          control={control}
+          label='결정 기간'
+          required
+          rules={{
+            validate: value =>
+              value.startDate && value.endDate ? true : '결정 기간을 선택해주세요',
+          }}
+          placeholder='결정 기간을 선택하세요'
+        />
+        <button
+          type='submit'
+          style={{
+            padding: '0.5rem 1rem',
+            backgroundColor: '#2563eb',
+            color: 'white',
+            border: 'none',
+            borderRadius: '0.375rem',
+            cursor: 'pointer',
+          }}
+        >
+          제출
+        </button>
+        <div style={{ fontSize: '0.875rem', color: '#ef4444' }}>
+          {errors.reviewPeriod && <p>• {errors.reviewPeriod.message}</p>}
+          {errors.decisionPeriod && <p>• {errors.decisionPeriod.message}</p>}
+        </div>
       </form>
     )
   },

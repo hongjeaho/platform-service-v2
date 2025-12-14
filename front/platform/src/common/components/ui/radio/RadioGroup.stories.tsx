@@ -1,7 +1,10 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 
 import { RadioGroup } from './RadioGroup'
+import { FormRadioGroup } from './FormRadioGroup'
 
 const meta = {
   title: 'Components/RadioGroup',
@@ -126,12 +129,12 @@ export const WithoutLabel: Story = {
  * 대화형 RadioGroup (상태 관리)
  */
 export const Interactive: Story = {
-  render: (args) => {
+  render: args => {
     const [value, setValue] = useState<string>('')
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <RadioGroup {...args} value={value} onChange={(val) => setValue(val)} />
+        <RadioGroup {...args} value={value} onChange={val => setValue(val)} />
         {value && <p>선택된 값: {value}</p>}
       </div>
     )
@@ -147,12 +150,12 @@ export const Interactive: Story = {
  * 대화형 RadioGroup (설명 포함)
  */
 export const InteractiveWithDescription: Story = {
-  render: (args) => {
+  render: args => {
     const [value, setValue] = useState<string>('')
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <RadioGroup {...args} value={value} onChange={(val) => setValue(val)} />
+        <RadioGroup {...args} value={value} onChange={val => setValue(val)} />
         {value && <p>선택된 값: {value}</p>}
       </div>
     )
@@ -168,7 +171,7 @@ export const InteractiveWithDescription: Story = {
  * 숫자 값을 가진 RadioGroup
  */
 export const WithNumberValues: Story = {
-  render: (args) => {
+  render: args => {
     const [value, setValue] = useState<number>()
 
     return (
@@ -176,7 +179,7 @@ export const WithNumberValues: Story = {
         <RadioGroup
           {...args}
           value={value}
-          onChange={(val) => setValue(val)}
+          onChange={val => setValue(val)}
           options={[
             { label: '10개', value: 10 as any },
             { label: '20개', value: 20 as any },
@@ -190,5 +193,205 @@ export const WithNumberValues: Story = {
   args: {
     label: '페이지당 항목 수',
     name: 'radio-number',
+  },
+}
+
+// ===== FormRadioGroup Stories =====
+
+/**
+ * FormRadioGroup 기본 사용 예시
+ */
+export const FormRadioGroupBasic: Story = {
+  render: () => {
+    const { control, handleSubmit, watch } = useForm<{
+      gender: string
+    }>({
+      defaultValues: {
+        gender: '',
+      },
+    })
+
+    const onSubmit = (data: { gender: string }) => {
+      alert(`선택된 성별: ${data.gender}`)
+    }
+
+    const gender = watch('gender')
+
+    return (
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+      >
+        <FormRadioGroup
+          name='gender'
+          control={control}
+          label='성별'
+          options={[
+            { label: '남성', value: 'male' },
+            { label: '여성', value: 'female' },
+          ]}
+        />
+        <button
+          type='submit'
+          style={{
+            padding: '0.5rem 1rem',
+            backgroundColor: '#2563eb',
+            color: 'white',
+            border: 'none',
+            borderRadius: '0.375rem',
+            cursor: 'pointer',
+          }}
+        >
+          제출
+        </button>
+        {gender && <p style={{ fontSize: '0.875rem', color: '#666' }}>선택된 값: {gender}</p>}
+      </form>
+    )
+  },
+}
+
+/**
+ * FormRadioGroup 유효성 검증 예시
+ */
+export const FormRadioGroupValidation: Story = {
+  render: () => {
+    const {
+      control,
+      handleSubmit,
+      formState: { errors },
+    } = useForm<{
+      gender: string
+      ageGroup: string
+    }>({
+      defaultValues: {
+        gender: '',
+        ageGroup: '',
+      },
+      mode: 'onChange',
+    })
+
+    const onSubmit = (data: { gender: string; ageGroup: string }) => {
+      alert(`성별: ${data.gender}, 연령대: ${data.ageGroup}`)
+    }
+
+    return (
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+      >
+        <FormRadioGroup
+          name='gender'
+          control={control}
+          label='성별'
+          required
+          rules={{ required: '성별을 선택해주세요' }}
+          options={[
+            { label: '남성', value: 'male' },
+            { label: '여성', value: 'female' },
+          ]}
+        />
+        <FormRadioGroup
+          name='ageGroup'
+          control={control}
+          label='연령대'
+          required
+          rules={{ required: '연령대를 선택해주세요' }}
+          options={[
+            { label: '20대', value: '20s' },
+            { label: '30대', value: '30s' },
+            { label: '40대', value: '40s' },
+            { label: '50대 이상', value: '50plus' },
+          ]}
+        />
+        <button
+          type='submit'
+          style={{
+            padding: '0.5rem 1rem',
+            backgroundColor: '#2563eb',
+            color: 'white',
+            border: 'none',
+            borderRadius: '0.375rem',
+            cursor: 'pointer',
+          }}
+        >
+          제출
+        </button>
+        <div style={{ fontSize: '0.875rem', color: '#ef4444' }}>
+          {errors.gender && <p>• {errors.gender.message}</p>}
+          {errors.ageGroup && <p>• {errors.ageGroup.message}</p>}
+        </div>
+      </form>
+    )
+  },
+}
+
+/**
+ * FormRadioGroup 수평 레이아웃 예시
+ */
+export const FormRadioGroupHorizontal: Story = {
+  render: () => {
+    const { control, watch } = useForm<{
+      priority: string
+    }>({
+      defaultValues: {
+        priority: '',
+      },
+    })
+
+    const priority = watch('priority')
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <FormRadioGroup
+          name='priority'
+          control={control}
+          label='우선순위'
+          orientation='horizontal'
+          options={[
+            { label: '낮음', value: 'low' },
+            { label: '보통', value: 'medium' },
+            { label: '높음', value: 'high' },
+          ]}
+        />
+        {priority && (
+          <p style={{ fontSize: '0.875rem', color: '#666' }}>선택된 우선순위: {priority}</p>
+        )}
+      </div>
+    )
+  },
+}
+
+/**
+ * FormRadioGroup 숫자 값 예시
+ */
+export const FormRadioGroupNumberValues: Story = {
+  render: () => {
+    const { control, watch } = useForm<{
+      pageSize: number
+    }>({
+      defaultValues: {
+        pageSize: 10,
+      },
+    })
+
+    const pageSize = watch('pageSize')
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <FormRadioGroup<{ pageSize: number }, number>
+          name='pageSize'
+          control={control}
+          label='페이지당 항목 수'
+          options={[
+            { label: '10개', value: 10 },
+            { label: '20개', value: 20 },
+            { label: '50개', value: 50 },
+          ]}
+        />
+        {pageSize && (
+          <p style={{ fontSize: '0.875rem', color: '#666' }}>선택된 페이지 크기: {pageSize}개</p>
+        )}
+      </div>
+    )
   },
 }

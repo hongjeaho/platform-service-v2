@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { DatePicker } from './DatePicker'
+import { FormDatePicker } from './FormDatePicker'
 
 const meta = {
   title: 'Components/DatePicker',
@@ -141,58 +143,37 @@ export const WithMinMaxDate: Story = {
   },
 }
 
-/**
- * React Hook Form 연동 예제
- */
-export const WithReactHookForm: Story = {
-  render: () => {
-    interface FormData {
-      applicationDate: Date | null
-      reviewDate: Date | null
-    }
+// ===== FormDatePicker Stories =====
 
-    const {
-      register,
-      handleSubmit,
-      setValue,
-      watch,
-      formState: { errors },
-    } = useForm<FormData>({
+/**
+ * FormDatePicker 기본 사용 예시
+ */
+export const FormDatePickerBasic: Story = {
+  render: () => {
+    const { control, handleSubmit, watch } = useForm<{
+      applicationDate: Date | null
+    }>({
       defaultValues: {
         applicationDate: null,
-        reviewDate: null,
       },
     })
 
-    const applicationDate = watch('applicationDate')
-    const reviewDate = watch('reviewDate')
-
-    const onSubmit = (data: FormData) => {
-      alert(
-        `신청일: ${data.applicationDate?.toLocaleDateString()}\n심의일: ${data.reviewDate?.toLocaleDateString()}`,
-      )
+    const onSubmit = (data: { applicationDate: Date | null }) => {
+      alert(`신청일: ${data.applicationDate?.toLocaleDateString()}`)
     }
+
+    const applicationDate = watch('applicationDate')
 
     return (
       <form
         onSubmit={handleSubmit(onSubmit)}
         style={{ width: '400px', display: 'flex', flexDirection: 'column', gap: '1rem' }}
       >
-        <DatePicker
-          {...register('applicationDate', { required: '신청일을 선택해주세요' })}
+        <FormDatePicker
+          name='applicationDate'
+          control={control}
           label='신청일'
-          required
-          value={applicationDate}
-          onChange={date => setValue('applicationDate', date)}
-          error={errors.applicationDate?.message}
-        />
-        <DatePicker
-          {...register('reviewDate', { required: '심의일을 선택해주세요' })}
-          label='심의일'
-          required
-          value={reviewDate}
-          onChange={date => setValue('reviewDate', date)}
-          error={errors.reviewDate?.message}
+          placeholder='신청일을 선택하세요'
         />
         <button
           type='submit'
@@ -207,6 +188,80 @@ export const WithReactHookForm: Story = {
         >
           제출
         </button>
+        {applicationDate && (
+          <p style={{ fontSize: '0.875rem', color: '#666' }}>
+            선택된 날짜: {applicationDate.toLocaleDateString()}
+          </p>
+        )}
+      </form>
+    )
+  },
+}
+
+/**
+ * FormDatePicker 유효성 검증 예시
+ */
+export const FormDatePickerValidation: Story = {
+  render: () => {
+    const {
+      control,
+      handleSubmit,
+      formState: { errors },
+    } = useForm<{
+      applicationDate: Date | null
+      reviewDate: Date | null
+    }>({
+      defaultValues: {
+        applicationDate: null,
+        reviewDate: null,
+      },
+      mode: 'onChange',
+    })
+
+    const onSubmit = (data: { applicationDate: Date | null; reviewDate: Date | null }) => {
+      alert(
+        `신청일: ${data.applicationDate?.toLocaleDateString()}\n심의일: ${data.reviewDate?.toLocaleDateString()}`,
+      )
+    }
+
+    return (
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{ width: '400px', display: 'flex', flexDirection: 'column', gap: '1rem' }}
+      >
+        <FormDatePicker
+          name='applicationDate'
+          control={control}
+          label='신청일'
+          required
+          rules={{ required: '신청일을 선택해주세요' }}
+          placeholder='신청일을 선택하세요'
+        />
+        <FormDatePicker
+          name='reviewDate'
+          control={control}
+          label='심의일'
+          required
+          rules={{ required: '심의일을 선택해주세요' }}
+          placeholder='심의일을 선택하세요'
+        />
+        <button
+          type='submit'
+          style={{
+            padding: '0.5rem 1rem',
+            backgroundColor: '#2563eb',
+            color: 'white',
+            border: 'none',
+            borderRadius: '0.375rem',
+            cursor: 'pointer',
+          }}
+        >
+          제출
+        </button>
+        <div style={{ fontSize: '0.875rem', color: '#ef4444' }}>
+          {errors.applicationDate && <p>• {errors.applicationDate.message}</p>}
+          {errors.reviewDate && <p>• {errors.reviewDate.message}</p>}
+        </div>
       </form>
     )
   },
