@@ -24,6 +24,8 @@ export interface UploadProps {
   name?: string
   /** CSS 클래스 */
   className?: string
+  /** 레이아웃 변형 */
+  variant?: 'default' | 'compact'
 }
 
 /**
@@ -54,4 +56,8 @@ export interface UploadMultiProps {
   name?: string
   /** CSS 클래스 */
   className?: string
+  /** 레이아웃 변형 */
+  variant?: 'default' | 'compact'
+  /** 파일 목록 표시 모드 */
+  displayMode?: 'list' | 'table'
 }

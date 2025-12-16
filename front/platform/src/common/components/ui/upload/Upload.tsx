@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 
 import styles from './Upload.module.css'
 import type { UploadProps } from './Upload.types'
+import { formatFileSize, validateFile } from './Upload.utils'
 
 /**
  * Upload 컴포넌트 (단일 파일)
@@ -23,26 +24,13 @@ export function Upload({
   required,
   name,
   className,
+  variant = 'default',
 }: UploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const UploadIcon = icons.upload
   const DeleteIcon = icons.delete
-
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 B'
-    const k = 1024
-    const sizes = ['B', 'KB', 'MB', 'GB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return `${(bytes / Math.pow(k, i)).toFixed(2)} ${sizes[i]}`
-  }
-
-  const validateFile = (file: File): string | null => {
-    if (maxSize && file.size > maxSize) {
-      return `파일 크기가 ${formatFileSize(maxSize)}를 초과합니다.`
-    }
-    return null
-  }
+  const PaperclipIcon = icons.attachment
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -51,7 +39,7 @@ export function Upload({
       return
     }
 
-    const validationError = validateFile(file)
+    const validationError = validateFile(file, accept, maxSize)
     if (validationError) {
       alert(validationError)
       if (inputRef.current) {
@@ -84,7 +72,7 @@ export function Upload({
     if (files.length === 0) return
 
     const file = files[0]
-    const validationError = validateFile(file)
+    const validationError = validateFile(file, accept, maxSize)
     if (validationError) {
       alert(validationError)
       return
@@ -106,6 +94,67 @@ export function Upload({
     }
   }
 
+  // Compact variant 렌더링
+  if (variant === 'compact') {
+    return (
+      <div className={styles.compactContainer}>
+        <div className={styles.compactHeader}>
+          {label && (
+            <label htmlFor={name} className={styles.compactLabel}>
+              {label}
+              {required && <span className={styles.required}>*</span>}
+            </label>
+          )}
+
+          <input
+            ref={inputRef}
+            type='file'
+            name={name}
+            accept={accept}
+            onChange={handleFileChange}
+            disabled={disabled}
+            className={styles.hiddenInput}
+            aria-invalid={!!error}
+            aria-describedby={error ? `${name}-error` : undefined}
+          />
+
+          <button
+            type='button'
+            onClick={handleClick}
+            disabled={disabled}
+            className={cn(styles.compactUploadButton, className)}
+          >
+            <PaperclipIcon className={iconSizes.sm} aria-hidden='true' />
+            파일 선택
+          </button>
+
+          {value && (
+            <div className={styles.compactFileInfo}>
+              <span className={styles.fileName}>{value.name}</span>
+              <span className={styles.fileSize}>({formatFileSize(value.size)})</span>
+              <button
+                type='button'
+                onClick={handleDelete}
+                className={styles.deleteButton}
+                aria-label={`${value.name} 삭제`}
+                disabled={disabled}
+              >
+                <DeleteIcon className={iconSizes.sm} aria-hidden='true' />
+              </button>
+            </div>
+          )}
+        </div>
+
+        {error && (
+          <p id={`${name}-error`} className={cn(styles.error, textCombinations.bodySm)}>
+            {error}
+          </p>
+        )}
+      </div>
+    )
+  }
+
+  // Default variant 렌더링
   return (
     <div className={styles.container}>
       {label && (
