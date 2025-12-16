@@ -11,7 +11,7 @@ import {
   useInteractions,
   useRole,
 } from '@floating-ui/react'
-import { forwardRef, useEffect,useMemo, useRef, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { icons, iconSizes } from '@/constants/design/icons'
 import { textCombinations } from '@/constants/design/typography'
@@ -24,9 +24,42 @@ import type { SelectProps } from './Select.types'
  * Select 컴포넌트
  * 커스텀 드롭다운 UI를 제공하며, 선택적으로 검색 기능을 지원합니다.
  * react-hook-form과 호환됩니다.
+ * 
+ * 주요 기능:
+ * - Floating UI 기반 포지셔닝
+ * - 검색 기능 (debounce 적용)
+ * - 키보드 네비게이션
+ * - 접근성 (ARIA 속성)
+ * - 검색어 하이라이트
  */
-export const Select = forwardRef<HTMLInputElement, SelectProps>(
-  (
+
+/**
+ * 검색어 하이라이트 유틸리티 함수
+ */
+function highlightText(text: string, query: string): React.ReactNode {
+  if (!query) return text
+
+  const lowerText = text.toLowerCase()
+  const lowerQuery = query.toLowerCase()
+  const index = lowerText.indexOf(lowerQuery)
+
+  if (index === -1) return text
+
+  const before = text.slice(0, index)
+  const match = text.slice(index, index + query.length)
+  const after = text.slice(index + query.length)
+
+  return (
+    <>
+      {before}
+      <mark className={styles.highlight}>{match}</mark>
+      {after}
+    </>
+  )
+}
+
+export const Select = forwardRef(
+  <T = string,>(
     {
       options,
       value,
@@ -43,22 +76,51 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
       emptyMessage = '검색 결과가 없습니다',
       maxHeight = '300px',
       ...props
-    }: SelectProps,
-    ref,
+    }: SelectProps<T>,
+    ref: React.ForwardedRef<HTMLInputElement>,
   ) => {
     const [isOpen, setIsOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('')
     const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)
     const searchInputRef = useRef<HTMLInputElement>(null)
     const optionsListRef = useRef<HTMLDivElement>(null)
+    const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
     const ChevronIcon = icons.next
     const SearchIcon = icons.search
 
+    // 드롭다운 열기/닫기 핸들러
+    const handleOpenChange = useCallback((open: boolean) => {
+      setIsOpen(open)
+      if (!open) {
+        setSearchQuery('')
+        setDebouncedSearchQuery('')
+        setHighlightedIndex(-1)
+      }
+    }, [])
+
+    // Debounce 검색어 (300ms)
+    useEffect(() => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current)
+      }
+
+      debounceTimerRef.current = setTimeout(() => {
+        setDebouncedSearchQuery(searchQuery)
+      }, 300)
+
+      return () => {
+        if (debounceTimerRef.current) {
+          clearTimeout(debounceTimerRef.current)
+        }
+      }
+    }, [searchQuery])
+
     // Floating UI 설정
     const { refs, floatingStyles, context } = useFloating({
       open: isOpen,
-      onOpenChange: setIsOpen,
+      onOpenChange: handleOpenChange,
       middleware: [
         offset(4),
         flip({ padding: 8 }),
@@ -86,13 +148,48 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
       [options, value],
     )
 
-    // 필터링된 옵션
+    // 필터링된 옵션 (debounced 검색어 사용)
     const filteredOptions = useMemo(() => {
-      if (!searchable || !searchQuery) return options
+      if (!searchable || !debouncedSearchQuery) return options
 
-      const query = searchQuery.toLowerCase()
+      const query = debouncedSearchQuery.toLowerCase()
       return options.filter(option => option.label.toLowerCase().includes(query))
-    }, [options, searchQuery, searchable])
+    }, [options, debouncedSearchQuery, searchable])
+
+    // 활성 옵션 ID (접근성용)
+    const activeOptionId = useMemo(() => {
+      if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length) {
+        return `${name}-option-${highlightedIndex}`
+      }
+      return undefined
+    }, [highlightedIndex, filteredOptions.length, name])
+
+    // 옵션으로 스크롤
+    const scrollToOption = useCallback((index: number) => {
+      if (!optionsListRef.current) return
+
+      const optionElement = optionsListRef.current.children[index] as HTMLElement
+      if (optionElement) {
+        optionElement.scrollIntoView({ block: 'nearest' })
+      }
+    }, [])
+
+    // 옵션 선택 핸들러
+    const handleSelect = useCallback(
+      (selectedValue: T) => {
+        onChange?.(selectedValue)
+        setIsOpen(false)
+        setSearchQuery('')
+        setDebouncedSearchQuery('')
+      },
+      [onChange],
+    )
+
+    // 검색 입력 핸들러
+    const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value)
+      setHighlightedIndex(-1)
+    }, [])
 
     // 드롭다운이 열릴 때 검색창에 포커스
     useEffect(() => {
@@ -105,71 +202,58 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
     }, [isOpen, searchable])
 
     // 키보드 네비게이션
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-      if (!isOpen) return
-
-      switch (e.key) {
-        case 'ArrowDown':
-          e.preventDefault()
-          setHighlightedIndex(prev => {
-            const nextIndex = prev < filteredOptions.length - 1 ? prev + 1 : 0
-            scrollToOption(nextIndex)
-            return nextIndex
-          })
-          break
-
-        case 'ArrowUp':
-          e.preventDefault()
-          setHighlightedIndex(prev => {
-            const nextIndex = prev > 0 ? prev - 1 : filteredOptions.length - 1
-            scrollToOption(nextIndex)
-            return nextIndex
-          })
-          break
-
-        case 'Enter':
-          e.preventDefault()
-          if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length) {
-            const option = filteredOptions[highlightedIndex]
-            if (!option.disabled) {
-              handleSelect(option.value)
-            }
+    const handleKeyDown = useCallback(
+      (e: React.KeyboardEvent) => {
+        if (!isOpen) {
+          // 드롭다운이 닫혀있을 때 Space나 Enter로 열기
+          if ((e.key === ' ' || e.key === 'Enter') && !disabled) {
+            e.preventDefault()
+            setIsOpen(true)
           }
-          break
+          return
+        }
 
-        case 'Escape':
-          e.preventDefault()
-          setIsOpen(false)
-          break
+        switch (e.key) {
+          case 'ArrowDown':
+            e.preventDefault()
+            setHighlightedIndex(prev => {
+              const nextIndex = prev < filteredOptions.length - 1 ? prev + 1 : 0
+              scrollToOption(nextIndex)
+              return nextIndex
+            })
+            break
 
-        case 'Tab':
-          setIsOpen(false)
-          break
-      }
-    }
+          case 'ArrowUp':
+            e.preventDefault()
+            setHighlightedIndex(prev => {
+              const nextIndex = prev > 0 ? prev - 1 : filteredOptions.length - 1
+              scrollToOption(nextIndex)
+              return nextIndex
+            })
+            break
 
-    // 옵션으로 스크롤
-    const scrollToOption = (index: number) => {
-      if (!optionsListRef.current) return
+          case 'Enter':
+            e.preventDefault()
+            if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length) {
+              const option = filteredOptions[highlightedIndex]
+              if (!option.disabled) {
+                handleSelect(option.value)
+              }
+            }
+            break
 
-      const optionElement = optionsListRef.current.children[index] as HTMLElement
-      if (optionElement) {
-        optionElement.scrollIntoView({ block: 'nearest' })
-      }
-    }
+          case 'Escape':
+            e.preventDefault()
+            setIsOpen(false)
+            break
 
-    // 옵션 선택 핸들러
-    const handleSelect = (selectedValue: any) => {
-      onChange?.(selectedValue)
-      setIsOpen(false)
-      setSearchQuery('')
-    }
-
-    // 검색 입력 핸들러
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(e.target.value)
-      setHighlightedIndex(-1)
-    }
+          case 'Tab':
+            setIsOpen(false)
+            break
+        }
+      },
+      [isOpen, disabled, filteredOptions, highlightedIndex, scrollToOption, handleSelect],
+    )
 
   return (
     <div className={cn(styles.container, className)}>
@@ -198,6 +282,11 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
         className={cn(styles.trigger, error && styles.triggerError)}
         aria-invalid={!!error}
         aria-describedby={error ? `${name}-error` : undefined}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-controls={isOpen ? `${name}-listbox` : undefined}
+        aria-activedescendant={activeOptionId}
+        aria-label={label || name || '선택'}
         onKeyDown={handleKeyDown}
         {...getReferenceProps()}
         {...props}
@@ -227,7 +316,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                 {/* 검색 입력창 */}
                 {searchable && (
                   <div className={styles.searchContainer}>
-                    <SearchIcon className={cn(iconSizes.sm, styles.searchIcon)} />
+                    <SearchIcon className={cn(iconSizes.sm, styles.searchIcon)} aria-hidden="true" />
                     <input
                       ref={searchInputRef}
                       type="text"
@@ -236,7 +325,15 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                       placeholder={searchPlaceholder}
                       className={styles.searchInput}
                       onKeyDown={handleKeyDown}
+                      aria-label="옵션 검색"
+                      aria-controls={`${name}-listbox`}
                     />
+                    {/* 검색 결과 개수 (스크린 리더용) */}
+                    {debouncedSearchQuery && (
+                      <span className="sr-only" aria-live="polite" aria-atomic="true">
+                        {filteredOptions.length}개의 결과가 있습니다
+                      </span>
+                    )}
                   </div>
                 )}
 
@@ -246,15 +343,18 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                   className={styles.optionsList}
                   style={{ maxHeight }}
                   role="listbox"
+                  id={`${name}-listbox`}
+                  aria-label={label || '옵션 목록'}
                 >
                   {filteredOptions.length === 0 ? (
-                    <div className={cn(styles.emptyMessage, textCombinations.bodySm)}>
+                    <div className={cn(styles.emptyMessage, textCombinations.bodySm)} role="status">
                       {emptyMessage}
                     </div>
                   ) : (
                     filteredOptions.map((option, index) => (
                       <div
                         key={String(option.value)}
+                        id={`${name}-option-${index}`}
                         role="option"
                         aria-selected={option.value === value}
                         aria-disabled={option.disabled}
@@ -271,7 +371,9 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                         }}
                         onMouseEnter={() => setHighlightedIndex(index)}
                       >
-                        {option.label}
+                        {searchable && debouncedSearchQuery
+                          ? highlightText(option.label, debouncedSearchQuery)
+                          : option.label}
                       </div>
                     ))
                   )}
@@ -293,3 +395,8 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
 )
 
 Select.displayName = 'Select'
+
+// 제네릭 타입 지원을 위한 타입 캐스팅
+export default Select as <T = string>(
+  props: SelectProps<T> & { ref?: React.ForwardedRef<HTMLInputElement> },
+) => React.ReactElement

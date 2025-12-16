@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
-import { Controller,useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 
 import { Button } from '../button/Button'
+import { FormSelect } from './FormSelect'
 import { Select } from './Select'
 
 const meta = {
@@ -305,7 +306,7 @@ export const WithNumberValues: Story = {
 }
 
 /**
- * React Hook Form 통합 예제
+ * React Hook Form 통합 예제 (FormSelect 사용 - 권장)
  */
 export const ReactHookFormIntegration: Story = {
   render: () => {
@@ -318,7 +319,6 @@ export const ReactHookFormIntegration: Story = {
     const {
       control,
       handleSubmit,
-      formState: { errors },
       watch,
     } = useForm<FormData>({
       defaultValues: {
@@ -340,58 +340,40 @@ export const ReactHookFormIntegration: Story = {
           onSubmit={handleSubmit(onSubmit)}
           style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
         >
-          <Controller
+          <FormSelect
             name="region"
             control={control}
+            options={longOptions}
+            label="지역"
+            placeholder="지역을 선택해주세요"
+            required
+            searchable
+            searchPlaceholder="지역명 검색..."
             rules={{ required: '지역을 선택해주세요' }}
-            render={({ field }) => (
-              <Select
-                {...field}
-                options={longOptions}
-                label="지역"
-                placeholder="지역을 선택해주세요"
-                required
-                searchable
-                searchPlaceholder="지역명 검색..."
-                error={errors.region?.message}
-              />
-            )}
           />
 
-          <Controller
+          <FormSelect
             name="category"
             control={control}
+            options={options}
+            label="카테고리"
+            placeholder="카테고리를 선택해주세요"
+            required
             rules={{ required: '카테고리를 선택해주세요' }}
-            render={({ field }) => (
-              <Select
-                {...field}
-                options={options}
-                label="카테고리"
-                placeholder="카테고리를 선택해주세요"
-                required
-                error={errors.category?.message}
-              />
-            )}
           />
 
-          <Controller
+          <FormSelect
             name="priority"
             control={control}
+            options={[
+              { label: '낮음', value: 'low' },
+              { label: '보통', value: 'medium' },
+              { label: '높음', value: 'high' },
+            ]}
+            label="우선순위"
+            placeholder="우선순위를 선택해주세요"
+            required
             rules={{ required: '우선순위를 선택해주세요' }}
-            render={({ field }) => (
-              <Select
-                {...field}
-                options={[
-                  { label: '낮음', value: 'low' },
-                  { label: '보통', value: 'medium' },
-                  { label: '높음', value: 'high' },
-                ]}
-                label="우선순위"
-                placeholder="우선순위를 선택해주세요"
-                required
-                error={errors.priority?.message}
-              />
-            )}
           />
 
           <Button type="submit" variant="primary" size="lg">
@@ -417,12 +399,14 @@ export const ReactHookFormIntegration: Story = {
         <div
           style={{
             padding: '1rem',
-            backgroundColor: '#e3f2fd',
+            backgroundColor: '#d1f4e0',
             borderRadius: 'var(--radius-md)',
             fontSize: '0.75rem',
           }}
         >
-          <div style={{ fontWeight: '600', marginBottom: '0.5rem' }}>사용법:</div>
+          <div style={{ fontWeight: '600', marginBottom: '0.5rem' }}>
+            ✅ 권장: FormSelect 사용법 (간결함)
+          </div>
           <pre
             style={{
               backgroundColor: 'white',
@@ -432,17 +416,11 @@ export const ReactHookFormIntegration: Story = {
               overflow: 'auto',
             }}
           >
-            {`<Controller
+            {`<FormSelect
   name="fieldName"
   control={control}
+  options={options}
   rules={{ required: '필수' }}
-  render={({ field }) => (
-    <Select
-      {...field}
-      options={options}
-      error={errors.fieldName?.message}
-    />
-  )}
 />`}
           </pre>
         </div>

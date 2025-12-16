@@ -2,20 +2,20 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.5rem; /* 8px - spacing.sm */
 }
 
 /* Select 라벨 */
 .label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.25;
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500; /* font-medium */
+  line-height: 1.25; /* leading-tight */
   color: var(--foreground);
 }
 
 .required {
   color: var(--error);
-  margin-left: 0.25rem;
+  margin-left: 0.25rem; /* 4px - spacing.xs */
 }
 
 /* Trigger 버튼 */
@@ -24,15 +24,15 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
-  line-height: 1.5;
+  padding: 0.5rem 0.75rem; /* py-2 px-3 - inputDefault */
+  font-size: 1rem; /* text-base */
+  line-height: 1.5; /* leading-normal */
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background-color: var(--input);
   color: var(--foreground);
   cursor: pointer;
-  transition: all 200ms;
+  transition: all 200ms; /* transition-base */
   font-family: inherit;
 }
 
@@ -69,8 +69,8 @@
 /* Chevron 아이콘 */
 .chevronIcon {
   flex-shrink: 0;
-  margin-left: 0.5rem;
-  transition: transform 200ms;
+  margin-left: 0.5rem; /* 8px - spacing.sm */
+  transition: transform 200ms; /* transition-base */
   color: var(--muted-foreground);
   transform: rotate(90deg);
 }
@@ -105,9 +105,9 @@
 .searchContainer {
   display: flex;
   align-items: center;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 0.75rem; /* py-2 px-3 */
   border-bottom: 1px solid var(--border);
-  gap: 0.5rem;
+  gap: 0.5rem; /* gap-2 - spacing.sm */
 }
 
 .searchIcon {
@@ -122,8 +122,8 @@
   outline: none;
   background-color: transparent;
   color: var(--foreground);
-  font-size: 0.875rem;
-  line-height: 1.25;
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25; /* leading-tight */
   font-family: inherit;
 }
 
@@ -135,20 +135,20 @@
 .optionsList {
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0.25rem;
+  padding: 0.25rem; /* p-1 - spacing.xs */
 }
 
 /* 개별 옵션 */
 .option {
   display: flex;
   align-items: center;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
-  line-height: 1.25;
+  padding: 0.5rem 0.75rem; /* py-2 px-3 */
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25; /* leading-tight */
   color: var(--foreground);
   cursor: pointer;
   border-radius: calc(var(--radius-md) - 2px);
-  transition: background-color 200ms;
+  transition: background-color 200ms; /* transition-base */
   user-select: none;
 }
 
@@ -184,17 +184,26 @@
 
 /* 검색 결과 없음 메시지 */
 .emptyMessage {
-  padding: 1rem 0.75rem;
+  padding: 1rem 0.75rem; /* py-4 px-3 */
   text-align: center;
   color: var(--muted-foreground);
-  font-size: 0.875rem;
-  line-height: 1.25;
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25; /* leading-tight */
 }
 
 /* 에러 메시지 */
 .error {
-  font-size: 0.875rem;
-  line-height: 1.25;
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25; /* leading-tight */
   color: var(--error);
-  margin-top: 0.25rem;
+  margin-top: 0.25rem; /* mt-1 - spacing.xs */
+}
+
+/* 검색어 하이라이트 */
+.highlight {
+  background-color: color-mix(in oklch, var(--primary) 20%, transparent);
+  color: var(--primary);
+  font-weight: 600; /* font-semibold */
+  padding: 0 0.125rem; /* px-0.5 */
+  border-radius: 2px; /* rounded-sm */
 }
