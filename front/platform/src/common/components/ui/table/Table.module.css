@@ -35,6 +35,7 @@
   color: var(--foreground);
   white-space: nowrap;
   border-right: 1px solid var(--border);
+  background-color: var(--muted); /* 헤더 배경 명확화 */
 }
 
 .th:last-child {
@@ -73,23 +74,19 @@
 }
 
 .tr:hover {
-  background-color: var(--accent);
-  background-color: rgba(var(--primary), 0.05);
+  background-color: oklch(from var(--accent) / 0.05);
 }
 
 .tr.striped:nth-child(odd) {
   background-color: var(--muted);
-  background-color: rgba(var(--muted), 0.3);
 }
 
 .tr.striped:nth-child(odd):hover {
-  background-color: var(--accent);
-  background-color: rgba(var(--primary), 0.05);
+  background-color: oklch(from var(--accent) / 0.05);
 }
 
 .tr.selected {
-  background-color: var(--accent);
-  background-color: rgba(var(--primary), 0.1);
+  background-color: oklch(from var(--accent) / 0.1);
 }
 
 .tr:last-child {
@@ -101,6 +98,7 @@
   padding: 0.75rem 1rem;
   color: var(--foreground);
   border-right: 1px solid var(--border);
+  background-color: transparent; /* 부모 배경 표시 */
 }
 
 .td:last-child {
@@ -152,6 +150,7 @@
   font-style: italic;
   padding: 3rem 1rem;
   font-size: 0.875rem;
+  background-color: transparent; /* 일관성 유지 */
 }
 
 /* 페이지네이션 컨테이너 */
