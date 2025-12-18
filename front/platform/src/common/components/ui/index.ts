@@ -16,12 +16,12 @@ export type { RadioGroupProps, RadioOption } from './radio/Radio.types'
 export { RadioGroup } from './radio/RadioGroup'
 
 // Select
+export { FormSelect } from './select/FormSelect'
+export { FormSelect } from './select/FormSelect'
+export type { FormSelectProps } from './select/FormSelect.types'
+export type { FormSelectProps } from './select/FormSelect.types'
 export { Select } from './select/Select'
 export type { SelectOption, SelectProps } from './select/Select.types'
-export { FormSelect } from './select/FormSelect'
-export type { FormSelectProps } from './select/FormSelect.types'
-export { FormSelect } from './select/FormSelect'
-export type { FormSelectProps } from './select/FormSelect.types'
 
 // Upload
 export { Upload } from './upload/Upload'

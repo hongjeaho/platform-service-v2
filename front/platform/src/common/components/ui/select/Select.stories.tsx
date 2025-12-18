@@ -49,7 +49,7 @@ const longOptions = [
  * 기본 Select 컴포넌트
  */
 export const Basic: Story = {
-  render: (args) => {
+  render: args => {
     const [value, setValue] = useState<string>()
 
     return (
@@ -70,7 +70,7 @@ export const Basic: Story = {
  * 검색 가능한 Select
  */
 export const Searchable: Story = {
-  render: (args) => {
+  render: args => {
     const [value, setValue] = useState<string>()
 
     return (
@@ -93,7 +93,7 @@ export const Searchable: Story = {
  * 라벨이 없는 Select
  */
 export const WithoutLabel: Story = {
-  render: (args) => {
+  render: args => {
     const [value, setValue] = useState<string>()
 
     return (
@@ -113,7 +113,7 @@ export const WithoutLabel: Story = {
  * 필수 필드 표시
  */
 export const Required: Story = {
-  render: (args) => {
+  render: args => {
     const [value, setValue] = useState<string>()
 
     return (
@@ -135,7 +135,7 @@ export const Required: Story = {
  * 에러 상태
  */
 export const WithError: Story = {
-  render: (args) => {
+  render: args => {
     const [value, setValue] = useState<string>()
 
     return (
@@ -157,7 +157,7 @@ export const WithError: Story = {
  * 비활성화 상태
  */
 export const Disabled: Story = {
-  render: (args) => {
+  render: args => {
     const [value, setValue] = useState<string>()
 
     return (
@@ -179,7 +179,7 @@ export const Disabled: Story = {
  * 비활성화된 옵션이 있는 Select
  */
 export const WithDisabledOptions: Story = {
-  render: (args) => {
+  render: args => {
     const [value, setValue] = useState<string>()
 
     return (
@@ -205,7 +205,7 @@ export const WithDisabledOptions: Story = {
  * 긴 옵션 리스트 (스크롤 테스트)
  */
 export const LongList: Story = {
-  render: (args) => {
+  render: args => {
     const [value, setValue] = useState<string>()
 
     return (
@@ -227,7 +227,7 @@ export const LongList: Story = {
  * 검색 가능한 긴 리스트
  */
 export const SearchableLongList: Story = {
-  render: (args) => {
+  render: args => {
     const [value, setValue] = useState<string>()
 
     return (
@@ -251,7 +251,7 @@ export const SearchableLongList: Story = {
  * 검색 결과 없음 상태 테스트
  */
 export const EmptySearchResult: Story = {
-  render: (args) => {
+  render: args => {
     const [value, setValue] = useState<string>()
 
     return (
@@ -292,9 +292,9 @@ export const WithNumberValues: Story = {
             { label: '50개', value: '50' },
             { label: '100개', value: '100' },
           ]}
-          label="페이지당 항목 수"
-          placeholder="선택해주세요"
-          name="select-number"
+          label='페이지당 항목 수'
+          placeholder='선택해주세요'
+          name='select-number'
         />
         {value && <p style={{ fontSize: '0.875rem' }}>선택된 값: {value}</p>}
       </div>
@@ -316,11 +316,7 @@ export const ReactHookFormIntegration: Story = {
       priority: string
     }
 
-    const {
-      control,
-      handleSubmit,
-      watch,
-    } = useForm<FormData>({
+    const { control, handleSubmit, watch } = useForm<FormData>({
       defaultValues: {
         region: '',
         category: '',
@@ -341,42 +337,42 @@ export const ReactHookFormIntegration: Story = {
           style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
         >
           <FormSelect
-            name="region"
+            name='region'
             control={control}
             options={longOptions}
-            label="지역"
-            placeholder="지역을 선택해주세요"
+            label='지역'
+            placeholder='지역을 선택해주세요'
             required
             searchable
-            searchPlaceholder="지역명 검색..."
+            searchPlaceholder='지역명 검색...'
             rules={{ required: '지역을 선택해주세요' }}
           />
 
           <FormSelect
-            name="category"
+            name='category'
             control={control}
             options={options}
-            label="카테고리"
-            placeholder="카테고리를 선택해주세요"
+            label='카테고리'
+            placeholder='카테고리를 선택해주세요'
             required
             rules={{ required: '카테고리를 선택해주세요' }}
           />
 
           <FormSelect
-            name="priority"
+            name='priority'
             control={control}
             options={[
               { label: '낮음', value: 'low' },
               { label: '보통', value: 'medium' },
               { label: '높음', value: 'high' },
             ]}
-            label="우선순위"
-            placeholder="우선순위를 선택해주세요"
+            label='우선순위'
+            placeholder='우선순위를 선택해주세요'
             required
             rules={{ required: '우선순위를 선택해주세요' }}
           />
 
-          <Button type="submit" variant="primary" size="lg">
+          <Button type='submit' variant='primary' size='lg'>
             제출
           </Button>
         </form>

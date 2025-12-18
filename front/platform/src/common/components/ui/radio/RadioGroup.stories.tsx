@@ -3,8 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { RadioGroup } from './RadioGroup'
 import { FormRadioGroup } from './FormRadioGroup'
+import { RadioGroup } from './RadioGroup'
 
 const meta = {
   title: 'Components/RadioGroup',

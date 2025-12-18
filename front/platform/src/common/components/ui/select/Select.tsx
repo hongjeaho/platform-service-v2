@@ -24,7 +24,7 @@ import type { SelectProps } from './Select.types'
  * Select 컴포넌트
  * 커스텀 드롭다운 UI를 제공하며, 선택적으로 검색 기능을 지원합니다.
  * react-hook-form과 호환됩니다.
- * 
+ *
  * 주요 기능:
  * - Floating UI 기반 포지셔닝
  * - 검색 기능 (debounce 적용)
@@ -255,51 +255,47 @@ export const Select = forwardRef(
       [isOpen, disabled, filteredOptions, highlightedIndex, scrollToOption, handleSelect],
     )
 
-  return (
-    <div className={cn(styles.container, className)}>
-      {label && (
-        <label htmlFor={name} className={cn(styles.label, textCombinations.label)}>
-          {label}
-          {required && <span className={styles.required}>*</span>}
-        </label>
-      )}
+    return (
+      <div className={cn(styles.container, className)}>
+        {label && (
+          <label htmlFor={name} className={cn(styles.label, textCombinations.label)}>
+            {label}
+            {required && <span className={styles.required}>*</span>}
+          </label>
+        )}
 
-      {/* Hidden input for react-hook-form */}
-      <input
-        ref={ref}
-        type="hidden"
-        name={name}
-        value={value ?? ''}
-        required={required}
-        disabled={disabled}
-      />
+        {/* Hidden input for react-hook-form */}
+        <input
+          ref={ref}
+          type='hidden'
+          name={name}
+          value={value ?? ''}
+          required={required}
+          disabled={disabled}
+        />
 
-      {/* Trigger 버튼 */}
-      <button
-        ref={refs.setReference}
-        type="button"
-        disabled={disabled}
-        className={cn(styles.trigger, error && styles.triggerError)}
-        aria-invalid={!!error}
-        aria-describedby={error ? `${name}-error` : undefined}
-        aria-expanded={isOpen}
-        aria-haspopup="listbox"
-        aria-controls={isOpen ? `${name}-listbox` : undefined}
-        aria-activedescendant={activeOptionId}
-        aria-label={label || name || '선택'}
-        onKeyDown={handleKeyDown}
-        {...getReferenceProps()}
-        {...props}
-      >
+        {/* Trigger 버튼 */}
+        <button
+          ref={refs.setReference}
+          type='button'
+          disabled={disabled}
+          className={cn(styles.trigger, error && styles.triggerError)}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${name}-error` : undefined}
+          aria-expanded={isOpen}
+          aria-haspopup='listbox'
+          aria-controls={isOpen ? `${name}-listbox` : undefined}
+          aria-activedescendant={activeOptionId}
+          aria-label={label || name || '선택'}
+          onKeyDown={handleKeyDown}
+          {...getReferenceProps()}
+          {...props}
+        >
           <span className={styles.triggerText}>
             {selectedOption ? selectedOption.label : placeholder}
           </span>
           <ChevronIcon
-            className={cn(
-              styles.chevronIcon,
-              iconSizes.sm,
-              isOpen && styles.chevronIconOpen,
-            )}
+            className={cn(styles.chevronIcon, iconSizes.sm, isOpen && styles.chevronIconOpen)}
           />
         </button>
 
@@ -316,21 +312,24 @@ export const Select = forwardRef(
                 {/* 검색 입력창 */}
                 {searchable && (
                   <div className={styles.searchContainer}>
-                    <SearchIcon className={cn(iconSizes.sm, styles.searchIcon)} aria-hidden="true" />
+                    <SearchIcon
+                      className={cn(iconSizes.sm, styles.searchIcon)}
+                      aria-hidden='true'
+                    />
                     <input
                       ref={searchInputRef}
-                      type="text"
+                      type='text'
                       value={searchQuery}
                       onChange={handleSearchChange}
                       placeholder={searchPlaceholder}
                       className={styles.searchInput}
                       onKeyDown={handleKeyDown}
-                      aria-label="옵션 검색"
+                      aria-label='옵션 검색'
                       aria-controls={`${name}-listbox`}
                     />
                     {/* 검색 결과 개수 (스크린 리더용) */}
                     {debouncedSearchQuery && (
-                      <span className="sr-only" aria-live="polite" aria-atomic="true">
+                      <span className='sr-only' aria-live='polite' aria-atomic='true'>
                         {filteredOptions.length}개의 결과가 있습니다
                       </span>
                     )}
@@ -342,12 +341,12 @@ export const Select = forwardRef(
                   ref={optionsListRef}
                   className={styles.optionsList}
                   style={{ maxHeight }}
-                  role="listbox"
+                  role='listbox'
                   id={`${name}-listbox`}
                   aria-label={label || '옵션 목록'}
                 >
                   {filteredOptions.length === 0 ? (
-                    <div className={cn(styles.emptyMessage, textCombinations.bodySm)} role="status">
+                    <div className={cn(styles.emptyMessage, textCombinations.bodySm)} role='status'>
                       {emptyMessage}
                     </div>
                   ) : (
@@ -355,7 +354,7 @@ export const Select = forwardRef(
                       <div
                         key={String(option.value)}
                         id={`${name}-option-${index}`}
-                        role="option"
+                        role='option'
                         aria-selected={option.value === value}
                         aria-disabled={option.disabled}
                         className={cn(

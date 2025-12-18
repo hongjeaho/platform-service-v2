@@ -122,11 +122,7 @@ export function validateFileSize(file: File, maxSize?: number): string | null {
  * @param maxSize - 최대 파일 크기 (바이트)
  * @returns 검증 성공 시 null, 실패 시 에러 메시지
  */
-export function validateFile(
-  file: File,
-  accept?: string,
-  maxSize?: number,
-): string | null {
+export function validateFile(file: File, accept?: string, maxSize?: number): string | null {
   const typeError = validateFileType(file, accept)
   if (typeError) return typeError
 
@@ -135,4 +131,3 @@ export function validateFile(
 
   return null
 }
-

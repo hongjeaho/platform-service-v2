@@ -167,11 +167,7 @@ export function UploadMulti({
   const renderListView = () => (
     <div className={styles.fileList} role='list'>
       {value.map((file, index) => (
-        <div
-          key={`${file.name}-${file.size}-${index}`}
-          className={styles.fileItem}
-          role='listitem'
-        >
+        <div key={`${file.name}-${file.size}-${index}`} className={styles.fileItem} role='listitem'>
           <span className={styles.fileIcon}>📄</span>
           <div className={styles.fileInfo}>
             <span className={styles.fileName}>{file.name}</span>
@@ -227,9 +223,7 @@ export function UploadMulti({
           </button>
         </div>
 
-        {value.length > 0 && (
-          displayMode === 'table' ? renderTableView() : renderListView()
-        )}
+        {value.length > 0 && (displayMode === 'table' ? renderTableView() : renderListView())}
 
         {error && (
           <p id={`${name}-error`} className={cn(styles.error, textCombinations.bodySm)}>
@@ -298,9 +292,7 @@ export function UploadMulti({
         </div>
       )}
 
-      {value.length > 0 && (
-        displayMode === 'table' ? renderTableView() : renderListView()
-      )}
+      {value.length > 0 && (displayMode === 'table' ? renderTableView() : renderListView())}
 
       {error && (
         <p id={`${name}-error`} className={cn(styles.error, textCombinations.bodySm)}>

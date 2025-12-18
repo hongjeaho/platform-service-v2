@@ -98,7 +98,7 @@ export const WithError: Story = {
  * 파일이 선택된 상태
  */
 export const WithFile: Story = {
-  render: (args) => {
+  render: args => {
     const [file, setFile] = useState<File | null>(null)
 
     return (
@@ -215,7 +215,7 @@ export const MultiWithError: StoryObj = {
  */
 export const MultiWithFiles: StoryObj = {
   component: UploadMulti,
-  render: (args) => {
+  render: args => {
     const [files, setFiles] = useState<File[]>([])
 
     return (
@@ -246,7 +246,6 @@ export const MultiWithFiles: StoryObj = {
 // ============================================================
 // Compact Variant Stories
 // ============================================================
-
 
 /**
  * Compact Multi - 리스트 뷰
@@ -280,7 +279,6 @@ export const CompactMultiTable: StoryObj = {
     name: 'compact-multi-table',
   },
 }
-
 
 // ============================================================
 // FormUpload Stories (React Hook Form)
@@ -352,9 +350,7 @@ export const FormUploadValidation: Story = {
     })
 
     const onSubmit = (data: { document: File | null; certificate: File | null }) => {
-      alert(
-        `문서: ${data.document?.name || '없음'}\n증명서: ${data.certificate?.name || '없음'}`,
-      )
+      alert(`문서: ${data.document?.name || '없음'}\n증명서: ${data.certificate?.name || '없음'}`)
     }
 
     return (

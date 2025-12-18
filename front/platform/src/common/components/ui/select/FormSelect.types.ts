@@ -7,10 +7,8 @@ import type { SelectProps } from './Select.types'
  * React Hook Form용 Select 컴포넌트 Props
  * Controller를 내부에 감추고 간결한 API를 제공합니다.
  */
-export interface FormSelectProps<
-  TFieldValues extends FieldValues = FieldValues,
-  TValue = string,
-> extends Omit<SelectProps<TValue>, 'value' | 'onChange' | 'error'> {
+export interface FormSelectProps<TFieldValues extends FieldValues = FieldValues, TValue = string>
+  extends Omit<SelectProps<TValue>, 'value' | 'onChange' | 'error'> {
   /** 필드 이름 (필수) */
   name: Path<TFieldValues>
 
@@ -23,4 +21,3 @@ export interface FormSelectProps<
   /** 컴포넌트 언등록 여부 */
   shouldUnregister?: boolean
 }
-

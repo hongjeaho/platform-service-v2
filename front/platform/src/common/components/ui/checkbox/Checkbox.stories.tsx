@@ -367,7 +367,6 @@ export const FormCheckboxInitialValues: Story = {
   },
 }
 
-
 /**
  * 실용적인 시나리오: 회원가입 폼
  */
