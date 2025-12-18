@@ -18,19 +18,6 @@ export interface TableColumn<T> {
   render?: (value: T[keyof T], row: T, index: number) => ReactNode
 }
 
-/**
- * Table 페이지네이션 설정
- */
-export interface TablePaginationConfig {
-  /** 현재 페이지 (1부터 시작) */
-  currentPage: number
-  /** 페이지 크기 */
-  pageSize: number
-  /** 전체 아이템 개수 */
-  totalItems: number
-  /** 페이지 변경 콜백 */
-  onPageChange: (page: number) => void
-}
 
 /**
  * Table 정렬 설정
@@ -58,8 +45,23 @@ export interface TableProps<T> {
   selectedRows?: Set<string | number>
   /** 행 선택 변경 콜백 */
   onSelectRows?: (selectedRows: Set<string | number>) => void
-  /** 페이지네이션 설정 */
-  pagination?: TablePaginationConfig
+
+  // 페이지네이션
+  /** 현재 페이지 번호 (1-based) */
+  currentPage?: number
+  /** 페이지당 표시할 행 수 (null이면 전체 표시) */
+  pageSize?: number | null
+  /** 전체 아이템 개수 */
+  totalItems?: number
+  /** 페이지 변경 핸들러 */
+  onPageChange?: (page: number) => void
+  /** 페이지 크기 변경 핸들러 */
+  onPageSizeChange?: (pageSize: number | null) => void
+  /** 한 번에 표시할 페이지 버튼 개수 */
+  visiblePageCount?: number
+  /** 고급 페이지네이션 사용 여부 */
+  useEnhancedPagination?: boolean
+
   /** 정렬 가능 여부 */
   sortable?: boolean
   /** 정렬 변경 콜백 */
@@ -74,16 +76,3 @@ export interface TableProps<T> {
   className?: string
 }
 
-/**
- * Table 페이지네이션 컴포넌트 Props
- */
-export interface TablePaginationProps {
-  /** 현재 페이지 */
-  currentPage: number
-  /** 전체 아이템 개수 */
-  totalItems: number
-  /** 페이지 크기 */
-  pageSize: number
-  /** 페이지 변경 콜백 */
-  onPageChange: (page: number) => void
-}

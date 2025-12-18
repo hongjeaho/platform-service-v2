@@ -145,6 +145,15 @@
   line-height: 1.25;
 }
 
+/* 빈 상태 테이블 셀 */
+.emptyCell {
+  text-align: center;
+  color: var(--muted-foreground);
+  font-style: italic;
+  padding: 3rem 1rem;
+  font-size: 0.875rem;
+}
+
 /* 페이지네이션 컨테이너 */
 .paginationContainer {
   display: flex;
@@ -210,6 +219,50 @@
   font-weight: 500;
   min-width: 3rem;
   text-align: center;
+}
+
+/* 페이지 번호 버튼 */
+.pageNumberButton {
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.pageNumberButton.active {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* 페이지네이션 말줄임표 */
+.paginationEllipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  user-select: none;
+}
+
+/* 페이지 크기 선택자 */
+.pageSizeSelector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pageSizeButton {
+  min-width: 4rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 /* 테이블 헤더 flex 레이아웃 */

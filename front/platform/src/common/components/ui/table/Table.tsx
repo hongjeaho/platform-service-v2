@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import { textCombinations } from '@/constants/design/typography'
 import { cn } from '@/lib/utils'
 
+import { EnhancedTablePagination } from './components/EnhancedTablePagination'
 import styles from './Table.module.css'
 import type { TableProps } from './Table.types'
 
@@ -18,46 +18,66 @@ export function Table<T>({
   selectable = false,
   selectedRows,
   onSelectRows,
-  pagination,
+
+  // 페이지네이션 (새로운 방식)
+  currentPage,
+  pageSize,
+  totalItems,
+  onPageChange,
+  onPageSizeChange,
+  visiblePageCount = 10,
+  useEnhancedPagination = true,
+
   sortable = false,
   onSort,
-  emptyMessage = '데이터가 없습니다.',
+  emptyMessage = '표시할 데이터가 없습니다.',
   size = 'md',
   striped = false,
   className,
 }: TableProps<T>) {
+  // 페이지네이션 설정 (새로운 방식만 지원)
+  const hasPagination = currentPage && pageSize && totalItems && onPageChange
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(
     null,
   )
 
-  const handleSelectAll = useCallback((checked: boolean) => {
-    if (checked) {
-      const allKeys = new Set(data.map((row, i) => keyExtractor(row, i)))
-      onSelectRows?.(allKeys)
-    } else {
-      onSelectRows?.(new Set())
-    }
-  }, [data, keyExtractor, onSelectRows])
+  const handleSelectAll = useCallback(
+    (checked: boolean) => {
+      if (checked) {
+        const allKeys = new Set(data.map((row, i) => keyExtractor(row, i)))
+        onSelectRows?.(allKeys)
+      } else {
+        onSelectRows?.(new Set())
+      }
+    },
+    [data, keyExtractor, onSelectRows],
+  )
 
-  const handleSelectRow = useCallback((key: string | number, checked: boolean) => {
-    const newSet = new Set(selectedRows)
-    if (checked) {
-      newSet.add(key)
-    } else {
-      newSet.delete(key)
-    }
-    onSelectRows?.(newSet)
-  }, [selectedRows, onSelectRows])
+  const handleSelectRow = useCallback(
+    (key: string | number, checked: boolean) => {
+      const newSet = new Set(selectedRows)
+      if (checked) {
+        newSet.add(key)
+      } else {
+        newSet.delete(key)
+      }
+      onSelectRows?.(newSet)
+    },
+    [selectedRows, onSelectRows],
+  )
 
-  const handleSortClick = useCallback((columnKey: string) => {
-    if (!sortable) return
+  const handleSortClick = useCallback(
+    (columnKey: string) => {
+      if (!sortable) return
 
-    const newDirection =
-      sortConfig?.key === columnKey && sortConfig?.direction === 'asc' ? 'desc' : 'asc'
+      const newDirection =
+        sortConfig?.key === columnKey && sortConfig?.direction === 'asc' ? 'desc' : 'asc'
 
-    setSortConfig({ key: columnKey, direction: newDirection })
-    onSort?.(columnKey, newDirection)
-  }, [sortable, sortConfig, onSort])
+      setSortConfig({ key: columnKey, direction: newDirection })
+      onSort?.(columnKey, newDirection)
+    },
+    [sortable, sortConfig, onSort],
+  )
 
   const isAllSelected = useMemo(() => {
     return data.length > 0 && data.every((row, i) => selectedRows?.has(keyExtractor(row, i)))
@@ -72,7 +92,51 @@ export function Table<T>({
   if (data.length === 0) {
     return (
       <div className={cn(styles.container, className)}>
-        <div className={styles.empty}>{emptyMessage}</div>
+        <div className={styles.wrapper}>
+          <table className={cn(styles.table, sizeClass)}>
+            <thead className={styles.thead}>
+              <tr>
+                {selectable && (
+                  <th className={cn(styles.th, styles.checkboxCell)}>
+                    <input
+                      type='checkbox'
+                      className={styles.checkbox}
+                      disabled
+                      aria-label='모든 행 선택'
+                    />
+                  </th>
+                )}
+                {columns.map(column => {
+                  const alignClass = {
+                    left: styles.alignLeft,
+                    center: styles.alignCenter,
+                    right: styles.alignRight,
+                  }[column.align || 'center']
+
+                  return (
+                    <th
+                      key={String(column.key)}
+                      className={cn(styles.th, alignClass)}
+                      style={{ width: column.width }}
+                    >
+                      {column.header}
+                    </th>
+                  )
+                })}
+              </tr>
+            </thead>
+            <tbody className={styles.tbody}>
+              <tr>
+                <td
+                  colSpan={columns.length + (selectable ? 1 : 0)}
+                  className={cn(styles.td, styles.emptyCell)}
+                >
+                  {emptyMessage}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     )
   }
@@ -80,9 +144,7 @@ export function Table<T>({
   return (
     <div className={cn(styles.container, className)}>
       <div className={styles.wrapper}>
-        <table
-          className={cn(styles.table, sizeClass)}
-        >
+        <table className={cn(styles.table, sizeClass)}>
           <thead className={styles.thead}>
             <tr>
               {selectable && (
@@ -101,7 +163,7 @@ export function Table<T>({
                   left: styles.alignLeft,
                   center: styles.alignCenter,
                   right: styles.alignRight,
-                }[column.align || 'left']
+                }[column.align || 'center']
 
                 return (
                   <th
@@ -153,7 +215,7 @@ export function Table<T>({
                       left: styles.alignLeft,
                       center: styles.alignCenter,
                       right: styles.alignRight,
-                    }[column.align || 'left']
+                    }[column.align || 'center']
 
                     return (
                       <td
@@ -173,59 +235,20 @@ export function Table<T>({
         </table>
       </div>
 
-      {pagination && <TablePagination {...pagination} />}
+      {/* 페이지네이션 렌더링 */}
+      {hasPagination && useEnhancedPagination && (
+        <EnhancedTablePagination
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalItems={totalItems}
+          onPageChange={onPageChange}
+          onPageSizeChange={onPageSizeChange}
+          visiblePageCount={visiblePageCount}
+        />
+      )}
     </div>
   )
 }
 
 Table.displayName = 'Table'
 
-/**
- * TablePagination 컴포넌트
- */
-export interface TablePaginationProps {
-  currentPage: number
-  totalItems: number
-  pageSize: number
-  onPageChange: (page: number) => void
-}
-
-export function TablePagination({
-  currentPage,
-  totalItems,
-  pageSize,
-  onPageChange,
-}: TablePaginationProps) {
-  const totalPages = Math.ceil(totalItems / pageSize)
-
-  return (
-    <div className={styles.paginationContainer}>
-      <span className={cn(styles.paginationInfo, textCombinations.bodySm)}>
-        총 {totalItems}개 항목
-      </span>
-      <div className={styles.paginationControls}>
-        <button
-          className={styles.paginationButton}
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          aria-label='이전 페이지'
-        >
-          ←
-        </button>
-        <span className={styles.pageNumber}>
-          {currentPage} / {totalPages}
-        </span>
-        <button
-          className={styles.paginationButton}
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          aria-label='다음 페이지'
-        >
-          →
-        </button>
-      </div>
-    </div>
-  )
-}
-
-TablePagination.displayName = 'TablePagination'

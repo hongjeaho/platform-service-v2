@@ -54,112 +54,94 @@ const sampleData: User[] = [
   },
   {
     id: 5,
-    name: '최화란',
+    name: '최지혜',
     email: 'choi@example.com',
     role: '관리자',
-    status: 'active',
+    status: 'inactive',
   },
 ]
 
 const columns = [
+  { key: 'id', header: 'ID', width: '80px' },
   { key: 'name', header: '이름', width: '120px' },
-  { key: 'email', header: '이메일', width: '200px' },
-  { key: 'role', header: '역할', width: '100px', align: 'center' as const },
-  {
-    key: 'status',
-    header: '상태',
-    width: '100px',
-    align: 'center' as const,
-    render: (value: string) => (
-      <span style={{ color: value === 'active' ? 'green' : 'red' }}>
-        {value === 'active' ? '활성' : '비활성'}
-      </span>
-    ),
-  },
+  { key: 'email', header: '이메일' },
+  { key: 'role', header: '역할', width: '100px' },
+  { key: 'status', header: '상태', width: '100px' },
 ]
 
-/**
- * 기본 Table
- */
 export const Default: Story = {
   args: {
     columns,
     data: sampleData,
-    keyExtractor: (row) => row.id,
+    keyExtractor: row => row.id,
   },
 }
 
-/**
- * 크기 변형 - Small
- */
-export const SmallSize: Story = {
+export const Empty: Story = {
   args: {
     columns,
-    data: sampleData.slice(0, 3),
-    keyExtractor: (row) => row.id,
-    size: 'sm',
+    data: [],
+    keyExtractor: row => row.id,
+    emptyMessage: '표시할 데이터가 없습니다.',
   },
 }
 
-/**
- * 크기 변형 - Large
- */
-export const LargeSize: Story = {
-  args: {
-    columns,
-    data: sampleData.slice(0, 3),
-    keyExtractor: (row) => row.id,
-    size: 'lg',
-  },
-}
 
-/**
- * 스트라이프 스타일 (홀수 행 배경)
- */
 export const Striped: Story = {
   args: {
     columns,
     data: sampleData,
-    keyExtractor: (row) => row.id,
+    keyExtractor: row => row.id,
     striped: true,
   },
 }
 
-/**
- * 행 선택 기능
- */
+export const Small: Story = {
+  args: {
+    columns,
+    data: sampleData,
+    keyExtractor: row => row.id,
+    size: 'sm',
+  },
+}
+
+export const Large: Story = {
+  args: {
+    columns,
+    data: sampleData,
+    keyExtractor: row => row.id,
+    size: 'lg',
+  },
+}
+
 export const Selectable: Story = {
-  render: (args) => {
+  render: args => {
     const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set())
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <Table
-          {...args}
-          selectable={true}
-          selectedRows={selectedRows}
-          onSelectRows={setSelectedRows}
-        />
-        <p>선택된 행: {selectedRows.size > 0 ? Array.from(selectedRows).join(', ') : '없음'}</p>
-      </div>
+      <Table
+        {...args}
+        selectable={true}
+        selectedRows={selectedRows}
+        onSelectRows={setSelectedRows}
+      />
     )
   },
   args: {
     columns,
     data: sampleData,
-    keyExtractor: (row) => row.id,
+    keyExtractor: row => row.id,
   },
 }
 
-/**
- * 정렬 기능
- */
 export const Sortable: Story = {
-  render: (args) => {
-    const [sortedData, setSortedData] = useState(sampleData)
+  render: args => {
+        const [sortedData, setSortedData] = useState(args.data)
 
     const handleSort = (key: string, direction: 'asc' | 'desc') => {
-      const sorted = [...sampleData].sort((a, b) => {
+      // setSortConfig({ key, direction }) // Future use for UI indicator
+
+      const sorted = [...args.data].sort((a, b) => {
         const aVal = a[key as keyof User]
         const bVal = b[key as keyof User]
 
@@ -175,125 +157,90 @@ export const Sortable: Story = {
       sortable: ['name', 'email', 'role'].includes(String(col.key)),
     }))
 
-    return <Table {...args} columns={sortableColumns} data={sortedData} onSort={handleSort} />
-  },
-  args: {
-    columns,
-    data: sampleData,
-    keyExtractor: (row) => row.id,
-    sortable: true,
-  },
-}
-
-/**
- * 데이터 없음 상태
- */
-export const Empty: Story = {
-  args: {
-    columns,
-    data: [],
-    keyExtractor: (row) => row.id,
-    emptyMessage: '표시할 데이터가 없습니다.',
-  },
-}
-
-/**
- * 커스텀 렌더링
- */
-export const CustomRender: Story = {
-  args: {
-    columns: [
-      { key: 'name', header: '이름', width: '120px' },
-      { key: 'email', header: '이메일', width: '200px' },
-      {
-        key: 'role',
-        header: '역할',
-        width: '100px',
-        align: 'center' as const,
-        render: (value: string) => (
-          <span
-            style={{
-              padding: '0.25rem 0.5rem',
-              borderRadius: '4px',
-              backgroundColor:
-                value === '관리자'
-                  ? '#fee2e2'
-                  : value === '편집자'
-                    ? '#fef3c7'
-                    : '#dbeafe',
-              color:
-                value === '관리자'
-                  ? '#991b1b'
-                  : value === '편집자'
-                    ? '#92400e'
-                    : '#1e40af',
-              fontSize: '0.875rem',
-              fontWeight: 500,
-            }}
-          >
-            {value}
-          </span>
-        ),
-      },
-      {
-        key: 'status',
-        header: '상태',
-        width: '100px',
-        align: 'center' as const,
-        render: (value: string) => (
-          <span
-            style={{
-              display: 'inline-block',
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: value === 'active' ? '#10b981' : '#ef4444',
-              marginRight: '0.5rem',
-            }}
-            aria-label={value === 'active' ? '활성' : '비활성'}
-          />
-        ),
-      },
-    ],
-    data: sampleData,
-    keyExtractor: (row) => row.id,
-  },
-}
-
-/**
- * 행 선택과 스트라이프 스타일 함께
- */
-export const SelectableAndStriped: Story = {
-  render: (args) => {
-    const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set())
-
     return (
       <Table
         {...args}
-        selectable={true}
-        selectedRows={selectedRows}
-        onSelectRows={setSelectedRows}
-        striped={true}
+        columns={sortableColumns}
+        data={sortedData}
+        onSort={handleSort}
       />
     )
   },
   args: {
     columns,
     data: sampleData,
-    keyExtractor: (row) => row.id,
+    keyExtractor: row => row.id,
+    sortable: true,
   },
 }
 
-/**
- * 정렬과 행 선택 함께
- */
-export const SortableAndSelectable: Story = {
-  render: (args) => {
-    const [sortedData, setSortedData] = useState(sampleData)
+// 고급 페이지네이션 스토리
+export const EnhancedPagination: Story = {
+  render: args => {
+    const [currentPage, setCurrentPage] = useState(1)
+    const [pageSize, setPageSize] = useState<number>(10)
     const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set())
 
+    // 더미 데이터 생성 (100개)
+    const largeData = Array.from({ length: 100 }, (_, index) => ({
+      id: index + 1,
+      name: `사용자${index + 1}`,
+      email: `user${index + 1}@example.com`,
+      role: ['관리자', '사용자', '편집자'][index % 3],
+      status: index % 2 === 0 ? 'active' : 'inactive',
+    }))
+    const totalItems = largeData.length
+
+    // 페이지네이션된 데이터 계산
+    const startIndex = (currentPage - 1) * (pageSize || totalItems)
+    const endIndex = startIndex + (pageSize || totalItems)
+    const paginatedData = pageSize
+      ? largeData.slice(startIndex, endIndex)
+      : largeData
+
+    const handlePageChange = (page: number) => {
+      setCurrentPage(page)
+    }
+
+    const handlePageSizeChange = (newPageSize: number | null) => {
+      setPageSize(newPageSize || totalItems)
+      setCurrentPage(1) // 페이지 크기 변경 시 첫 페이지로 이동
+    }
+
+    return (
+      <Table
+        {...args}
+        data={paginatedData}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        totalItems={totalItems}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
+        useEnhancedPagination={true}
+        visiblePageCount={5}
+        selectable={true}
+        selectedRows={selectedRows}
+        onSelectRows={setSelectedRows}
+      />
+    )
+  },
+  args: {
+    columns,
+    data: [],
+    keyExtractor: row => row.id,
+    emptyMessage: '표시할 데이터가 없습니다.',
+  },
+}
+
+export const SelectableWithSortable: Story = {
+  render: args => {
+    const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set())
+        const [sortedData, setSortedData] = useState(args.data)
+
     const handleSort = (key: string, direction: 'asc' | 'desc') => {
-      const sorted = [...sampleData].sort((a, b) => {
+      // setSortConfig({ key, direction }) // Future use for UI indicator
+
+      const sorted = [...args.data].sort((a, b) => {
         const aVal = a[key as keyof User]
         const bVal = b[key as keyof User]
 
@@ -324,7 +271,7 @@ export const SortableAndSelectable: Story = {
   args: {
     columns,
     data: sampleData,
-    keyExtractor: (row) => row.id,
+    keyExtractor: row => row.id,
     sortable: true,
   },
 }
