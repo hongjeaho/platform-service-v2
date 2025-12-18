@@ -87,8 +87,8 @@ export const Select = forwardRef(
     const optionsListRef = useRef<HTMLDivElement>(null)
     const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
-    const ChevronIcon = icons.next
-    const SearchIcon = icons.search
+    const ChevronIcon = useMemo(() => icons.next, [])
+    const SearchIcon = useMemo(() => icons.search, [])
 
     // 드롭다운 열기/닫기 핸들러
     const handleOpenChange = useCallback((open: boolean) => {
@@ -108,7 +108,7 @@ export const Select = forwardRef(
 
       debounceTimerRef.current = setTimeout(() => {
         setDebouncedSearchQuery(searchQuery)
-      }, 300)
+      }, 200)
 
       return () => {
         if (debounceTimerRef.current) {

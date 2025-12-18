@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { textCombinations } from '@/constants/design/typography'
 import { cn } from '@/lib/utils'
@@ -30,16 +30,16 @@ export function Table<T>({
     null,
   )
 
-  const handleSelectAll = (checked: boolean) => {
+  const handleSelectAll = useCallback((checked: boolean) => {
     if (checked) {
       const allKeys = new Set(data.map((row, i) => keyExtractor(row, i)))
       onSelectRows?.(allKeys)
     } else {
       onSelectRows?.(new Set())
     }
-  }
+  }, [data, keyExtractor, onSelectRows])
 
-  const handleSelectRow = (key: string | number, checked: boolean) => {
+  const handleSelectRow = useCallback((key: string | number, checked: boolean) => {
     const newSet = new Set(selectedRows)
     if (checked) {
       newSet.add(key)
@@ -47,9 +47,9 @@ export function Table<T>({
       newSet.delete(key)
     }
     onSelectRows?.(newSet)
-  }
+  }, [selectedRows, onSelectRows])
 
-  const handleSortClick = (columnKey: string) => {
+  const handleSortClick = useCallback((columnKey: string) => {
     if (!sortable) return
 
     const newDirection =
@@ -57,10 +57,11 @@ export function Table<T>({
 
     setSortConfig({ key: columnKey, direction: newDirection })
     onSort?.(columnKey, newDirection)
-  }
+  }, [sortable, sortConfig, onSort])
 
-  const isAllSelected =
-    data.length > 0 && data.every((row, i) => selectedRows?.has(keyExtractor(row, i)))
+  const isAllSelected = useMemo(() => {
+    return data.length > 0 && data.every((row, i) => selectedRows?.has(keyExtractor(row, i)))
+  }, [data, selectedRows, keyExtractor])
 
   const sizeClass = {
     sm: styles.sizeSm,
