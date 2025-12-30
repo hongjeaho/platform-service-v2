@@ -1,4 +1,4 @@
-import useScrollToTopEffect from '@hooks/useScrollToTopEffect.tsx'
+import { useScrollToTopEffect } from '@hooks/useScrollToTopEffect'
 import { Outlet } from 'react-router-dom'
 
 /**
