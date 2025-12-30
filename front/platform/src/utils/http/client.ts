@@ -1,9 +1,10 @@
 import axios, { type AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
 import { getDefaultStore } from 'jotai'
 
+import { STORAGE_KEYS } from '@/constants/storage'
+
 import { alertMessageState } from '../../common/components/message/store'
 
-const AUTHORIZATION = 'authorization'
 const API_BASE_URL = ''
 
 /**
@@ -29,7 +30,7 @@ export const setupInterceptors = (store?: ReturnType<typeof getDefaultStore>) =>
   // Request 인터셉터
   const requestInterceptor = axiosInstance.interceptors.request.use(
     (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-      const token = localStorage.getItem(AUTHORIZATION) as string | undefined
+      const token = localStorage.getItem(STORAGE_KEYS.AUTHORIZATION) as string | undefined
       if (token !== undefined) {
         config.headers.Authorization = `Bearer ${token}`
       }
@@ -43,8 +44,8 @@ export const setupInterceptors = (store?: ReturnType<typeof getDefaultStore>) =>
       const { headers } = response
 
       // Authorization 헤더 갱신
-      if (headers[AUTHORIZATION] !== undefined) {
-        localStorage.setItem(AUTHORIZATION, headers[AUTHORIZATION])
+      if (headers[STORAGE_KEYS.AUTHORIZATION] !== undefined) {
+        localStorage.setItem(STORAGE_KEYS.AUTHORIZATION, headers[STORAGE_KEYS.AUTHORIZATION])
       }
 
       // 파일 다운로드 처리
@@ -75,8 +76,8 @@ export const setupInterceptors = (store?: ReturnType<typeof getDefaultStore>) =>
 
           const isTokenExpired = headers['x-token-expired']
           if (isTokenExpired === 'true') {
-            localStorage.removeItem(AUTHORIZATION)
-            localStorage.removeItem('user')
+            localStorage.removeItem(STORAGE_KEYS.AUTHORIZATION)
+            localStorage.removeItem(STORAGE_KEYS.USER)
 
             // 중복 알림 방지
             if (!isTokenExpiredAlertShown) {
