@@ -251,4 +251,3 @@ export function Table<T>({
 }
 
 Table.displayName = 'Table'
-

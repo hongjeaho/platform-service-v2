@@ -18,7 +18,6 @@ export interface TableColumn<T> {
   render?: (value: T[keyof T], row: T, index: number) => ReactNode
 }
 
-
 /**
  * Table 정렬 설정
  */
@@ -75,4 +74,3 @@ export interface TableProps<T> {
   /** CSS 클래스 */
   className?: string
 }
-

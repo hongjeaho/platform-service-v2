@@ -28,11 +28,7 @@ export { UploadMulti } from './upload/UploadMulti'
 
 // Table
 export { Table } from './table/Table'
-export type {
-  TableColumn,
-  TableProps,
-  TableSortConfig,
-} from './table/Table.types'
+export type { TableColumn, TableProps, TableSortConfig } from './table/Table.types'
 
 // DatePicker
 export { DatePicker } from '@/common/components/ui/datePicker/DatePicker'

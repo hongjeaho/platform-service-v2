@@ -23,6 +23,40 @@ interface User {
   status: 'active' | 'inactive'
 }
 
+/**
+ * 선택 정보 표시용 컴포넌트
+ */
+function SelectionInfo<T extends { id: number; name: string; email: string }>({
+  selectedIds,
+  data,
+}: {
+  selectedIds: Set<string | number>
+  data: T[]
+}) {
+  const selectedData = data.filter((item) => selectedIds.has(item.id))
+
+  return (
+    <div className="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+      <div className="text-sm font-medium text-gray-700">선택된 행: {selectedIds.size}개</div>
+      {selectedIds.size > 0 && (
+        <div className="mt-2">
+          <div className="text-xs text-gray-500">선택된 ID: {Array.from(selectedIds).join(', ')}</div>
+          <div className="mt-1 text-xs text-gray-600">
+            선택된 데이터:
+            <ul className="ml-4 list-disc">
+              {selectedData.map((item) => (
+                <li key={item.id}>
+                  {item.name} ({item.email})
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 const sampleData: User[] = [
   {
     id: 1,
@@ -86,7 +120,6 @@ export const Empty: Story = {
   },
 }
 
-
 export const Striped: Story = {
   args: {
     columns,
@@ -119,12 +152,15 @@ export const Selectable: Story = {
     const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set())
 
     return (
-      <Table
-        {...args}
-        selectable={true}
-        selectedRows={selectedRows}
-        onSelectRows={setSelectedRows}
-      />
+      <div>
+        <SelectionInfo selectedIds={selectedRows} data={sampleData} />
+        <Table
+          {...args}
+          selectable={true}
+          selectedRows={selectedRows}
+          onSelectRows={setSelectedRows}
+        />
+      </div>
     )
   },
   args: {
@@ -136,7 +172,7 @@ export const Selectable: Story = {
 
 export const Sortable: Story = {
   render: args => {
-        const [sortedData, setSortedData] = useState(args.data)
+    const [sortedData, setSortedData] = useState(args.data)
 
     const handleSort = (key: string, direction: 'asc' | 'desc') => {
       // setSortConfig({ key, direction }) // Future use for UI indicator
@@ -157,14 +193,7 @@ export const Sortable: Story = {
       sortable: ['name', 'email', 'role'].includes(String(col.key)),
     }))
 
-    return (
-      <Table
-        {...args}
-        columns={sortableColumns}
-        data={sortedData}
-        onSort={handleSort}
-      />
-    )
+    return <Table {...args} columns={sortableColumns} data={sortedData} onSort={handleSort} />
   },
   args: {
     columns,
@@ -194,9 +223,7 @@ export const EnhancedPagination: Story = {
     // 페이지네이션된 데이터 계산
     const startIndex = (currentPage - 1) * (pageSize || totalItems)
     const endIndex = startIndex + (pageSize || totalItems)
-    const paginatedData = pageSize
-      ? largeData.slice(startIndex, endIndex)
-      : largeData
+    const paginatedData = pageSize ? largeData.slice(startIndex, endIndex) : largeData
 
     const handlePageChange = (page: number) => {
       setCurrentPage(page)
@@ -208,20 +235,23 @@ export const EnhancedPagination: Story = {
     }
 
     return (
-      <Table
-        {...args}
-        data={paginatedData}
-        currentPage={currentPage}
-        pageSize={pageSize}
-        totalItems={totalItems}
-        onPageChange={handlePageChange}
-        onPageSizeChange={handlePageSizeChange}
-        useEnhancedPagination={true}
-        visiblePageCount={5}
-        selectable={true}
-        selectedRows={selectedRows}
-        onSelectRows={setSelectedRows}
-      />
+      <div>
+        <SelectionInfo selectedIds={selectedRows} data={largeData} />
+        <Table
+          {...args}
+          data={paginatedData}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalItems={totalItems}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          useEnhancedPagination={true}
+          visiblePageCount={5}
+          selectable={true}
+          selectedRows={selectedRows}
+          onSelectRows={setSelectedRows}
+        />
+      </div>
     )
   },
   args: {
@@ -235,7 +265,7 @@ export const EnhancedPagination: Story = {
 export const SelectableWithSortable: Story = {
   render: args => {
     const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set())
-        const [sortedData, setSortedData] = useState(args.data)
+    const [sortedData, setSortedData] = useState(args.data)
 
     const handleSort = (key: string, direction: 'asc' | 'desc') => {
       // setSortConfig({ key, direction }) // Future use for UI indicator
@@ -257,15 +287,18 @@ export const SelectableWithSortable: Story = {
     }))
 
     return (
-      <Table
-        {...args}
-        columns={sortableColumns}
-        data={sortedData}
-        selectable={true}
-        selectedRows={selectedRows}
-        onSelectRows={setSelectedRows}
-        onSort={handleSort}
-      />
+      <div>
+        <SelectionInfo selectedIds={selectedRows} data={sortedData} />
+        <Table
+          {...args}
+          columns={sortableColumns}
+          data={sortedData}
+          selectable={true}
+          selectedRows={selectedRows}
+          onSelectRows={setSelectedRows}
+          onSort={handleSort}
+        />
+      </div>
     )
   },
   args: {
