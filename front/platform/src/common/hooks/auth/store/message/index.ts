@@ -7,23 +7,21 @@ export interface MessageProps {
 }
 
 /**
- * `alertMessageState`는 애플리케이션 전역에서 경고 메시지를 관리하는 상태입니다.
- * Recoil의 atom을 사용하여 생성되었으며, 메시지의 내용을 저장하는 데 사용됩니다.
+ * 애플리케이션 전역 경고 메시지 상태입니다.
  *
- * - 초기 상태:
- *   - `message`: 기본값은 `null`로 설정되어 있으며, 메시지를 가지고 있지 않은 상태를 나타냅니다.
+ * - 상태 관리: Jotai atom 사용
+ * - 초기 상태: message는 null (표시할 메시지 없음)
  *
- * 이 상태를 구독하는 컴포넌트는 `alertMessageState`의 값이 변경될 때 이를 감지하고
- * 적절한 UI 갱신 작업을 수행할 수 있습니다.
+ * 이 상태를 구독하는 컴포넌트는 메시지 변경 시 감지하여
+ * 적절한 UI 갱신을 수행할 수 있습니다.
  */
 export const alertMessageState = atom<MessageProps>({
   message: null,
 })
 
 /**
- * confirmMessageState 변수는 Recoil의 atom으로, 전역 상태 관리를 위해 사용된다.
- * 사용자 확인 메시지의 내용을 담고 있으며 MessageProps 형태의 데이터를 가진다.
- * message가 null일 경우 현재 표시할 메시지가 없는 상태를 나타낸다.
+ * 확인 메시지 전역 상태 (Jotai atom)
+ * message가 null일 경우 현재 표시할 메시지가 없는 상태를 나타냅니다.
  */
 export const confirmMessageState = atom<MessageProps>({
   message: null,

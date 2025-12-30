@@ -1,5 +1,6 @@
-import type { AuthStatus } from '@hooks/auth/type/auth'
 import { useAuth } from '@hooks/auth/useAuth.ts'
+
+import type { AuthStatus } from './auth.type'
 
 /**
  * 인증이 필요한 컴포넌트에서 사용하는 훅

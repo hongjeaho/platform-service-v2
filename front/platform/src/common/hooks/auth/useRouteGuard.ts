@@ -1,17 +1,43 @@
 import { useShowAlertMessageCallBack } from '@hooks/auth/store/message'
-import { AUTH_MESSAGES } from '@hooks/auth/type/messages'
-import { LOGIN_REDIRECT_PATH } from '@hooks/auth/type/permissions'
 import { usePermission } from '@hooks/auth/usePermission.ts'
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import type { RouteGuardConfig } from './type/routeGuard'
+import { AUTH_MESSAGES } from './messages.type'
+import { LOGIN_REDIRECT_PATH } from './permissions.type'
+import type { RouteGuardConfig } from './routeGuard.type'
 
 /**
  * 라우트 가드 훅
- * - 권한에 따른 자동 리다이렉션
- * - 사용자 친화적인 에러 메시지 표시
- * - 선언적 라우트 보호
+ *
+ * 권한에 따른 자동 리다이렉션과 사용자 친화적인 에러 메시지 표시를 수행합니다.
+ * 선언적 라우트 보호를 위한 훅입니다.
+ *
+ * @param config - 라우트 가드 설정
+ * @param config.requireAuth - 인증 요구 여부 (기본값: true)
+ * @param config.requiredRoles - 필요한 역할 목록
+ * @param config.redirectTo - 리다이렉션 경로 (기본값: LOGIN_REDIRECT_PATH)
+ *
+ * @returns 권한 결과 및 가드 상태
+ *
+ * @example
+ * ```tsx
+ * function AdminPage() {
+ *   const { isGuarding, isBlocked } = useRouteGuard({ requiredRoles: ['ADMIN'] })
+ *
+ *   if (isGuarding) return <div>권한 확인 중...</div>
+ *   // 권한 없으면 자동으로 리다이렉트됨
+ *
+ *   return <AdminPanel />
+ * }
+ * ```
+ *
+ * @property {boolean} hasAccess - 접근 권한 여부
+ * @property {boolean} isLoading - 권한 체크 진행 중 여부
+ * @property {UserRole[]} requiredRoles - 필요한 역할 목록
+ * @property {UserRole[]} userRoles - 사용자 역할 목록
+ * @property {boolean} isGuarding - 가드 진행 중 여부
+ * @property {boolean} isBlocked - 접근 차단 여부
  */
 export const useRouteGuard = (config: RouteGuardConfig = {}) => {
   const navigate = useNavigate()
@@ -20,11 +46,13 @@ export const useRouteGuard = (config: RouteGuardConfig = {}) => {
 
   const { requireAuth = true, requiredRoles, redirectTo = LOGIN_REDIRECT_PATH } = config
 
-  // URL에서 judgSeq 추출
-  const pathSegments = location.pathname.split('/')
-  const judgSeq = pathSegments.find((segment, index) => {
-    return pathSegments[index - 1] === 'judgment' || !isNaN(Number(segment))
-  })
+  // URL에서 judgSeq 추출 (/judgment/{숫자} 패턴)
+  const extractJudgSeqFromPath = (pathname: string): string | undefined => {
+    const judgmentMatch = pathname.match(/\/judgment\/(\d+)/)
+    return judgmentMatch ? judgmentMatch[1] : undefined
+  }
+
+  const judgSeq = extractJudgSeqFromPath(location.pathname)
 
   const permission = usePermission({
     requireAuth,

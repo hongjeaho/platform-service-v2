@@ -3,8 +3,8 @@ import { useAuth } from '@hooks/auth/useAuth.ts'
 import { useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import type { PermissionCheckOptions, PermissionResult, UserRole } from './type/permissions'
-import { DEFAULT_ROUTE, MENU_PERMISSIONS, USER_ROLES } from './type/permissions'
+import type { PermissionCheckOptions, PermissionResult, UserRole } from './permissions.type'
+import { DEFAULT_ROUTE, MENU_PERMISSIONS, USER_ROLES } from './permissions.type'
 
 /**
  * 권한 체크 유틸리티 함수
@@ -23,9 +23,33 @@ const getRequiredRolesForPath = (pathname: string): UserRole[] => {
 
 /**
  * 권한 체크 훅
- * - 현재 사용자의 권한 확인
- * - 페이지별 접근 권한 체크
- * - 사건별 접근 권한 체크 (선택적)
+ *
+ * 현재 사용자의 권한을 확인하고 페이지별/사건별 접근 권한을 체크합니다.
+ *
+ * @param options - 권한 체크 옵션
+ * @param options.requireAuth - 인증 요구 여부 (기본값: true)
+ * @param options.requiredRoles - 필요한 역할 목록 (미지정 시 경로에서 자동 결정)
+ * @param options.checkCaseAccess - 사건별 접근 권한 체크 여부
+ * @param options.judgSeq - 사건 번호
+ *
+ * @returns 권한 체크 결과
+ *
+ * @example
+ * ```tsx
+ * // 현재 페이지 권한 체크
+ * const { hasAccess, isLoading } = usePermission()
+ *
+ * // 특정 역할 요구
+ * const { hasAccess } = usePermission({ requiredRoles: ['ADMIN'] })
+ *
+ * // 사건 접근 권한 체크
+ * const { hasAccess } = usePermission({ judgSeq: 123, checkCaseAccess: true })
+ * ```
+ *
+ * @property {boolean} hasAccess - 접근 권한 여부
+ * @property {boolean} isLoading - 권한 체크 진행 중 여부
+ * @property {UserRole[]} requiredRoles - 필요한 역할 목록
+ * @property {UserRole[]} userRoles - 사용자 역할 목록
  */
 export const usePermission = (options: PermissionCheckOptions = {}) => {
   const { isReady, isAuthenticated, userData } = useAuth()

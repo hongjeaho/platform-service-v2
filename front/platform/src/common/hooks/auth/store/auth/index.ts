@@ -1,8 +1,10 @@
 import { type AuthUser } from '@api/model/authUser.ts'
-import { type BasicAuthority } from '@api/model/basicAuthority.ts'
-import { type AuthStatus, type HydratedUserData } from '@hooks/auth/type/auth'
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
+
+import { STORAGE_KEYS } from '@/constants/storage'
+
+import { type AuthStatus, type HydratedUserData } from '../../auth.type'
 
 // 하이드레이션 완료 상태를 추적하는 atom
 export const isHydratedAtom = atom<boolean>(false)
@@ -10,7 +12,7 @@ export const isHydratedAtom = atom<boolean>(false)
 // 동기식으로 초기값을 설정하는 함수
 const getInitialUserData = (): AuthUser | null => {
   try {
-    const stored = localStorage.getItem('user')
+    const stored = localStorage.getItem(STORAGE_KEYS.USER)
     if (!stored || stored === 'null' || stored === 'undefined') {
       return null
     }
@@ -21,7 +23,7 @@ const getInitialUserData = (): AuthUser | null => {
 }
 
 // localStorage와 동기화되는 user atom (즉시 초기화)
-export const userState = atomWithStorage<AuthUser | null>('user', getInitialUserData())
+export const userState = atomWithStorage<AuthUser | null>(STORAGE_KEYS.USER, getInitialUserData())
 
 // 하이드레이션 상태 설정
 export const setHydratedAtom = atom(null, (_, set, isHydrated: boolean) => {
@@ -71,21 +73,3 @@ export const isLoginSelector = atom<boolean>(get => {
   const { isAuthenticated, isHydrated } = get(authStatusAtom)
   return isHydrated && isAuthenticated
 })
-
-// 하위 호환성을 위한 legacy 함수들 (deprecated 표시)
-/** @deprecated Use authStatusAtom instead */
-export const useAuthStatusSelector = () => {
-  const user = getInitialUserData()
-
-  return {
-    isLoading: false, // 동기식으로 변경됨
-    isLogin: user !== null,
-    user,
-  }
-}
-
-/** @deprecated Use hydratedUserDataAtom instead */
-export const userAuthoritySelector = (): BasicAuthority[] => {
-  const user = getInitialUserData()
-  return user?.roles ?? []
-}
