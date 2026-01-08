@@ -11,6 +11,16 @@ export type { ButtonProps } from './button/Button.types'
 export { Checkbox } from './checkbox/Checkbox'
 export type { CheckboxProps } from './checkbox/Checkbox.types'
 
+// FormCheckbox
+export { FormCheckbox } from './checkbox/FormCheckbox'
+export type { FormCheckboxProps } from './checkbox/FormCheckbox.types'
+
+// Input
+export { FormInput } from './input/FormInput'
+export type { FormInputProps } from './input/FormInput.types'
+export { Input } from './input/Input'
+export type { InputProps } from './input/Input.types'
+
 // Radio
 export type { RadioGroupProps, RadioOption } from './radio/Radio.types'
 export { RadioGroup } from './radio/RadioGroup'

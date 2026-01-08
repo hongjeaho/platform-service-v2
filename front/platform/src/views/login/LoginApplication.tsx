@@ -1,99 +1,148 @@
+import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
+import { Button } from '@/common/components/ui/button'
+import { FormInput } from '@/common/components/ui/input'
+import { useAuth } from '@/common/hooks/auth/useAuth'
+import { useLogin } from '@/gen/hooks/public-authority-api/public-authority-api'
+
+import styles from './LoginApplication.module.css'
+
 /**
- * 로그인 페이지 컴포넌트입니다.
- * 사용자 인증을 처리하는 로그인 폼을 제공합니다.
+ * 로그인 폼 데이터 인터페이스
  */
-export default function LoginApplication() {
-  const [userId, setUserId] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+interface LoginFormData {
+  id: string
+  password: string
+}
+
+/**
+ * LoginApplication 컴포넌트
+ *
+ * 디자인 시스템을 준수하는 로그인 컴포넌트입니다.
+ * React Hook Form으로 폼 상태를 관리하고, useLogin API 훅으로 인증을 처리합니다.
+ */
+const LoginApplication = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm<LoginFormData>({
+    mode: 'onBlur',
+    defaultValues: {
+      id: '',
+      password: '',
+    },
+  })
+  const { mutate: login, isPending } = useLogin()
+  const { login: setAuthUser } = useAuth()
   const navigate = useNavigate()
+  const [showPassword, setShowPassword] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setIsLoading(true)
-
-    try {
-      // TODO: 실제 인증 API 호출 구현
-      // const response = await loginApi(userId, password)
-      console.log('로그인 시도:', { userId, password })
-
-      // 임시: 3초 후 홈으로 이동
-      setTimeout(() => {
-        navigate('/')
-        setIsLoading(false)
-      }, 1000)
-    } catch {
-      setError('로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.')
-      setIsLoading(false)
-    }
+  /**
+   * 폼 제출 핸들러
+   */
+  const onSubmit = (data: LoginFormData) => {
+    login(
+      { data: { id: data.id, password: data.password } },
+      {
+        onSuccess: authUser => {
+          // 1. useAuth로 사용자 상태 저장
+          setAuthUser(authUser)
+          // 2. JWT 토큰은 HTTP 인터셉터가 자동 저장
+          // 3. 홈으로 이동
+          navigate('/', { replace: true })
+        },
+        onError: (error: any) => {
+          if (error.response?.status === 401) {
+            setError('root', {
+              type: 'manual',
+              message: '아이디 또는 비밀번호가 올바르지 않습니다.',
+            })
+          } else {
+            setError('root', {
+              type: 'manual',
+              message: '로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+            })
+          }
+        },
+      },
+    )
   }
 
   return (
-    <div className='flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100'>
-      <div className='w-full max-w-md rounded-lg bg-white p-8 shadow-lg'>
+    <div className={styles.container}>
+      <div className={styles.formCard}>
         {/* 헤더 */}
-        <div className='text-center'>
-          <h1 className='text-3xl font-bold text-gray-900'>정부 토지보상 심의</h1>
-          <p className='mt-2 text-gray-600'>시스템 로그인</p>
+        <div className={styles.header}>
+          <h1 className={styles.title}>로그인</h1>
+          <p className={styles.description}>정부 토지보상 심의 시스템에 오신 것을 환영합니다.</p>
         </div>
 
-        {/* 로그인 폼 */}
-        <form className='mt-8 space-y-6' onSubmit={handleSubmit}>
-          {/* 에러 메시지 */}
-          {error && <div className='rounded-lg bg-red-50 p-4 text-sm text-red-800'>{error}</div>}
+        {/* API 에러 메시지 */}
+        {errors.root && (
+          <div className={styles.formError} role='alert'>
+            {errors.root.message}
+          </div>
+        )}
 
-          {/* 사용자 ID */}
-          <div>
-            <label htmlFor='userId' className='block text-sm font-medium text-gray-700'>
-              사용자 ID
-            </label>
-            <input
-              id='userId'
-              type='text'
-              value={userId}
-              onChange={e => setUserId(e.target.value)}
-              placeholder='아이디를 입력하세요'
-              className='mt-2 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200'
-              disabled={isLoading}
+        {/* 폼 */}
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.form} noValidate>
+          {/* ID 입력 필드 */}
+          <FormInput
+            name='id'
+            control={control}
+            label='아이디'
+            placeholder='아이디 입력'
+            rules={{
+              required: '아이디를 입력해주세요.',
+              minLength: { value: 3, message: '아이디는 3자 이상 입력해주세요.' },
+            }}
+          />
+
+          {/* Password 입력 필드 */}
+          <div className={styles.passwordField}>
+            <FormInput
+              name='password'
+              control={control}
+              label='비밀번호'
+              placeholder='비밀번호 입력'
+              type={showPassword ? 'text' : 'password'}
+              rules={{
+                required: '비밀번호를 입력해주세요.',
+                minLength: { value: 4, message: '비밀번호는 4자 이상 입력해주세요.' },
+              }}
             />
+            <button
+              type='button'
+              onClick={() => setShowPassword(!showPassword)}
+              className={styles.toggleButton}
+              aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 표시'}
+            >
+              {showPassword ? <EyeOff /> : <Eye />}
+            </button>
           </div>
 
-          {/* 비밀번호 */}
-          <div>
-            <label htmlFor='password' className='block text-sm font-medium text-gray-700'>
-              비밀번호
-            </label>
-            <input
-              id='password'
-              type='password'
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder='비밀번호를 입력하세요'
-              className='mt-2 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200'
-              disabled={isLoading}
-            />
+          {/* 제출 버튼 */}
+          <div className={styles.actions}>
+            <Button
+              type='submit'
+              variant='primary'
+              size='lg'
+              isLoading={isPending}
+              disabled={isPending}
+              className={styles.submitButton}
+            >
+              로그인
+            </Button>
           </div>
-
-          {/* 로그인 버튼 */}
-          <button
-            type='submit'
-            disabled={isLoading || !userId || !password}
-            className='w-full rounded-lg bg-blue-600 py-2 font-semibold text-white hover:bg-blue-700 disabled:bg-gray-400'
-          >
-            {isLoading ? '로그인 중...' : '로그인'}
-          </button>
         </form>
-
-        {/* 하단 안내 */}
-        <div className='mt-8 border-t border-gray-200 pt-6 text-center text-sm text-gray-600'>
-          <p>테스트용 계정: admin / admin</p>
-        </div>
       </div>
     </div>
   )
 }
+
+export default LoginApplication
