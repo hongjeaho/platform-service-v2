@@ -98,9 +98,22 @@ import { textCombinations, textScale, fontWeights, lineHeights } from '@/constan
 
 ### 2.3 간격 (Spacing)
 
+프로젝트에서 간격 토큰을 적용하는 두 가지 방식이 있습니다:
+
+| 접근 방식 | 사용 대상 | 적용 위치 |
+|----------|----------|-----------|
+| **TailwindCSS 클래스** | React 컴포넌트의 `className` prop | `.tsx` 파일 |
+| **CSS 변수** | CSS Module 내의 스타일 정의 | `.module.css` 파일 |
+
+---
+
+#### 2.3.1 접근 방식 1: TailwindCSS 클래스
+
+**사용 상황:** React 컴포넌트의 JSX에서 직접 스타일 적용 시
+
 **Import:**
 ```typescript
-import { padding, margin, gap, borderRadius, layouts } from '@/constants/design/spacing'
+import { padding, gap, borderRadius, layouts } from '@/constants/design/spacing'
 ```
 
 **주요 토큰:**
@@ -131,6 +144,110 @@ import { padding, margin, gap, borderRadius, layouts } from '@/constants/design/
 <div className="gap-5">리스트</div>
 // ❌ 인라인 스타일
 <div style={{ padding: '20px', borderRadius: '10px' }}>카드</div>
+```
+
+---
+
+#### 2.3.2 접근 방식 2: CSS 변수
+
+**사용 상황:** CSS Module 파일에서 간격 값 정의 시
+
+**CSS 변수 정의 위치:** `src/index.css` `:root` (lines 124-143)
+
+**Import (TypeScript에서 타입 참조 시):**
+```typescript
+import { cssVariables } from '@/constants/design/spacing'
+
+// 타입 참조
+type SpacingCssVar = keyof typeof cssVariables
+```
+
+**주요 CSS 변수:**
+
+**Padding CSS Variables:**
+| 변수 | 값 | 용도 | TypeScript 키 |
+|------|-----|------|---------------|
+| `--padding-button-sm` | 0.375rem 0.75rem | 작은 버튼 | `paddingButtonSm` |
+| `--padding-button-md` | 0.5rem 1rem | 기본 버튼 | `paddingButtonMd` |
+| `--padding-button-lg` | 0.75rem 1.5rem | 큰 버튼 | `paddingButtonLg` |
+| `--padding-input-default` | 0.5rem 0.75rem | 입력 필드 | `paddingInputDefault` |
+| `--padding-card-sm` | 1rem | 작은 카드 | `paddingCardSm` |
+| `--padding-card` | 1.5rem | 기본 카드 | `paddingCard` |
+| `--padding-card-lg` | 2rem | 큰 카드 | `paddingCardLg` |
+
+**Gap CSS Variables:**
+| 변수 | 값 | 용도 | TypeScript 키 |
+|------|-----|------|---------------|
+| `--gap-xs` | 0.25rem (4px) | 아주 작은 간격 | `gapXs` |
+| `--gap-sm` | 0.5rem (8px) | 작은 간격 | `gapSm` |
+| `--gap-md` | 1rem (16px) | 기본 간격 | `gapMd` |
+| `--gap-lg` | 1.5rem (24px) | 큰 간격 | `gapLg` |
+
+**Size CSS Variables:**
+| 변수 | 값 | 용도 | TypeScript 키 |
+|------|-----|------|---------------|
+| `--size-checkbox` | 1.25rem | 체크박스 크기 | `sizeCheckbox` |
+| `--size-radio` | 1.25rem | 라디오 버튼 크기 | `sizeRadio` |
+| `--size-icon-sm` | 1rem | 작은 아이콘 | `sizeIconSm` |
+| `--size-icon-md` | 1.5rem | 기본 아이콘 | `sizeIconMd` |
+
+**CSS Module 사용 예시:**
+```css
+/* Button.module.css */
+.buttonSm {
+  padding: var(--padding-button-sm);
+}
+
+.buttonMd {
+  padding: var(--padding-button-md);
+}
+
+.icon {
+  margin-right: var(--gap-sm);
+}
+
+/* Input.module.css */
+.field {
+  gap: var(--gap-xs);
+}
+
+.input {
+  padding: var(--padding-input-default);
+}
+
+/* Checkbox.module.css */
+.input {
+  width: var(--size-checkbox);
+  height: var(--size-checkbox);
+}
+```
+
+---
+
+#### 2.3.3 사용 가이드라인
+
+**언제 TailwindCSS 클래스 사용:**
+- ✅ React 컴포넌트의 JSX에서 직접 스타일링
+- ✅ 동적으로 클래스가 변경되는 경우
+- ✅ 간단한 스타일 조합
+
+**언제 CSS 변수 사용:**
+- ✅ CSS Module 파일(`.module.css`)에서 스타일 정의
+- ✅ 복잡한 스타일링이 필요한 컴포넌트
+- ✅ 일관된 컴포넌트 스타일 유지가 중요한 경우
+
+**❌ 혼용 주의:**
+```typescript
+// ❌ 피해야 할 패턴 - JSX와 style 속성 혼용
+<div className={padding.buttonMd} style={{ padding: 'var(--padding-button-md)' }}>
+
+// ✅ 올바른 패턴 1 - JSX에서는 TailwindCSS
+<div className={padding.buttonMd}>
+
+/* ✅ 올바른 패턴 2 - CSS Module에서는 CSS 변수 */
+.customButton {
+  padding: var(--padding-button-md);
+}
 ```
 
 ---

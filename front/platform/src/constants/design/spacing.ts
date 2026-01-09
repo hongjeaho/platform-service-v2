@@ -127,6 +127,33 @@ export const layouts = {
 } as const
 
 /**
+ * CSS 변수 매핑
+ * CSS Module에서 사용할 간격 관련 CSS 변수
+ */
+export const cssVariables = {
+  // Padding
+  paddingButtonSm: 'var(--padding-button-sm)',
+  paddingButtonMd: 'var(--padding-button-md)',
+  paddingButtonLg: 'var(--padding-button-lg)',
+  paddingInputDefault: 'var(--padding-input-default)',
+  paddingCardSm: 'var(--padding-card-sm)',
+  paddingCard: 'var(--padding-card)',
+  paddingCardLg: 'var(--padding-card-lg)',
+
+  // Gap
+  gapXs: 'var(--gap-xs)',
+  gapSm: 'var(--gap-sm)',
+  gapMd: 'var(--gap-md)',
+  gapLg: 'var(--gap-lg)',
+
+  // Size
+  sizeCheckbox: 'var(--size-checkbox)',
+  sizeRadio: 'var(--size-radio)',
+  sizeIconSm: 'var(--size-icon-sm)',
+  sizeIconMd: 'var(--size-icon-md)',
+} as const
+
+/**
  * 간격 타입 정의
  */
 export type SpacingSize = keyof typeof spacingScale
@@ -135,3 +162,4 @@ export type MarginVariant = keyof typeof margin
 export type GapSize = keyof typeof gap
 export type BorderRadiusSize = keyof typeof borderRadius
 export type ContainerSize = keyof typeof containerSizes
+export type CssVariableKey = keyof typeof cssVariables

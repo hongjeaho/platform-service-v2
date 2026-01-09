@@ -2,7 +2,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem; /* spacingScale.sm: 0.5rem - gap.tight: gap-2 */
+  gap: var(--gap-sm);
 }
 
 /* Select 라벨 */
@@ -15,7 +15,7 @@
 
 .required {
   color: var(--error);
-  margin-left: 0.25rem; /* spacingScale.xs: 0.25rem - ml-1 */
+  margin-left: var(--gap-xs);
 }
 
 /* Trigger 버튼 */
@@ -24,15 +24,15 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0.5rem 0.75rem; /* padding.inputDefault: px-3 py-2 */
-  font-size: 1rem; /* textScale.body: text-base */
-  line-height: 1.5; /* lineHeights.normal: leading-normal */
+  padding: var(--padding-input-default);
+  font-size: 1rem;
+  line-height: 1.5;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background-color: var(--input);
   color: var(--foreground);
   cursor: pointer;
-  transition: all 200ms; /* transitions.base: transition-colors duration-200 */
+  transition: all 200ms;
   font-family: inherit;
 }
 
@@ -69,8 +69,8 @@
 /* Chevron 아이콘 */
 .chevronIcon {
   flex-shrink: 0;
-  margin-left: 0.5rem; /* spacingScale.sm: 0.5rem - ml-2 */
-  transition: transform 200ms; /* transitions.base: transition-colors duration-200 */
+  margin-left: var(--gap-sm);
+  transition: transform 200ms;
   color: var(--muted-foreground);
   transform: rotate(90deg);
 }
@@ -107,9 +107,9 @@
 .searchContainer {
   display: flex;
   align-items: center;
-  padding: 0.5rem 0.75rem; /* padding.inputDefault: px-3 py-2 */
+  padding: var(--padding-input-default);
   border-bottom: 1px solid var(--border);
-  gap: 0.5rem; /* gap.tight: gap-2 */
+  gap: var(--gap-sm);
 }
 
 .searchIcon {
@@ -137,21 +137,21 @@
 .optionsList {
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0.25rem; /* spacingScale.xs: 0.25rem - p-1 */
-  max-height: 300px; /* maxHeight prop 기본값 */
+  padding: var(--gap-xs);
+  max-height: 300px;
 }
 
 /* 개별 옵션 */
 .option {
   display: flex;
   align-items: center;
-  padding: 0.5rem 0.75rem; /* padding.inputDefault: px-3 py-2 */
-  font-size: 0.875rem; /* textScale.bodySm: text-sm */
-  line-height: 1.25; /* lineHeights.tight: leading-tight */
+  padding: var(--padding-input-default);
+  font-size: 0.875rem;
+  line-height: 1.25;
   color: var(--foreground);
   cursor: pointer;
   border-radius: calc(var(--radius-md) - 2px);
-  transition: background-color 200ms; /* transitions.base: transition-colors duration-200 */
+  transition: background-color 200ms;
   user-select: none;
 }
 
@@ -196,17 +196,17 @@
 
 /* 에러 메시지 */
 .error {
-  font-size: 0.875rem; /* textScale.bodySm: text-sm */
-  line-height: 1.25; /* lineHeights.tight: leading-tight */
+  font-size: 0.875rem;
+  line-height: 1.25;
   color: var(--error);
-  margin-top: 0.25rem; /* spacingScale.xs: 0.25rem - mt-1 */
+  margin-top: var(--gap-xs);
 }
 
 /* 검색어 하이라이트 */
 .highlight {
   background-color: color-mix(in oklch, var(--primary) 20%, transparent);
   color: var(--primary);
-  font-weight: 600; /* fontWeights.semibold: font-semibold */
-  padding: 0 0.125rem; /* px-0.5 */
-  border-radius: 2px; /* borderRadius.sm: rounded-sm */
+  font-weight: 600;
+  padding: 0 0.125rem;
+  border-radius: 2px;
 }

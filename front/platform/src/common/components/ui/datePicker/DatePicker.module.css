@@ -2,7 +2,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--gap-sm);
 }
 
 /* DatePicker 라벨 */
@@ -15,7 +15,7 @@
 
 .required {
   color: var(--error);
-  margin-left: 0.25rem;
+  margin-left: var(--gap-xs);
 }
 
 /* Input 필드 */
@@ -24,7 +24,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0.5rem 0.75rem;
+  padding: var(--padding-input-default);
   font-size: 1rem;
   line-height: 1.5;
   border: 1px solid var(--border);
@@ -73,7 +73,7 @@
 /* Calendar 아이콘 */
 .calendarIcon {
   flex-shrink: 0;
-  margin-left: 0.5rem;
+  margin-left: var(--gap-sm);
   color: var(--muted-foreground);
 }
 
@@ -226,5 +226,5 @@
   font-size: 0.875rem;
   line-height: 1.25;
   color: var(--error);
-  margin-top: 0.25rem;
+  margin-top: var(--gap-xs);
 }

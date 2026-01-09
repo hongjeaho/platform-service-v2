@@ -1,44 +1,38 @@
 /* RadioGroup 컨테이너 */
 .group {
-  /* 디자인 토큰: gap.md = 0.5rem */
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--gap-sm);
 }
 
 /* RadioGroup horizontal */
 .groupHorizontal {
-  /* 디자인 토큰: gap.lg = 1rem */
   flex-direction: row;
-  gap: 1rem;
+  gap: var(--gap-md);
 }
 
 /* RadioGroup 라벨 */
 .groupLabel {
-  /* 디자인 토큰: fontSize.bodySm = 0.875rem */
-  /* 디자인 토큰: fontWeight.medium = 500 */
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.25;
   color: var(--foreground);
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--gap-xs);
 }
 
 /* Radio 항목 */
 .item {
-  /* 디자인 토큰: gap.md = 0.5rem */
   display: flex;
   align-items: flex-start;
-  gap: 0.5rem;
+  gap: var(--gap-sm);
   cursor: pointer;
 }
 
 /* Radio input (숨김) */
 .input {
-  /* 디자인 토큰: size.radio = 1.25rem */
   appearance: none;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--size-radio);
+  height: var(--size-radio);
   border: 2px solid var(--border);
   border-radius: 50%;
   background-color: var(--background);
@@ -83,7 +77,7 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--gap-xs);
   padding-top: 0.125rem;
 }
 
@@ -108,12 +102,10 @@
 
 /* 에러 메시지 */
 .error {
-  /* 디자인 토큰: fontSize.bodySm = 0.875rem */
-  /* 디자인 토큰: color.error */
   font-size: 0.875rem;
   line-height: 1.25;
   color: var(--error);
-  margin-top: 0.25rem;
+  margin-top: var(--gap-xs);
 }
 
 /* Radio 항목 disabled */
