@@ -41,5 +41,64 @@ export default defineConfig(({ mode }) => {
       // React 19의 scheduler 등 복잡한 의존성 체인을 Vite가 자동으로 올바른 순서로 처리
       // chunkSizeWarningLimit: 1000, // 필요하면 경고 한도 늘리기
     },
+    // Vitest 테스트 설정
+    test: {
+      // 전역 API 활성화 (describe, it, expect 등 import 불필요)
+      globals: true,
+
+      // 테스트 환경 설정
+      environment: 'jsdom',
+
+      // 테스트 파일 패턴
+      include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+
+      // 테스트 제외 파일
+      exclude: ['node_modules', 'dist', '.idea', '.git', '.cache'],
+
+      // 테스트 설정 파일
+      setupFiles: ['./src/test/setup.ts'],
+
+      // CSS 처리
+      css: {
+        modules: {
+          classNameStrategy: 'non-scoped',
+        },
+      },
+
+      // 테스트 실행 pool 설정 (Vitest 4.0)
+      pool: 'threads',
+      poolOptions: {
+        threads: {
+          singleThread: false,
+          minThreads: 1,
+          maxThreads: 4,
+        },
+      },
+
+      // 커버리지 설정 (Vitest 4.0 - all 옵션 제거됨)
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'json', 'html', 'lcov'],
+        exclude: [
+          'node_modules/',
+          'src/gen/',
+          'src/test/',
+          '**/*.d.ts',
+          '**/*.config.*',
+          '**/mockData',
+          'dist/',
+        ],
+        // 문 라인 기준 커버리지 임계값
+        thresholds: {
+          lines: 80,
+          functions: 80,
+          branches: 80,
+          statements: 80,
+        },
+      },
+
+      // watch 모드 설정
+      watch: false,
+    },
   }
 })
