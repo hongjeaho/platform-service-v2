@@ -33,18 +33,20 @@ function SelectionInfo<T extends { id: number; name: string; email: string }>({
   selectedIds: Set<string | number>
   data: T[]
 }) {
-  const selectedData = data.filter((item) => selectedIds.has(item.id))
+  const selectedData = data.filter(item => selectedIds.has(item.id))
 
   return (
-    <div className="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
-      <div className="text-sm font-medium text-gray-700">선택된 행: {selectedIds.size}개</div>
+    <div className='mb-4 rounded-lg border border-gray-200 bg-gray-50 p-4'>
+      <div className='text-sm font-medium text-gray-700'>선택된 행: {selectedIds.size}개</div>
       {selectedIds.size > 0 && (
-        <div className="mt-2">
-          <div className="text-xs text-gray-500">선택된 ID: {Array.from(selectedIds).join(', ')}</div>
-          <div className="mt-1 text-xs text-gray-600">
+        <div className='mt-2'>
+          <div className='text-xs text-gray-500'>
+            선택된 ID: {Array.from(selectedIds).join(', ')}
+          </div>
+          <div className='mt-1 text-xs text-gray-600'>
             선택된 데이터:
-            <ul className="ml-4 list-disc">
-              {selectedData.map((item) => (
+            <ul className='ml-4 list-disc'>
+              {selectedData.map(item => (
                 <li key={item.id}>
                   {item.name} ({item.email})
                 </li>
