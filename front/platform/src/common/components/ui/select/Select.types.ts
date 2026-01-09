@@ -40,6 +40,4 @@ export interface SelectProps<T = string> {
   searchPlaceholder?: string
   /** 검색 결과 없을 때 메시지 */
   emptyMessage?: string
-  /** 드롭다운 최대 높이 */
-  maxHeight?: string
 }

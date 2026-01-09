@@ -11,7 +11,7 @@ import {
   useInteractions,
   useRole,
 } from '@floating-ui/react'
-import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { icons, iconSizes } from '@/constants/design/icons'
 import { textCombinations } from '@/constants/design/typography'
@@ -74,7 +74,6 @@ export const Select = forwardRef(
       searchable = false,
       searchPlaceholder = '검색...',
       emptyMessage = '검색 결과가 없습니다',
-      maxHeight = '300px',
       ...props
     }: SelectProps<T>,
     ref: React.ForwardedRef<HTMLInputElement>,
@@ -269,7 +268,7 @@ export const Select = forwardRef(
           ref={ref}
           type='hidden'
           name={name}
-          value={value ?? ''}
+          value={value ? String(value) : ''}
           required={required}
           disabled={disabled}
         />
@@ -340,7 +339,6 @@ export const Select = forwardRef(
                 <div
                   ref={optionsListRef}
                   className={styles.optionsList}
-                  style={{ maxHeight }}
                   role='listbox'
                   id={`${name}-listbox`}
                   aria-label={label || '옵션 목록'}

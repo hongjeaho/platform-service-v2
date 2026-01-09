@@ -32,17 +32,14 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues, TValu
       rules={rules}
       shouldUnregister={shouldUnregister}
       render={({ field, fieldState }) => {
-        // Select의 onChange를 RHF field.onChange에 연결
-        const handleChange = (value: TValue) => {
-          field.onChange(value)
-        }
-
         return (
-          <Select<TValue>
-            {...field}
+          <Select
+            name={field.name}
             value={field.value as TValue | undefined}
-            onChange={handleChange}
+            onChange={field.onChange}
+            disabled={field.disabled}
             error={fieldState.error?.message}
+            ref={field.ref}
             {...selectProps}
           />
         )

@@ -5,6 +5,9 @@ import { useForm } from 'react-hook-form'
 import { Button } from '../button/Button'
 import { FormSelect } from './FormSelect'
 import { Select } from './Select'
+import type { SelectProps } from './Select.types'
+
+/* eslint-disable react-hooks/rules-of-hooks */
 
 const meta = {
   title: 'Components/Select',
@@ -54,7 +57,11 @@ export const Basic: Story = {
 
     return (
       <div style={{ width: '300px' }}>
-        <Select {...args} value={value} onChange={setValue} />
+        <Select
+          {...(args as SelectProps<string>)}
+          value={value}
+          onChange={v => setValue(v as string)}
+        />
       </div>
     )
   },
@@ -75,7 +82,11 @@ export const Searchable: Story = {
 
     return (
       <div style={{ width: '300px' }}>
-        <Select {...args} value={value} onChange={setValue} />
+        <Select
+          {...(args as SelectProps<string>)}
+          value={value}
+          onChange={v => setValue(v as string)}
+        />
       </div>
     )
   },
@@ -98,7 +109,11 @@ export const WithoutLabel: Story = {
 
     return (
       <div style={{ width: '300px' }}>
-        <Select {...args} value={value} onChange={setValue} />
+        <Select
+          {...(args as SelectProps<string>)}
+          value={value}
+          onChange={v => setValue(v as string)}
+        />
       </div>
     )
   },
@@ -118,7 +133,11 @@ export const Required: Story = {
 
     return (
       <div style={{ width: '300px' }}>
-        <Select {...args} value={value} onChange={setValue} />
+        <Select
+          {...(args as SelectProps<string>)}
+          value={value}
+          onChange={v => setValue(v as string)}
+        />
       </div>
     )
   },
@@ -140,7 +159,11 @@ export const WithError: Story = {
 
     return (
       <div style={{ width: '300px' }}>
-        <Select {...args} value={value} onChange={setValue} />
+        <Select
+          {...(args as SelectProps<string>)}
+          value={value}
+          onChange={v => setValue(v as string)}
+        />
       </div>
     )
   },
@@ -162,7 +185,11 @@ export const Disabled: Story = {
 
     return (
       <div style={{ width: '300px' }}>
-        <Select {...args} value={value} onChange={setValue} />
+        <Select
+          {...(args as SelectProps<string>)}
+          value={value}
+          onChange={v => setValue(v as string)}
+        />
       </div>
     )
   },
@@ -184,7 +211,11 @@ export const WithDisabledOptions: Story = {
 
     return (
       <div style={{ width: '300px' }}>
-        <Select {...args} value={value} onChange={setValue} />
+        <Select
+          {...(args as SelectProps<string>)}
+          value={value}
+          onChange={v => setValue(v as string)}
+        />
       </div>
     )
   },
@@ -210,7 +241,11 @@ export const LongList: Story = {
 
     return (
       <div style={{ width: '300px' }}>
-        <Select {...args} value={value} onChange={setValue} />
+        <Select
+          {...(args as SelectProps<string>)}
+          value={value}
+          onChange={v => setValue(v as string)}
+        />
       </div>
     )
   },
@@ -219,7 +254,6 @@ export const LongList: Story = {
     label: '지역 선택',
     placeholder: '지역을 선택해주세요',
     name: 'select-long-list',
-    maxHeight: '200px',
   },
 }
 
@@ -232,7 +266,11 @@ export const SearchableLongList: Story = {
 
     return (
       <div style={{ width: '300px' }}>
-        <Select {...args} value={value} onChange={setValue} />
+        <Select
+          {...(args as SelectProps<string>)}
+          value={value}
+          onChange={v => setValue(v as string)}
+        />
       </div>
     )
   },
@@ -243,7 +281,6 @@ export const SearchableLongList: Story = {
     name: 'select-searchable-long',
     searchable: true,
     searchPlaceholder: '지역명 검색...',
-    maxHeight: '250px',
   },
 }
 
@@ -256,7 +293,11 @@ export const EmptySearchResult: Story = {
 
     return (
       <div style={{ width: '300px' }}>
-        <Select {...args} value={value} onChange={setValue} />
+        <Select
+          {...(args as SelectProps<string>)}
+          value={value}
+          onChange={v => setValue(v as string)}
+        />
         <p style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#666' }}>
           힌트: 'xyz'를 검색해보세요
         </p>
@@ -278,30 +319,30 @@ export const EmptySearchResult: Story = {
  * 숫자 값을 가진 Select
  */
 export const WithNumberValues: Story = {
-  render: () => {
+  render: args => {
     const [value, setValue] = useState<string>()
 
     return (
       <div style={{ width: '300px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         <Select
+          {...(args as SelectProps<string>)}
           value={value}
-          onChange={setValue}
-          options={[
-            { label: '10개', value: '10' },
-            { label: '20개', value: '20' },
-            { label: '50개', value: '50' },
-            { label: '100개', value: '100' },
-          ]}
-          label='페이지당 항목 수'
-          placeholder='선택해주세요'
-          name='select-number'
+          onChange={v => setValue(v as string)}
         />
         {value && <p style={{ fontSize: '0.875rem' }}>선택된 값: {value}</p>}
       </div>
     )
   },
   args: {
-    options: [],
+    options: [
+      { label: '10개', value: '10' },
+      { label: '20개', value: '20' },
+      { label: '50개', value: '50' },
+      { label: '100개', value: '100' },
+    ],
+    label: '페이지당 항목 수',
+    placeholder: '선택해주세요',
+    name: 'select-number',
   },
 }
 
