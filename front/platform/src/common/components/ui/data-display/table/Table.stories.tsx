@@ -5,7 +5,7 @@ import { Table } from './Table'
 import type { TableProps } from './Table.types'
 
 const meta = {
-  title: 'Components/Table',
+  title: 'UI/Data Display/Table',
   component: Table,
   parameters: {
     layout: 'centered',
