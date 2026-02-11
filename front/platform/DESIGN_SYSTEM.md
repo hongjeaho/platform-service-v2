@@ -5,12 +5,15 @@
 프로젝트는 **TypeScript 기반 디자인 토큰 시스템**을 통해 일관된 UI/UX를 제공합니다.
 
 **핵심 원칙:**
+
 - CSS 변수 기반 색상 (OKLCH 색상 공간, WCAG AA 준수)
 - 4px 단위 간격 체계 (TailwindCSS 표준)
 - TypeScript 타입 안전성 보장
 - 하드코딩된 스타일 값 사용 금지
+- **V3 디자인 시스템 (html/css/v3-main.css)과 동기화**
 
 **CSS조건**
+
 - css는 cssModule만 사용할 것.
 - css에서 예약어(키워드) ":global"는 사용하지 말 것.
 - css에서 예약어(키워드) ":root"는 사용하지 말 것.
@@ -19,6 +22,32 @@
 - index.css는 변경 전, 다시 한 번 전역을 위해 필요한 작업인지 확인하고, 그러한 경우에만 변경할 것.
 - 추후 수정이 쉽도록, 부모-자식 관계를 형성하여 only flexbox 방식으로 구현할 것. (position-absolute 금지)
 - 추가적인 애니메이션 등은 넣지 말고, 있는 그대로만 완벽히 구현할 것.
+
+---
+
+## 1.1 V3 디자인 시스템과의 관계
+
+이 프로젝트는 `html/` 폴더의 V3 독립형 HTML/CSS 디자인 시스템과 동기화되어 있습니다.
+
+### CSS 변수 매핑
+
+| V3 변수                   | React CSS 변수            | 값                          | 용도                |
+| ------------------------- | ------------------------- | --------------------------- | ------------------- |
+| `--color-primary-500`     | `--color-primary-500`     | `#274ba9` (OKLCH로 변환)    | Primary 브랜드 색상 |
+| `--color-success-500`     | `--color-success-500`     | `#22c55e` (OKLCH로 변환)    | 성공 상태           |
+| `--color-error-500`       | `--color-error-500`       | `#ef4444` (OKLCH로 변환)    | 오류 상태           |
+| `--spacing-4`             | `--spacing-4`             | `1rem` (16px)               | 기본 간격 단위      |
+| `--padding-button-md`     | `--padding-button-md`     | `0.5rem 1rem` (8px 16px)    | 버튼 패딩           |
+| `--padding-input-default` | `--padding-input-default` | `0.5rem 0.75rem` (8px 12px) | 입력 필드 패딩      |
+| `--gap-sm`                | `--gap-sm`                | `0.5rem` (8px)              | 작은 간격           |
+| `--gap-md`                | `--gap-md`                | `1rem` (16px)               | 기본 간격           |
+
+### 참조
+
+- **V3 HTML 예시**: `html/v3-component-examples.html`
+- **V3 CSS 정의**: `html/css/v3-main.css`, `v3-components.css`
+- **V3 README**: `html/README.md`
+
 ---
 
 ## 2. 디자인 토큰 사용 규칙
@@ -26,20 +55,22 @@
 ### 2.1 색상 (Color)
 
 **Import:**
+
 ```typescript
 import { brandColors, semanticColors, buttonVariants, statusColors } from '@/constants/design/color'
 ```
 
 **주요 토큰:**
 
-| 카테고리 | 토큰 | 용도 |
-|---------|------|------|
-| Brand | `primary`, `accent`, `secondary` | 브랜드 아이덴티티 |
-| Semantic | `success`, `warning`, `error`, `info` | 상태 표시 (항상 이것을 사용) |
-| Button | `buttonVariants.primary`, `.secondary`, `.outline`, `.ghost` | 버튼 스타일 |
-| Status | `statusColors.완료`, `.검토중`, `.접수` | 비즈니스 상태 뱃지 |
+| 카테고리 | 토큰                                                         | 용도                         |
+| -------- | ------------------------------------------------------------ | ---------------------------- |
+| Brand    | `primary`, `accent`, `secondary`                             | 브랜드 아이덴티티            |
+| Semantic | `success`, `warning`, `error`, `info`                        | 상태 표시 (항상 이것을 사용) |
+| Button   | `buttonVariants.primary`, `.secondary`, `.outline`, `.ghost` | 버튼 스타일                  |
+| Status   | `statusColors.완료`, `.검토중`, `.접수`                      | 비즈니스 상태 뱃지           |
 
 **✓ 좋은 예:**
+
 ```typescript
 // 색상 토큰 사용
 <button className={buttonVariants.primary}>버튼</button>
@@ -48,6 +79,7 @@ import { brandColors, semanticColors, buttonVariants, statusColors } from '@/con
 ```
 
 **✗ 나쁜 예:**
+
 ```typescript
 // ❌ 하드코딩된 색상
 <button className="bg-blue-600 text-white">버튼</button>
@@ -62,22 +94,29 @@ import { brandColors, semanticColors, buttonVariants, statusColors } from '@/con
 ### 2.2 타이포그래피 (Typography)
 
 **Import:**
+
 ```typescript
-import { textCombinations, textScale, fontWeights, lineHeights } from '@/constants/design/typography'
+import {
+  textCombinations,
+  textScale,
+  fontWeights,
+  lineHeights,
+} from '@/constants/design/typography'
 ```
 
 **주요 토큰:**
 
-| 용도 | 토큰 | 예시 |
-|------|------|------|
-| 큰 제목 | `textCombinations.h1` | 페이지 제목 |
-| 중간 제목 | `textCombinations.h2`, `h3`, `h4` | 섹션 제목 |
-| 본문 | `textCombinations.body` | 일반 텍스트 (기본값) |
-| 작은 본문 | `textCombinations.bodySm` | 캡션, 보조 텍스트 |
-| 버튼 | `textCombinations.button` | 버튼 텍스트 |
-| 레이블 | `textCombinations.label` | 폼 라벨 |
+| 용도      | 토큰                              | 예시                 |
+| --------- | --------------------------------- | -------------------- |
+| 큰 제목   | `textCombinations.h1`             | 페이지 제목          |
+| 중간 제목 | `textCombinations.h2`, `h3`, `h4` | 섹션 제목            |
+| 본문      | `textCombinations.body`           | 일반 텍스트 (기본값) |
+| 작은 본문 | `textCombinations.bodySm`         | 캡션, 보조 텍스트    |
+| 버튼      | `textCombinations.button`         | 버튼 텍스트          |
+| 레이블    | `textCombinations.label`          | 폼 라벨              |
 
 **✓ 좋은 예:**
+
 ```typescript
 // 조합 토큰 사용 (권장)
 <h1 className={textCombinations.h1}>페이지 제목</h1>
@@ -87,6 +126,7 @@ import { textCombinations, textScale, fontWeights, lineHeights } from '@/constan
 ```
 
 **✗ 나쁜 예:**
+
 ```typescript
 // ❌ 개별 클래스 조합
 <h1 className="text-3xl font-bold">제목</h1>
@@ -100,10 +140,10 @@ import { textCombinations, textScale, fontWeights, lineHeights } from '@/constan
 
 프로젝트에서 간격 토큰을 적용하는 두 가지 방식이 있습니다:
 
-| 접근 방식 | 사용 대상 | 적용 위치 |
-|----------|----------|-----------|
-| **TailwindCSS 클래스** | React 컴포넌트의 `className` prop | `.tsx` 파일 |
-| **CSS 변수** | CSS Module 내의 스타일 정의 | `.module.css` 파일 |
+| 접근 방식              | 사용 대상                         | 적용 위치          |
+| ---------------------- | --------------------------------- | ------------------ |
+| **TailwindCSS 클래스** | React 컴포넌트의 `className` prop | `.tsx` 파일        |
+| **CSS 변수**           | CSS Module 내의 스타일 정의       | `.module.css` 파일 |
 
 ---
 
@@ -112,21 +152,23 @@ import { textCombinations, textScale, fontWeights, lineHeights } from '@/constan
 **사용 상황:** React 컴포넌트의 JSX에서 직접 스타일 적용 시
 
 **Import:**
+
 ```typescript
 import { padding, gap, borderRadius, layouts } from '@/constants/design/spacing'
 ```
 
 **주요 토큰:**
 
-| 카테고리 | 토큰 | 값 | 용도 |
-|---------|------|-----|------|
-| Padding | `padding.buttonSm/.buttonMd/.buttonLg` | 8px/16px/24px | 버튼 내부 여백 |
-| | `padding.cardSm/.card/.cardLg` | 12px/24px/32px | 카드 내부 여백 |
-| Gap | `gap.tight/.default/.loose` | 8px/16px/24px | Flex/Grid 간격 |
-| Border Radius | `borderRadius.md/.lg/.xl` | 8px/12px/16px | 모서리 둥글기 |
-| Layout | `layouts.page/.pageVertical` | 양쪽 32px 여백 | 페이지 구조 |
+| 카테고리      | 토큰                                   | 값             | 용도           |
+| ------------- | -------------------------------------- | -------------- | -------------- |
+| Padding       | `padding.buttonSm/.buttonMd/.buttonLg` | 8px/16px/24px  | 버튼 내부 여백 |
+|               | `padding.cardSm/.card/.cardLg`         | 12px/24px/32px | 카드 내부 여백 |
+| Gap           | `gap.tight/.default/.loose`            | 8px/16px/24px  | Flex/Grid 간격 |
+| Border Radius | `borderRadius.md/.lg/.xl`              | 8px/12px/16px  | 모서리 둥글기  |
+| Layout        | `layouts.page/.pageVertical`           | 양쪽 32px 여백 | 페이지 구조    |
 
 **✓ 좋은 예:**
+
 ```typescript
 // 토큰 사용
 <button className={padding.buttonMd}>버튼</button>
@@ -137,6 +179,7 @@ import { padding, gap, borderRadius, layouts } from '@/constants/design/spacing'
 ```
 
 **✗ 나쁜 예:**
+
 ```typescript
 // ❌ 임의의 간격 값
 <button className="px-5 py-2.5">버튼</button>
@@ -155,6 +198,7 @@ import { padding, gap, borderRadius, layouts } from '@/constants/design/spacing'
 **CSS 변수 정의 위치:** `src/index.css` `:root` (lines 124-143)
 
 **Import (TypeScript에서 타입 참조 시):**
+
 ```typescript
 import { cssVariables } from '@/constants/design/spacing'
 
@@ -192,6 +236,7 @@ type SpacingCssVar = keyof typeof cssVariables
 | `--size-icon-md` | 1.5rem | 기본 아이콘 | `sizeIconMd` |
 
 **CSS Module 사용 예시:**
+
 ```css
 /* Button.module.css */
 .buttonSm {
@@ -227,16 +272,19 @@ type SpacingCssVar = keyof typeof cssVariables
 #### 2.3.3 사용 가이드라인
 
 **언제 TailwindCSS 클래스 사용:**
+
 - ✅ React 컴포넌트의 JSX에서 직접 스타일링
 - ✅ 동적으로 클래스가 변경되는 경우
 - ✅ 간단한 스타일 조합
 
 **언제 CSS 변수 사용:**
+
 - ✅ CSS Module 파일(`.module.css`)에서 스타일 정의
 - ✅ 복잡한 스타일링이 필요한 컴포넌트
 - ✅ 일관된 컴포넌트 스타일 유지가 중요한 경우
 
 **❌ 혼용 주의:**
+
 ```typescript
 // ❌ 피해야 할 패턴 - JSX와 style 속성 혼용
 <div className={padding.buttonMd} style={{ padding: 'var(--padding-button-md)' }}>
@@ -255,21 +303,23 @@ type SpacingCssVar = keyof typeof cssVariables
 ### 2.4 아이콘 (Icons)
 
 **Import:**
+
 ```typescript
 import { icons, iconSizes, iconVariants } from '@/constants/design/icons'
 ```
 
 **주요 토큰:**
 
-| 카테고리 | 토큰 | 예시 |
-|---------|------|------|
-| 아이콘 | `icons.add`, `icons.edit`, `icons.delete` | lucide-react 매핑 |
-| | `icons.success`, `icons.error`, `icons.warning` | 상태 아이콘 |
-| | `icons.case`, `icons.folder`, `icons.calendar` | 도메인 아이콘 |
-| 크기 | `iconSizes.xs/.sm/.md/.lg/.xl` | 12px / 16px / 20px / 24px / 32px |
-| 조합 | `iconVariants.smPrimary`, `mdSuccess`, `lgError` | 크기 + 색상 |
+| 카테고리 | 토큰                                             | 예시                             |
+| -------- | ------------------------------------------------ | -------------------------------- |
+| 아이콘   | `icons.add`, `icons.edit`, `icons.delete`        | lucide-react 매핑                |
+|          | `icons.success`, `icons.error`, `icons.warning`  | 상태 아이콘                      |
+|          | `icons.case`, `icons.folder`, `icons.calendar`   | 도메인 아이콘                    |
+| 크기     | `iconSizes.xs/.sm/.md/.lg/.xl`                   | 12px / 16px / 20px / 24px / 32px |
+| 조합     | `iconVariants.smPrimary`, `mdSuccess`, `lgError` | 크기 + 색상                      |
 
 **✓ 좋은 예:**
+
 ```typescript
 // 의미 기반 아이콘 선택
 const Icon = icons.add  // 또는 icons.success
@@ -281,6 +331,7 @@ const Icon = icons.add  // 또는 icons.success
 ```
 
 **✗ 나쁜 예:**
+
 ```typescript
 // ❌ 직접 import (금지)
 import { Plus } from 'lucide-react'
@@ -334,6 +385,7 @@ export function Button({
 ### 3.2 스타일링 패턴
 
 **패턴 1: 토큰 조합 (권장)**
+
 ```typescript
 <div className={cn(
   padding.card,
@@ -346,6 +398,7 @@ export function Button({
 ```
 
 **패턴 2: 조건부 스타일링**
+
 ```typescript
 <button className={cn(
   padding.buttonMd,
@@ -358,6 +411,7 @@ export function Button({
 ```
 
 **패턴 3: 동적 토큰 선택**
+
 ```typescript
 const sizeClasses = {
   small: cn(padding.buttonSm, textCombinations.bodySm),
@@ -372,19 +426,20 @@ const sizeClasses = {
 
 ### 3.3 네이밍 컨벤션
 
-| 항목 | 규칙 | 예시 |
-|------|------|------|
-| 컴포넌트 | PascalCase | `Button`, `CardHeader`, `Modal` |
-| Props 인터페이스 | PascalCase + Props | `ButtonProps`, `ModalProps` |
-| 파일명 | PascalCase + .tsx | `Button.tsx`, `Modal.tsx` |
-| 상수 | camelCase | `sizeOptions`, `variantMap` |
-| 변수 | camelCase | `isOpen`, `buttonSize` |
+| 항목             | 규칙               | 예시                            |
+| ---------------- | ------------------ | ------------------------------- |
+| 컴포넌트         | PascalCase         | `Button`, `CardHeader`, `Modal` |
+| Props 인터페이스 | PascalCase + Props | `ButtonProps`, `ModalProps`     |
+| 파일명           | PascalCase + .tsx  | `Button.tsx`, `Modal.tsx`       |
+| 상수             | camelCase          | `sizeOptions`, `variantMap`     |
+| 변수             | camelCase          | `isOpen`, `buttonSize`          |
 
 ---
 
 ## 4. 금지 사항 (Don'ts)
 
 ### ❌ 색상 하드코딩 금지
+
 ```typescript
 // ❌ 금지
 <div className="bg-blue-600 text-white">
@@ -395,6 +450,7 @@ const sizeClasses = {
 ```
 
 ### ❌ 임의의 간격 값 금지
+
 ```typescript
 // ❌ 금지 (TailwindCSS 기본 값)
 <button className="px-5 py-2.5">
@@ -406,6 +462,7 @@ const sizeClasses = {
 ```
 
 ### ❌ CSS 변수 우회 금지
+
 ```typescript
 // ❌ 금지
 const color = '#1a73e8'
@@ -416,6 +473,7 @@ const color = '#1a73e8'
 ```
 
 ### ❌ 아이콘 직접 import 금지
+
 ```typescript
 // ❌ 금지
 import { Plus } from 'lucide-react'
@@ -518,6 +576,7 @@ export function FormField({ label, children, error }: FormFieldProps) {
 ## 6. 참고 자료
 
 ### 디자인 토큰 정의 파일
+
 - `src/constants/design/index.ts` - 중앙 export
 - `src/constants/design/color.ts` - 색상 토큰
 - `src/constants/design/typography.ts` - 타이포그래피 토큰
@@ -525,12 +584,15 @@ export function FormField({ label, children, error }: FormFieldProps) {
 - `src/constants/design/icons.ts` - 아이콘 매핑
 
 ### CSS 및 설정
+
 - `src/index.css` - CSS 변수 정의
 - `src/lib/utils.ts` - cn() 유틸리티 함수
 
 ### 실제 사용 예시
+
 - `src/views/Home.tsx` - 프로젝트 내 토큰 사용 예시
 
 ### 추가 정보
+
 - [CLAUDE.md](./CLAUDE.md) - 프로젝트 전체 가이드
 - [TailwindCSS 공식 문서](https://tailwindcss.com) - CSS 클래스 참조

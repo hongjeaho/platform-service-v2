@@ -51,32 +51,38 @@ yarn orval:watch              # Watch mode for continuous regeneration
 ## Technology Stack
 
 **Core:**
+
 - React 19 with TypeScript 5.9 (strict mode enabled)
 - Vite 7 (build tool with Fast Refresh enabled)
 - TailwindCSS 4 (utility-first styling)
 - React Compiler (automatic memoization via babel-plugin-react-compiler)
 
 **State Management & Data Fetching:**
+
 - React Query (@tanstack/react-query v5) - Server state management with caching
 - Jotai v2 - Lightweight atomic client state management
 - Custom query options configured for development vs. production behavior
 
 **Routing & Forms:**
+
 - React Router v7 (modern APIs, v7 future features enabled)
 - React Hook Form v7 (efficient form handling)
 
 **HTTP & API:**
+
 - Axios v1.13 (HTTP client with interceptors)
 - Orval v8-rc2 (OpenAPI/Swagger client code generation)
 - Custom mutator (request.ts) and form data handler (config/orval.requestFormData.ts)
 
 **Utilities & Libraries:**
+
 - date-fns v4 - Date manipulation and formatting
 - lucide-react - Icon library
 - clsx & tailwind-merge - Utility for conditional CSS classes
 - class-variance-authority - Type-safe component variants
 
 **Development Tools:**
+
 - ESLint v9 (flat config) with TypeScript, React, and React Hooks plugins
 - Prettier v3 - Code formatter (single quotes, no semicolons, 100 char width)
 - Rollup Visualizer - Bundle analysis
@@ -88,18 +94,21 @@ yarn orval:watch              # Watch mode for continuous regeneration
 프로젝트는 **TypeScript 기반 디자인 토큰 시스템**을 통해 일관된 UI/UX를 제공합니다.
 
 **핵심 원칙:**
+
 - CSS 변수 기반 색상 (OKLCH 색상 공간, WCAG AA 준수)
 - 4px 단위 간격 체계 (TailwindCSS 표준)
 - TypeScript 타입 안전성 보장
 - 하드코딩된 스타일 값 사용 금지
 
 **디자인 토큰 위치:** `src/constants/design/`
+
 - `color.ts` - Brand, Semantic, Status 색상
 - `typography.ts` - 텍스트 스케일, 폰트 웨이트, 조합
 - `spacing.ts` - Padding, Margin, Gap, Border Radius
 - `icons.ts` - lucide-react 아이콘 매핑
 
 **자주 사용하는 import:**
+
 ```typescript
 // 색상
 import { buttonVariants, statusColors, semanticColors } from '@/constants/design/color'
@@ -139,12 +148,18 @@ src/
 │   └── [other pages...]
 ├── common/                     # Shared utilities and components
 │   ├── components/
-│   │   ├── header/
-│   │   │   └── CommonHeader.tsx
-│   │   ├── footer/
-│   │   │   └── CommonFooter.tsx
-│   │   └── message/            # Toast/notification system
-│   │       └── store/          # Message Jotai atoms
+│   │   ├── frame/              # App frame (header, footer)
+│   │   │   ├── header/
+│   │   │   │   └── CommonHeader.tsx
+│   │   │   └── footer/
+│   │   │       └── CommonFooter.tsx
+│   │   └── ui/                 # Reusable UI components
+│   │       ├── action/         # Action components (e.g. button)
+│   │       ├── form/           # Form inputs (input, select, checkbox, etc.)
+│   │       ├── data-display/   # Data display (e.g. table)
+│   │       └── index.ts        # Barrel exports
+│   ├── message/               # Global message state (Jotai store)
+│   │   └── store/
 │   └── hooks/
 │       ├── auth/
 │       │   ├── store/          # Jotai auth atoms
@@ -230,6 +245,7 @@ The custom Axios instance (`src/utils/http/client.ts`) includes:
 - **Configuration:** See `config/base.orval.config.ts` for customization
 
 **Usage Example:**
+
 ```typescript
 import { useGetUser } from '@api/user-api/user-api'
 
@@ -265,7 +281,7 @@ export function UserProfile() {
   - User credentials
   - Authentication status
   - Hydration state (SSR-safe)
-- **Message State:** `src/common/hooks/auth/store/message/index.ts`
+- **Message State:** `src/common/message/store/index.ts` (auth hooks re-export from `@hooks/auth/store/message`)
   - Toast/alert notifications
   - Callback-based dismissal
 
@@ -284,13 +300,13 @@ export function UserProfile() {
 
 ```typescript
 const {
-  isAuthenticated,    // boolean
-  isHydrated,        // false during SSR, true after client hydration
-  userData,          // User | null
-  login,             // (user: User) => void
-  logout,            // () => void
-  isReady,           // Alias for isHydrated
-  hasUser,           // Alias for isAuthenticated
+  isAuthenticated, // boolean
+  isHydrated, // false during SSR, true after client hydration
+  userData, // User | null
+  login, // (user: User) => void
+  logout, // () => void
+  isReady, // Alias for isHydrated
+  hasUser, // Alias for isAuthenticated
 } = useAuth()
 ```
 
@@ -305,6 +321,7 @@ const {
 ### ESLint Rules (in `eslint.config.js`)
 
 **Key Enforced Rules:**
+
 - No `var` (use const/let)
 - Simple import sort (organized by: imports, blank line, exports)
 - React Hooks exhaustive-deps **disabled** (custom management required)
@@ -312,6 +329,7 @@ const {
 - TypeScript strict mode compliance
 
 **Key Relaxed Rules:**
+
 - `@typescript-eslint/no-explicit-any` - Sometimes necessary for generated code
 - `react-refresh/only-export-components` - Allow side effects
 - `@tanstack/query/prefer-query-object-syntax` - Disabled, using function syntax
@@ -340,6 +358,7 @@ const {
 ### Code Splitting
 
 The production build automatically splits chunks by dependency:
+
 - `react.js` - Core React
 - `react-dom.js` - React DOM
 - `react-router-dom.js` - Routing
@@ -367,22 +386,26 @@ The production build automatically splits chunks by dependency:
 ### Configuration Files
 
 **config/orval.config.ts** - Main configuration
+
 - Environment-aware API URL (`VITE_API_BASE_URL`)
 - Fallback: `http://localhost:8080/api/public/api-docs/json`
 - Development: Optional mock enablement via `VITE_ENABLE_MOCK`
 
 **config/base.orval.config.ts** - Shared output configuration
+
 - Mode: `tags-split` (one hook file per API tag)
 - Target: `src/gen/hooks` and `src/gen/model`
 - Client: React Query with Axios
 - Auto-formatting with Prettier
 
 **config/custom.query.options.ts** - React Query customization
+
 - Development vs. production staleTime
 - Retry logic for mutations and queries
 - Refetch strategies
 
 **config/orval.requestFormData.ts** - Form data serialization
+
 - Handles File and Blob uploads
 - Serializes nested objects/arrays as JSON Blobs
 - Prevents null/undefined values
@@ -398,6 +421,7 @@ yarn orval:watch
 ```
 
 **When to regenerate:**
+
 - Backend API endpoint changes
 - OpenAPI schema updates
 - New API tags added to backend
@@ -483,6 +507,7 @@ export function Card({ title, children }: { title: string; children: React.React
 ```
 
 **For dynamic classes, use clsx:**
+
 ```typescript
 import clsx from 'clsx'
 
@@ -500,7 +525,9 @@ import { useQuery } from '@tanstack/react-query'
 export function useUserData(userId: string) {
   return useQuery({
     queryKey: ['user', userId],
-    queryFn: async () => { /* ... */ },
+    queryFn: async () => {
+      /* ... */
+    },
   })
 }
 ```
@@ -529,16 +556,19 @@ export function ErrorPage() {
 **Configuration:** `src/router/index.tsx`
 
 **Layout Structure:**
+
 1. **AuthenticationLayout** - Wraps login and auth flows
 2. **BaseLayout** - Main app layout with header/footer
 3. **FullScreenLayout** - Full-screen components (login page)
 
 **Router Features:**
+
 - React Router v7 with future flags enabled
 - `createBrowserRouter` for client-side routing
 - Nested route support
 
 **Adding Routes:**
+
 ```typescript
 // In src/router/index.tsx
 {
@@ -558,10 +588,12 @@ export function ErrorPage() {
 Environment variables should be prefixed with `VITE_` to be accessible in browser code.
 
 **Available variables:**
+
 - `VITE_API_BASE_URL` - Override backend API URL (used by Orval)
 - `VITE_ENABLE_MOCK` - Enable Orval mock responses in development
 
 **Usage:**
+
 ```typescript
 const apiUrl = import.meta.env.VITE_API_BASE_URL
 ```
@@ -571,6 +603,7 @@ const apiUrl = import.meta.env.VITE_API_BASE_URL
 ### React Query DevTools
 
 Enabled automatically in development mode. Shows:
+
 - Cached queries and mutations
 - Query state and timestamps
 - Network request details
@@ -580,6 +613,7 @@ Toggle with the floating button (bottom right during dev).
 ### Vite HMR (Hot Module Replacement)
 
 Fast Refresh is enabled. Changes to:
+
 - React components auto-refresh without losing state
 - CSS updates instantly
 - Export-only components reload cleanly
@@ -587,6 +621,7 @@ Fast Refresh is enabled. Changes to:
 ### TypeScript Checking
 
 Type check before building:
+
 ```bash
 yarn tsc -b
 ```
@@ -636,6 +671,7 @@ yarn tsc -b
 ## Backend Integration Reference
 
 For API documentation and available endpoints:
+
 - **Swagger UI:** http://localhost:8080/swagger-ui.html (after backend starts)
 - **OpenAPI JSON:** http://localhost:8080/api/public/api-docs/json
 - **Backend repository:** Spring Boot multi-module application (see root CLAUDE.md)
