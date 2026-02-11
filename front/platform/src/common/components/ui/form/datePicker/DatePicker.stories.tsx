@@ -7,7 +7,7 @@ import { DatePicker } from './DatePicker'
 import { FormDatePicker } from './FormDatePicker'
 
 const meta = {
-  title: 'Components/DatePicker',
+  title: 'UI/Form/DatePicker',
   component: DatePicker,
   parameters: {
     layout: 'centered',

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Button } from './Button'
 
 const meta = {
-  title: 'Components/Button',
+  title: 'UI/Action/Button',
   component: Button,
   parameters: {
     layout: 'centered',
@@ -185,6 +185,34 @@ export const Interactive: Story = {
     children: 'Click me!',
     onClick: () => alert('Button clicked!'),
   },
+}
+
+/**
+ * V3 디자인 시스템 패턴 - 폼 하단 액션 바
+ */
+export const V3ActionBar: Story = {
+  render: () => (
+    <div
+      style={{
+        display: 'flex',
+        gap: '1rem',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '1.5rem',
+        borderTop: '1px solid var(--color-gray-200)',
+      }}
+    >
+      <Button variant='outline' size='md'>
+        목록
+      </Button>
+      <Button variant='outline' size='md'>
+        임시저장
+      </Button>
+      <Button variant='primary' size='md'>
+        제출
+      </Button>
+    </div>
+  ),
 }
 
 /**

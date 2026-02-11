@@ -3,14 +3,15 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { Button } from '../button/Button'
+import { Button } from '@/common/components/ui'
+
 import { FormUpload } from './FormUpload'
 import { FormUploadMulti } from './FormUploadMulti'
 import { Upload } from './Upload'
 import { UploadMulti } from './UploadMulti'
 
 const meta = {
-  title: 'Components/Upload',
+  title: 'UI/Form/Upload',
   component: Upload,
   parameters: {
     layout: 'centered',

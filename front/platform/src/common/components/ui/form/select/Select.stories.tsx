@@ -2,7 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { Button } from '../button/Button'
+import { Button } from '@/common/components/ui'
+
 import { FormSelect } from './FormSelect'
 import { Select } from './Select'
 import type { SelectProps } from './Select.types'
@@ -10,7 +11,7 @@ import type { SelectProps } from './Select.types'
 /* eslint-disable react-hooks/rules-of-hooks */
 
 const meta = {
-  title: 'Components/Select',
+  title: 'UI/Form/Select',
   component: Select,
   parameters: {
     layout: 'centered',

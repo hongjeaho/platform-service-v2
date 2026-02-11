@@ -1,52 +1,54 @@
-/* Button 기본 스타일 */
+/* Button 기본 스타일 - V3 디자인 시스템 */
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--gap-sm);
   white-space: nowrap;
-  border-radius: var(--radius-md);
-  font-weight: 500;
-  transition:
-    background-color 200ms,
-    color 200ms;
+  border-radius: var(--radius-base);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast) var(--transition-ease);
   cursor: pointer;
-  border: none;
+  border: 1px solid transparent;
   font-family: inherit;
+  user-select: none;
 }
 
-/* Size: Small */
+/* Size: Small - V3 기준 */
 .buttonSm {
   padding: var(--padding-button-sm);
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
 }
 
-/* Size: Medium (기본값) */
+/* Size: Medium (기본값) - V3 기준 */
 .buttonMd {
   padding: var(--padding-button-md);
-  font-size: 1rem;
-  line-height: 1.5rem;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
 }
 
-/* Size: Large */
+/* Size: Large - V3 기준 */
 .buttonLg {
   padding: var(--padding-button-lg);
-  font-size: 1rem;
-  line-height: 1.5rem;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-normal);
 }
 
-/* Variant: Primary */
+/* Variant: Primary - V3 기준 */
 .primary {
-  background-color: var(--primary);
-  color: var(--primary-foreground);
+  background-color: var(--color-primary-500);
+  color: var(--color-white);
+  border-color: var(--color-primary-500);
 }
 
 .primary:hover:not(:disabled) {
-  background-color: color-mix(in oklch, var(--primary) 90%, black);
+  background-color: var(--color-primary-600);
+  border-color: var(--color-primary-600);
 }
 
 .primary:focus-visible {
-  outline: 2px solid var(--ring);
+  outline: 2px solid var(--color-primary-500);
   outline-offset: 2px;
 }
 
@@ -65,20 +67,20 @@
   outline-offset: 2px;
 }
 
-/* Variant: Outline */
+/* Variant: Outline - V3 기준 */
 .outline {
-  border: 1px solid var(--border);
-  background-color: var(--background);
-  color: var(--foreground);
+  border: 1px solid var(--color-gray-300);
+  background-color: transparent;
+  color: var(--color-text-primary);
 }
 
 .outline:hover:not(:disabled) {
-  background-color: var(--accent);
-  color: var(--accent-foreground);
+  background-color: var(--color-gray-100);
+  border-color: var(--color-gray-400);
 }
 
 .outline:focus-visible {
-  outline: 2px solid var(--ring);
+  outline: 2px solid var(--color-primary-500);
   outline-offset: 2px;
 }
 

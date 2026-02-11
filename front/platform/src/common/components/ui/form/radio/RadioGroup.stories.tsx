@@ -7,7 +7,7 @@ import { FormRadioGroup } from './FormRadioGroup'
 import { RadioGroup } from './RadioGroup'
 
 const meta = {
-  title: 'Components/RadioGroup',
+  title: 'UI/Form/RadioGroup',
   component: RadioGroup,
   parameters: {
     layout: 'centered',

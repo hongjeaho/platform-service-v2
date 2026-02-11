@@ -1,4 +1,4 @@
-/* Checkbox 컨테이너 */
+/* Checkbox 컨테이너 - V3 디자인 시스템 */
 .container {
   display: flex;
   flex-direction: column;
@@ -13,51 +13,52 @@
   cursor: pointer;
 }
 
-/* Checkbox input (숨김) */
+/* Checkbox input (숨김) - V3 스타일 */
 .input {
   appearance: none;
   width: var(--size-checkbox);
   height: var(--size-checkbox);
-  border: 1px solid var(--border);
-  border-radius: 0.375rem;
-  background-color: var(--background);
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-md);
+  background-color: var(--color-white);
   cursor: pointer;
-  transition: all 200ms;
+  transition: all var(--transition-fast) var(--transition-ease);
   flex-shrink: 0;
   margin-top: 0.125rem;
 }
 
 /* Checkbox 기본 상태 */
 .input:hover:not(:disabled) {
-  border-color: var(--primary);
+  border-color: var(--color-primary-500);
 }
 
 .input:focus-visible {
-  outline: 2px solid var(--ring);
+  outline: 2px solid var(--color-primary-500);
   outline-offset: 2px;
 }
 
-/* Checkbox 체크된 상태 */
+/* Checkbox 체크된 상태 - V3 Primary 색상 */
 .input:checked {
-  background-color: var(--primary);
-  border-color: var(--primary);
+  background-color: var(--color-primary-500);
+  border-color: var(--color-primary-500);
 }
 
 .input:checked:hover {
-  background-color: color-mix(in oklch, var(--primary) 90%, black);
-  border-color: color-mix(in oklch, var(--primary) 90%, black);
+  background-color: var(--color-primary-600);
+  border-color: var(--color-primary-600);
 }
 
 /* Checkbox disabled 상태 */
 .input:disabled {
-  opacity: 0.5;
+  background-color: var(--color-gray-100);
   cursor: not-allowed;
+  opacity: 0.5;
 }
 
 /* Indeterminate 상태 (부분 선택) */
 .input:indeterminate {
-  background-color: var(--primary);
-  border-color: var(--primary);
+  background-color: var(--color-primary-500);
+  border-color: var(--color-primary-500);
 }
 
 /* Checkbox 컨텐츠 (라벨과 설명) */
@@ -68,31 +69,29 @@
   padding-top: 0.125rem;
 }
 
-/* 라벨 텍스트 */
+/* 라벨 텍스트 - V3 기준 */
 .label {
-  /* 디자인 토큰: fontSize.bodyBase = 1rem */
-  /* 디자인 토큰: fontWeight.medium = 500 */
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.5;
-  color: var(--foreground);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
   user-select: none;
 }
 
-/* 설명 텍스트 */
+/* 설명 텍스트 - V3 기준 */
 .description {
-  /* 디자인 토큰: fontSize.bodySm = 0.875rem */
-  font-size: 0.875rem;
-  line-height: 1.25;
-  color: var(--muted-foreground);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
 }
 
-/* 에러 메시지 */
+/* 에러 메시지 - V3 기준 */
 .error {
-  font-size: 0.875rem;
-  line-height: 1.25;
-  color: var(--error);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-error-600);
   margin-top: var(--gap-xs);
+  font-weight: var(--font-weight-medium);
 }
 
 /* Wrapper disabled 상태 - data-attribute로 호환성 개선 */

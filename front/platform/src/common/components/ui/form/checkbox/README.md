@@ -7,7 +7,7 @@ React Hook Form과 완벽하게 통합된 체크박스 컴포넌트입니다.
 기본 체크박스 컴포넌트는 React Hook Form Controller와 직접 사용할 수 있도록 설계되었습니다.
 
 ```typescript
-import { Checkbox } from '@/common/components/ui/checkbox'
+import { Checkbox } from '@/common/components/ui'
 
 // 기본 사용법
 <Checkbox
@@ -47,7 +47,7 @@ import { Checkbox } from '@/common/components/ui/checkbox'
 ### 기본 사용법
 
 ```typescript
-import { FormCheckbox } from '@/common/components/ui/checkbox'
+import { FormCheckbox } from '@/common/components/ui'
 
 function MyForm() {
   const { control, handleSubmit } = useForm<{
@@ -81,8 +81,8 @@ function MyForm() {
 const { control } = useForm({
   defaultValues: {
     agree: true,
-    newsletter: false
-  }
+    newsletter: false,
+  },
 })
 ```
 
@@ -116,28 +116,28 @@ const { control } = useForm({
 
 ### Checkbox Props
 
-| Prop | 타입 | 기본값 | 설명 |
-|------|------|----------|------|
-| checked | boolean | false | 체크 상태 |
-| onChange | (checked: boolean) => void | - | 체크 상태 변경 콜백 |
-| label | string | - | 라벨 텍스트 |
-| description | string | - | 설명 텍스트 |
-| error | string | - | 에러 메시지 |
-| indeterminate | boolean | false | 부분 선택 상태 |
-| disabled | boolean | false | 비활성화 상태 |
+| Prop          | 타입                       | 기본값 | 설명                |
+| ------------- | -------------------------- | ------ | ------------------- |
+| checked       | boolean                    | false  | 체크 상태           |
+| onChange      | (checked: boolean) => void | -      | 체크 상태 변경 콜백 |
+| label         | string                     | -      | 라벨 텍스트         |
+| description   | string                     | -      | 설명 텍스트         |
+| error         | string                     | -      | 에러 메시지         |
+| indeterminate | boolean                    | false  | 부분 선택 상태      |
+| disabled      | boolean                    | false  | 비활성화 상태       |
 
 ### FormCheckbox Props
 
-| Prop | 타입 | 필수 | 설명 |
-|------|------|------|------|
-| name | Path\<TFieldValues\> | ✓ | 폼 필드 이름 |
-| control | Control\<TFieldValues\> | ✓ | RHF 컨트롤러 |
-| rules | RegisterOptions | - | 유효성 검증 규칙 |
-| shouldUnregister | boolean | false | 컴포넌트 언등록 여부 |
-| label | string | - | 라벨 텍스트 |
-| description | string | - | 설명 텍스트 |
-| disabled | boolean | false | 비활성화 상태 |
-| indeterminate | boolean | false | 부분 선택 상태 |
+| Prop             | 타입                    | 필수  | 설명                 |
+| ---------------- | ----------------------- | ----- | -------------------- |
+| name             | Path\<TFieldValues\>    | ✓     | 폼 필드 이름         |
+| control          | Control\<TFieldValues\> | ✓     | RHF 컨트롤러         |
+| rules            | RegisterOptions         | -     | 유효성 검증 규칙     |
+| shouldUnregister | boolean                 | false | 컴포넌트 언등록 여부 |
+| label            | string                  | -     | 라벨 텍스트          |
+| description      | string                  | -     | 설명 텍스트          |
+| disabled         | boolean                 | false | 비활성화 상태        |
+| indeterminate    | boolean                 | false | 부분 선택 상태       |
 
 ## 사용 예시
 
@@ -244,6 +244,7 @@ function FilterPanel() {
 ### 기존 코드에서 FormCheckbox로 전환
 
 #### 이전 (Controller 직접 사용)
+
 ```typescript
 <Controller
   name="agree"
@@ -260,6 +261,7 @@ function FilterPanel() {
 ```
 
 #### 이후 (FormCheckbox 사용)
+
 ```typescript
 <FormCheckbox
   name="agree"

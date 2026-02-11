@@ -16,7 +16,7 @@ React Hook Form과 완벽하게 통합된 Select(드롭다운) 컴포넌트입�
 기본 Select 컴포넌트는 React Hook Form Controller와 직접 사용할 수 있도록 설계되었습니다.
 
 ```typescript
-import { Select } from '@/common/components/ui/select'
+import { Select } from '@/common/components/ui'
 
 // 기본 사용법
 <Select
@@ -62,7 +62,7 @@ import { Select } from '@/common/components/ui/select'
 ### 기본 사용법
 
 ```typescript
-import { FormSelect } from '@/common/components/ui/select'
+import { FormSelect } from '@/common/components/ui'
 
 function MyForm() {
   const { control, handleSubmit } = useForm<{
@@ -108,40 +108,40 @@ const { control } = useForm({
 
 ### SelectProps
 
-| Prop | 타입 | 기본값 | 설명 |
-|------|------|--------|------|
-| `options` | `SelectOption<T>[]` | **필수** | 선택 가능한 옵션 목록 |
-| `value` | `T` | `undefined` | 선택된 값 |
-| `onChange` | `(value: T) => void` | `undefined` | 값 변경 콜백 |
-| `placeholder` | `string` | `'선택해주세요'` | 플레이스홀더 텍스트 |
-| `label` | `string` | `undefined` | 라벨 텍스트 |
-| `error` | `string` | `undefined` | 에러 메시지 |
-| `required` | `boolean` | `false` | 필수 여부 표시 |
-| `disabled` | `boolean` | `false` | 비활성화 여부 |
-| `name` | `string` | `undefined` | input name 속성 |
-| `className` | `string` | `undefined` | 추가 CSS 클래스 |
-| `searchable` | `boolean` | `false` | 검색 기능 활성화 |
-| `searchPlaceholder` | `string` | `'검색...'` | 검색창 플레이스홀더 |
-| `emptyMessage` | `string` | `'검색 결과가 없습니다'` | 검색 결과 없을 때 메시지 |
-| `maxHeight` | `string` | `'300px'` | 드롭다운 최대 높이 |
+| Prop                | 타입                 | 기본값                   | 설명                     |
+| ------------------- | -------------------- | ------------------------ | ------------------------ |
+| `options`           | `SelectOption<T>[]`  | **필수**                 | 선택 가능한 옵션 목록    |
+| `value`             | `T`                  | `undefined`              | 선택된 값                |
+| `onChange`          | `(value: T) => void` | `undefined`              | 값 변경 콜백             |
+| `placeholder`       | `string`             | `'선택해주세요'`         | 플레이스홀더 텍스트      |
+| `label`             | `string`             | `undefined`              | 라벨 텍스트              |
+| `error`             | `string`             | `undefined`              | 에러 메시지              |
+| `required`          | `boolean`            | `false`                  | 필수 여부 표시           |
+| `disabled`          | `boolean`            | `false`                  | 비활성화 여부            |
+| `name`              | `string`             | `undefined`              | input name 속성          |
+| `className`         | `string`             | `undefined`              | 추가 CSS 클래스          |
+| `searchable`        | `boolean`            | `false`                  | 검색 기능 활성화         |
+| `searchPlaceholder` | `string`             | `'검색...'`              | 검색창 플레이스홀더      |
+| `emptyMessage`      | `string`             | `'검색 결과가 없습니다'` | 검색 결과 없을 때 메시지 |
+| `maxHeight`         | `string`             | `'300px'`                | 드롭다운 최대 높이       |
 
 ### FormSelectProps
 
 `FormSelect`는 위의 모든 Props에 추가로 다음을 지원합니다:
 
-| Prop | 타입 | 기본값 | 설명 |
-|------|------|--------|------|
-| `name` | `Path<TFieldValues>` | **필수** | React Hook Form 필드 이름 |
-| `control` | `Control<TFieldValues>` | **필수** | React Hook Form 컨트롤러 |
-| `rules` | `RegisterOptions` | `undefined` | 유효성 검증 규칙 |
-| `shouldUnregister` | `boolean` | `false` | 언마운트 시 필드 등록 해제 여부 |
+| Prop               | 타입                    | 기본값      | 설명                            |
+| ------------------ | ----------------------- | ----------- | ------------------------------- |
+| `name`             | `Path<TFieldValues>`    | **필수**    | React Hook Form 필드 이름       |
+| `control`          | `Control<TFieldValues>` | **필수**    | React Hook Form 컨트롤러        |
+| `rules`            | `RegisterOptions`       | `undefined` | 유효성 검증 규칙                |
+| `shouldUnregister` | `boolean`               | `false`     | 언마운트 시 필드 등록 해제 여부 |
 
 ### SelectOption
 
 ```typescript
 interface SelectOption<T = string> {
-  label: string      // 표시될 텍스트
-  value: T           // 실제 값
+  label: string // 표시될 텍스트
+  value: T // 실제 값
   disabled?: boolean // 비활성화 여부
 }
 ```
@@ -257,6 +257,3 @@ interface User {
 - [Checkbox 컴포넌트](../checkbox/README.md)
 - [DatePicker 컴포넌트](../datePicker/README.md)
 - [RadioGroup 컴포넌트](../radio/README.md)
-
-
-

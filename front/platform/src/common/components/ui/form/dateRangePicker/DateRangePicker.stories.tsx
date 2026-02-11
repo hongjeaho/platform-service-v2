@@ -8,7 +8,7 @@ import type { DateRange } from './DateRangePicker.types.ts'
 import { FormDateRangePicker } from './FormDateRangePicker'
 
 const meta = {
-  title: 'Components/DateRangePicker',
+  title: 'UI/Form/DateRangePicker',
   component: DateRangePicker,
   parameters: {
     layout: 'centered',
