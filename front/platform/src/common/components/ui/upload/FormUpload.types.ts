@@ -21,3 +21,5 @@ export interface FormUploadProps<TFieldValues extends FieldValues = FieldValues>
   /** 컴포넌트 언등록 여부 */
   shouldUnregister?: boolean
 }
+
+
