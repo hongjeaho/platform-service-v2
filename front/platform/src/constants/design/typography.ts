@@ -1,27 +1,29 @@
 /**
  * 타이포그래피 디자인 토큰
  * 텍스트 스케일, 폰트 웨이트, 라인 높이 등을 정의합니다
+ * V3 디자인 시스템 (html/css/v3-main.css)과 동기화
  */
 
 /**
  * 텍스트 스케일
  * TailwindCSS 기본 스케일을 기반으로 함
+ * V3 폰트 사이즈와 일치
  */
 export const textScale = {
-  // Heading Sizes
-  h1: 'text-3xl', // 30px
-  h2: 'text-2xl', // 24px
-  h3: 'text-xl', // 20px
-  h4: 'text-lg', // 18px
-  h5: 'text-base', // 16px
+  // Heading Sizes (V3 기준)
+  h1: 'text-3xl', // 30px (V3: --font-size-3xl)
+  h2: 'text-2xl', // 24px (V3: --font-size-2xl)
+  h3: 'text-xl', // 20px (V3: --font-size-xl)
+  h4: 'text-lg', // 18px (V3: --font-size-lg)
+  h5: 'text-base', // 16px (V3: --font-size-base)
 
-  // Body Sizes
-  body: 'text-base', // 16px - 기본 본문
-  bodySm: 'text-sm', // 14px - 보조 텍스트
-  bodyXs: 'text-xs', // 12px - 캡션, 메타
+  // Body Sizes (V3 기준)
+  body: 'text-base', // 16px - 기본 본문 (V3: --font-size-base)
+  bodySm: 'text-sm', // 14px - 보조 텍스트 (V3: --font-size-sm)
+  bodyXs: 'text-xs', // 12px - 캡션, 메타 (V3: --font-size-xs)
 
   // Display
-  display: 'text-4xl', // 36px
+  display: 'text-4xl', // 36px (V3: --font-size-4xl)
 } as const
 
 /**

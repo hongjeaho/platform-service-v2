@@ -2,13 +2,15 @@
  * 색상 디자인 토큰
  * 정부 플랫폼 아이덴티티 기반 색상 시스템
  * CSS 변수와 동기화되어 있습니다 (src/index.css)
+ * V3 디자인 시스템 (html/css/v3-main.css)과 동기화
  */
 
 /**
  * Brand Colors - 정부 플랫폼 아이덴티티
+ * V3: #274ba9 (신뢰감 있는 네이비 블루)
  */
 export const brandColors = {
-  primary: 'oklch(0.45 0.15 240)', // 신뢰감 있는 네이비 블루
+  primary: 'oklch(0.45 0.15 240)', // V3: #274ba9 (네이비 블루)
   primaryForeground: 'oklch(0.98 0 0)', // 거의 흰색 텍스트
 } as const
 
@@ -22,26 +24,28 @@ export const accentColors = {
 
 /**
  * Secondary Colors - 보조 액션
+ * V3: #5e697c (네이비 그레이)
  */
 export const secondaryColors = {
-  secondary: 'oklch(0.90 0.02 240)', // 연한 네이비 그레이
+  secondary: 'oklch(0.90 0.02 240)', // V3: 연한 네이비 그레이
   secondaryForeground: 'oklch(0.25 0.05 240)', // 진한 네이비 텍스트
 } as const
 
 /**
  * Semantic Colors - 상태 표시
+ * V3 디자인 시스템 색상과 동기화
  */
 export const semanticColors = {
-  success: 'oklch(0.60 0.15 145)', // 초록색 - 승인, 완료
+  success: 'oklch(0.60 0.15 145)', // V3: #22c55e - 초록색 (승인, 완료)
   successForeground: 'oklch(0.98 0 0)',
 
-  warning: 'oklch(0.70 0.15 70)', // 노란색 - 경고, 대기
+  warning: 'oklch(0.70 0.15 70)', // V3: #f59e0b - 노란색 (경고, 대기)
   warningForeground: 'oklch(0.20 0 0)',
 
-  error: 'oklch(0.577 0.245 27.325)', // 빨간색 - 오류, 거부
+  error: 'oklch(0.577 0.245 27.325)', // V3: #ef4444 - 빨간색 (오류, 거부)
   errorForeground: 'oklch(0.98 0 0)',
 
-  info: 'oklch(0.60 0.12 230)', // 파란색 - 정보
+  info: 'oklch(0.60 0.12 230)', // V3: #3b82f6 - 파란색 (정보)
   infoForeground: 'oklch(0.98 0 0)',
 } as const
 
