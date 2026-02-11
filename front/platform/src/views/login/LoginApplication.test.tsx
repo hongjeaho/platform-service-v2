@@ -8,10 +8,10 @@
  * - 로그인 성공/실패 시나리오
  * - 접근성 (ARIA 속성)
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
+import { beforeEach,describe, expect, it, vi } from 'vitest'
 
 import LoginApplication from './LoginApplication'
 

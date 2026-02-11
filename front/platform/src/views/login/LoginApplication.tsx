@@ -3,8 +3,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
-import { Button } from '@/common/components/ui/button'
-import { FormInput } from '@/common/components/ui/input'
+import { Button, FormInput } from '@/common/components/ui'
 import { useAuth } from '@/common/hooks/auth/useAuth'
 import { useLogin } from '@/gen/hooks/public-authority-api/public-authority-api'
 

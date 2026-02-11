@@ -1,8 +1,8 @@
 import { useScrollToTopEffect } from '@hooks/useScrollToTopEffect'
 import { Outlet } from 'react-router-dom'
 
-import CommonFooter from '@/common/components/layout/footer/CommonFooter.tsx'
-import CommonHeader from '@/common/components/layout/header/CommonHeader.tsx'
+import CommonFooter from '@/common/components/frame/footer/CommonFooter.tsx'
+import CommonHeader from '@/common/components/frame/header/CommonHeader.tsx'
 
 /**
  * 기본 레이아웃 컴포넌트입니다.

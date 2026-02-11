@@ -1,7 +1,8 @@
 import axios, { type AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
 import { getDefaultStore } from 'jotai'
 
-import { alertMessageState } from '../../common/components/message/store'
+import { alertMessageState } from '@/common/message/store'
+
 import { STORAGE_KEYS } from '../../constants/storage'
 
 const API_BASE_URL = ''
