@@ -10,16 +10,16 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-normal);
-  color: var(--color-text-primary);
+  color: var(--foreground);
 }
 
 .required {
-  color: var(--color-error-500);
+  color: var(--error);
   margin-left: var(--gap-xs);
   font-weight: var(--font-weight-semibold);
 }
 
-/* Trigger 버튼 - V3 스타일 */
+/* Trigger 버튼 - 시맨틱 토큰 */
 .trigger {
   display: flex;
   align-items: center;
@@ -28,33 +28,35 @@
   padding: var(--padding-input-default);
   font-size: var(--font-size-base);
   line-height: var(--line-height-normal);
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid var(--border);
   border-radius: var(--radius-base);
-  background-color: var(--color-white);
-  color: var(--color-text-primary);
+  background-color: var(--card);
+  color: var(--foreground);
   cursor: pointer;
-  transition: all var(--transition-fast) var(--transition-ease);
+  transition:
+    border-color var(--transition-fast) var(--transition-ease),
+    box-shadow var(--transition-fast) var(--transition-ease);
   font-family: inherit;
 }
 
 .trigger:hover:not(:disabled) {
-  border-color: var(--color-primary-400);
+  border-color: var(--accent);
 }
 
 .trigger:focus {
   outline: none;
-  border-color: var(--color-primary-500);
-  box-shadow: 0 0 0 3px rgba(39, 75, 169, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 15%, transparent);
 }
 
 .trigger:focus-visible {
-  outline: 2px solid var(--color-primary-500);
-  outline-offset: 2px;
+  outline: 2px solid var(--primary);
+  outline-offset: var(--radius-sm);
 }
 
 .trigger:disabled {
-  background-color: var(--color-gray-100);
-  color: var(--color-text-disabled);
+  background-color: var(--muted);
+  color: var(--muted-foreground);
   cursor: not-allowed;
 }
 
@@ -92,15 +94,13 @@
 
 /* Portal 드롭다운 컨테이너 */
 .dropdown {
-  z-index: 1000;
+  z-index: var(--z-index-dropdown);
   display: flex;
   flex-direction: column;
   background-color: var(--popover);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
@@ -125,8 +125,8 @@
   outline: none;
   background-color: transparent;
   color: var(--foreground);
-  font-size: 0.875rem; /* textScale.bodySm: text-sm */
-  line-height: 1.25; /* lineHeights.tight: leading-tight */
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
   font-family: inherit;
 }
 
@@ -147,12 +147,12 @@
   display: flex;
   align-items: center;
   padding: var(--padding-input-default);
-  font-size: 0.875rem;
-  line-height: 1.25;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
   color: var(--foreground);
   cursor: pointer;
-  border-radius: calc(var(--radius-md) - 2px);
-  transition: background-color 200ms;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-fast) var(--transition-ease);
   user-select: none;
 }
 
@@ -165,7 +165,7 @@
 .optionSelected {
   background-color: var(--secondary);
   color: var(--secondary-foreground);
-  font-weight: 500; /* fontWeights.medium: font-medium */
+  font-weight: var(--font-weight-medium);
 }
 
 .optionSelected:hover:not(.optionDisabled) {
@@ -188,17 +188,17 @@
 
 /* 검색 결과 없음 메시지 */
 .emptyMessage {
-  padding: 1rem 0.75rem; /* Tailwind: py-4 px-3 */
+  padding: var(--spacing-4) var(--spacing-3);
   text-align: center;
   color: var(--muted-foreground);
-  font-size: 0.875rem; /* textScale.bodySm: text-sm */
-  line-height: 1.25; /* lineHeights.tight: leading-tight */
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
 }
 
 /* 에러 메시지 */
 .error {
-  font-size: 0.875rem;
-  line-height: 1.25;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
   color: var(--error);
   margin-top: var(--gap-xs);
 }
@@ -207,7 +207,7 @@
 .highlight {
   background-color: color-mix(in oklch, var(--primary) 20%, transparent);
   color: var(--primary);
-  font-weight: 600;
-  padding: 0 0.125rem;
-  border-radius: 2px;
+  font-weight: var(--font-weight-semibold);
+  padding: 0 var(--gap-xs);
+  border-radius: var(--radius-sm);
 }

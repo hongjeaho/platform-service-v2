@@ -11,7 +11,7 @@ import {
   useInteractions,
   useRole,
 } from '@floating-ui/react'
-import React, { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { forwardRef, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 
 import { icons, iconSizes } from '@/constants/design/icons'
 import { textCombinations } from '@/constants/design/typography'
@@ -19,6 +19,9 @@ import { cn } from '@/lib/utils'
 
 import styles from './Select.module.css'
 import type { SelectProps } from './Select.types'
+
+const CHEVRON_ICON = icons.next
+const SEARCH_ICON = icons.search
 
 /**
  * Select 컴포넌트
@@ -80,41 +83,19 @@ export const Select = forwardRef(
   ) => {
     const [isOpen, setIsOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
-    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('')
+    const deferredSearchQuery = useDeferredValue(searchQuery)
     const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)
     const searchInputRef = useRef<HTMLInputElement>(null)
     const optionsListRef = useRef<HTMLDivElement>(null)
-    const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
-
-    const ChevronIcon = useMemo(() => icons.next, [])
-    const SearchIcon = useMemo(() => icons.search, [])
 
     // 드롭다운 열기/닫기 핸들러
     const handleOpenChange = useCallback((open: boolean) => {
       setIsOpen(open)
       if (!open) {
         setSearchQuery('')
-        setDebouncedSearchQuery('')
         setHighlightedIndex(-1)
       }
     }, [])
-
-    // Debounce 검색어 (300ms)
-    useEffect(() => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current)
-      }
-
-      debounceTimerRef.current = setTimeout(() => {
-        setDebouncedSearchQuery(searchQuery)
-      }, 200)
-
-      return () => {
-        if (debounceTimerRef.current) {
-          clearTimeout(debounceTimerRef.current)
-        }
-      }
-    }, [searchQuery])
 
     // Floating UI 설정
     const { refs, floatingStyles, context } = useFloating({
@@ -147,13 +128,13 @@ export const Select = forwardRef(
       [options, value],
     )
 
-    // 필터링된 옵션 (debounced 검색어 사용)
+    // 필터링된 옵션 (useDeferredValue로 지연된 검색어 사용 - React 19 권장)
     const filteredOptions = useMemo(() => {
-      if (!searchable || !debouncedSearchQuery) return options
+      if (!searchable || !deferredSearchQuery) return options
 
-      const query = debouncedSearchQuery.toLowerCase()
+      const query = deferredSearchQuery.toLowerCase()
       return options.filter(option => option.label.toLowerCase().includes(query))
-    }, [options, debouncedSearchQuery, searchable])
+    }, [options, deferredSearchQuery, searchable])
 
     // 활성 옵션 ID (접근성용)
     const activeOptionId = useMemo(() => {
@@ -179,7 +160,6 @@ export const Select = forwardRef(
         onChange?.(selectedValue)
         setIsOpen(false)
         setSearchQuery('')
-        setDebouncedSearchQuery('')
       },
       [onChange],
     )
@@ -293,7 +273,7 @@ export const Select = forwardRef(
           <span className={styles.triggerText}>
             {selectedOption ? selectedOption.label : placeholder}
           </span>
-          <ChevronIcon
+          <CHEVRON_ICON
             className={cn(styles.chevronIcon, iconSizes.sm, isOpen && styles.chevronIconOpen)}
           />
         </button>
@@ -311,7 +291,7 @@ export const Select = forwardRef(
                 {/* 검색 입력창 */}
                 {searchable && (
                   <div className={styles.searchContainer}>
-                    <SearchIcon
+                    <SEARCH_ICON
                       className={cn(iconSizes.sm, styles.searchIcon)}
                       aria-hidden='true'
                     />
@@ -327,7 +307,7 @@ export const Select = forwardRef(
                       aria-controls={`${name}-listbox`}
                     />
                     {/* 검색 결과 개수 (스크린 리더용) */}
-                    {debouncedSearchQuery && (
+                    {deferredSearchQuery && (
                       <span className='sr-only' aria-live='polite' aria-atomic='true'>
                         {filteredOptions.length}개의 결과가 있습니다
                       </span>
@@ -368,8 +348,8 @@ export const Select = forwardRef(
                         }}
                         onMouseEnter={() => setHighlightedIndex(index)}
                       >
-                        {searchable && debouncedSearchQuery
-                          ? highlightText(option.label, debouncedSearchQuery)
+                        {searchable && deferredSearchQuery
+                          ? highlightText(option.label, deferredSearchQuery)
                           : option.label}
                       </div>
                     ))
