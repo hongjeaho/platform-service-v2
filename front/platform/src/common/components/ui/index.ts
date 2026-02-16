@@ -48,6 +48,10 @@ export type { DateRange, DateRangePickerProps } from './form/dateRangePicker/Dat
 export { Table } from './data-display/table/Table'
 export type { TableColumn, TableProps, TableSortConfig } from './data-display/table/Table.types'
 
+// Pagination (navigation)
+export { Pagination } from './navigation/pagination'
+export type { PaginationProps } from './navigation/pagination/Pagination.types'
+
 // Card (layout)
 export {
   Card,

@@ -12,24 +12,25 @@ import type {
   CardTitleProps,
 } from './Card.types'
 
+const CARD_SIZE_KEYS = { sm: 'cardSm', md: 'cardMd', lg: 'cardLg' } as const
+const CARD_VARIANT_KEYS = {
+  default: 'default',
+  elevated: 'elevated',
+  outlined: 'outlined',
+} as const
+
 /**
  * Card 컴포넌트
  * 디자인 토큰을 활용한 카드 컴포넌트입니다.
  * variant, size, interactive 옵션을 통해 다양한 스타일을 제공합니다.
  */
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-  ({ variant = 'default', size = 'md', interactive = false, children, className, ...props }, ref) => {
-    const sizeClass = {
-      sm: styles.cardSm,
-      md: styles.cardMd,
-      lg: styles.cardLg,
-    }[size]
-
-    const variantClass = {
-      default: styles.default,
-      elevated: styles.elevated,
-      outlined: styles.outlined,
-    }[variant]
+  (
+    { variant = 'default', size = 'md', interactive = false, children, className, ...props },
+    ref,
+  ) => {
+    const sizeClass = styles[CARD_SIZE_KEYS[size]]
+    const variantClass = styles[CARD_VARIANT_KEYS[variant]]
 
     return (
       <div

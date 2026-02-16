@@ -1,9 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { Button } from '@/common/components/ui/action/button'
-import { icons } from '@/constants/design/icons'
+import { icons, iconSizes } from '@/constants/design/icons'
+import { containerSizes, gap } from '@/constants/design/spacing'
+import { cn } from '@/lib/utils'
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './Card'
+
+const INFO_ICON = icons.info
+const SUCCESS_ICON = icons.success
 
 const meta: Meta<typeof Card> = {
   title: 'UI/Layout/Card',
@@ -43,7 +48,7 @@ export const Default: Story = {
     interactive: false,
   },
   render: args => (
-    <Card {...args} style={{ width: '400px' }}>
+    <Card {...args} className={containerSizes.md}>
       <CardHeader>
         <CardTitle>Card 제목</CardTitle>
         <CardDescription>Card 설명 텍스트입니다.</CardDescription>
@@ -65,7 +70,7 @@ export const WithFooter: Story = {
     interactive: false,
   },
   render: args => (
-    <Card {...args} style={{ width: '400px' }}>
+    <Card {...args} className={containerSizes.md}>
       <CardHeader>
         <CardTitle>프로젝트 정보</CardTitle>
         <CardDescription>프로젝트 상세 정보를 확인하세요.</CardDescription>
@@ -95,7 +100,7 @@ export const Elevated: Story = {
     interactive: true,
   },
   render: args => (
-    <Card {...args} style={{ width: '400px' }}>
+    <Card {...args} className={containerSizes.md}>
       <CardHeader>
         <CardTitle>Elevated Card</CardTitle>
         <CardDescription>그림자 효과가 적용된 Card입니다.</CardDescription>
@@ -117,7 +122,7 @@ export const Outlined: Story = {
     interactive: true,
   },
   render: args => (
-    <Card {...args} style={{ width: '400px' }}>
+    <Card {...args} className={containerSizes.md}>
       <CardHeader>
         <CardTitle>Outlined Card</CardTitle>
         <CardDescription>테두리가 강조된 Card입니다.</CardDescription>
@@ -134,8 +139,8 @@ export const Outlined: Story = {
  */
 export const Sizes: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
-      <Card size='sm' style={{ width: '400px' }}>
+    <div className={cn('flex flex-col', gap.default)}>
+      <Card size='sm' className={containerSizes.md}>
         <CardHeader>
           <CardTitle>Small Card</CardTitle>
           <CardDescription>작은 크기의 Card입니다.</CardDescription>
@@ -145,7 +150,7 @@ export const Sizes: Story = {
         </CardContent>
       </Card>
 
-      <Card size='md' style={{ width: '400px' }}>
+      <Card size='md' className={containerSizes.md}>
         <CardHeader>
           <CardTitle>Medium Card</CardTitle>
           <CardDescription>기본 크기의 Card입니다.</CardDescription>
@@ -155,7 +160,7 @@ export const Sizes: Story = {
         </CardContent>
       </Card>
 
-      <Card size='lg' style={{ width: '400px' }}>
+      <Card size='lg' className={containerSizes.md}>
         <CardHeader>
           <CardTitle>Large Card</CardTitle>
           <CardDescription>큰 크기의 Card입니다.</CardDescription>
@@ -172,31 +177,26 @@ export const Sizes: Story = {
  * 아이콘이 포함된 Card
  */
 export const WithIcon: Story = {
-  render: () => {
-    const InfoIcon = icons.info
-    const SuccessIcon = icons.success
-
-    return (
-      <Card variant='elevated' size='md' style={{ width: '400px' }}>
-        <CardHeader>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <InfoIcon style={{ width: '1.5rem', height: '1.5rem' }} />
-            <CardTitle>알림</CardTitle>
-          </div>
-          <CardDescription>중요한 안내사항입니다.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p>시스템 점검이 예정되어 있습니다.</p>
-        </CardContent>
-        <CardFooter>
-          <Button variant='primary' size='sm'>
-            <SuccessIcon style={{ width: '1rem', height: '1rem' }} />
-            확인
-          </Button>
-        </CardFooter>
-      </Card>
-    )
-  },
+  render: () => (
+    <Card variant='elevated' size='md' className={containerSizes.md}>
+      <CardHeader>
+        <div className={cn('flex items-center', gap.tight)}>
+          <INFO_ICON className={iconSizes.lg} />
+          <CardTitle>알림</CardTitle>
+        </div>
+        <CardDescription>중요한 안내사항입니다.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p>시스템 점검이 예정되어 있습니다.</p>
+      </CardContent>
+      <CardFooter>
+        <Button variant='primary' size='sm'>
+          <SUCCESS_ICON className={iconSizes.sm} />
+          확인
+        </Button>
+      </CardFooter>
+    </Card>
+  ),
 }
 
 /**
@@ -204,7 +204,7 @@ export const WithIcon: Story = {
  */
 export const List: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column', width: '400px' }}>
+    <div className={cn('flex flex-col', gap.default, containerSizes.md)}>
       {[1, 2, 3].map(index => (
         <Card key={index} variant='default' interactive>
           <CardHeader>
@@ -225,14 +225,7 @@ export const List: Story = {
  */
 export const Grid: Story = {
   render: () => (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: '1rem',
-        width: '600px',
-      }}
-    >
+    <div className={cn('grid grid-cols-2', gap.default, containerSizes.xl)}>
       {[1, 2, 3, 4].map(index => (
         <Card key={index} variant='elevated' interactive>
           <CardHeader>

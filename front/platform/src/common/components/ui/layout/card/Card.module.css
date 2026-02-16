@@ -1,11 +1,14 @@
-/* Card 기본 스타일 - V3 디자인 시스템 */
+/* Card 기본 스타일 */
 .card {
   display: flex;
   flex-direction: column;
   background-color: var(--card);
   color: var(--card-foreground);
   border-radius: var(--radius-lg);
-  transition: all var(--transition-base) var(--transition-ease);
+  transition:
+    box-shadow var(--transition-base) var(--transition-ease),
+    border-color var(--transition-base) var(--transition-ease),
+    transform var(--transition-base) var(--transition-ease);
 }
 
 /* Size: Small */
@@ -52,12 +55,12 @@
 
 .interactive.default:hover {
   box-shadow: var(--shadow-md);
-  border-color: var(--color-gray-400);
+  border-color: var(--accent);
 }
 
 .interactive.elevated:hover {
   box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  transform: translateY(calc(-1 * var(--spacing-1)));
 }
 
 .interactive.outlined:hover {
