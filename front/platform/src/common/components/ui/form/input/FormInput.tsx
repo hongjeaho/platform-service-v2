@@ -37,7 +37,7 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
         <Input
           {...field}
           id={field.name}
-          value={field.value || ''}
+          value={field.value ?? ''}
           error={fieldState.error?.message}
           {...inputProps}
         />

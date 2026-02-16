@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useId } from 'react'
 
 import { textCombinations } from '@/constants/design/typography'
 import { cn } from '@/lib/utils'
@@ -25,13 +25,23 @@ import type { InputProps } from './Input.types'
  */
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
-    { value = '', onChange, label, placeholder, error, required, disabled, className, ...props },
+    {
+      value = '',
+      onChange,
+      label,
+      placeholder,
+      error,
+      required,
+      disabled,
+      className,
+      id: idProp,
+      ...props
+    },
     ref,
   ) => {
-    const internalRef = useRef<HTMLInputElement>(null)
-
-    // useImperativeHandle로 ref 통합 관리
-    useImperativeHandle(ref, () => internalRef.current!, [])
+    const generatedId = useId()
+    const inputId = idProp ?? generatedId
+    const errorId = error ? `${inputId}-error` : undefined
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       onChange?.(e.target.value)
@@ -40,25 +50,26 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className={cn(styles.field, className)}>
         {label && (
-          <label htmlFor={props.id} className={cn(styles.label, textCombinations.label)}>
+          <label htmlFor={inputId} className={cn(styles.label, textCombinations.label)}>
             {label}
             {required && <span className={styles.required}> *</span>}
           </label>
         )}
         <input
-          ref={internalRef}
+          ref={ref}
+          id={inputId}
           value={value}
           onChange={handleChange}
           placeholder={placeholder}
           disabled={disabled}
           aria-invalid={error ? 'true' : 'false'}
-          aria-describedby={error ? `${props.id}-error` : undefined}
+          aria-describedby={errorId}
           className={cn(styles.input, error && styles.error)}
           {...props}
         />
         {error && (
           <span
-            id={`${props.id}-error`}
+            id={errorId}
             className={cn(styles.errorMessage, textCombinations.bodySm)}
             role='alert'
           >
