@@ -29,6 +29,9 @@ import { cn } from '@/lib/utils'
 import styles from './DatePicker.module.css'
 import type { DatePickerProps } from './DatePicker.types'
 
+const PREV_ICON = icons.prev
+const NEXT_ICON = icons.next
+
 /**
  * CalendarHeader 컴포넌트
  * 월/년 표시 및 이전/다음 달 이동 버튼
@@ -48,9 +51,6 @@ function CalendarHeader({
   minDate,
   maxDate,
 }: CalendarHeaderProps) {
-  const PrevIcon = icons.prev
-  const NextIcon = icons.next
-
   const isPrevDisabled = useMemo(() => {
     if (!minDate) return false
     const prevMonth = subMonths(currentMonth, 1)
@@ -72,7 +72,7 @@ function CalendarHeader({
         disabled={isPrevDisabled}
         aria-label='이전 달'
       >
-        <PrevIcon className={iconSizes.sm} />
+        <PREV_ICON className={iconSizes.sm} />
       </button>
       <div className={styles.calendarHeaderTitle}>
         {format(currentMonth, 'yyyy년 M월', { locale: ko })}
@@ -84,7 +84,7 @@ function CalendarHeader({
         disabled={isNextDisabled}
         aria-label='다음 달'
       >
-        <NextIcon className={iconSizes.sm} />
+        <NEXT_ICON className={iconSizes.sm} />
       </button>
     </div>
   )
