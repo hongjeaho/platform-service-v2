@@ -9,6 +9,8 @@ import {
   Building2,
   Calendar,
   CheckCircle,
+  ChevronFirst,
+  ChevronLast,
   ChevronLeft,
   ChevronRight,
   Clock,
@@ -68,6 +70,8 @@ export const icons = {
   info: Info,
 
   // 네비게이션
+  first: ChevronFirst,
+  last: ChevronLast,
   next: ChevronRight,
   prev: ChevronLeft,
   menu: Menu,

@@ -7,6 +7,18 @@ import { cn } from '@/lib/utils'
 import styles from './Button.module.css'
 import type { ButtonProps } from './Button.types'
 
+const LoadingIcon = icons.time
+
+const SIZE_KEYS = { sm: 'buttonSm', md: 'buttonMd', lg: 'buttonLg' } as const
+const VARIANT_KEYS = {
+  primary: 'primary',
+  secondary: 'secondary',
+  outline: 'outline',
+  ghost: 'ghost',
+  destructive: 'destructive',
+  link: 'link',
+} as const
+
 /**
  * Button 컴포넌트
  * 디자인 토큰을 활용한 버튼 컴포넌트입니다.
@@ -25,22 +37,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
-    const LoadingIcon = icons.time
-
-    const sizeClass = {
-      sm: styles.buttonSm,
-      md: styles.buttonMd,
-      lg: styles.buttonLg,
-    }[size]
-
-    const variantClass = {
-      primary: styles.primary,
-      secondary: styles.secondary,
-      outline: styles.outline,
-      ghost: styles.ghost,
-      destructive: styles.destructive,
-      link: styles.link,
-    }[variant]
+    const sizeClass = styles[SIZE_KEYS[size]]
+    const variantClass = styles[VARIANT_KEYS[variant]]
 
     return (
       <button
@@ -55,6 +53,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         disabled={disabled || isLoading}
         aria-busy={isLoading}
+        aria-label={isLoading ? '로딩 중' : undefined}
         {...props}
       >
         {isLoading && <LoadingIcon className={cn(iconSizes.sm, styles.icon)} aria-hidden='true' />}

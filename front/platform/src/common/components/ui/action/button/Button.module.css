@@ -35,21 +35,21 @@
   line-height: var(--line-height-normal);
 }
 
-/* Variant: Primary - V3 기준 */
+/* Variant: Primary - 시맨틱 토큰 */
 .primary {
-  background-color: var(--color-primary-500);
-  color: var(--color-white);
-  border-color: var(--color-primary-500);
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
 }
 
 .primary:hover:not(:disabled) {
-  background-color: var(--color-primary-600);
-  border-color: var(--color-primary-600);
+  background-color: color-mix(in oklch, var(--primary) 85%, black);
+  border-color: color-mix(in oklch, var(--primary) 85%, black);
 }
 
 .primary:focus-visible {
-  outline: 2px solid var(--color-primary-500);
-  outline-offset: 2px;
+  outline: 2px solid var(--primary);
+  outline-offset: var(--radius-sm);
 }
 
 /* Variant: Secondary */
@@ -64,24 +64,24 @@
 
 .secondary:focus-visible {
   outline: 2px solid var(--ring);
-  outline-offset: 2px;
+  outline-offset: var(--radius-sm);
 }
 
-/* Variant: Outline - V3 기준 */
+/* Variant: Outline - 시맨틱 토큰 */
 .outline {
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid var(--border);
   background-color: transparent;
-  color: var(--color-text-primary);
+  color: var(--foreground);
 }
 
 .outline:hover:not(:disabled) {
-  background-color: var(--color-gray-100);
-  border-color: var(--color-gray-400);
+  background-color: var(--muted);
+  border-color: var(--border);
 }
 
 .outline:focus-visible {
-  outline: 2px solid var(--color-primary-500);
-  outline-offset: 2px;
+  outline: 2px solid var(--primary);
+  outline-offset: var(--radius-sm);
 }
 
 /* Variant: Ghost */
@@ -97,7 +97,7 @@
 
 .ghost:focus-visible {
   outline: 2px solid var(--ring);
-  outline-offset: 2px;
+  outline-offset: var(--radius-sm);
 }
 
 /* Variant: Destructive */
@@ -112,7 +112,7 @@
 
 .destructive:focus-visible {
   outline: 2px solid var(--ring);
-  outline-offset: 2px;
+  outline-offset: var(--radius-sm);
 }
 
 /* Variant: Link */
@@ -120,7 +120,7 @@
   background-color: transparent;
   color: var(--primary);
   text-decoration: underline;
-  text-decoration-offset: 0.25rem;
+  text-decoration-offset: var(--gap-xs);
 }
 
 .link:hover:not(:disabled) {
@@ -129,7 +129,7 @@
 
 .link:focus-visible {
   outline: 2px solid var(--ring);
-  outline-offset: 2px;
+  outline-offset: var(--radius-sm);
 }
 
 /* State: Disabled */

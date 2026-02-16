@@ -1,5 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
+import { containerSizes, gap, padding, borderRadius } from '@/constants/design/spacing'
+import { fontWeights, textCombinations } from '@/constants/design/typography'
+import { cn } from '@/lib/utils'
+
 import { Button } from './Button'
 
 const meta = {
@@ -145,7 +149,7 @@ export const Loading: Story = {
  */
 export const AllSizes: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
+    <div className={cn('flex items-end', gap.default)}>
       <Button size='sm' variant='primary'>
         Small
       </Button>
@@ -164,7 +168,7 @@ export const AllSizes: Story = {
  */
 export const AllVariants: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+    <div className={cn('flex flex-wrap', gap.default)}>
       <Button variant='primary'>Primary</Button>
       <Button variant='secondary'>Secondary</Button>
       <Button variant='outline'>Outline</Button>
@@ -193,14 +197,11 @@ export const Interactive: Story = {
 export const V3ActionBar: Story = {
   render: () => (
     <div
-      style={{
-        display: 'flex',
-        gap: '1rem',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '1.5rem',
-        borderTop: '1px solid var(--color-gray-200)',
-      }}
+      className={cn(
+        'flex justify-center items-center border-t border-border',
+        gap.default,
+        padding.card,
+      )}
     >
       <Button variant='outline' size='md'>
         목록
@@ -232,11 +233,11 @@ export const FormSubmission: Story = {
  */
 export const DocumentActions: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
-      <Button variant='primary' size='md' style={{ marginRight: '0.5rem' }}>
+    <div className={cn('flex justify-center', gap.tight)}>
+      <Button variant='primary' size='md'>
         저장
       </Button>
-      <Button variant='secondary' size='md' style={{ marginRight: '0.5rem' }}>
+      <Button variant='secondary' size='md'>
         임시 저장
       </Button>
       <Button variant='outline' size='md'>
@@ -254,12 +255,12 @@ export const DocumentActions: Story = {
  */
 export const WizardNavigation: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+    <div className={cn('flex items-center', gap.default)}>
       <Button variant='outline' size='md'>
         ← 이전
       </Button>
-      <span style={{ margin: '0 0.5rem', fontWeight: '500' }}>2 / 3</span>
-      <Button variant='primary' size='md' style={{ marginLeft: '0.5rem' }}>
+      <span className={cn(textCombinations.body, fontWeights.medium)}>2 / 3</span>
+      <Button variant='primary' size='md'>
         다음 →
       </Button>
       <Button variant='secondary' size='md'>
@@ -274,9 +275,9 @@ export const WizardNavigation: Story = {
  */
 export const LoadingStates: Story = {
   render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <div className={cn('flex flex-col', gap.default)}>
       <h4>로딩 상태 버튼</h4>
-      <div style={{ display: 'flex', gap: '0.5rem' }}>
+      <div className={cn('flex', gap.tight)}>
         <Button variant='primary' isLoading>
           기본 로딩
         </Button>
@@ -289,10 +290,12 @@ export const LoadingStates: Story = {
       </div>
 
       <h4>비활성화된 로딩 버튼</h4>
-      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+      <div className={cn('flex items-center', gap.tight)}>
         <Button variant='primary' disabled>
-          <span style={{ marginRight: '0.5rem' }}>⏳</span>
-          처리 중...
+          <span className={cn('inline-flex items-center', gap.tight)}>
+            <span>⏳</span>
+            처리 중...
+          </span>
         </Button>
       </div>
     </div>
@@ -304,57 +307,54 @@ export const LoadingStates: Story = {
  */
 export const ResponsiveExamples: Story = {
   render: () => (
-    <div style={{ width: '100%' }}>
+    <div className='w-full'>
       <h4>모바일 (360px)</h4>
       <div
-        style={{
-          display: 'flex',
-          gap: '0.5rem',
-          padding: '1rem',
-          border: '1px solid #e5e7eb',
-          borderRadius: '0.5rem',
-          maxWidth: '360px',
-        }}
+        className={cn(
+          'flex border border-border',
+          gap.tight,
+          padding.cardSm,
+          borderRadius.lg,
+          containerSizes.sm,
+        )}
       >
-        <Button variant='primary' size='sm' style={{ flex: 1 }}>
+        <Button variant='primary' size='sm' className='flex-1'>
           모바일 버튼
         </Button>
       </div>
 
       <h4>태블릿 (768px)</h4>
       <div
-        style={{
-          display: 'flex',
-          gap: '0.5rem',
-          padding: '1rem',
-          border: '1px solid #d1d5db',
-          borderRadius: '0.5rem',
-          maxWidth: '768px',
-        }}
+        className={cn(
+          'flex border border-border',
+          gap.tight,
+          padding.cardSm,
+          borderRadius.lg,
+          containerSizes.xl,
+        )}
       >
-        <Button variant='primary' size='md' style={{ flex: 1 }}>
+        <Button variant='primary' size='md' className='flex-1'>
           태블릿 버튼
         </Button>
-        <Button variant='secondary' size='md' style={{ flex: 1 }}>
+        <Button variant='secondary' size='md' className='flex-1'>
           태블릿 버튼
         </Button>
       </div>
 
       <h4>데스크톱 (1024px)</h4>
       <div
-        style={{
-          display: 'flex',
-          gap: '0.5rem',
-          padding: '1rem',
-          border: '1px solid #2563eb',
-          borderRadius: '0.5rem',
-          maxWidth: '1024px',
-        }}
+        className={cn(
+          'flex border border-border',
+          gap.tight,
+          padding.cardSm,
+          borderRadius.lg,
+          containerSizes['4xl'],
+        )}
       >
-        <Button variant='primary' size='lg' style={{ flex: 1 }}>
+        <Button variant='primary' size='lg' className='flex-1'>
           데스크톱 버튼
         </Button>
-        <Button variant='secondary' size='lg' style={{ flex: 1 }}>
+        <Button variant='secondary' size='lg' className='flex-1'>
           데스크톱 버튼
         </Button>
       </div>
@@ -375,19 +375,12 @@ export const AccessibilityComprehensive: Story = {
     disabled: false,
   },
   render: args => (
-    <div style={{ padding: '1rem', maxWidth: '400px' }}>
-      <p
-        id='button-help-text'
-        style={{
-          fontSize: '0.875rem',
-          color: '#6b7280',
-          marginBottom: '0.5rem',
-        }}
-      >
+    <div className={cn('flex flex-col', padding.cardSm, gap.tight, containerSizes.md)}>
+      <p id='button-help-text' className={cn(textCombinations.bodySm, 'text-muted-foreground')}>
         이 버튼을 클릭하면 토지보상 심의 신청서 작성 페이지로 이동합니다. 키보드 사용자는 Tab 키로
         버튼에 접근할 수 있습니다.
       </p>
-      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+      <div className={cn('flex items-center', gap.default)}>
         <Button {...args} />
         <Button variant='outline' size='sm'>
           자세히 보기
