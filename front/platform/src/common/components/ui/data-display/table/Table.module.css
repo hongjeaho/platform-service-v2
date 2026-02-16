@@ -6,36 +6,36 @@
   width: 100%;
 }
 
-/* Table 래퍼 (스크롤 가능) - V3 스타일 */
+/* Table 래퍼 (스크롤 가능) - 시맨틱 토큰 */
 .wrapper {
   overflow-x: auto;
   border-radius: var(--radius-base);
-  border: 1px solid var(--color-gray-200);
+  border: 1px solid var(--border);
 }
 
 /* Table 요소 */
 .table {
   width: 100%;
   border-collapse: collapse;
-  background-color: var(--color-white);
+  background-color: var(--card);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-normal);
 }
 
-/* 테이블 헤더 - V3 기준 */
+/* 테이블 헤더 */
 .thead {
-  background-color: var(--color-gray-50);
-  border-bottom: 2px solid var(--color-gray-200);
+  background-color: var(--muted);
+  border-bottom: 2px solid var(--border);
 }
 
 .th {
   padding: var(--spacing-3) var(--spacing-4);
   text-align: left;
   font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
+  color: var(--foreground);
   white-space: nowrap;
-  border-right: 1px solid var(--color-gray-200);
-  background-color: var(--color-gray-50);
+  border-right: 1px solid var(--border);
+  background-color: var(--muted);
 }
 
 .th:last-child {
@@ -59,8 +59,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1rem;
-  height: 1rem;
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
   margin-left: var(--gap-xs);
 }
 
@@ -69,35 +69,35 @@
 }
 
 .tr {
-  border-bottom: 1px solid var(--color-gray-200);
+  border-bottom: 1px solid var(--border);
   transition: background-color var(--transition-fast) var(--transition-ease);
 }
 
 .tr:hover {
-  background-color: var(--color-gray-50);
+  background-color: var(--muted);
 }
 
 .tr.striped:nth-child(odd) {
-  background-color: var(--color-gray-50);
+  background-color: var(--muted);
 }
 
 .tr.striped:nth-child(odd):hover {
-  background-color: var(--color-gray-100);
+  background-color: var(--accent);
 }
 
 .tr.selected {
-  background-color: var(--color-primary-50);
+  background-color: color-mix(in oklch, var(--primary) 12%, var(--card));
 }
 
 .tr:last-child {
   border-bottom: none;
 }
 
-/* 테이블 셀 - V3 기준 */
+/* 테이블 셀 */
 .td {
   padding: var(--spacing-3) var(--spacing-4);
-  color: var(--color-text-secondary);
-  border-right: 1px solid var(--color-gray-200);
+  color: var(--muted-foreground);
+  border-right: 1px solid var(--border);
   background-color: transparent;
 }
 
@@ -107,14 +107,14 @@
 
 /* 체크박스 셀 */
 .checkboxCell {
-  width: 2.5rem;
-  padding: 0.5rem 0.75rem;
+  width: var(--spacing-10);
+  padding: var(--padding-input-default);
   text-align: center;
 }
 
 .checkbox {
-  width: 1rem;
-  height: 1rem;
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
   cursor: pointer;
   accent-color: var(--primary);
 }
@@ -122,14 +122,14 @@
 /* 테이블 크기 variants */
 .sizeSm .th,
 .sizeSm .td {
-  padding: 0.5rem 0.75rem;
-  font-size: 0.8125rem;
+  padding: var(--padding-input-default);
+  font-size: var(--font-size-xs);
 }
 
 .sizeLg .th,
 .sizeLg .td {
-  padding: 1rem 1.5rem;
-  font-size: 0.9375rem;
+  padding: var(--padding-card-sm) var(--padding-card);
+  font-size: var(--font-size-sm);
 }
 
 /* 빈 데이터 */
@@ -137,10 +137,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 12rem;
+  height: var(--spacing-12);
   color: var(--muted-foreground);
-  font-size: 0.875rem;
-  line-height: 1.25;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
 }
 
 /* 빈 상태 테이블 셀 */
@@ -148,9 +148,9 @@
   text-align: center;
   color: var(--muted-foreground);
   font-style: italic;
-  padding: 3rem 1rem;
-  font-size: 0.875rem;
-  background-color: transparent; /* 일관성 유지 */
+  padding: var(--spacing-12) var(--spacing-4);
+  font-size: var(--font-size-sm);
+  background-color: transparent;
 }
 
 /* 페이지네이션 컨테이너 */
@@ -158,7 +158,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem;
+  padding: var(--spacing-4);
   border-top: 1px solid var(--border);
   background-color: var(--card);
   border-radius: 0 0 var(--radius-md) var(--radius-md);
@@ -166,7 +166,7 @@
 
 /* 페이지네이션 정보 */
 .paginationInfo {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: var(--muted-foreground);
 }
 
@@ -181,17 +181,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
   padding: 0;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background-color: var(--background);
   color: var(--foreground);
   cursor: pointer;
-  transition: all 200ms;
-  font-size: 0.75rem;
-  font-weight: 500;
+  transition:
+    background-color var(--transition-fast) var(--transition-ease),
+    border-color var(--transition-fast) var(--transition-ease),
+    color var(--transition-fast) var(--transition-ease);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
 }
 
 .paginationButton:hover:not(:disabled) {
@@ -208,25 +211,25 @@
 
 .paginationButton:focus-visible {
   outline: 2px solid var(--ring);
-  outline-offset: 2px;
+  outline-offset: var(--radius-sm);
 }
 
 /* 페이지 번호 */
 .pageNumber {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: var(--foreground);
-  font-weight: 500;
-  min-width: 3rem;
+  font-weight: var(--font-weight-medium);
+  min-width: var(--spacing-6);
   text-align: center;
 }
 
 /* 페이지 번호 버튼 */
 .pageNumberButton {
-  min-width: 2.5rem;
-  height: 2.5rem;
+  min-width: var(--spacing-10);
+  height: var(--spacing-10);
   padding: 0;
-  font-weight: 500;
-  font-size: 0.875rem;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
 }
 
 .pageNumberButton.active {
@@ -240,11 +243,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: var(--spacing-10);
+  height: var(--spacing-10);
   padding: 0;
   color: var(--muted-foreground);
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   user-select: none;
 }
 
@@ -256,11 +259,11 @@
 }
 
 .pageSizeButton {
-  min-width: 4rem;
-  height: 2rem;
-  padding: 0 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 500;
+  min-width: var(--spacing-16);
+  height: var(--button-height-sm);
+  padding: 0 var(--gap-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
   white-space: nowrap;
 }
 

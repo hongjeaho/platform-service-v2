@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -41,43 +41,34 @@ export function Table<T>({
     null,
   )
 
-  const handleSelectAll = useCallback(
-    (checked: boolean) => {
-      if (checked) {
-        const allKeys = new Set(data.map((row, i) => keyExtractor(row, i)))
-        onSelectRows?.(allKeys)
-      } else {
-        onSelectRows?.(new Set())
-      }
-    },
-    [data, keyExtractor, onSelectRows],
-  )
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const allKeys = new Set(data.map((row, i) => keyExtractor(row, i)))
+      onSelectRows?.(allKeys)
+    } else {
+      onSelectRows?.(new Set())
+    }
+  }
 
-  const handleSelectRow = useCallback(
-    (key: string | number, checked: boolean) => {
-      const newSet = new Set(selectedRows)
-      if (checked) {
-        newSet.add(key)
-      } else {
-        newSet.delete(key)
-      }
-      onSelectRows?.(newSet)
-    },
-    [selectedRows, onSelectRows],
-  )
+  const handleSelectRow = (key: string | number, checked: boolean) => {
+    const newSet = new Set(selectedRows)
+    if (checked) {
+      newSet.add(key)
+    } else {
+      newSet.delete(key)
+    }
+    onSelectRows?.(newSet)
+  }
 
-  const handleSortClick = useCallback(
-    (columnKey: string) => {
-      if (!sortable) return
+  const handleSortClick = (columnKey: string) => {
+    if (!sortable) return
 
-      const newDirection =
-        sortConfig?.key === columnKey && sortConfig?.direction === 'asc' ? 'desc' : 'asc'
+    const newDirection =
+      sortConfig?.key === columnKey && sortConfig?.direction === 'asc' ? 'desc' : 'asc'
 
-      setSortConfig({ key: columnKey, direction: newDirection })
-      onSort?.(columnKey, newDirection)
-    },
-    [sortable, sortConfig, onSort],
-  )
+    setSortConfig({ key: columnKey, direction: newDirection })
+    onSort?.(columnKey, newDirection)
+  }
 
   const isAllSelected = useMemo(() => {
     return data.length > 0 && data.every((row, i) => selectedRows?.has(keyExtractor(row, i)))
@@ -165,16 +156,27 @@ export function Table<T>({
                   right: styles.alignRight,
                 }[column.align || 'center']
 
+                const isSorted = column.sortable && sortConfig?.key === String(column.key)
+                const ariaSort =
+                  isSorted && sortConfig
+                    ? sortConfig.direction === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : column.sortable
+                      ? 'none'
+                      : undefined
+
                 return (
                   <th
                     key={String(column.key)}
                     className={cn(styles.th, column.sortable && styles.thSortable, alignClass)}
                     style={{ width: column.width }}
                     onClick={() => column.sortable && handleSortClick(String(column.key))}
+                    aria-sort={ariaSort}
                   >
                     <span className={styles.headerFlex}>
                       {column.header}
-                      {column.sortable && sortConfig?.key === String(column.key) && (
+                      {isSorted && sortConfig && (
                         <span className={styles.sortIcon} aria-hidden='true'>
                           {sortConfig.direction === 'asc' ? '↑' : '↓'}
                         </span>
@@ -206,7 +208,7 @@ export function Table<T>({
                         className={styles.checkbox}
                         checked={isSelected || false}
                         onChange={e => handleSelectRow(rowKey, e.target.checked)}
-                        aria-label={`행 선택`}
+                        aria-label={`${rowIndex + 1}번째 행 선택`}
                       />
                     </td>
                   )}

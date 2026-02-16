@@ -1,5 +1,6 @@
 import { ChevronFirst, ChevronLast, ChevronLeft, ChevronRight } from 'lucide-react'
 
+import { iconSizes } from '@/constants/design/icons'
 import { textCombinations } from '@/constants/design/typography'
 import { cn } from '@/lib/utils'
 
@@ -61,7 +62,7 @@ export function EnhancedTablePagination({
           <div className={styles.paginationControls}>
             <button
               className={cn(styles.paginationButton, styles.pageSizeButton)}
-              onClick={() => onPageChange(null)}
+              onClick={() => onPageChange(1)}
               aria-label='페이지당 항목 개수로 변경'
             >
               {pageSize}개 표시
@@ -133,7 +134,7 @@ export function EnhancedTablePagination({
           aria-label={getNavigationButtonLabel('first')}
           title={getNavigationButtonLabel('first')}
         >
-          <ChevronFirst size={16} />
+          <ChevronFirst className={iconSizes.md} aria-hidden='true' />
         </button>
 
         {/* 이전 페이지 버튼 */}
@@ -144,7 +145,7 @@ export function EnhancedTablePagination({
           aria-label={getNavigationButtonLabel('previous')}
           title={getNavigationButtonLabel('previous')}
         >
-          <ChevronLeft size={16} />
+          <ChevronLeft className={iconSizes.md} aria-hidden='true' />
         </button>
 
         {/* 페이지 번호 버튼 그룹 */}
@@ -230,7 +231,7 @@ export function EnhancedTablePagination({
           aria-label={getNavigationButtonLabel('next')}
           title={getNavigationButtonLabel('next')}
         >
-          <ChevronRight size={16} />
+          <ChevronRight className={iconSizes.md} aria-hidden='true' />
         </button>
 
         {/* 마지막 페이지 버튼 */}
@@ -241,7 +242,7 @@ export function EnhancedTablePagination({
           aria-label={getNavigationButtonLabel('last')}
           title={getNavigationButtonLabel('last')}
         >
-          <ChevronLast size={16} />
+          <ChevronLast className={iconSizes.md} aria-hidden='true' />
         </button>
       </div>
 

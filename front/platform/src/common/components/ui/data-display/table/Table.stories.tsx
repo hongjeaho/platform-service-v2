@@ -1,6 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
+import { borderRadius, gap, padding } from '@/constants/design/spacing'
+import { fontWeights, textCombinations } from '@/constants/design/typography'
+import { cn } from '@/lib/utils'
+
+import {
+  createLargeUserData,
+  sampleData,
+  tableColumns,
+  type User,
+} from './__mocks__/sampleData'
 import { Table } from './Table'
 import type { TableProps } from './Table.types'
 
@@ -16,13 +26,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-interface User {
-  id: number
-  name: string
-  email: string
-  role: string
-  status: 'active' | 'inactive'
-}
+const columns = tableColumns.map(col => ({ ...col }))
 
 /**
  * 선택 정보 표시용 컴포넌트
@@ -37,16 +41,25 @@ function SelectionInfo<T extends { id: number; name: string; email: string }>({
   const selectedData = data.filter(item => selectedIds.has(item.id))
 
   return (
-    <div className='mb-4 rounded-lg border border-gray-200 bg-gray-50 p-4'>
-      <div className='text-sm font-medium text-gray-700'>선택된 행: {selectedIds.size}개</div>
+    <div
+      className={cn(
+        'flex flex-col border border-border bg-muted',
+        borderRadius.lg,
+        padding.cardSm,
+        gap.tight,
+      )}
+    >
+      <div className={cn(textCombinations.bodySm, fontWeights.medium, 'text-foreground')}>
+        선택된 행: {selectedIds.size}개
+      </div>
       {selectedIds.size > 0 && (
-        <div className='mt-2'>
-          <div className='text-xs text-gray-500'>
+        <div className={cn('flex flex-col', gap.tight)}>
+          <div className={cn(textCombinations.bodyXs, 'text-muted-foreground')}>
             선택된 ID: {Array.from(selectedIds).join(', ')}
           </div>
-          <div className='mt-1 text-xs text-gray-600'>
+          <div className={cn(textCombinations.bodyXs, 'text-muted-foreground')}>
             선택된 데이터:
-            <ul className='ml-4 list-disc'>
+            <ul className={cn('list-disc', 'ml-4')}>
               {selectedData.map(item => (
                 <li key={item.id}>
                   {item.name} ({item.email})
@@ -59,52 +72,6 @@ function SelectionInfo<T extends { id: number; name: string; email: string }>({
     </div>
   )
 }
-
-const sampleData: User[] = [
-  {
-    id: 1,
-    name: '김준호',
-    email: 'kim@example.com',
-    role: '관리자',
-    status: 'active',
-  },
-  {
-    id: 2,
-    name: '이순신',
-    email: 'lee@example.com',
-    role: '사용자',
-    status: 'active',
-  },
-  {
-    id: 3,
-    name: '박영희',
-    email: 'park@example.com',
-    role: '편집자',
-    status: 'inactive',
-  },
-  {
-    id: 4,
-    name: '정민수',
-    email: 'jung@example.com',
-    role: '사용자',
-    status: 'active',
-  },
-  {
-    id: 5,
-    name: '최지혜',
-    email: 'choi@example.com',
-    role: '관리자',
-    status: 'inactive',
-  },
-]
-
-const columns = [
-  { key: 'id', header: 'ID', width: '80px' },
-  { key: 'name', header: '이름', width: '120px' },
-  { key: 'email', header: '이메일' },
-  { key: 'role', header: '역할', width: '100px' },
-  { key: 'status', header: '상태', width: '100px' },
-]
 
 export const Default: Story = {
   args: {
@@ -157,7 +124,7 @@ function SelectableWrapper(args: TableProps<User>) {
   const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set())
 
   return (
-    <div>
+    <div className={cn('flex flex-col', gap.default)}>
       <SelectionInfo selectedIds={selectedRows} data={sampleData} />
       <Table
         {...args}
@@ -224,14 +191,7 @@ function EnhancedPaginationWrapper(args: TableProps<User>) {
   const [pageSize, setPageSize] = useState<number>(10)
   const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set())
 
-  // 더미 데이터 생성 (100개)
-  const largeData = Array.from({ length: 100 }, (_, index) => ({
-    id: index + 1,
-    name: `사용자${index + 1}`,
-    email: `user${index + 1}@example.com`,
-    role: ['관리자', '사용자', '편집자'][index % 3],
-    status: index % 2 === 0 ? 'active' : 'inactive',
-  }))
+  const largeData = createLargeUserData(100)
   const totalItems = largeData.length
 
   // 페이지네이션된 데이터 계산
@@ -249,7 +209,7 @@ function EnhancedPaginationWrapper(args: TableProps<User>) {
   }
 
   return (
-    <div>
+    <div className={cn('flex flex-col', gap.default)}>
       <SelectionInfo selectedIds={selectedRows} data={largeData} />
       <Table
         {...args}
@@ -307,7 +267,7 @@ function SelectableWithSortableWrapper(args: TableProps<User>) {
   }))
 
   return (
-    <div>
+    <div className={cn('flex flex-col', gap.default)}>
       <SelectionInfo selectedIds={selectedRows} data={sortedData} />
       <Table
         {...args}
