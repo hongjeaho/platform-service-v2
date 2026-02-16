@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 
 import { icons, iconSizes } from '@/constants/design/icons'
 import { textCombinations } from '@/constants/design/typography'
@@ -7,6 +7,11 @@ import { cn } from '@/lib/utils'
 import styles from './Upload.module.css'
 import type { UploadProps } from './Upload.types'
 import { formatFileSize, validateFile } from './Upload.utils'
+
+const UPLOAD_ICON = icons.upload
+const DELETE_ICON = icons.delete
+const PAPERCLIP_ICON = icons.attachment
+const FILE_ICON = icons.document
 
 /**
  * Upload 컴포넌트 (단일 파일)
@@ -27,21 +32,21 @@ export function Upload({
   variant = 'default',
 }: UploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
+  const [validationError, setValidationError] = useState<string | null>(null)
 
-  const UploadIcon = icons.upload
-  const DeleteIcon = icons.delete
-  const PaperclipIcon = icons.attachment
+  const displayError = error ?? validationError
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValidationError(null)
     const file = e.target.files?.[0]
     if (!file) {
       onChange?.(null)
       return
     }
 
-    const validationError = validateFile(file, accept, maxSize)
-    if (validationError) {
-      alert(validationError)
+    const err = validateFile(file, accept, maxSize)
+    if (err) {
+      setValidationError(err)
       if (inputRef.current) {
         inputRef.current.value = ''
       }
@@ -72,11 +77,12 @@ export function Upload({
     if (files.length === 0) return
 
     const file = files[0]
-    const validationError = validateFile(file, accept, maxSize)
-    if (validationError) {
-      alert(validationError)
+    const err = validateFile(file, accept, maxSize)
+    if (err) {
+      setValidationError(err)
       return
     }
+    setValidationError(null)
 
     onChange?.(file)
     if (inputRef.current) {
@@ -114,8 +120,8 @@ export function Upload({
             onChange={handleFileChange}
             disabled={disabled}
             className={styles.hiddenInput}
-            aria-invalid={!!error}
-            aria-describedby={error ? `${name}-error` : undefined}
+            aria-invalid={!!displayError}
+            aria-describedby={displayError ? `${name}-error` : undefined}
           />
 
           <button
@@ -124,7 +130,7 @@ export function Upload({
             disabled={disabled}
             className={cn(styles.compactUploadButton, className)}
           >
-            <PaperclipIcon className={iconSizes.sm} aria-hidden='true' />
+            <PAPERCLIP_ICON className={iconSizes.sm} aria-hidden='true' />
             파일 선택
           </button>
 
@@ -139,7 +145,7 @@ export function Upload({
                 aria-label={`${value.name} 삭제`}
                 disabled={disabled}
               >
-                <DeleteIcon className={iconSizes.sm} aria-hidden='true' />
+                <DELETE_ICON className={iconSizes.sm} aria-hidden='true' />
               </button>
             </div>
           )}
@@ -172,8 +178,8 @@ export function Upload({
         onChange={handleFileChange}
         disabled={disabled}
         className={styles.hiddenInput}
-        aria-invalid={!!error}
-        aria-describedby={error ? `${name}-error` : undefined}
+        aria-invalid={!!displayError}
+        aria-describedby={displayError ? `${name}-error` : undefined}
       />
 
       {!value ? (
@@ -186,18 +192,19 @@ export function Upload({
           tabIndex={0}
           onKeyDown={e => {
             if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
               handleClick()
             }
           }}
         >
-          <UploadIcon className={cn(iconSizes.lg, styles.uploadIcon)} aria-hidden='true' />
+          <UPLOAD_ICON className={cn(iconSizes.lg, styles.uploadIcon)} aria-hidden='true' />
           <p className={styles.uploadText}>{placeholder}</p>
           <p className={styles.uploadSubText}>{maxSize && `최대 ${formatFileSize(maxSize)}`}</p>
         </div>
       ) : (
         <div className={styles.fileDisplay}>
           <div className={styles.fileItem}>
-            <span className={styles.fileIcon}>📄</span>
+            <FILE_ICON className={cn(iconSizes.sm, styles.fileIcon)} aria-hidden='true' />
             <div className={styles.fileInfo}>
               <span className={styles.fileName}>{value.name}</span>
               <span className={styles.fileSize}>{formatFileSize(value.size)}</span>
@@ -208,15 +215,15 @@ export function Upload({
               aria-label={`${value.name} 삭제`}
               disabled={disabled}
             >
-              <DeleteIcon className={iconSizes.sm} aria-hidden='true' />
+              <DELETE_ICON className={iconSizes.sm} aria-hidden='true' />
             </button>
           </div>
         </div>
       )}
 
-      {error && (
-        <p id={`${name}-error`} className={cn(styles.error, textCombinations.bodySm)}>
-          {error}
+      {displayError && (
+        <p id={`${name}-error`} className={cn(styles.error, textCombinations.bodySm)} role='alert'>
+          {displayError}
         </p>
       )}
     </div>

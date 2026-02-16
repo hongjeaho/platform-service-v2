@@ -8,9 +8,9 @@
 /* Upload 라벨 */
 .label {
   color: var(--foreground);
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.25;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
 }
 
 /* 필수 마크 */
@@ -31,13 +31,16 @@
   align-items: center;
   justify-content: center;
   gap: var(--gap-sm);
-  padding: 2rem 1rem;
+  padding: var(--padding-card-lg) var(--spacing-4);
   border: 2px dashed var(--border);
   border-radius: var(--radius-md);
   background-color: var(--muted);
   color: var(--muted-foreground);
   cursor: pointer;
-  transition: all 200ms;
+  transition:
+    border-color var(--transition-fast) var(--transition-ease),
+    background-color var(--transition-fast) var(--transition-ease),
+    color var(--transition-fast) var(--transition-ease);
   text-align: center;
 }
 
@@ -49,7 +52,7 @@
 
 .uploadArea:focus-visible {
   outline: 2px solid var(--ring);
-  outline-offset: 2px;
+  outline-offset: var(--radius-sm);
 }
 
 .uploadArea.dragActive {
@@ -72,18 +75,15 @@
 
 /* Upload 텍스트 */
 .uploadText {
-  /* 디자인 토큰: fontSize.bodySm = 0.875rem */
-  /* 디자인 토큰: fontWeight.medium = 500 */
-  font-size: 0.875rem;
-  line-height: 1.25;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-medium);
 }
 
 /* Upload 서브텍스트 */
 .uploadSubText {
-  /* 디자인 토큰: fontSize.xs = 0.75rem */
-  font-size: 0.75rem;
-  line-height: 1.1;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-tight);
   color: var(--muted-foreground);
 }
 
@@ -92,7 +92,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--gap-sm);
-  margin-top: 1rem;
+  margin-top: var(--gap-md);
 }
 
 /* 파일 아이템 */
@@ -104,13 +104,14 @@
   border-radius: var(--radius-md);
   background-color: var(--card);
   border: 1px solid var(--border);
-  transition: all 200ms;
+  transition:
+    border-color var(--transition-fast) var(--transition-ease),
+    background-color var(--transition-fast) var(--transition-ease);
 }
 
 .fileItem:hover {
   border-color: var(--primary);
-  background-color: var(--accent);
-  background-color: rgba(var(--primary), 0.05);
+  background-color: color-mix(in oklch, var(--primary) 10%, var(--card));
 }
 
 /* 파일 아이콘 */
@@ -130,10 +131,8 @@
 
 /* 파일명 */
 .fileName {
-  /* 디자인 토큰: fontSize.bodySm = 0.875rem */
-  /* 디자인 토큰: fontWeight.medium = 500 */
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   color: var(--foreground);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -142,19 +141,17 @@
 
 /* 파일 크기 */
 .fileSize {
-  /* 디자인 토큰: fontSize.xs = 0.75rem */
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: var(--muted-foreground);
 }
 
 /* 파일 삭제 버튼 */
 .deleteButton {
-  /* 디자인 토큰: size.buttonIconMd = 1.5rem */
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
   flex-shrink: 0;
   padding: 0;
   border: none;
@@ -162,7 +159,9 @@
   background-color: transparent;
   color: var(--error);
   cursor: pointer;
-  transition: all 200ms;
+  transition:
+    background-color var(--transition-fast) var(--transition-ease),
+    color var(--transition-fast) var(--transition-ease);
   line-height: 1;
 }
 
@@ -178,8 +177,8 @@
 
 /* 에러 메시지 */
 .error {
-  font-size: 0.875rem;
-  line-height: 1.25;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
   color: var(--error);
   margin-top: var(--gap-xs);
 }
@@ -193,7 +192,7 @@
 
 /* 파일 개수 정보 */
 .fileCount {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: var(--muted-foreground);
   margin-top: var(--gap-sm);
 }
@@ -217,11 +216,11 @@
 
 /* Compact 레이블 */
 .compactLabel {
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   color: var(--foreground);
-  line-height: 1.25;
-  min-width: 120px;
+  line-height: var(--line-height-tight);
+  min-width: 7.5rem;
   flex-shrink: 0;
 }
 
@@ -230,17 +229,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  gap: var(--gap-sm);
+  padding: var(--padding-button-md);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background-color: var(--background);
   color: var(--foreground);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 200ms;
-  line-height: 1.25;
+  transition:
+    border-color var(--transition-fast) var(--transition-ease),
+    background-color var(--transition-fast) var(--transition-ease),
+    color var(--transition-fast) var(--transition-ease);
+  line-height: var(--line-height-tight);
 }
 
 .compactUploadButton:hover:not(:disabled) {
@@ -251,7 +253,7 @@
 
 .compactUploadButton:focus-visible {
   outline: 2px solid var(--ring);
-  outline-offset: 2px;
+  outline-offset: var(--radius-sm);
 }
 
 .compactUploadButton:disabled {
@@ -263,11 +265,11 @@
 .compactFileInfo {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
+  gap: var(--gap-sm);
+  padding: var(--padding-input-default);
   border-radius: var(--radius-md);
   background-color: var(--muted);
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: var(--foreground);
   flex: 1;
   min-width: 0;
@@ -281,7 +283,7 @@
 }
 
 .compactFileInfo .fileSize {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: var(--muted-foreground);
   flex-shrink: 0;
 }
@@ -290,8 +292,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
   flex-shrink: 0;
   padding: 0;
   border: none;
@@ -299,7 +301,9 @@
   background-color: transparent;
   color: var(--error);
   cursor: pointer;
-  transition: all 200ms;
+  transition:
+    background-color var(--transition-fast) var(--transition-ease),
+    color var(--transition-fast) var(--transition-ease);
   line-height: 1;
 }
 
@@ -323,7 +327,7 @@
 .fileTable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 
 /* 테이블 헤더 */
@@ -333,11 +337,11 @@
 }
 
 .tableHeader th {
-  padding: 0.75rem 1rem;
+  padding: var(--spacing-3) var(--spacing-4);
   text-align: left;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--foreground);
-  line-height: 1.25;
+  line-height: var(--line-height-tight);
 }
 
 .tableHeader th:last-child {
@@ -348,7 +352,7 @@
 /* 테이블 행 */
 .tableRow {
   border-bottom: 1px solid var(--border);
-  transition: background-color 200ms;
+  transition: background-color var(--transition-fast) var(--transition-ease);
 }
 
 .tableRow:last-child {
@@ -361,12 +365,12 @@
 
 /* 테이블 셀 */
 .tableCell {
-  padding: 0.75rem 1rem;
-  line-height: 1.25;
+  padding: var(--spacing-3) var(--spacing-4);
+  line-height: var(--line-height-tight);
 }
 
 .tableCell.fileName {
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   color: var(--foreground);
   max-width: 300px;
   overflow: hidden;
@@ -388,15 +392,17 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
   padding: 0;
   border: none;
   border-radius: var(--radius-md);
   background-color: transparent;
   color: var(--error);
   cursor: pointer;
-  transition: all 200ms;
+  transition:
+    background-color var(--transition-fast) var(--transition-ease),
+    color var(--transition-fast) var(--transition-ease);
   line-height: 1;
 }
 
@@ -407,13 +413,13 @@
 
 .tableCell .deleteButton:focus-visible {
   outline: 2px solid var(--ring);
-  outline-offset: 2px;
+  outline-offset: var(--radius-sm);
 }
 
 /* 빈 테이블 메시지 */
 .emptyTable {
-  padding: 2rem;
+  padding: var(--padding-card-lg);
   text-align: center;
   color: var(--muted-foreground);
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }

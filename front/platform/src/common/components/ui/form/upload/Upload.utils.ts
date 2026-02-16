@@ -131,5 +131,3 @@ export function validateFile(file: File, accept?: string, maxSize?: number): str
 
   return null
 }
-
-

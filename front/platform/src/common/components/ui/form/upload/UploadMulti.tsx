@@ -8,6 +8,11 @@ import styles from './Upload.module.css'
 import type { UploadMultiProps } from './Upload.types'
 import { formatFileSize, validateFile } from './Upload.utils'
 
+const UPLOAD_ICON = icons.upload
+const DELETE_ICON = icons.delete
+const PAPERCLIP_ICON = icons.attachment
+const FILE_ICON = icons.document
+
 /**
  * UploadMulti 컴포넌트 (멀티 파일)
  * 여러 파일을 업로드하고 관리하기 위한 입력 필드입니다.
@@ -31,36 +36,40 @@ export function UploadMulti({
 }: UploadMultiProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [dragActive, setDragActive] = useState(false)
-
-  const UploadIcon = icons.upload
-  const DeleteIcon = icons.delete
-  const PaperclipIcon = icons.attachment
+  const [validationError, setValidationError] = useState<string | null>(null)
 
   const validateFileWithCount = (file: File): string | null => {
-    if (maxFiles && value.length >= maxFiles) {
+    if (maxFiles && (value ?? []).length >= maxFiles) {
       return `최대 ${maxFiles}개의 파일만 추가할 수 있습니다.`
     }
     return validateFile(file, accept, maxSize)
   }
 
+  const displayError = error ?? validationError
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValidationError(null)
     const files = e.target.files
     if (!files) return
 
     const newFiles = Array.from(files)
     const validFiles: File[] = []
+    const errors: string[] = []
 
     for (const file of newFiles) {
-      const validationError = validateFileWithCount(file)
-      if (validationError) {
-        alert(`${file.name}: ${validationError}`)
+      const err = validateFileWithCount(file)
+      if (err) {
+        errors.push(`${file.name}: ${err}`)
         continue
       }
       validFiles.push(file)
     }
 
+    if (errors.length > 0) {
+      setValidationError(errors.join('\n'))
+    }
     if (validFiles.length > 0) {
-      onChange?.([...value, ...validFiles])
+      onChange?.([...(value ?? []), ...validFiles])
       if (inputRef.current) {
         inputRef.current.value = ''
       }
@@ -101,16 +110,16 @@ export function UploadMulti({
     const validFiles: File[] = []
 
     for (const file of newFiles) {
-      const validationError = validateFileWithCount(file)
-      if (validationError) {
-        alert(`${file.name}: ${validationError}`)
-        continue
+      const err = validateFileWithCount(file)
+      if (err) {
+        setValidationError(`${file.name}: ${err}`)
+        return
       }
       validFiles.push(file)
     }
-
+    setValidationError(null)
     if (validFiles.length > 0) {
-      onChange?.([...value, ...validFiles])
+      onChange?.([...(value ?? []), ...validFiles])
     }
   }
 
@@ -152,7 +161,7 @@ export function UploadMulti({
                     aria-label={`${file.name} 삭제`}
                     disabled={disabled}
                   >
-                    <DeleteIcon className={iconSizes.sm} aria-hidden='true' />
+                    <DELETE_ICON className={iconSizes.sm} aria-hidden='true' />
                   </button>
                 </td>
               </tr>
@@ -168,7 +177,7 @@ export function UploadMulti({
     <div className={styles.fileList} role='list'>
       {value.map((file, index) => (
         <div key={`${file.name}-${file.size}-${index}`} className={styles.fileItem} role='listitem'>
-          <span className={styles.fileIcon}>📄</span>
+          <FILE_ICON className={cn(iconSizes.sm, styles.fileIcon)} aria-hidden='true' />
           <div className={styles.fileInfo}>
             <span className={styles.fileName}>{file.name}</span>
             <span className={styles.fileSize}>{formatFileSize(file.size)}</span>
@@ -179,7 +188,7 @@ export function UploadMulti({
             aria-label={`${file.name} 삭제`}
             disabled={disabled}
           >
-            <DeleteIcon className={iconSizes.sm} aria-hidden='true' />
+            <DELETE_ICON className={iconSizes.sm} aria-hidden='true' />
           </button>
         </div>
       ))}
@@ -192,7 +201,7 @@ export function UploadMulti({
       <div className={styles.compactContainer}>
         <div className={styles.compactHeader}>
           {label && (
-            <label className={styles.compactLabel}>
+            <label htmlFor={name} className={styles.compactLabel}>
               {label}
               {required && <span className={styles.required}>*</span>}
             </label>
@@ -207,8 +216,8 @@ export function UploadMulti({
             onChange={handleFileChange}
             disabled={disabled || !canAddMore}
             className={styles.hiddenInput}
-            aria-invalid={!!error}
-            aria-describedby={error ? `${name}-error` : undefined}
+            aria-invalid={!!displayError}
+            aria-describedby={displayError ? `${name}-error` : undefined}
           />
 
           <button
@@ -217,7 +226,7 @@ export function UploadMulti({
             disabled={disabled || !canAddMore}
             className={cn(styles.compactUploadButton, className)}
           >
-            <PaperclipIcon className={iconSizes.sm} aria-hidden='true' />
+            <PAPERCLIP_ICON className={iconSizes.sm} aria-hidden='true' />
             파일 추가
             {maxFiles && ` (${value.length}/${maxFiles})`}
           </button>
@@ -225,9 +234,13 @@ export function UploadMulti({
 
         {value.length > 0 && (displayMode === 'table' ? renderTableView() : renderListView())}
 
-        {error && (
-          <p id={`${name}-error`} className={cn(styles.error, textCombinations.bodySm)}>
-            {error}
+        {displayError && (
+          <p
+            id={`${name}-error`}
+            className={cn(styles.error, textCombinations.bodySm)}
+            role='alert'
+          >
+            {displayError}
           </p>
         )}
       </div>
@@ -258,8 +271,8 @@ export function UploadMulti({
         onChange={handleFileChange}
         disabled={disabled || !canAddMore}
         className={styles.hiddenInput}
-        aria-invalid={!!error}
-        aria-describedby={error ? `${name}-error` : undefined}
+        aria-invalid={!!displayError}
+        aria-describedby={displayError ? `${name}-error` : undefined}
       />
 
       {canAddMore && (
@@ -278,11 +291,12 @@ export function UploadMulti({
           tabIndex={0}
           onKeyDown={e => {
             if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
               handleClick()
             }
           }}
         >
-          <UploadIcon className={cn(iconSizes.lg, styles.uploadIcon)} aria-hidden='true' />
+          <UPLOAD_ICON className={cn(iconSizes.lg, styles.uploadIcon)} aria-hidden='true' />
           <p className={styles.uploadText}>{placeholder}</p>
           <p className={styles.uploadSubText}>
             {maxSize && `최대 ${formatFileSize(maxSize)}`}
@@ -294,9 +308,9 @@ export function UploadMulti({
 
       {value.length > 0 && (displayMode === 'table' ? renderTableView() : renderListView())}
 
-      {error && (
-        <p id={`${name}-error`} className={cn(styles.error, textCombinations.bodySm)}>
-          {error}
+      {displayError && (
+        <p id={`${name}-error`} className={cn(styles.error, textCombinations.bodySm)} role='alert'>
+          {displayError}
         </p>
       )}
     </div>
