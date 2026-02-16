@@ -1,0 +1,302 @@
+---
+description: TypeScript 기반 디자인 토큰 시스템 사용 규칙
+alwaysApply: true
+---
+
+# 디자인 시스템 규칙
+
+## 핵심 원칙
+
+- CSS 변수 기반 색상 (OKLCH 색상 공간, WCAG AA 준수)
+- 4px 단위 간격 체계 (TailwindCSS 표준)
+- TypeScript 타입 안전성 보장
+- **하드코딩된 스타일 값 사용 금지**
+- V3 디자인 시스템 (`html/css/v3-main.css`)과 동기화
+
+## CSS 작성 규칙
+
+- **CSS Module만 사용** (`.module.css`)
+- `:global`, `:root`, `!important` 예약어 사용 금지
+- `index.css`는 전역 변경이 필요한 경우에만 수정
+- Flexbox 방식으로 구현 (`position: absolute` 금지)
+- 불필요한 애니메이션 추가 금지
+
+---
+
+## 1. 색상 사용
+
+```typescript
+import { brandColors, semanticColors, buttonVariants, statusColors } from '@/constants/design/color'
+```
+
+### ✅ 좋은 예
+
+```typescript
+// 시맨틱 색상 토큰 사용
+<button className={buttonVariants.primary}>버튼</button>
+<div className="bg-primary text-primary-foreground">배너</div>
+<span className={statusColors.완료}>완료</span>
+```
+
+### ❌ 나쁜 예
+
+```typescript
+// 하드코딩된 색상
+<button className="bg-blue-600 text-white">버튼</button>
+// 인라인 스타일
+<div style={{ backgroundColor: '#1a73e8' }}>배너</div>
+// 임의의 TailwindCSS 색상
+<span className="bg-slate-300">상태</span>
+```
+
+---
+
+## 2. 타이포그래피 사용
+
+```typescript
+import { textCombinations } from '@/constants/design/typography'
+```
+
+### ✅ 좋은 예
+
+```typescript
+// 조합 토큰 사용 (권장)
+<h1 className={textCombinations.h1}>페이지 제목</h1>
+<p className={textCombinations.body}>본문 텍스트</p>
+<button className={textCombinations.button}>버튼</button>
+<label className={textCombinations.label}>레이블</label>
+```
+
+### ❌ 나쁜 예
+
+```typescript
+// 개별 클래스 조합
+<h1 className="text-3xl font-bold">제목</h1>
+// 인라인 스타일
+<p style={{ fontSize: '16px', fontWeight: 'normal' }}>본문</p>
+```
+
+---
+
+## 3. 간격 사용
+
+### 접근 방식 1: TailwindCSS 클래스 (React JSX)
+
+```typescript
+import { padding, gap, borderRadius } from '@/constants/design/spacing'
+```
+
+**좋은 예:**
+
+```typescript
+<button className={padding.buttonMd}>버튼</button>
+<div className={cn('flex', gap.default)}>리스트</div>
+<div className={cn(padding.card, borderRadius.lg, 'bg-card border')}>카드</div>
+```
+
+**나쁜 예:**
+
+```typescript
+// 임의의 간격 값
+<button className="px-5 py-2.5">버튼</button>
+<div className="gap-5">리스트</div>
+```
+
+### 접근 방식 2: CSS 변수 (CSS Module)
+
+**CSS Module 예시:**
+
+```css
+/* Button.module.css */
+.buttonMd {
+  padding: var(--padding-button-md);
+}
+
+.icon {
+  margin-right: var(--gap-sm);
+}
+
+/* Input.module.css */
+.field {
+  gap: var(--gap-xs);
+}
+
+.input {
+  padding: var(--padding-input-default);
+}
+```
+
+### 주요 CSS 변수
+
+**Padding:**
+- `--padding-button-sm` / `md` / `lg` → 버튼 패딩
+- `--padding-card-sm` / `card` / `card-lg` → 카드 패딩
+- `--padding-input-default` → 입력 필드 패딩
+
+**Gap:**
+- `--gap-xs` (4px) / `sm` (8px) / `md` (16px) / `lg` (24px)
+
+**Size:**
+- `--size-checkbox` / `radio` → 체크박스/라디오 크기
+- `--size-icon-sm` / `md` → 아이콘 크기
+
+---
+
+## 4. 아이콘 사용
+
+```typescript
+import { icons, iconSizes, iconVariants } from '@/constants/design/icons'
+```
+
+### ✅ 좋은 예
+
+```typescript
+// 의미 기반 아이콘 선택
+const Icon = icons.add  // 또는 icons.success
+<Icon className={iconSizes.md} />
+<Icon className={iconVariants.mdPrimary} />
+
+// cn() 조합
+<CheckCircle className={cn(iconSizes.md, 'text-success')} />
+```
+
+### ❌ 나쁜 예
+
+```typescript
+// 직접 import (금지)
+import { Plus } from 'lucide-react'
+<Plus className="h-5 w-5" />
+
+// 임의의 크기
+<Icon className="h-7 w-7" />
+```
+
+---
+
+## 5. 컴포넌트 작성 패턴
+
+### 토큰 조합 패턴
+
+```typescript
+import { cn } from '@/lib/utils'
+import { padding, borderRadius, gap } from '@/constants/design/spacing'
+import { buttonVariants } from '@/constants/design/color'
+
+<div className={cn(
+  padding.card,
+  borderRadius.lg,
+  'bg-card border border-border',
+  'shadow-sm hover:shadow-md transition-shadow'
+)}>
+  {children}
+</div>
+```
+
+### 조건부 스타일링
+
+```typescript
+<button className={cn(
+  padding.buttonMd,
+  borderRadius.md,
+  isActive && 'bg-primary text-primary-foreground',
+  !isActive && 'bg-muted text-muted-foreground'
+)}>
+  {label}
+</button>
+```
+
+### 동적 토큰 선택
+
+```typescript
+const sizeClasses = {
+  small: cn(padding.buttonSm, textCombinations.bodySm),
+  medium: cn(padding.buttonMd, textCombinations.body),
+  large: cn(padding.buttonLg, textCombinations.body),
+}
+
+<button className={sizeClasses[size]}>{label}</button>
+```
+
+---
+
+## 6. 자주 사용하는 패턴
+
+### 상태 뱃지
+
+```typescript
+import { statusColors } from '@/constants/design/color'
+import { padding, borderRadius } from '@/constants/design/spacing'
+
+<span className={cn(
+  statusColors[status],
+  padding.buttonSm,
+  borderRadius.md,
+  'inline-block'
+)}>
+  {status}
+</span>
+```
+
+### 카드 컴포넌트
+
+```typescript
+<div className={cn(
+  'bg-card border border-border',
+  padding.card,
+  borderRadius.lg,
+  'shadow-sm hover:shadow-md transition-shadow'
+)}>
+  <h3 className="text-lg font-semibold text-foreground mb-2">{title}</h3>
+  <div className={gap.default}>{children}</div>
+</div>
+```
+
+---
+
+## 7. 금지 사항
+
+### ❌ 색상 하드코딩
+
+```typescript
+// ❌ 금지
+<div className="bg-blue-600 text-white">
+<div style={{ backgroundColor: '#1a73e8' }}>
+
+// ✅ 올바름
+<div className="bg-primary text-primary-foreground">
+```
+
+### ❌ 임의의 간격 값
+
+```typescript
+// ❌ 금지
+<button className="px-5 py-2.5">
+<div className="gap-5">
+
+// ✅ 올바름
+<button className={padding.buttonMd}>
+<div className={gap.default}>
+```
+
+### ❌ 아이콘 직접 import
+
+```typescript
+// ❌ 금지
+import { Plus } from 'lucide-react'
+
+// ✅ 올바름
+import { icons } from '@/constants/design/icons'
+const Icon = icons.add
+```
+
+---
+
+## 참고 자료
+
+- `src/constants/design/index.ts` - 중앙 export
+- `src/constants/design/color.ts` - 색상 토큰
+- `src/constants/design/typography.ts` - 타이포그래피 토큰
+- `src/constants/design/spacing.ts` - 간격 토큰
+- `src/constants/design/icons.ts` - 아이콘 매핑
+- `src/index.css` - CSS 변수 정의
+- `html/css/v3-main.css` - V3 디자인 시스템 정의
