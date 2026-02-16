@@ -13,52 +13,54 @@
   cursor: pointer;
 }
 
-/* Checkbox input (숨김) - V3 스타일 */
+/* Checkbox input (숨김) - 시맨틱 토큰 */
 .input {
   appearance: none;
   width: var(--size-checkbox);
   height: var(--size-checkbox);
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background-color: var(--color-white);
+  background-color: var(--card);
   cursor: pointer;
-  transition: all var(--transition-fast) var(--transition-ease);
+  transition:
+    border-color var(--transition-fast) var(--transition-ease),
+    background-color var(--transition-fast) var(--transition-ease);
   flex-shrink: 0;
-  margin-top: 0.125rem;
+  margin-top: var(--gap-xs);
 }
 
 /* Checkbox 기본 상태 */
 .input:hover:not(:disabled) {
-  border-color: var(--color-primary-500);
+  border-color: var(--primary);
 }
 
 .input:focus-visible {
-  outline: 2px solid var(--color-primary-500);
-  outline-offset: 2px;
+  outline: 2px solid var(--primary);
+  outline-offset: var(--radius-sm);
 }
 
-/* Checkbox 체크된 상태 - V3 Primary 색상 */
+/* Checkbox 체크된 상태 */
 .input:checked {
-  background-color: var(--color-primary-500);
-  border-color: var(--color-primary-500);
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 
 .input:checked:hover {
-  background-color: var(--color-primary-600);
-  border-color: var(--color-primary-600);
+  background-color: color-mix(in oklch, var(--primary) 85%, black);
+  border-color: color-mix(in oklch, var(--primary) 85%, black);
 }
 
 /* Checkbox disabled 상태 */
 .input:disabled {
-  background-color: var(--color-gray-100);
+  background-color: var(--muted);
   cursor: not-allowed;
   opacity: 0.5;
 }
 
 /* Indeterminate 상태 (부분 선택) */
 .input:indeterminate {
-  background-color: var(--color-primary-500);
-  border-color: var(--color-primary-500);
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 
 /* Checkbox 컨텐츠 (라벨과 설명) */
@@ -66,30 +68,30 @@
   display: flex;
   flex-direction: column;
   gap: var(--gap-xs);
-  padding-top: 0.125rem;
+  padding-top: var(--gap-xs);
 }
 
-/* 라벨 텍스트 - V3 기준 */
+/* 라벨 텍스트 */
 .label {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-normal);
-  color: var(--color-text-primary);
+  color: var(--foreground);
   user-select: none;
 }
 
-/* 설명 텍스트 - V3 기준 */
+/* 설명 텍스트 */
 .description {
   font-size: var(--font-size-sm);
   line-height: var(--line-height-normal);
-  color: var(--color-text-secondary);
+  color: var(--muted-foreground);
 }
 
-/* 에러 메시지 - V3 기준 */
+/* 에러 메시지 */
 .error {
   font-size: var(--font-size-sm);
   line-height: var(--line-height-normal);
-  color: var(--color-error-600);
+  color: var(--error);
   margin-top: var(--gap-xs);
   font-weight: var(--font-weight-medium);
 }

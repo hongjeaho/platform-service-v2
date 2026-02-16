@@ -11,12 +11,12 @@
   gap: var(--gap-md);
 }
 
-/* RadioGroup 라벨 - V3 기준 */
+/* RadioGroup 라벨 */
 .groupLabel {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-normal);
-  color: var(--color-text-primary);
+  color: var(--foreground);
   margin-bottom: var(--gap-xs);
 }
 
@@ -28,44 +28,50 @@
   cursor: pointer;
 }
 
-/* Radio input (숨김) - V3 스타일 */
+/* Radio input (숨김) - 시맨틱 토큰 */
 .input {
   appearance: none;
   width: var(--size-radio);
   height: var(--size-radio);
-  border: 2px solid var(--color-gray-300);
+  border: 2px solid var(--border);
   border-radius: 50%;
-  background-color: var(--color-white);
+  background-color: var(--card);
   cursor: pointer;
-  transition: all var(--transition-fast) var(--transition-ease);
+  transition:
+    border-color var(--transition-fast) var(--transition-ease),
+    background var(--transition-fast) var(--transition-ease);
   flex-shrink: 0;
-  margin-top: 0.125rem;
+  margin-top: var(--gap-xs);
 }
 
 /* Radio 기본 상태 */
 .input:hover:not(:disabled) {
-  border-color: var(--color-primary-500);
+  border-color: var(--primary);
 }
 
 .input:focus-visible {
-  outline: 2px solid var(--color-primary-500);
-  outline-offset: 2px;
+  outline: 2px solid var(--primary);
+  outline-offset: var(--radius-sm);
 }
 
-/* Radio 선택된 상태 - V3 Primary 색상 */
+/* Radio 선택된 상태 */
 .input:checked {
-  border-color: var(--color-primary-500);
-  background: radial-gradient(circle at center, var(--color-primary-500) 35%, transparent 35%);
+  border-color: var(--primary);
+  background: radial-gradient(circle at center, var(--primary) 35%, transparent 35%);
 }
 
 .input:checked:hover:not(:disabled) {
-  border-color: var(--color-primary-600);
-  background: radial-gradient(circle at center, var(--color-primary-600) 35%, transparent 35%);
+  border-color: color-mix(in oklch, var(--primary) 85%, black);
+  background: radial-gradient(
+    circle at center,
+    color-mix(in oklch, var(--primary) 85%, black) 35%,
+    transparent 35%
+  );
 }
 
 /* Radio disabled 상태 */
 .input:disabled {
-  background-color: var(--color-gray-100);
+  background-color: var(--muted);
   cursor: not-allowed;
   opacity: 0.5;
 }
@@ -75,30 +81,30 @@
   display: flex;
   flex-direction: column;
   gap: var(--gap-xs);
-  padding-top: 0.125rem;
+  padding-top: var(--gap-xs);
 }
 
-/* Radio 라벨 - V3 기준 */
+/* Radio 라벨 */
 .label {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-normal);
-  color: var(--color-text-primary);
+  color: var(--foreground);
   user-select: none;
 }
 
-/* Radio 설명 - V3 기준 */
+/* Radio 설명 */
 .description {
   font-size: var(--font-size-sm);
   line-height: var(--line-height-normal);
-  color: var(--color-text-secondary);
+  color: var(--muted-foreground);
 }
 
-/* 에러 메시지 - V3 기준 */
+/* 에러 메시지 */
 .error {
   font-size: var(--font-size-sm);
   line-height: var(--line-height-normal);
-  color: var(--color-error-600);
+  color: var(--error);
   margin-top: var(--gap-xs);
   font-weight: var(--font-weight-medium);
 }

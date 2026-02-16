@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { useCallback, useId } from 'react'
 
 import { textCombinations } from '@/constants/design/typography'
 import { cn } from '@/lib/utils'
@@ -27,11 +27,14 @@ export function RadioGroup<T = string>({
   const errorId = `${groupId}-error`
   const labelId = label ? `${groupId}-label` : undefined
 
-  const handleChange = (optionValue: T) => {
-    if (!disabled) {
-      onChange?.(optionValue)
-    }
-  }
+  const handleChange = useCallback(
+    (optionValue: T) => {
+      if (!disabled) {
+        onChange?.(optionValue)
+      }
+    },
+    [disabled, onChange],
+  )
 
   return (
     <div
