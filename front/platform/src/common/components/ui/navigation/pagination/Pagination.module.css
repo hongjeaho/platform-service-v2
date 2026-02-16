@@ -1,0 +1,87 @@
+/* Pagination 컨테이너 - 디자인 토큰 기반 */
+.paginationContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-4);
+  gap: var(--gap-md);
+  width: 100%;
+}
+
+/* 페이지네이션 정보 */
+.paginationInfo {
+  font-size: var(--font-size-sm);
+  color: var(--muted-foreground);
+}
+
+/* 페이지네이션 버튼 그룹 */
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.paginationButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--background);
+  color: var(--foreground);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast) var(--transition-ease),
+    border-color var(--transition-fast) var(--transition-ease),
+    color var(--transition-fast) var(--transition-ease);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.paginationButton:hover:not(:disabled) {
+  border-color: var(--primary);
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.paginationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.paginationButton:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: var(--radius-sm);
+}
+
+/* 페이지 번호 버튼 */
+.pageNumberButton {
+  min-width: var(--spacing-10);
+  height: var(--spacing-10);
+  padding: 0;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+}
+
+.pageNumberButton.active {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* 페이지네이션 말줄임표 */
+.paginationEllipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-10);
+  height: var(--spacing-10);
+  padding: 0;
+  color: var(--muted-foreground);
+  font-size: var(--font-size-sm);
+  user-select: none;
+}
