@@ -18,48 +18,27 @@ type Story = StoryObj<typeof meta>
 
 function PaginationWrapper(props: PaginationProps) {
   const [currentPage, setCurrentPage] = useState(props.currentPage)
-  return (
-    <Pagination
-      {...props}
-      currentPage={currentPage}
-      onPageChange={setCurrentPage}
-    />
-  )
+  return <Pagination {...props} currentPage={currentPage} onPageChange={setCurrentPage} />
 }
 
 /** 기본 페이지네이션 (10개씩, 50개 항목) */
 export const Default: Story = {
   render: () => (
-    <PaginationWrapper
-      currentPage={1}
-      totalItems={50}
-      pageSize={10}
-      onPageChange={() => {}}
-    />
+    <PaginationWrapper currentPage={1} totalItems={50} pageSize={10} onPageChange={() => {}} />
   ),
 }
 
 /** 많은 페이지 (100개 항목, 10개씩 = 10페이지) */
 export const ManyPages: Story = {
   render: () => (
-    <PaginationWrapper
-      currentPage={5}
-      totalItems={100}
-      pageSize={10}
-      onPageChange={() => {}}
-    />
+    <PaginationWrapper currentPage={5} totalItems={100} pageSize={10} onPageChange={() => {}} />
   ),
 }
 
 /** 적은 페이지 (15개 항목, 5개씩 = 3페이지) */
 export const FewPages: Story = {
   render: () => (
-    <PaginationWrapper
-      currentPage={1}
-      totalItems={15}
-      pageSize={5}
-      onPageChange={() => {}}
-    />
+    <PaginationWrapper currentPage={1} totalItems={15} pageSize={5} onPageChange={() => {}} />
   ),
 }
 
@@ -85,19 +64,6 @@ export const CustomVisibleCount: Story = {
       pageSize={10}
       onPageChange={() => {}}
       visiblePageCount={5}
-    />
-  ),
-}
-
-/** 정보 텍스트 숨김 (showInfo=false) */
-export const WithoutInfo: Story = {
-  render: () => (
-    <PaginationWrapper
-      currentPage={2}
-      totalItems={30}
-      pageSize={10}
-      onPageChange={() => {}}
-      showInfo={false}
     />
   ),
 }

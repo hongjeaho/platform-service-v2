@@ -8,12 +8,6 @@
   width: 100%;
 }
 
-/* 페이지네이션 정보 */
-.paginationInfo {
-  font-size: var(--font-size-sm);
-  color: var(--muted-foreground);
-}
-
 /* 페이지네이션 버튼 그룹 */
 .paginationControls {
   display: flex;
@@ -73,15 +67,3 @@
   color: var(--primary-foreground);
 }
 
-/* 페이지네이션 말줄임표 */
-.paginationEllipsis {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--spacing-10);
-  height: var(--spacing-10);
-  padding: 0;
-  color: var(--muted-foreground);
-  font-size: var(--font-size-sm);
-  user-select: none;
-}
