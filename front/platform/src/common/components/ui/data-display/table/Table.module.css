@@ -8,6 +8,7 @@
 
 /* Table 래퍼 (스크롤 가능) - 시맨틱 토큰 */
 .wrapper {
+  min-width: 0;
   overflow-x: auto;
   border-radius: var(--radius-base);
   border: 1px solid var(--border);
@@ -16,6 +17,7 @@
 /* Table 요소 */
 .table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   background-color: var(--card);
   font-size: var(--font-size-sm);

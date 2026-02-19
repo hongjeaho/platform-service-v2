@@ -2,41 +2,39 @@ import { useMemo, useState } from 'react'
 
 import { cn } from '@/lib/utils'
 
-import { EnhancedTablePagination } from './components/EnhancedTablePagination'
 import styles from './Table.module.css'
 import type { TableProps } from './Table.types'
+
+// Module-level constants to prevent object creation on every render
+const SIZE_CLASSES = {
+  sm: styles.sizeSm,
+  md: undefined,
+  lg: styles.sizeLg,
+} as const
+
+const ALIGN_CLASSES = {
+  left: styles.alignLeft,
+  center: styles.alignCenter,
+  right: styles.alignRight,
+} as const
 
 /**
  * Table 컴포넌트
  * 데이터를 테이블 형식으로 표시합니다.
- * 행 선택, 페이지네이션, 정렬 기능을 지원합니다.
+ * 행 선택, 정렬 기능을 지원합니다. 페이지네이션은 navigation의 Pagination 컴포넌트를 별도로 조합하세요.
  */
 export function Table<T>({
   columns,
   data,
-  keyExtractor,
+  keyExtractor = (_: T, index: number) => index,
   selectable = false,
   selectedRows,
   onSelectRows,
-
-  // 페이지네이션 (새로운 방식)
-  currentPage,
-  pageSize,
-  totalItems,
-  onPageChange,
-  onPageSizeChange,
-  visiblePageCount = 10,
-  useEnhancedPagination = true,
-
-  sortable = false,
-  onSort,
   emptyMessage = '표시할 데이터가 없습니다.',
   size = 'md',
   striped = false,
   className,
 }: TableProps<T>) {
-  // 페이지네이션 설정 (새로운 방식만 지원)
-  const hasPagination = currentPage && pageSize && totalItems && onPageChange
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(
     null,
   )
@@ -61,24 +59,29 @@ export function Table<T>({
   }
 
   const handleSortClick = (columnKey: string) => {
-    if (!sortable) return
-
     const newDirection =
       sortConfig?.key === columnKey && sortConfig?.direction === 'asc' ? 'desc' : 'asc'
 
     setSortConfig({ key: columnKey, direction: newDirection })
-    onSort?.(columnKey, newDirection)
   }
+
+  const sortedData = useMemo(() => {
+    if (!sortConfig) return data
+    const { key, direction } = sortConfig
+    return [...data].sort((a, b) => {
+      const aVal = a[key as keyof T]
+      const bVal = b[key as keyof T]
+      if (aVal < bVal) return direction === 'asc' ? -1 : 1
+      if (aVal > bVal) return direction === 'asc' ? 1 : -1
+      return 0
+    })
+  }, [data, sortConfig])
 
   const isAllSelected = useMemo(() => {
     return data.length > 0 && data.every((row, i) => selectedRows?.has(keyExtractor(row, i)))
   }, [data, selectedRows, keyExtractor])
 
-  const sizeClass = {
-    sm: styles.sizeSm,
-    md: undefined,
-    lg: styles.sizeLg,
-  }[size]
+  const sizeClass = SIZE_CLASSES[size]
 
   if (data.length === 0) {
     return (
@@ -98,11 +101,7 @@ export function Table<T>({
                   </th>
                 )}
                 {columns.map(column => {
-                  const alignClass = {
-                    left: styles.alignLeft,
-                    center: styles.alignCenter,
-                    right: styles.alignRight,
-                  }[column.align || 'center']
+                  const alignClass = ALIGN_CLASSES[column.align || 'center']
 
                   return (
                     <th
@@ -150,11 +149,7 @@ export function Table<T>({
                 </th>
               )}
               {columns.map(column => {
-                const alignClass = {
-                  left: styles.alignLeft,
-                  center: styles.alignCenter,
-                  right: styles.alignRight,
-                }[column.align || 'center']
+                const alignClass = ALIGN_CLASSES[column.align || 'center']
 
                 const isSorted = column.sortable && sortConfig?.key === String(column.key)
                 const ariaSort =
@@ -188,7 +183,7 @@ export function Table<T>({
             </tr>
           </thead>
           <tbody className={styles.tbody}>
-            {data.map((row, rowIndex) => {
+            {sortedData.map((row, rowIndex) => {
               const rowKey = keyExtractor(row, rowIndex)
               const isSelected = selectedRows?.has(rowKey)
 
@@ -213,11 +208,7 @@ export function Table<T>({
                     </td>
                   )}
                   {columns.map(column => {
-                    const alignClass = {
-                      left: styles.alignLeft,
-                      center: styles.alignCenter,
-                      right: styles.alignRight,
-                    }[column.align || 'center']
+                    const alignClass = ALIGN_CLASSES[column.align || 'center']
 
                     return (
                       <td
@@ -236,18 +227,6 @@ export function Table<T>({
           </tbody>
         </table>
       </div>
-
-      {/* 페이지네이션 렌더링 */}
-      {hasPagination && useEnhancedPagination && (
-        <EnhancedTablePagination
-          currentPage={currentPage}
-          pageSize={pageSize}
-          totalItems={totalItems}
-          onPageChange={onPageChange}
-          onPageSizeChange={onPageSizeChange}
-          visiblePageCount={visiblePageCount}
-        />
-      )}
     </div>
   )
 }
