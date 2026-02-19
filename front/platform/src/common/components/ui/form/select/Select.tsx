@@ -11,7 +11,15 @@ import {
   useInteractions,
   useRole,
 } from '@floating-ui/react'
-import React, { forwardRef, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
+import React, {
+  forwardRef,
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 
 import { icons, iconSizes } from '@/constants/design/icons'
 import { textCombinations } from '@/constants/design/typography'

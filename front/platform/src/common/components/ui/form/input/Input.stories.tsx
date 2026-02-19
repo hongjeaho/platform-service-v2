@@ -76,13 +76,6 @@ export const WithoutLabel: Story = {
 export const Interactive: Story = {
   render: function InteractiveStory() {
     const [value, setValue] = useState('')
-    return (
-      <Input
-        label="이름"
-        placeholder="이름을 입력하세요"
-        value={value}
-        onChange={setValue}
-      />
-    )
+    return <Input label='이름' placeholder='이름을 입력하세요' value={value} onChange={setValue} />
   },
 }

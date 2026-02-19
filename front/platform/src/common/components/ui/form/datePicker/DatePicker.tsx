@@ -31,6 +31,7 @@ import type { DatePickerProps } from './DatePicker.types'
 
 const PREV_ICON = icons.prev
 const NEXT_ICON = icons.next
+const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'] as const
 
 /**
  * CalendarHeader 컴포넌트
@@ -160,21 +161,16 @@ function CalendarGrid({
   startDate.setDate(startDate.getDate() - getDay(startDate))
 
   const dates = useMemo(() => {
-    const days: Date[] = []
-    const current = new Date(startDate)
-    for (let i = 0; i < 42; i++) {
-      days.push(new Date(current))
-      current.setDate(current.getDate() + 1)
-    }
-    return days
-  }, [startDate])
-
-  const weekdays = ['일', '월', '화', '수', '목', '금', '토']
+    const year = startDate.getFullYear()
+    const month = startDate.getMonth()
+    const day = startDate.getDate()
+    return Array.from({ length: 42 }, (_, i) => new Date(year, month, day + i))
+  }, [startDate.getFullYear(), startDate.getMonth(), startDate.getDate()])
 
   return (
     <>
       <div className={styles.weekdayHeader}>
-        {weekdays.map(day => (
+        {WEEKDAYS.map(day => (
           <div key={day} className={styles.weekday}>
             {day}
           </div>
