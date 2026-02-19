@@ -48,9 +48,25 @@ export type { DateRange, DateRangePickerProps } from './form/dateRangePicker/Dat
 export { Table } from './data-display/table/Table'
 export type { TableColumn, TableProps, TableSortConfig } from './data-display/table/Table.types'
 
-// Pagination (navigation)
+// Pagination (navigation) — 테이블 포함 모든 목록 페이지네이션에 사용
 export { Pagination } from './navigation/pagination'
 export type { PaginationProps } from './navigation/pagination/Pagination.types'
+
+// Box (layout)
+export { Box } from './layout/box/Box'
+export type {
+  BoxProps,
+  BoxAs,
+  BoxDisplay,
+  BoxDirection,
+  BoxAlign,
+  BoxJustify,
+  BoxGap,
+} from './layout/box/Box.types'
+
+// Container (layout)
+export { Container } from './layout/container/Container'
+export type { ContainerProps, ContainerSize, ContainerAs } from './layout/container/Container.types'
 
 // Card (layout)
 export {
