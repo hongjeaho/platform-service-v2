@@ -65,15 +65,9 @@ export default defineConfig(({ mode }) => {
         },
       },
 
-      // 테스트 실행 pool 설정 (Vitest 4.0)
+      // 테스트 실행 pool 설정 (Vitest 4.0 - poolOptions 제거, 최상위 옵션 사용)
       pool: 'threads',
-      poolOptions: {
-        threads: {
-          singleThread: false,
-          minThreads: 1,
-          maxThreads: 4,
-        },
-      },
+      maxWorkers: 4,
 
       // 커버리지 설정 (Vitest 4.0 - all 옵션 제거됨)
       coverage: {
