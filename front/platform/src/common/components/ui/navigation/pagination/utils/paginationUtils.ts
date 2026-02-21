@@ -57,8 +57,7 @@ export function calculatePagination(
     pageNumbers.push(i)
   }
 
-  const prevGroupStart =
-    startPage > 1 ? Math.max(1, startPage - visiblePageCount) : undefined
+  const prevGroupStart = startPage > 1 ? Math.max(1, startPage - visiblePageCount) : undefined
   const nextGroupStart = endPage < totalPages ? endPage + 1 : undefined
 
   return {

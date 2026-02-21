@@ -41,19 +41,14 @@ export function Pagination({
     visiblePageCount,
   )
 
-  const {
-    handlePageClick,
-    handleFirstPage,
-    handleLastPage,
-    handlePrevGroup,
-    handleNextGroup,
-  } = usePaginationHandlers({
-    currentPage,
-    totalPages,
-    onPageChange,
-    prevGroupStart,
-    nextGroupStart,
-  })
+  const { handlePageClick, handleFirstPage, handleLastPage, handlePrevGroup, handleNextGroup } =
+    usePaginationHandlers({
+      currentPage,
+      totalPages,
+      onPageChange,
+      prevGroupStart,
+      nextGroupStart,
+    })
 
   const prevGroupEnd =
     prevGroupStart !== undefined
@@ -76,72 +71,72 @@ export function Pagination({
   return (
     <div className={cn(styles.paginationContainer, className)}>
       {!isShowAll && (
-      <div className={styles.paginationControls}>
-        {!compact && (
+        <div className={styles.paginationControls}>
+          {!compact && (
+            <button
+              type='button'
+              className={styles.paginationButton}
+              onClick={handleFirstPage}
+              disabled={!canGoToPreviousPage(currentPage)}
+              aria-label={getNavigationButtonLabel('first')}
+              title={getNavigationButtonLabel('first')}
+            >
+              <FirstIcon className={iconSizes.md} aria-hidden='true' />
+            </button>
+          )}
+
           <button
             type='button'
             className={styles.paginationButton}
-            onClick={handleFirstPage}
-            disabled={!canGoToPreviousPage(currentPage)}
-            aria-label={getNavigationButtonLabel('first')}
-            title={getNavigationButtonLabel('first')}
+            onClick={handlePrevGroup}
+            disabled={prevGroupStart === undefined}
+            aria-label={prevGroupLabel ?? '이전 페이지 그룹으로 이동'}
+            title={prevGroupLabel ?? '이전 페이지 그룹으로 이동'}
           >
-            <FirstIcon className={iconSizes.md} aria-hidden='true' />
+            <PrevIcon className={iconSizes.md} aria-hidden='true' />
           </button>
-        )}
 
-        <button
-          type='button'
-          className={styles.paginationButton}
-          onClick={handlePrevGroup}
-          disabled={prevGroupStart === undefined}
-          aria-label={prevGroupLabel ?? '이전 페이지 그룹으로 이동'}
-          title={prevGroupLabel ?? '이전 페이지 그룹으로 이동'}
-        >
-          <PrevIcon className={iconSizes.md} aria-hidden='true' />
-        </button>
+          {pageNumbers.map(pageNum => (
+            <button
+              key={pageNum}
+              type='button'
+              className={cn(
+                styles.paginationButton,
+                styles.pageNumberButton,
+                pageNum === currentPage && styles.active,
+              )}
+              onClick={() => handlePageClick(pageNum)}
+              aria-label={`${pageNum} 페이지`}
+              aria-current={pageNum === currentPage ? 'page' : undefined}
+            >
+              {pageNum}
+            </button>
+          ))}
 
-        {pageNumbers.map(pageNum => (
-          <button
-            key={pageNum}
-            type='button'
-            className={cn(
-              styles.paginationButton,
-              styles.pageNumberButton,
-              pageNum === currentPage && styles.active,
-            )}
-            onClick={() => handlePageClick(pageNum)}
-            aria-label={`${pageNum} 페이지`}
-            aria-current={pageNum === currentPage ? 'page' : undefined}
-          >
-            {pageNum}
-          </button>
-        ))}
-
-        <button
-          type='button'
-          className={styles.paginationButton}
-          onClick={handleNextGroup}
-          disabled={nextGroupStart === undefined}
-          aria-label={nextGroupLabel ?? '다음 페이지 그룹으로 이동'}
-          title={nextGroupLabel ?? '다음 페이지 그룹으로 이동'}
-        >
-          <NextIcon className={iconSizes.md} aria-hidden='true' />
-        </button>
-
-        {!compact && (
           <button
             type='button'
             className={styles.paginationButton}
-            onClick={handleLastPage}
-            disabled={!canGoToNextPage(currentPage, totalPages)}
-            aria-label={getNavigationButtonLabel('last')}
-            title={getNavigationButtonLabel('last')}
+            onClick={handleNextGroup}
+            disabled={nextGroupStart === undefined}
+            aria-label={nextGroupLabel ?? '다음 페이지 그룹으로 이동'}
+            title={nextGroupLabel ?? '다음 페이지 그룹으로 이동'}
           >
-            <LastIcon className={iconSizes.md} aria-hidden='true' />
+            <NextIcon className={iconSizes.md} aria-hidden='true' />
           </button>
-        )}
-      </div>
+
+          {!compact && (
+            <button
+              type='button'
+              className={styles.paginationButton}
+              onClick={handleLastPage}
+              disabled={!canGoToNextPage(currentPage, totalPages)}
+              aria-label={getNavigationButtonLabel('last')}
+              title={getNavigationButtonLabel('last')}
+            >
+              <LastIcon className={iconSizes.md} aria-hidden='true' />
+            </button>
+          )}
+        </div>
       )}
     </div>
   )
