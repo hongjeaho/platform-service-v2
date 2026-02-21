@@ -28,20 +28,37 @@ dependencies {
         exclude group: 'org.jooq'
     }
 
-    implementation "org.jooq:jooq-codegen:${jooqVersion}"
     implementation "org.jooq:jooq:${jooqVersion}"
     jooqGenerator(project(":common-jooq"))
     jooqGenerator 'com.mysql:mysql-connector-j'
     jooqGenerator "org.jooq:jooq:${jooqVersion}"
     jooqGenerator "org.jooq:jooq-meta:${jooqVersion}"
+    jooqGenerator "org.jooq:jooq-codegen:${jooqVersion}"
 
     testImplementation(testFixtures(project(":common-core")))
 }
 
+// 모듈별 properties 파일 로드
+def moduleProperties = new Properties()
+def modulePropsFile = file('gradle.properties')
+if (modulePropsFile.exists()) {
+    modulePropsFile.withInputStream { moduleProperties.load(it) }
+}
+
 var DATABASE_DRIVER = "com.mysql.cj.jdbc.Driver"
-var PLATFORM_DB_URL = System.getenv("PLATFORM_DB_URL") ?: "jdbc:mysql://localhost:3306/store?useSSL=false&allowPublicKeyRetrieval=true"
-var PLATFORM_DB_USER = System.getenv("PLATFORM_DB_USER") ?: "root"
-var PLATFORM_DB_PWD = System.getenv("PLATFORM_DB_PWD") ?: "root"
+var PLATFORM_DB_URL = System.getenv("PLATFORM_DB_URL") ?: moduleProperties['db.url']
+var PLATFORM_DB_USER = System.getenv("PLATFORM_DB_USER") ?: moduleProperties['db.user']
+var PLATFORM_DB_PWD = System.getenv("PLATFORM_DB_PWD") ?: moduleProperties['db.password']
+
+// DB 연결정보 필수 확인 (CI/CD 환경에서는 환경변수 사용)
+var isCI = System.getenv("CI") == "true"
+if (!PLATFORM_DB_URL || !PLATFORM_DB_USER || !PLATFORM_DB_PWD) {
+    if (isCI) {
+        throw new GradleException("CI 환경에서는 DB 연결정보 환경변수가 필요합니다: PLATFORM_DB_URL, PLATFORM_DB_USER, PLATFORM_DB_PWD")
+    } else {
+        throw new GradleException("DB 연결정보가 필요합니다. 환경변수를 설정하거나 gradle.properties 파일에 db.url, db.user, db.password를 추가하세요.")
+    }
+}
 
 jooq {
     version = jooqVersion
@@ -49,7 +66,7 @@ jooq {
 
     configurations {
         main {
-            generateSchemaSourceOnCompilation = true
+            generateSchemaSourceOnCompilation = false
 
             generationTool {
                 jdbc {
@@ -57,12 +74,6 @@ jooq {
                     url = PLATFORM_DB_URL
                     user = PLATFORM_DB_USER
                     password = PLATFORM_DB_PWD
-                    properties {
-                        property {
-                            key = 'ssl'
-                            value = 'true'
-                        }
-                    }
                 }
 
                 generator {
@@ -96,8 +107,9 @@ jooq {
                     }
 
                     target {
-                        directory = "src/generated"
+                        directory = "${buildDir}/generated/sources/jooq/main"
                         packageName = "com.platform.datasource.platform.jooq.generated"
+                        clean = true
                     }
 
                     strategy.name = "com.platform.common.jooq.CustomGeneratorStrategy"
@@ -113,25 +125,20 @@ flyway {
     password = PLATFORM_DB_PWD
     locations = ["filesystem:${file('flyway').absolutePath}"]
     encoding = 'UTF-8'
-    cleanDisabled = false
+    cleanDisabled = System.getenv("CI") == "true"
     validateOnMigrate = true
     outOfOrder = true
-    validateOnMigrate = true
 }
 
 sourceSets {
     main {
         java {
-            srcDirs = ["src/main/java", "src/generated"]
+            srcDirs = ["src/main/java", "${buildDir}/generated/sources/jooq/main"]
         }
     }
 }
 
-tasks.register("generateJooqWithFlyway") {
-    group = "jooq"
-    description = "Runs Flyway migration first, then generates JOOQ code."
-
-    // 순서 보장을 위해 실행 전 순서 명시
-    dependsOn("flywayMigrate")
-    dependsOn("generateJooq")
+// compileJava 전에 generateJooq 실행
+tasks.named('compileJava') {
+    dependsOn tasks.named('generateJooq')
 }
