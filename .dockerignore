@@ -1,0 +1,74 @@
+# Gradle
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+.springBeans
+.sts4-cache/
+bin/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+Jenkinsfile
+
+# Documentation
+README.md
+docs/
+*.md
+
+# Environment
+.env
+.env
+!.env
+
+# Docker
+docker-compose*.yml
+Dockerfile*
+
+# Logs
+*.log
+logs/
+
+# Test
+**/test/
+**/tests/
+
+# Frontend
+front/platform/node_modules/
+front/platform/.next/
+front/platform/out/
+front/platform/build/
+front/platform/.env.local
+front/platform/.env.development.local
+front/platform/.env.test.local
+front/platform/.env.production.local
+front/platform/npm-debug.log*
+front/platform/yarn-debug.log*
+front/platform/yarn-error.log*
+
+# Misc
+*.tmp
+*.swp
+*.bak
+.cache/
