@@ -1,6 +1,20 @@
 
 
-dependencies {
+// 배치 모듈은 jar만 생성 (bootJar 비활성화)
+bootJar.enabled = false
+jar.enabled = true
 
+dependencies {
+	implementation(project(":common-core"))
+	implementation(project(":datasource-platform"))
+
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+	implementation 'org.springframework.boot:spring-boot-starter'
+
+	compileOnly lombok
+	annotationProcessor lombok
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.batch:spring-batch-test'
 }
 
