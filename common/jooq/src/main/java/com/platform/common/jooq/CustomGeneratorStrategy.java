@@ -7,13 +7,15 @@ public class CustomGeneratorStrategy extends DefaultGeneratorStrategy {
 
 	@Override
 	public String getJavaClassName(Definition definition, Mode mode) {
+		String baseName = super.getJavaClassName(definition, mode);
 
-		if(Mode.DEFAULT == mode) {
-			return "J" + super.getJavaClassName(definition, mode);
-		} else if(Mode.POJO == mode){
-			return super.getJavaClassName(definition, mode) + "Entity";
-		}
-
-		return super.getJavaClassName(definition, mode);
+		return switch (mode) {
+			case DEFAULT -> "J" + baseName;
+			case POJO -> baseName + "Entity";
+			case RECORD -> baseName + "Record";
+			case INTERFACE -> "I" + baseName;
+			case DAO -> baseName + "Dao";
+			default -> baseName;
+		};
 	}
 }
