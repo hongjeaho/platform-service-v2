@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "resolutions": {
+    "baseline-browser-mapping": "^2.10.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "yarn orval && yarn format && yarn lint:fix && tsc -b && vite build",
@@ -52,6 +55,7 @@
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.1.0",
     "@vitest/ui": "^4.0.16",
+    "baseline-browser-mapping": "^2.10.0",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
