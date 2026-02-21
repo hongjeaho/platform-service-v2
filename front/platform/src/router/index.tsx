@@ -1,5 +1,4 @@
 import Home from '@views/Home'
-import LoginApplication from '@views/login/LoginApplication'
 import type { RouteObject } from 'react-router-dom'
 import { createBrowserRouter } from 'react-router-dom'
 
@@ -7,6 +6,7 @@ import AuthenticationLayout from '@/layout/AuthenticationLayout.tsx'
 import BaseLayout from '@/layout/BaseLayout.tsx'
 import ErrorPage from '@/layout/ErrorPage.tsx'
 import FullScreenLayout from '@/layout/FullScreenLayout.tsx'
+import LoginApplication from '@/views/login/LoginApplication'
 
 const router: RouteObject[] = [
   {
@@ -30,7 +30,7 @@ const router: RouteObject[] = [
     element: <FullScreenLayout />,
     children: [
       {
-        path: '/login',
+        path: 'login',
         element: <LoginApplication />,
       },
     ],

@@ -366,6 +366,12 @@
     @apply outline-none ring-2 ring-ring ring-offset-2;
   }
 
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family:

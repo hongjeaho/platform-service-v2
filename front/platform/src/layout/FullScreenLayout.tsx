@@ -11,8 +11,8 @@ export default function FullScreenLayout() {
   useScrollToTopEffect()
 
   return (
-    <Box className='m-0 h-full'>
-      <Box as='main'>
+    <Box display='block' className='m-0 h-full w-full'>
+      <Box as='main' display='block' className='h-full w-full'>
         <Outlet />
       </Box>
     </Box>
