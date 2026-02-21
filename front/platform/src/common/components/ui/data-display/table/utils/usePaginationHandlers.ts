@@ -1,10 +1,6 @@
 import { useCallback } from 'react'
 
-import {
-  canGoToNextPage,
-  canGoToPreviousPage,
-  isPageValid,
-} from './paginationUtils'
+import { canGoToNextPage, canGoToPreviousPage, isPageValid } from './paginationUtils'
 
 /**
  * 페이지네이션 핸들러 훅 Props
@@ -90,7 +86,10 @@ export function usePaginationHandlers({
     }
   }, [currentPage, totalPages, handlePageClick])
 
-  const handleLastPage = useCallback(() => handlePageClick(totalPages), [handlePageClick, totalPages])
+  const handleLastPage = useCallback(
+    () => handlePageClick(totalPages),
+    [handlePageClick, totalPages],
+  )
 
   const handlePrevGroup = useCallback(() => {
     if (prevGroupStart) {

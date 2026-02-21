@@ -59,8 +59,7 @@ export function calculatePagination(
   }
 
   // 이전/다음 그룹 시작 페이지 계산
-  const prevGroupStart =
-    startPage > 1 ? Math.max(1, startPage - visiblePageCount) : undefined
+  const prevGroupStart = startPage > 1 ? Math.max(1, startPage - visiblePageCount) : undefined
   const nextGroupStart = endPage < totalPages ? endPage + 1 : undefined
 
   return {

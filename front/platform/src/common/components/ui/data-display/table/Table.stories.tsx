@@ -122,7 +122,8 @@ export const Empty: Story = {
   parameters: {
     docs: {
       description: {
-        story: '데이터가 없을 때 표시되는 빈 상태입니다. `emptyMessage` prop으로 메시지를 변경할 수 있습니다.',
+        story:
+          '데이터가 없을 때 표시되는 빈 상태입니다. `emptyMessage` prop으로 메시지를 변경할 수 있습니다.',
       },
     },
   },
