@@ -1,12 +1,12 @@
-import * as React from 'react'
 import { subMonths } from 'date-fns'
+import * as React from 'react'
 
-import { icons, iconSizes } from '@/constants/design/icons'
-import { buttonVariants } from '@/constants/design/color'
-import { textCombinations } from '@/constants/design/typography'
-import { padding, gap, borderRadius } from '@/constants/design/spacing'
-import { Button, Checkbox, DateRangePicker, Input } from '@/common/components/ui'
 import type { DateRange } from '@/common/components/ui'
+import { Button, Checkbox, DateRangePicker, Input } from '@/common/components/ui'
+import { buttonVariants } from '@/constants/design/color'
+import { icons, iconSizes } from '@/constants/design/icons'
+import { borderRadius, gap, padding } from '@/constants/design/spacing'
+import { textCombinations } from '@/constants/design/typography'
 import { cn } from '@/lib/utils'
 
 import styles from './SearchForm.module.css'
