@@ -1,0 +1,7 @@
+.downloadLink {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  text-decoration: none;
+  cursor: pointer;
+}

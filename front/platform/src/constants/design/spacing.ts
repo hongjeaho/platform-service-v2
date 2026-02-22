@@ -90,6 +90,7 @@ export const containerSizes = {
   '2xl': 'max-w-2xl', // 42rem (672px)
   '4xl': 'max-w-4xl', // 56rem (896px)
   '6xl': 'max-w-6xl', // 72rem (1152px)
+  '8xl': 'max-w-8xl', // 87.5rem (1400px)
   full: 'max-w-full',
   screen: 'max-w-screen',
 } as const
@@ -116,6 +117,8 @@ export const layouts = {
   pageHorizontal: 'px-6', // 24px
   // 전체 페이지 여백
   page: 'py-8 px-6',
+  // 페이지 콘텐츠 컨테이너 기본 수직 패딩 (헤더 아래 ~ 푸터 위)
+  pageContentVertical: 'pt-4 pb-6', // pt: 16px, pb: 24px
 
   // 섹션 내부 여백
   sectionPadding: 'p-6', // 24px

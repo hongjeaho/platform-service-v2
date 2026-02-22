@@ -68,6 +68,10 @@ export type {
 export { Container } from './layout/container/Container'
 export type { ContainerProps, ContainerSize, ContainerAs } from './layout/container/Container.types'
 
+// PageSubTitle (layout)
+export { PageSubTitle } from './layout/page-subtitle/PageSubTitle'
+export type { PageSubTitleProps } from './layout/page-subtitle/PageSubTitle'
+
 // Card (layout)
 export {
   Card,

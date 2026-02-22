@@ -1,0 +1,66 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+.tableHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--gap-xs) 0;
+}
+
+.tableTitle {
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+.countInfo {
+  color: var(--muted-foreground);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.countMark {
+  color: var(--primary);
+  font-weight: 600;
+  background: none;
+}
+
+.projectLink {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.projectLink:hover {
+  text-decoration: underline;
+}
+
+.rejectBtn {
+  background-color: var(--destructive);
+  color: var(--destructive-foreground);
+  border: none;
+  cursor: pointer;
+  transition: opacity 150ms;
+}
+
+.rejectBtn:hover {
+  opacity: 0.85;
+}
+
+.pdfBtn {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 150ms;
+}
+
+.pdfBtn:hover {
+  opacity: 0.85;
+}

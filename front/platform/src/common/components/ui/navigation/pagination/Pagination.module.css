@@ -2,7 +2,7 @@
 .paginationContainer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: var(--spacing-4);
   gap: var(--gap-md);
   width: 100%;

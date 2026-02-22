@@ -1,0 +1,34 @@
+.header {
+  background-color: var(--card);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 4px oklch(0 0 0 / 0.08);
+  height: 4rem;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 0 var(--gap-lg);
+  gap: var(--gap-md);
+}
+
+.logo {
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.gnbArea {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+  height: 100%;
+}
+
+.userArea {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}

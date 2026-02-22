@@ -14,12 +14,79 @@ alwaysApply: false
 | `src/views/<기능>/`        | 해당 페이지/기능 전용 컴포넌트. 스타일·훅·테스트도 같은 폴더에 컬로케이션. |
 | `src/components`           | **여러 기능에서 재사용**하는 컴포넌트만. 기능 전용은 여기 두지 않음.       |
 
+## 컴포넌트 선언 방식
+
+- **함수 선언 + default export**를 사용한다. `React.FC`는 사용하지 않는다.
+- Props가 있으면 **인자에만 타입을 지정**한다.
+
+```tsx
+// ✅ Props 없음
+export default function Home() {
+  return <div>...</div>
+}
+
+// ✅ Props 있음
+interface ListProps {
+  pageSize: number
+}
+export default function ApplicationList({ pageSize }: ListProps) {
+  return <div>...</div>
+}
+```
+
+```tsx
+// ❌ 사용하지 않음
+const Home: React.FC = () => { ... }
+const Table: React.FC<TableProps> = (props) => { ... }
+```
+
 ## 배치 원칙
 
 - **기능 전용 컴포넌트**: `src/components`가 아니라 **`src/views/<기능>/` 하위**에 둔다.
 - **컬로케이션**: 컴포넌트, `.module.css`, `hooks/`, 테스트를 같은 기능 폴더 안에 둔다.
 - **단일 책임**: 한 컴포넌트는 한 가지 역할. 복잡해지면 하위 컴포넌트로 분리.
 - **API 호출**: orval에서 만든 API만 사용 한다. (**`/src/gen/hooks`, `/src/gen/model`**)
+
+## 다수 페이지 기능의 컴포넌트 구조
+
+한 기능 하위에 `List`, `View`, `Write` 등 **여러 페이지**가 존재할 때, 전용 컴포넌트는 `components/<page>/` 하위로 분리한다.
+
+```text
+# ✅ 다수 페이지 — 페이지별 컴포넌트 폴더 분리
+src/views/implementer/application/
+├── List.tsx
+├── View.tsx
+├── Write.tsx
+└── components/
+    ├── list/           ← List.tsx 전용
+    │   ├── SearchForm.tsx
+    │   └── ApplicationTable.tsx
+    ├── view/           ← View.tsx 전용
+    └── write/          ← Write.tsx 전용
+    └── (공유 컴포넌트는 components/ 루트에)
+```
+
+```text
+# ❌ 페이지 구분 없이 components/ 한 곳에 모으지 않기
+components/
+  SearchForm.tsx      # List 전용인지 Write 전용인지 불분명
+  WriteForm.tsx
+```
+
+## frame 컴포넌트 하위 컴포넌트 배치
+
+`CommonHeader`, `CommonFooter` 등 frame 컴포넌트가 복잡해지면 **같은 폴더의 `components/`** 에 분리한다.
+
+```text
+src/common/components/frame/header/
+├── CommonHeader.tsx
+├── CommonHeader.module.css
+└── components/
+    ├── GnbMenu.tsx
+    ├── GnbMenu.module.css
+    ├── UserMenu.tsx
+    └── UserMenu.module.css
+```
 
 ## 분리 시점
 
@@ -56,3 +123,8 @@ src/views/login/
 # ❌ 기능 전용인데 src/components에 두지 않기
 src/components/LoginForm.tsx   # 로그인만 쓰면 views/login/ 에 둠
 ```
+
+## 마무리
+
+- `yarn format` 로 소스 정리
+- `yarn lint:fix`로 lint 검사

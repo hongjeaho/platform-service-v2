@@ -1,0 +1,50 @@
+.wrapper {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--gap-md);
+  margin-bottom: var(--gap-md);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+.fieldRow {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  flex-wrap: wrap;
+}
+
+.fieldRowDouble {
+  gap: var(--gap-md);
+}
+
+.fieldHalf {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  flex: 1;
+  min-width: 200px;
+}
+
+.fieldLabel {
+  flex-shrink: 0;
+  min-width: 6rem;
+  color: var(--foreground);
+}
+
+.keywordInput {
+  min-width: 18rem;
+}
+
+.halfInput {
+  flex: 1;
+}
+
+.quickDateBtn {
+  cursor: pointer;
+}

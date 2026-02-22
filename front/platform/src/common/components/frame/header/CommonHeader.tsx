@@ -1,37 +1,34 @@
-import * as React from 'react'
+import { Link } from 'react-router-dom'
 
 import { textCombinations } from '@/constants/design/typography'
-import { layouts, padding } from '@/constants/design/spacing'
 import { cn } from '@/lib/utils'
 
-interface CommonHeaderProps {}
+import styles from './CommonHeader.module.css'
+import GnbMenu from './components/GnbMenu'
+import UserMenu from './components/UserMenu'
 
 /**
  * 공통 헤더 컴포넌트 - V3 디자인 시스템
- * 모든 페이지에 표시되는 상단 헤더
+ * 로고 + GNB 메뉴 + 유저 메뉴로 구성된 상단 헤더
  */
-const CommonHeader: React.FC<CommonHeaderProps> = () => {
+export default function CommonHeader() {
   return (
-    <header
-      className={cn(
-        'fixed top-0 left-0 right-0',
-        'bg-card shadow-md',
-        'z-40',
-        'border-b border-border',
-      )}
-    >
-      <div
-        className={cn(
-          'container',
-          layouts.pageHorizontal,
-          padding.cardSm,
-          'flex items-center justify-between',
-        )}
-      >
-        <h1 className={textCombinations.h2}>정부 토지보상 심의 시스템</h1>
+    <header className={cn(styles.header, 'fixed top-0 left-0 right-0 z-40')}>
+      <div className={cn(styles.inner, 'container')}>
+        <Link to='/' className={styles.logo} aria-label='심의지원 시스템 홈'>
+          <h1 className={cn(textCombinations.h4, 'text-primary whitespace-nowrap')}>
+            심의지원 시스템
+          </h1>
+        </Link>
+
+        <div className={styles.gnbArea}>
+          <GnbMenu />
+        </div>
+
+        <div className={styles.userArea}>
+          <UserMenu />
+        </div>
       </div>
     </header>
   )
 }
-
-export default CommonHeader

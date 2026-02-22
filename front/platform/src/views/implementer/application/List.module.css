@@ -1,0 +1,14 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  width: 100%;
+}
+
+.caution {
+  color: var(--destructive);
+  background-color: oklch(from var(--destructive) l c h / 0.05);
+  border: 1px solid oklch(from var(--destructive) l c h / 0.2);
+  border-radius: var(--radius);
+  padding: var(--gap-sm) var(--gap-md);
+}

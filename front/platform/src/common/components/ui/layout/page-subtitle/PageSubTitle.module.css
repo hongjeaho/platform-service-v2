@@ -1,0 +1,32 @@
+.wrapper {
+  background-color: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: var(--gap-md) var(--gap-lg);
+  width: 100%;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  max-width: var(--container-max-width, 1280px);
+  margin: 0 auto;
+}
+
+.side {
+  flex: 1;
+}
+
+.title {
+  flex: 0 0 auto;
+  text-align: center;
+  color: var(--foreground);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--gap-sm);
+}

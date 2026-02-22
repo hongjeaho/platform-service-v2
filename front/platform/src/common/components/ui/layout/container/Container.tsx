@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
 
-import { containerSizes, layouts } from '@/constants/design/spacing'
+import { containerSizes, gap, layouts } from '@/constants/design/spacing'
 import { cn } from '@/lib/utils'
 
 import styles from './Container.module.css'
@@ -15,7 +15,7 @@ export const Container = forwardRef<HTMLDivElement, ContainerProps>(
   (
     {
       as: Component = 'div',
-      size = '6xl',
+      size = '8xl',
       centered = true,
       withPadding = true,
       children,
@@ -30,8 +30,10 @@ export const Container = forwardRef<HTMLDivElement, ContainerProps>(
         className={cn(
           styles.container,
           containerSizes[size],
+          gap.default,
           centered && 'mx-auto',
           withPadding && layouts.pageHorizontal,
+          withPadding && layouts.pageContentVertical,
           className,
         )}
         {...props}

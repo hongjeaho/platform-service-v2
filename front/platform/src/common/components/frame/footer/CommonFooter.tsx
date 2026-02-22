@@ -4,13 +4,11 @@ import { textCombinations } from '@/constants/design/typography'
 import { gap, layouts, padding } from '@/constants/design/spacing'
 import { cn } from '@/lib/utils'
 
-interface CommonFooterProps {}
-
 /**
  * 공통 푸터 컴포넌트 - V3 디자인 시스템
  * 모든 페이지에 표시되는 하단 푸터
  */
-const CommonFooter: React.FC<CommonFooterProps> = () => {
+export default function CommonFooter() {
   return (
     <footer className={cn('bg-muted text-card-foreground', 'mt-12')}>
       {/* 메인 푸터 영역 */}
@@ -70,5 +68,3 @@ const CommonFooter: React.FC<CommonFooterProps> = () => {
     </footer>
   )
 }
-
-export default CommonFooter

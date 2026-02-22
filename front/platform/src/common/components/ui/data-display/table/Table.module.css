@@ -6,10 +6,10 @@
   width: 100%;
 }
 
-/* Table 래퍼 (스크롤 가능) - 시맨틱 토큰 */
+/* Table 래퍼 - 시맨틱 토큰 */
 .wrapper {
   min-width: 0;
-  overflow-x: auto;
+  overflow: hidden;
   border-radius: var(--radius-base);
   border: 1px solid var(--border);
 }
@@ -275,7 +275,20 @@
   align-items: center;
 }
 
-/* 텍스트 정렬 variants */
+/* 헤더 셀 정렬에 맞춰 flex 내용 정렬 (text-align은 flex 자식에 적용되지 않음) */
+.th.alignLeft .headerFlex {
+  justify-content: flex-start;
+}
+
+.th.alignCenter .headerFlex {
+  justify-content: center;
+}
+
+.th.alignRight .headerFlex {
+  justify-content: flex-end;
+}
+
+/* 텍스트 정렬 variants (바디 셀용) */
 .alignLeft {
   text-align: left;
 }

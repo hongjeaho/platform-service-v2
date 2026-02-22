@@ -1,0 +1,109 @@
+---
+description: Box/Container/PageSubTitle 등 레이아웃 컴포넌트 사용 규칙
+globs: '**/*.tsx'
+alwaysApply: false
+---
+
+# 레이아웃 컴포넌트 사용 규칙
+
+레이아웃·래퍼 역할의 `<div>`는 **항상 공통 컴포넌트**로 대체한다.
+
+```typescript
+import { Box, Container, PageSubTitle } from '@/common/components/ui'
+```
+
+---
+
+## 1. Box — flex/grid 래퍼
+
+`display: flex` 또는 `display: grid` 역할의 `<div>` 대신 사용한다.
+
+```typescript
+// ❌ 금지
+<div className="flex flex-col gap-4 items-center">
+<div className={cn('flex justify-center', gap.default)}>
+
+// ✅ 올바름
+<Box direction='column' gap='default' align='center'>
+<Box justify='center'>
+```
+
+### 주요 props
+
+| prop | 타입 | 예시 |
+|------|------|------|
+| `as` | HTML 태그 | `'section'`, `'aside'`, `'main'` |
+| `direction` | `'row'` \| `'column'` | `direction='column'` |
+| `justify` | `'start'` \| `'center'` \| `'between'` | `justify='center'` |
+| `align` | `'start'` \| `'center'` \| `'stretch'` | `align='center'` |
+| `gap` | `'tight'` \| `'default'` \| `'loose'` | `gap='tight'` |
+
+---
+
+## 2. Container — 페이지 콘텐츠 중앙 정렬
+
+페이지 본문 영역은 반드시 `Container`로 감싼다. `container` CSS 클래스 직접 사용 금지.
+
+```typescript
+// ❌ 금지
+<div className={cn(styles.content, 'container')}>
+<div className="max-w-6xl mx-auto px-6">
+
+// ✅ 올바름
+<Container className={styles.content}>
+```
+
+- 기본값: `size='6xl'`, `centered=true`, `withPadding=true`
+- 내부적으로 `width: 100%`, `flex-direction: column`, `mx-auto` 처리
+
+---
+
+## 3. PageSubTitle — 페이지 타이틀 영역
+
+모든 내부 페이지의 상단 타이틀은 `PageSubTitle`을 사용한다.
+`children` 슬롯으로 페이지별 다운로드 버튼 등을 넣을 수 있다.
+
+### 단일 페이지에서만 사용할 때
+
+```typescript
+<PageSubTitle title='페이지 제목' />
+<PageSubTitle title='제목'>
+  <a href='/files/manual.pdf' download ...>사용설명서</a>
+</PageSubTitle>
+```
+
+### 같은 기능 내 여러 페이지에서 동일 조합일 때 — 공통 컴포넌트로 분리
+
+동일한 `title` + `children`(다운로드 버튼 등) 조합이 **한 기능(예: application)의 List, View, Write 등 여러 페이지**에서 쓰이면, 그 조합을 **기능 폴더의 `components/` 루트**에 공통 컴포넌트로 분리한다. 페이지에서는 해당 컴포넌트만 사용한다.
+
+```text
+src/views/implementer/application/
+├── List.tsx
+├── View.tsx
+└── components/
+    ├── ApplicationSubTitle.tsx   ← PageSubTitle + 동일 children
+    └── list/ ...
+```
+
+```typescript
+// ❌ 여러 페이지에서 같은 블록 반복
+<PageSubTitle title='LTIS입력정보확인'>
+  <a ...>사용설명서</a>
+  <a ...>동영상 설명서</a>
+</PageSubTitle>
+
+// ✅ 공통 컴포넌트로 분리 후 페이지에서는 한 줄만 사용
+<ApplicationSubTitle />
+```
+
+---
+
+## 4. 시맨틱 태그 활용
+
+`Box`의 `as` prop으로 의미에 맞는 HTML 태그를 사용한다.
+
+```typescript
+<Box as='aside' direction='column' gap='tight'>   {/* 주의사항 */}
+<Box as='section' direction='column' gap='default'> {/* 섹션 */}
+<Box as='nav'>                                      {/* 네비게이션 */}
+```
