@@ -48,3 +48,16 @@
 .quickDateBtn {
   cursor: pointer;
 }
+
+.buttonRow {
+  margin-top: var(--gap-sm);
+}
+
+.dateRangeWrap {
+  min-width: 12rem;
+  flex: 1;
+}
+
+.dateRangeWrapFilled {
+  min-width: 22rem;
+}

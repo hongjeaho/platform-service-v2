@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import ApplicationSubTitle from './components/ApplicationSubTitle'
 import type { ApplicationItem } from './components/list/ApplicationTable'
 import ApplicationTable from './components/list/ApplicationTable'
+import RejectDetailModal from './components/list/RejectDetailModal'
 import SearchForm from './components/list/SearchForm'
 import styles from './List.module.css'
 
@@ -66,6 +67,7 @@ const PAGE_SIZE = 10
 export default function ApplicationList() {
   const [currentPage, setCurrentPage] = React.useState(1)
   const [data] = React.useState<ApplicationItem[]>(MOCK_DATA)
+  const [selectedRejectItem, setSelectedRejectItem] = React.useState<ApplicationItem | null>(null)
   // TODO: API 연동 시 실제 totalCount로 교체
   const totalCount = MOCK_DATA.length
 
@@ -83,8 +85,8 @@ export default function ApplicationList() {
     // TODO: PDF 미리보기 API 연동
   }
 
-  const handleRejectDetail = () => {
-    // TODO: 반려 상세 팝업 연동
+  const handleRejectDetail = (item: ApplicationItem) => {
+    setSelectedRejectItem(item)
   }
 
   return (
@@ -121,7 +123,13 @@ export default function ApplicationList() {
           currentPage={currentPage}
           pageSize={PAGE_SIZE}
           onPdfPreview={() => handlePdfPreview()}
-          onRejectDetail={() => handleRejectDetail()}
+          onRejectDetail={item => handleRejectDetail(item)}
+        />
+
+        <RejectDetailModal
+          open={!!selectedRejectItem}
+          item={selectedRejectItem}
+          onClose={() => setSelectedRejectItem(null)}
         />
 
         {/* 페이지네이션 */}

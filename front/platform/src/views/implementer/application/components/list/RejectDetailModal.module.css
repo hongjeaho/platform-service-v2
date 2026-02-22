@@ -1,0 +1,15 @@
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+}
+
+.label {
+  flex-shrink: 0;
+  width: 6.5rem;
+  color: var(--muted-foreground);
+}
+
+.tableWrap {
+  margin-top: var(--gap-md);
+}

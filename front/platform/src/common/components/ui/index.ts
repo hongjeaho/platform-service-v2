@@ -91,3 +91,18 @@ export type {
   CardTitleProps,
   CardDescriptionProps,
 } from './layout/card/Card.types'
+
+// Modal (overlay)
+export {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ModalCloseButton,
+} from './overlay/modal/Modal'
+export type {
+  ModalProps,
+  ModalHeaderProps,
+  ModalBodyProps,
+  ModalFooterProps,
+} from './overlay/modal/Modal.types'
