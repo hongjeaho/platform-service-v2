@@ -1,6 +1,7 @@
 import { useScrollToTopEffect } from '@hooks/useScrollToTopEffect'
 import { Outlet } from 'react-router-dom'
 
+import CommonHeader from '@/common/components/frame/header/CommonHeader'
 import { Box } from '@/common/components/ui'
 
 /**
@@ -11,7 +12,8 @@ export default function FullScreenLayout() {
   useScrollToTopEffect()
 
   return (
-    <Box display='block' className='m-0 h-full w-full'>
+    <Box direction='column' className='min-h-screen bg-muted'>
+      <CommonHeader />
       <Box as='main' display='block' className='h-full w-full'>
         <Outlet />
       </Box>
