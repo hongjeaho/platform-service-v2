@@ -1,7 +1,7 @@
 import * as React from 'react'
 
-import { textCombinations } from '@/constants/design/typography'
 import { gap, layouts, padding } from '@/constants/design/spacing'
+import { textCombinations } from '@/constants/design/typography'
 import { cn } from '@/lib/utils'
 
 /**

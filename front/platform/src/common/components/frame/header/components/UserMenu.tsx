@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 
-import { textCombinations } from '@/constants/design/typography'
 import { useAuth } from '@/common/hooks/auth/useAuth'
+import { textCombinations } from '@/constants/design/typography'
 import { cn } from '@/lib/utils'
 
 import styles from './UserMenu.module.css'
