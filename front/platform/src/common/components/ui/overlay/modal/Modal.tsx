@@ -37,12 +37,12 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
         ref={ref}
         className={cn(styles.overlay, className)}
         onClick={handleOverlayClick}
-        role="presentation"
+        role='presentation'
       >
         <div
           ref={panelRef}
-          role="dialog"
-          aria-modal="true"
+          role='dialog'
+          aria-modal='true'
           aria-labelledby={title ? titleId : undefined}
           className={styles.panel}
         >
@@ -124,7 +124,7 @@ export function ModalCloseButton({
 }: ModalCloseButtonProps) {
   return (
     <button
-      type="button"
+      type='button'
       className={cn(styles.closeBtn, className)}
       onClick={onClose}
       aria-label={ariaLabel}
