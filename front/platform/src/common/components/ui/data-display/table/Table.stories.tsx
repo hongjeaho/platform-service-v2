@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
+import { Pagination } from '@/common/components/ui/navigation/pagination'
 import { borderRadius, gap, padding } from '@/constants/design/spacing'
 import { fontWeights, textCombinations } from '@/constants/design/typography'
 import { cn } from '@/lib/utils'
 
-import { Pagination } from '@/common/components/ui/navigation/pagination'
 import { createLargeUserData, sampleData, tableColumns, type User } from './__mocks__/sampleData'
 import { Table } from './Table'
 import type { TableProps } from './Table.types'
@@ -302,7 +302,7 @@ export const SelectableWithSortable: Story = {
  */
 function WithPaginationWrapper(args: TableProps<User>) {
   const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize, setPageSize] = useState<number | null>(10)
+  const [pageSize] = useState<number | null>(10)
   const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set())
 
   const largeData = createLargeUserData(100)

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { containerSizes, gap, padding, borderRadius } from '@/constants/design/spacing'
+import { borderRadius, containerSizes, gap, padding } from '@/constants/design/spacing'
 import { fontWeights, textCombinations } from '@/constants/design/typography'
 import { cn } from '@/lib/utils'
 
