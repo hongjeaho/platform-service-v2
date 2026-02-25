@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 
 import type { TableColumn } from '@/common/components/ui'
 import { Table } from '@/common/components/ui'
+import type { StatusType } from '@/constants/design/color'
 import { statusColors } from '@/constants/design/color'
 import { icons, iconSizes } from '@/constants/design/icons'
 import { borderRadius, padding } from '@/constants/design/spacing'
@@ -36,18 +37,27 @@ interface ApplicationTableProps {
   onRejectDetail?: (item: ApplicationItem) => void
 }
 
-const DownloadIcon = icons.download
-
-const REJECTION_STATUS_COLORS: Record<string, string> = {
-  열람공고반려: 'bg-destructive text-destructive-foreground',
-  재결관검토반려: 'bg-destructive text-destructive-foreground',
+/** 심의 진행현황 표시값 → statusColors 키 매핑 (API/목록 값 기준) */
+const PROGRESS_STATUS_TO_VARIANT: Partial<Record<string, StatusType>> = {
+  입력정보확인: '접수',
+  재결접수: '접수',
+  열람공고: '접수',
+  접수: '접수',
+  안건상정: '접수',
+  열람공고반려: '반려',
+  '열람공고 반려': '반려',
+  재결관검토반려: '반려',
+  '재결관검토 반려': '반려',
+  재결신청의견제출: '검토중',
+  '재결신청 의견제출': '검토중',
+  재결관검토: '검토중',
+  심의: '검토중',
+  완료: '완료',
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const colorClass =
-    REJECTION_STATUS_COLORS[status] ??
-    (statusColors as Record<string, string>)[status] ??
-    'bg-muted text-muted-foreground'
+  const variant: StatusType = PROGRESS_STATUS_TO_VARIANT[status] ?? '보류'
+  const colorClass = statusColors[variant]
 
   return (
     <span
@@ -167,7 +177,7 @@ export default function ApplicationTable({
             onClick={() => onPdfPreview?.(row.decisionId!)}
             aria-label={`${row.caseNumber} PDF 미리보기`}
           >
-            <DownloadIcon className={iconSizes.sm} aria-hidden='true' />
+            <icons.download className={iconSizes.sm} aria-hidden='true' />
           </button>
         )
       },

@@ -7,8 +7,6 @@ import { cn } from '@/lib/utils'
 
 import styles from './ApplicationSubTitle.module.css'
 
-const DownloadIcon = icons.download
-
 export default function ApplicationSubTitle() {
   return (
     <PageSubTitle title='LTIS입력정보확인'>
@@ -23,7 +21,7 @@ export default function ApplicationSubTitle() {
           styles.downloadLink,
         )}
       >
-        <DownloadIcon className={cn(iconSizes.sm)} aria-hidden='true' />
+        <icons.download className={cn(iconSizes.sm)} aria-hidden='true' />
         사용설명서
       </a>
       <a
@@ -37,7 +35,7 @@ export default function ApplicationSubTitle() {
           styles.downloadLink,
         )}
       >
-        <DownloadIcon className={cn(iconSizes.sm)} aria-hidden='true' />
+        <icons.download className={cn(iconSizes.sm)} aria-hidden='true' />
         동영상 설명서
       </a>
     </PageSubTitle>

@@ -8,6 +8,7 @@ import ApplicationSubTitle from './components/ApplicationSubTitle'
 import type { ApplicationItem } from './components/list/ApplicationTable'
 import ApplicationTable from './components/list/ApplicationTable'
 import RejectDetailModal from './components/list/RejectDetailModal'
+import type { SearchValues } from './components/list/SearchForm'
 import SearchForm from './components/list/SearchForm'
 import styles from './List.module.css'
 
@@ -68,12 +69,15 @@ export default function ApplicationList() {
   const [currentPage, setCurrentPage] = React.useState(1)
   const [data] = React.useState<ApplicationItem[]>(MOCK_DATA)
   const [selectedRejectItem, setSelectedRejectItem] = React.useState<ApplicationItem | null>(null)
-  // TODO: API 연동 시 실제 totalCount로 교체
+  // TODO: API 연동 시 searchValues로 목록 조회, totalCount는 API 응답으로 교체
+  // const [searchValues, setSearchValues] = React.useState<SearchValues | null>(null)
   const totalCount = MOCK_DATA.length
 
-  const handleSearch = () => {
-    // TODO: API 검색 연동
+  const handleSearch = (values: SearchValues) => {
+    void values
+    // setSearchValues(values)
     setCurrentPage(1)
+    // TODO: API 검색 연동 시 values로 목록 재조회
   }
 
   const handlePageChange = (page: number) => {
@@ -101,7 +105,7 @@ export default function ApplicationList() {
           gap='tight'
           className={cn(styles.caution, textCombinations.bodySm)}
         >
-          <p>※ ? 위에 커서를 올리면 도움말을 확인할 수 있습니다.</p>
+          <p>※ 각 항목의 도움말 아이콘 위에 커서를 올리면 도움말을 확인할 수 있습니다.</p>
           <p>
             ※ 사건목록이 표시되지 않는 경우 재결관의 사건접수(전) 상태일 수 있습니다. 담당
             재결관에게 확인 바랍니다.
@@ -114,7 +118,7 @@ export default function ApplicationList() {
         </Box>
 
         {/* 검색 폼 */}
-        <SearchForm onSearch={() => handleSearch()} />
+        <SearchForm onSearch={handleSearch} />
 
         {/* 목록 테이블 */}
         <ApplicationTable

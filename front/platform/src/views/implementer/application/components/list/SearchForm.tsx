@@ -19,10 +19,6 @@ export interface SearchValues {
   progressStatuses: number[]
 }
 
-interface SearchFormProps {
-  onSearch: (values: SearchValues) => void
-}
-
 const PROGRESS_STATUS_OPTIONS = [
   { label: '입력정보확인', value: 1 },
   { label: '재결접수', value: 2 },
@@ -34,7 +30,9 @@ const PROGRESS_STATUS_OPTIONS = [
   { label: '심의', value: 6 },
 ] as const
 
-const SearchIcon = icons.search
+interface SearchFormProps {
+  onSearch: (values: SearchValues) => void
+}
 
 export default function SearchForm({ onSearch }: SearchFormProps) {
   const [keyword, setKeyword] = React.useState('')
@@ -42,6 +40,8 @@ export default function SearchForm({ onSearch }: SearchFormProps) {
   const [location, setLocation] = React.useState('')
   const [implementerName, setImplementerName] = React.useState('')
   const [progressStatuses, setProgressStatuses] = React.useState<number[]>([])
+
+  const SearchIcon = icons.search
 
   const handleQuickDate = (months: number) => {
     const endDate = new Date()
@@ -72,7 +72,7 @@ export default function SearchForm({ onSearch }: SearchFormProps) {
   const hasDateSelection = dateRange.startDate != null || dateRange.endDate != null
 
   return (
-    <Box as="div" display="block" className={styles.wrapper}>
+    <Box as='div' display='block' className={styles.wrapper}>
       <form
         className={styles.form}
         onSubmit={e => {
@@ -82,7 +82,7 @@ export default function SearchForm({ onSearch }: SearchFormProps) {
         aria-label='LTIS입력정보 검색'
       >
         {/* 키워드 검색 */}
-        <Box align="center" gap="tight" wrap className={styles.fieldRow}>
+        <Box align='center' gap='tight' wrap className={styles.fieldRow}>
           <span className={cn(styles.fieldLabel, textCombinations.label)}>검색</span>
           <Input
             value={keyword}
@@ -95,22 +95,19 @@ export default function SearchForm({ onSearch }: SearchFormProps) {
         </Box>
 
         {/* 접수일 */}
-        <Box align="center" gap="tight" wrap className={styles.fieldRow}>
+        <Box align='center' gap='tight' wrap className={styles.fieldRow}>
           <span className={cn(styles.fieldLabel, textCombinations.label)}>접수일</span>
           <Box
-            as="div"
-            className={cn(
-              styles.dateRangeWrap,
-              hasDateSelection && styles.dateRangeWrapFilled,
-            )}
+            as='div'
+            className={cn(styles.dateRangeWrap, hasDateSelection && styles.dateRangeWrapFilled)}
           >
-            <Box align="center" gap="tight" wrap>
+            <Box align='center' gap='tight' wrap>
               <DateRangePicker
                 value={dateRange}
                 onChange={setDateRange}
                 placeholder='시작일 ~ 종료일'
               />
-              <Box gap="tight">
+              <Box gap='tight'>
                 {[1, 3, 6].map(m => (
                   <button
                     key={m}
@@ -133,8 +130,13 @@ export default function SearchForm({ onSearch }: SearchFormProps) {
         </Box>
 
         {/* 소재지 / 시행자명 */}
-        <Box align="center" gap="default" wrap className={cn(styles.fieldRow, styles.fieldRowDouble)}>
-          <Box align="center" gap="tight" className={styles.fieldHalf}>
+        <Box
+          align='center'
+          gap='default'
+          wrap
+          className={cn(styles.fieldRow, styles.fieldRowDouble)}
+        >
+          <Box align='center' gap='tight' className={styles.fieldHalf}>
             <span className={cn(styles.fieldLabel, textCombinations.label)}>소재지</span>
             <Input
               value={location}
@@ -143,7 +145,7 @@ export default function SearchForm({ onSearch }: SearchFormProps) {
               aria-label='소재지 입력'
             />
           </Box>
-          <Box align="center" gap="tight" className={styles.fieldHalf}>
+          <Box align='center' gap='tight' className={styles.fieldHalf}>
             <span className={cn(styles.fieldLabel, textCombinations.label)}>시행자명</span>
             <Input
               value={implementerName}
@@ -155,9 +157,9 @@ export default function SearchForm({ onSearch }: SearchFormProps) {
         </Box>
 
         {/* 심의 진행현황 */}
-        <Box align="center" gap="tight" wrap className={styles.fieldRow}>
+        <Box align='center' gap='tight' wrap className={styles.fieldRow}>
           <span className={cn(styles.fieldLabel, textCombinations.label)}>심의 진행현황</span>
-          <Box gap="tight" wrap>
+          <Box gap='tight' wrap>
             {PROGRESS_STATUS_OPTIONS.map(option => (
               <Checkbox
                 key={option.value}
@@ -170,7 +172,7 @@ export default function SearchForm({ onSearch }: SearchFormProps) {
         </Box>
 
         {/* 검색 / 초기화 버튼 */}
-        <Box justify="center" gap="tight" className={styles.buttonRow}>
+        <Box justify='center' gap='tight' className={styles.buttonRow}>
           <Button
             type='submit'
             size='sm'

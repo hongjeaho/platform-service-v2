@@ -4,8 +4,8 @@ import { textCombinations } from '@/constants/design/typography'
 import { cn } from '@/lib/utils'
 
 import type { ApplicationItem } from './ApplicationTable'
-import { getRejectDetailMock } from './rejectDetailMock'
 import type { RejectHistoryItem } from './rejectDetailMock'
+import { getRejectDetailMock } from './rejectDetailMock'
 import styles from './RejectDetailModal.module.css'
 
 interface RejectDetailModalProps {
@@ -23,7 +23,7 @@ export default function RejectDetailModal({ open, onClose, item }: RejectDetailM
   const detail = item ? getRejectDetailMock(item) : null
 
   return (
-    <Modal open={open} onClose={onClose} title="반려 상세">
+    <Modal open={open} onClose={onClose} title='반려 상세'>
       <ModalBody>
         {detail && (
           <>
@@ -40,7 +40,7 @@ export default function RejectDetailModal({ open, onClose, item }: RejectDetailM
                 columns={COLUMNS}
                 data={detail.rejections}
                 keyExtractor={(row, index) => `${row.rejectDate}-${index}`}
-                emptyMessage="반려 이력이 없습니다."
+                emptyMessage='반려 이력이 없습니다.'
               />
             </div>
           </>
