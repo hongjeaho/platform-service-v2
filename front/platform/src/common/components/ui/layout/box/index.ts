@@ -1,10 +1,10 @@
 export { Box } from './Box'
 export type {
-  BoxProps,
-  BoxAs,
-  BoxDisplay,
-  BoxDirection,
   BoxAlign,
-  BoxJustify,
+  BoxAs,
+  BoxDirection,
+  BoxDisplay,
   BoxGap,
+  BoxJustify,
+  BoxProps,
 } from './Box.types'
