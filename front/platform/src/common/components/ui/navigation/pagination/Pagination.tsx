@@ -1,7 +1,6 @@
+import { usePaginationHandlers } from '@/common/components/ui/data-display/table/utils/usePaginationHandlers'
 import { icons, iconSizes } from '@/constants/design/icons'
 import { cn } from '@/lib/utils'
-
-import { usePaginationHandlers } from '@/common/components/ui/data-display/table/utils/usePaginationHandlers'
 
 import styles from './Pagination.module.css'
 import type { PaginationProps } from './Pagination.types'
@@ -34,7 +33,7 @@ export function Pagination({
   const isShowAll = pageSize === null
   const effectivePageSize = isShowAll ? totalItems : pageSize
   const totalPages = Math.max(1, Math.ceil(totalItems / effectivePageSize))
-  const { pageNumbers, startPage, endPage, prevGroupStart, nextGroupStart } = calculatePagination(
+  const { pageNumbers, prevGroupStart, nextGroupStart } = calculatePagination(
     currentPage,
     totalItems,
     pageSize,
