@@ -54,9 +54,17 @@ export type { DatePickerProps } from './form/datePicker/DatePicker.types'
 export { DateRangePicker } from './form/dateRangePicker/DateRangePicker'
 export type { DateRange, DateRangePickerProps } from './form/dateRangePicker/DateRangePicker.types'
 
-// Table (data-display)
-export { Table } from './data-display/table/Table'
-export type { TableColumn, TableProps, TableSortConfig } from './data-display/table/Table.types'
+// DataTable (data-display)
+export { DataTable } from './data-display/data-table/DataTable'
+export type {
+  DataTableColumn,
+  DataTableProps,
+  DataTableSortConfig,
+} from './data-display/data-table/DataTable.types'
+
+// Table (layout) — 섹션/폼·조회용 테이블 레이아웃
+export type { TableProps } from './layout/table'
+export { Table, tableStyles } from './layout/table'
 
 // Pagination (navigation) — 테이블 포함 모든 목록 페이지네이션에 사용
 export { Pagination } from './navigation/pagination'

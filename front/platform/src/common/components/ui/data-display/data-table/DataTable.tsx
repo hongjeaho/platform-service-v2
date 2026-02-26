@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react'
 
 import { cn } from '@/lib/utils'
 
-import styles from './Table.module.css'
-import type { TableProps } from './Table.types'
+import styles from './DataTable.module.css'
+import type { DataTableProps } from './DataTable.types'
 
 // Module-level constants to prevent object creation on every render
 const SIZE_CLASSES = {
@@ -19,11 +19,11 @@ const ALIGN_CLASSES = {
 } as const
 
 /**
- * Table 컴포넌트
+ * DataTable 컴포넌트
  * 데이터를 테이블 형식으로 표시합니다.
  * 행 선택, 정렬 기능을 지원합니다. 페이지네이션은 navigation의 Pagination 컴포넌트를 별도로 조합하세요.
  */
-export function Table<T>({
+export function DataTable<T>({
   columns,
   data,
   keyExtractor = (_: T, index: number) => index,
@@ -34,7 +34,7 @@ export function Table<T>({
   size = 'md',
   striped = false,
   className,
-}: TableProps<T>) {
+}: DataTableProps<T>) {
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(
     null,
   )
@@ -231,4 +231,4 @@ export function Table<T>({
   )
 }
 
-Table.displayName = 'Table'
+DataTable.displayName = 'DataTable'

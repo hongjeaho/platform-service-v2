@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
 
 /**
- * Table 컬럼 정의
+ * DataTable 컬럼 정의
  */
-export interface TableColumn<T> {
+export interface DataTableColumn<T> {
   /** 컬럼 key (데이터 필드명) */
   key: keyof T | string
   /** 컬럼 헤더 텍스트 */
@@ -19,9 +19,9 @@ export interface TableColumn<T> {
 }
 
 /**
- * Table 정렬 설정
+ * DataTable 정렬 설정
  */
-export interface TableSortConfig {
+export interface DataTableSortConfig {
   /** 정렬할 컬럼 key */
   key: string
   /** 정렬 방향 */
@@ -29,11 +29,11 @@ export interface TableSortConfig {
 }
 
 /**
- * Table 컴포넌트 Props
+ * DataTable 컴포넌트 Props
  */
-export interface TableProps<T> {
+export interface DataTableProps<T> {
   /** 컬럼 정의 배열 */
-  columns: TableColumn<T>[]
+  columns: DataTableColumn<T>[]
   /** 데이터 배열 */
   data: T[]
   /**

@@ -1,0 +1,42 @@
+/* 테이블 레이아웃 - 섹션/폼·조회 공통 */
+.wrapper {
+  min-width: 0;
+  overflow-x: auto;
+  border-radius: var(--radius-base);
+  border: 1px solid var(--border);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  background-color: var(--card);
+}
+
+.th,
+.td {
+  padding: var(--padding-input-default);
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.th {
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+  background-color: var(--muted);
+}
+
+.thActions {
+  width: 120px;
+  text-align: center;
+}
+
+.tdActions {
+  text-align: center;
+}
+
+.iconSpacer {
+  margin-right: var(--gap-xs);
+}

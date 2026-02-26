@@ -1,5 +1,5 @@
 /**
- * Table Storybook용 샘플 데이터
+ * DataTable Storybook용 샘플 데이터
  */
 
 export interface User {

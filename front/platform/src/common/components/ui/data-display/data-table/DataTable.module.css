@@ -1,4 +1,4 @@
-/* Table 컨테이너 - V3 디자인 시스템 */
+/* DataTable 컨테이너 - V3 디자인 시스템 */
 .container {
   display: flex;
   flex-direction: column;
@@ -6,7 +6,7 @@
   width: 100%;
 }
 
-/* Table 래퍼 - 시맨틱 토큰 */
+/* DataTable 래퍼 - 시맨틱 토큰 */
 .wrapper {
   min-width: 0;
   overflow: hidden;
@@ -14,7 +14,7 @@
   border: 1px solid var(--border);
 }
 
-/* Table 요소 */
+/* DataTable 요소 */
 .table {
   width: 100%;
   table-layout: fixed;

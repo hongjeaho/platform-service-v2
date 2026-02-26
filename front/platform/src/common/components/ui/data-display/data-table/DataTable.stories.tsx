@@ -7,12 +7,12 @@ import { fontWeights, textCombinations } from '@/constants/design/typography'
 import { cn } from '@/lib/utils'
 
 import { createLargeUserData, sampleData, tableColumns, type User } from './__mocks__/sampleData'
-import { Table } from './Table'
-import type { TableProps } from './Table.types'
+import { DataTable } from './DataTable'
+import type { DataTableProps } from './DataTable.types'
 
 const meta = {
-  title: 'UI/Data Display/Table',
-  component: Table,
+  title: 'UI/Data Display/DataTable',
+  component: DataTable,
   parameters: {
     layout: 'centered',
     docs: {
@@ -32,7 +32,7 @@ const meta = {
 ## 사용 예시
 
 \`\`\`tsx
-<Table
+<DataTable
   columns={[
     { key: 'name', header: '이름', width: '120px', sortable: true },
     { key: 'email', header: '이메일' },
@@ -57,7 +57,7 @@ const meta = {
     },
     columns: { table: { disable: true } },
   },
-} satisfies Meta<typeof Table>
+} satisfies Meta<typeof DataTable>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -187,14 +187,14 @@ export const Large: Story = {
  * 행 선택 기능 데모용 래퍼.
  * selectedRows(Set)와 onSelectRows를 내부 state로 관리합니다.
  */
-function SelectableWrapper(args: TableProps<User>) {
+function SelectableWrapper(args: DataTableProps<User>) {
   const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set())
   const selectedData = sampleData.filter(item => selectedRows.has(item.id))
 
   return (
     <div className={cn('flex flex-col', gap.default)}>
       <SelectionInfo selectedData={selectedData} />
-      <Table
+      <DataTable
         {...args}
         selectable={true}
         selectedRows={selectedRows}
@@ -224,15 +224,15 @@ export const Selectable: Story = {
 /**
  * 컬럼 정렬 데모용 래퍼.
  * name·email·role 컬럼에 sortable: true를 설정합니다.
- * 외부 onSort 없이 Table 내부 정렬 로직이 동작합니다.
+ * 외부 onSort 없이 DataTable 내부 정렬 로직이 동작합니다.
  */
-function SortableWrapper(args: TableProps<User>) {
+function SortableWrapper(args: DataTableProps<User>) {
   const sortableColumns = columns.map(col => ({
     ...col,
     sortable: ['name', 'email', 'role'].includes(String(col.key)),
   }))
 
-  return <Table {...args} columns={sortableColumns} />
+  return <DataTable {...args} columns={sortableColumns} />
 }
 
 export const Sortable: Story = {
@@ -256,7 +256,7 @@ export const Sortable: Story = {
  * 행 선택 + 컬럼 정렬 동시 사용 데모용 래퍼.
  * 정렬 후에도 선택 상태(keyExtractor 기반)가 올바르게 유지되는지 확인할 수 있습니다.
  */
-function SelectableWithSortableWrapper(args: TableProps<User>) {
+function SelectableWithSortableWrapper(args: DataTableProps<User>) {
   const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set())
 
   const sortableColumns = columns.map(col => ({
@@ -269,7 +269,7 @@ function SelectableWithSortableWrapper(args: TableProps<User>) {
   return (
     <div className={cn('flex flex-col', gap.default)}>
       <SelectionInfo selectedData={selectedData} />
-      <Table
+      <DataTable
         {...args}
         columns={sortableColumns}
         selectable={true}
@@ -298,9 +298,9 @@ export const SelectableWithSortable: Story = {
 }
 
 /**
- * Table + Pagination 조합. navigation의 Pagination 컴포넌트를 테이블 하단에 사용합니다.
+ * DataTable + Pagination 조합. navigation의 Pagination 컴포넌트를 테이블 하단에 사용합니다.
  */
-function WithPaginationWrapper(args: TableProps<User>) {
+function WithPaginationWrapper(args: DataTableProps<User>) {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize] = useState<number | null>(10)
   const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set())
@@ -322,7 +322,7 @@ function WithPaginationWrapper(args: TableProps<User>) {
     <div className={cn('flex flex-col', gap.default)}>
       <SelectionInfo selectedData={selectedData} />
       <div style={{ width: '800px' }}>
-        <Table
+        <DataTable
           {...args}
           columns={sortableColumns}
           data={paginatedData}
@@ -349,7 +349,7 @@ export const WithPagination: Story = {
     docs: {
       description: {
         story:
-          'Table과 navigation의 Pagination을 조합한 시나리오입니다. 행 선택, 정렬, 페이지 이동을 함께 사용합니다.',
+          'DataTable과 navigation의 Pagination을 조합한 시나리오입니다. 행 선택, 정렬, 페이지 이동을 함께 사용합니다.',
       },
     },
   },
