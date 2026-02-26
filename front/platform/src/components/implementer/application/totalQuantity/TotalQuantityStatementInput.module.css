@@ -1,0 +1,69 @@
+.unitHint {
+  margin-left: var(--gap-xs);
+  color: var(--muted-foreground);
+}
+
+.modeRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--gap-md);
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.th,
+.td {
+  padding: var(--padding-input-default);
+  border: 1px solid var(--border);
+  text-align: center;
+  vertical-align: middle;
+}
+
+.th {
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+  background-color: var(--muted);
+}
+
+.cellInput {
+  width: 100%;
+  min-width: 60px;
+  padding: var(--padding-input-default);
+  font-size: var(--font-size-sm);
+  text-align: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-base);
+  background-color: var(--card);
+}
+
+.cellInput:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.cellInput[readonly] {
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+}
+
+.rowLabel {
+  font-weight: var(--font-weight-medium);
+  text-align: left;
+  background-color: var(--muted);
+}
+
+.tfootRow th {
+  font-weight: var(--font-weight-semibold);
+}
+
+.sectionHidden {
+  display: none;
+}

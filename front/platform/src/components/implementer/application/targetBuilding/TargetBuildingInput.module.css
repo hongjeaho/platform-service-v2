@@ -1,0 +1,9 @@
+.rowInput {
+  width: 100%;
+  min-width: 0;
+  text-align: inherit;
+}
+
+.rowInputCenter {
+  text-align: center;
+}

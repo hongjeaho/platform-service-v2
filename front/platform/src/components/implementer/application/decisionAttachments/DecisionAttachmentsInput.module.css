@@ -1,0 +1,28 @@
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+}
+
+.helpButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-button-sm);
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: none;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: color var(--transition-fast) var(--transition-ease);
+}
+
+.helpButton:hover {
+  color: var(--foreground);
+}
+
+.helpButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary);
+}

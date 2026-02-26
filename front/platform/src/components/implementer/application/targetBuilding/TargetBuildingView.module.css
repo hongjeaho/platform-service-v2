@@ -1,0 +1,23 @@
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.th,
+.td {
+  padding: var(--padding-input-default);
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.th {
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+  background-color: var(--muted);
+}
