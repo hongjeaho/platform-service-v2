@@ -217,8 +217,10 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
     ref,
   ) => {
     const [isOpen, setIsOpen] = useState(false)
+    const validValue =
+      value && typeof value.getTime === 'function' && !Number.isNaN(value.getTime()) ? value : null
     const [currentMonth, setCurrentMonth] = useState(() =>
-      value ? startOfMonth(value) : startOfMonth(new Date()),
+      validValue ? startOfMonth(validValue) : startOfMonth(new Date()),
     )
 
     const CalendarIcon = icons.calendar
@@ -238,14 +240,14 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
 
     // 선택된 날짜가 변경되면 현재 월 업데이트
     useEffect(() => {
-      if (value) {
-        setCurrentMonth(startOfMonth(value))
+      if (validValue) {
+        setCurrentMonth(startOfMonth(validValue))
       }
-    }, [value])
+    }, [validValue])
 
-    // 날짜 포맷팅 (yyyy-MM-dd)
+    // 날짜 포맷팅 (yyyy-MM-dd). Invalid Date는 빈 문자열 반환
     const formattedDate = useMemo(() => {
-      if (!value) return ''
+      if (!value || Number.isNaN(value.getTime())) return ''
       return format(value, 'yyyy-MM-dd')
     }, [value])
 

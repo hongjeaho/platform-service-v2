@@ -31,7 +31,7 @@ export function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
       rules={rules}
       shouldUnregister={shouldUnregister}
       render={({ field, fieldState }) => {
-        // RHF의 value를 Date | null로 변환
+        // RHF의 value를 Date | null로 변환 (빈 문자열·Invalid Date는 null)
         const dateValue = (() => {
           const value = field.value as unknown
           if (value === null || value === undefined) {
@@ -39,10 +39,12 @@ export function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
           }
           // 타입 가드: Date 객체 확인
           if (value instanceof Date) {
-            return value
+            return Number.isNaN(value.getTime()) ? null : value
           }
           if (typeof value === 'string') {
-            return new Date(value)
+            if (value.trim() === '') return null
+            const d = new Date(value)
+            return Number.isNaN(d.getTime()) ? null : d
           }
           return null
         })()

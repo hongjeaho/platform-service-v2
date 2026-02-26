@@ -25,6 +25,7 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
   control,
   rules,
   shouldUnregister = false,
+  type = 'text',
   ...inputProps
 }: FormInputProps<TFieldValues>) {
   return (
@@ -33,15 +34,31 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
       control={control}
       rules={rules}
       shouldUnregister={shouldUnregister}
-      render={({ field, fieldState }) => (
-        <Input
-          {...field}
-          id={field.name}
-          value={field.value ?? ''}
-          error={fieldState.error?.message}
-          {...inputProps}
-        />
-      )}
+      render={({ field, fieldState }) => {
+        const isNumber = type === 'number'
+        const value = isNumber
+          ? field.value === undefined || field.value === null
+            ? ''
+            : String(field.value)
+          : (field.value ?? '')
+        const handleChange = isNumber
+          ? (v: string) => field.onChange(v === '' ? undefined : Number(v))
+          : (v: string) => field.onChange(v)
+
+        return (
+          <Input
+            ref={field.ref}
+            id={field.name}
+            name={field.name}
+            onBlur={field.onBlur}
+            value={value}
+            onChange={handleChange}
+            type={type}
+            error={fieldState.error?.message}
+            {...inputProps}
+          />
+        )
+      }}
     />
   )
 }

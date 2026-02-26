@@ -36,8 +36,10 @@ export function FormRadioGroup<TFieldValues extends FieldValues = FieldValues, T
       shouldUnregister={shouldUnregister}
       render={({ field, fieldState }) => {
         // RadioGroup의 onChange를 RHF field.onChange에 연결
+        // 문자열 "true"/"false"가 들어오면 boolean으로 정규화 (네이티브 radio value 보정)
         const handleChange = (value: TValue) => {
-          field.onChange(value)
+          const normalized = value === 'true' ? true : value === 'false' ? false : value
+          field.onChange(normalized)
         }
 
         return (
