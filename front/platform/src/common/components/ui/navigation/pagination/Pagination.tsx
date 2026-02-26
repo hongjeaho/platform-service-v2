@@ -1,4 +1,4 @@
-import { usePaginationHandlers } from '@/common/components/ui/data-display/table/utils/usePaginationHandlers'
+import { usePaginationHandlers } from '@/common/components/ui/data-display/data-table/utils/usePaginationHandlers'
 import { icons, iconSizes } from '@/constants/design/icons'
 import { cn } from '@/lib/utils'
 

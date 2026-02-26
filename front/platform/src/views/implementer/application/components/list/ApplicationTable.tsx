@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 
-import type { TableColumn } from '@/common/components/ui'
-import { Table } from '@/common/components/ui'
+import type { DataTableColumn } from '@/common/components/ui'
+import { DataTable } from '@/common/components/ui'
 import type { StatusType } from '@/constants/design/color'
 import { statusColors } from '@/constants/design/color'
 import { icons, iconSizes } from '@/constants/design/icons'
@@ -84,7 +84,7 @@ export default function ApplicationTable({
 }: ApplicationTableProps) {
   const totalPages = Math.ceil(totalCount / pageSize)
 
-  const columns: TableColumn<ApplicationItem>[] = [
+  const columns: DataTableColumn<ApplicationItem>[] = [
     {
       key: 'receptionDate',
       header: '접수일',
@@ -202,7 +202,7 @@ export default function ApplicationTable({
         </ul>
       </div>
 
-      <Table<ApplicationItem>
+      <DataTable<ApplicationItem>
         columns={columns}
         data={data}
         keyExtractor={item => item.id}

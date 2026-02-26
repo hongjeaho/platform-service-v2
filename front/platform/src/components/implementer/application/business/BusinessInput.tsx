@@ -36,11 +36,11 @@ export function BusinessInput() {
       </CardHeader>
       <CardContent>
         <div className={styles.gridRow}>
-          <FormInput name='business.caseNo' control={control} label='사건번호' readOnly />
-          <FormInput name='business.caseTitle' control={control} label='사업명' readOnly />
+          <FormInput name='business.caseNo' control={control} label='사건번호' disabled />
+          <FormInput name='business.caseTitle' control={control} label='사업명' disabled />
         </div>
         <div className={styles.gridRow}>
-          <FormInput name='business.address' control={control} label='위치' readOnly />
+          <FormInput name='business.address' control={control} label='위치' disabled />
           <FormInput
             name='business.scale'
             control={control}

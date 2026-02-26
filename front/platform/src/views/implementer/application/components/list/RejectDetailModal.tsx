@@ -1,5 +1,5 @@
-import type { TableColumn } from '@/common/components/ui'
-import { Modal, ModalBody, Table } from '@/common/components/ui'
+import type { DataTableColumn } from '@/common/components/ui'
+import { DataTable, Modal, ModalBody } from '@/common/components/ui'
 import { textCombinations } from '@/constants/design/typography'
 import { cn } from '@/lib/utils'
 
@@ -14,7 +14,7 @@ interface RejectDetailModalProps {
   item: ApplicationItem | null
 }
 
-const COLUMNS: TableColumn<RejectHistoryItem>[] = [
+const COLUMNS: DataTableColumn<RejectHistoryItem>[] = [
   { key: 'rejectDate', header: '반려일', align: 'center', width: '120px' },
   { key: 'rejectReason', header: '반려사유', align: 'center' },
 ]
@@ -36,7 +36,7 @@ export default function RejectDetailModal({ open, onClose, item }: RejectDetailM
               <span className={textCombinations.body}>{detail.manager}</span>
             </div>
             <div className={styles.tableWrap}>
-              <Table<RejectHistoryItem>
+              <DataTable<RejectHistoryItem>
                 columns={COLUMNS}
                 data={detail.rejections}
                 keyExtractor={(row, index) => `${row.rejectDate}-${index}`}
