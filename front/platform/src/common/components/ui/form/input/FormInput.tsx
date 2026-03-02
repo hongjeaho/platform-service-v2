@@ -54,9 +54,7 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
       shouldUnregister={shouldUnregister}
       render={({ field, fieldState }) => {
         const isNumber = type === 'number'
-        const value = isNumber
-          ? formatNumberWithComma(field.value)
-          : (field.value ?? '')
+        const value = isNumber ? formatNumberWithComma(field.value) : (field.value ?? '')
         const handleChange = isNumber
           ? (v: string) => field.onChange(parseNumericInput(v))
           : (v: string) => field.onChange(v)

@@ -44,7 +44,9 @@ export const Default: Story = {
  */
 export const NumberWithComma: Story = {
   render: args => {
-    const { control, watch } = useForm<{ amount?: number }>({ defaultValues: { amount: undefined } })
+    const { control, watch } = useForm<{ amount?: number }>({
+      defaultValues: { amount: undefined },
+    })
     const amount = watch('amount')
     return (
       <div style={{ width: '320px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
