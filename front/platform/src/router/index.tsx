@@ -6,9 +6,9 @@ import AuthenticationLayout from '@/layout/AuthenticationLayout.tsx'
 import BaseLayout from '@/layout/BaseLayout.tsx'
 import ErrorPage from '@/layout/ErrorPage.tsx'
 import FullScreenLayout from '@/layout/FullScreenLayout.tsx'
-import ApplicationFormPage from '@/views/implementer/application/FormPage'
-import ApplicationList from '@/views/implementer/application/List'
 import LoginApplication from '@/views/login/LoginApplication'
+
+import implementerRoutes from './implementer'
 
 const router: RouteObject[] = [
   {
@@ -25,18 +25,7 @@ const router: RouteObject[] = [
         index: true,
         element: <Home />,
       },
-      {
-        path: 'implementer/application',
-        element: <ApplicationList />,
-      },
-      {
-        path: 'implementer/application/write',
-        element: <ApplicationFormPage />,
-      },
-      {
-        path: 'implementer/application/:judgSeqNo/edit',
-        element: <ApplicationFormPage />,
-      },
+      ...implementerRoutes,
     ],
   },
   {
