@@ -6,11 +6,12 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  FormInput,
   Table,
   tableStyles,
 } from '@/common/components/ui'
-import { useDynamicRows } from '@/common/hooks/form/useDynamicRows'
-import { icons, iconSizes } from '@/constants/design'
+import { useDynamicRows } from '@/common/components/ui/layout/table'
+import { icons, iconSizes, textCombinations } from '@/constants/design'
 import { cn } from '@/lib/utils'
 
 import type { ApplicationFormData } from '../types'
@@ -28,9 +29,9 @@ const DEFAULT_ROW: CityPlanningRow = {
 /**
  * 도시계획 [사업인정]관계 입력 섹션 (동적 행 추가/삭제)
  */
-export function CityPlanningInput() {
+export default function CityPlanningInput() {
   const {
-    register,
+    control,
     formState: { errors },
   } = useFormContext<ApplicationFormData>()
 
@@ -63,17 +64,16 @@ export function CityPlanningInput() {
           {fields.map((field, index) => (
             <tr key={field.id}>
               <td className={tableStyles.td}>
-                <input
-                  className={cn(styles.rowInput, 'form-input')}
-                  {...register(`cityPlanning.${index}.title` as const)}
+                <FormInput
+                  name={`cityPlanning.${index}.title` as const}
+                  control={control}
                   aria-label='제목'
                 />
               </td>
               <td className={tableStyles.td}>
-                <textarea
-                  className={cn(styles.rowTextarea, 'form-input')}
-                  rows={2}
-                  {...register(`cityPlanning.${index}.content` as const)}
+                <FormInput
+                  name={`cityPlanning.${index}.content` as const}
+                  control={control}
                   aria-label='내용'
                 />
               </td>
@@ -94,7 +94,10 @@ export function CityPlanningInput() {
           ))}
         </Table>
         {errors.cityPlanning?.root?.message && (
-          <span className='text-xs text-error mt-1 block' role='alert'>
+          <span
+            className={cn(textCombinations.bodyXs, 'text-error block', styles.errorMessage)}
+            role='alert'
+          >
             {errors.cityPlanning.root.message}
           </span>
         )}

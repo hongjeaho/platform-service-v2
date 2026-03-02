@@ -11,7 +11,7 @@ import {
   tableStyles,
 } from '@/common/components/ui'
 import { FormDatePicker } from '@/common/components/ui/form/datePicker/FormDatePicker'
-import { useDynamicRows } from '@/common/hooks/form/useDynamicRows'
+import { useDynamicRows } from '@/common/components/ui/layout/table'
 import { icons, iconSizes } from '@/constants/design'
 import { cn } from '@/lib/utils'
 

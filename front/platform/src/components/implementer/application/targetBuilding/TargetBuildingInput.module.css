@@ -1,9 +1,10 @@
-.rowInput {
+/* 셀 내 FormInput wrapper — 테이블 레이아웃용 */
+.cellField {
   width: 100%;
   min-width: 0;
-  text-align: inherit;
+  gap: 0;
 }
 
-.rowInputCenter {
+.cellFieldCenter input {
   text-align: center;
 }

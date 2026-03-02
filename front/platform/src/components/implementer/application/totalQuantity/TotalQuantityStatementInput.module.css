@@ -54,6 +54,22 @@
   color: var(--muted-foreground);
 }
 
+/* 면적 없음 등 빈 셀 placeholder - input과 동일한 너비·높이 */
+.cellInputPlaceholder {
+  display: block;
+  width: 100%;
+  min-width: 60px;
+  min-height: var(--input-height-base);
+  padding: var(--padding-input-default);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  text-align: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-base);
+  background-color: var(--muted);
+  box-sizing: border-box;
+}
+
 .rowLabel {
   font-weight: var(--font-weight-medium);
   text-align: left;

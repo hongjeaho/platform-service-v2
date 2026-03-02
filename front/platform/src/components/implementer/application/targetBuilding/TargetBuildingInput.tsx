@@ -6,10 +6,11 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  FormInput,
   Table,
   tableStyles,
 } from '@/common/components/ui'
-import { useDynamicRows } from '@/common/hooks/form/useDynamicRows'
+import { useDynamicRows } from '@/common/components/ui/layout/table'
 import { icons, iconSizes } from '@/constants/design'
 import { cn } from '@/lib/utils'
 
@@ -33,8 +34,8 @@ const DEFAULT_ROW: TargetBuildingRow = {
  * 대상(건축물) 입력 섹션 (동적 행 추가/삭제)
  * 소재지, 지번, 지목, 면적(편입 전/편입), 비고
  */
-export function TargetBuildingInput() {
-  const { register } = useFormContext<ApplicationFormData>()
+export default function TargetBuildingInput() {
+  const { control } = useFormContext<ApplicationFormData>()
 
   const { fields, handleAdd, handleRemove, canRemove } = useDynamicRows<TargetBuildingRow>(
     'targetBuilding',
@@ -81,45 +82,57 @@ export function TargetBuildingInput() {
           {fields.map((field, index) => (
             <tr key={field.id}>
               <td className={tableStyles.td}>
-                <input
-                  className={styles.rowInput}
-                  {...register(`targetBuilding.${index}.locationOwner` as const)}
-                  aria-label='소재지(소유자)'
+                <FormInput
+                  name={`targetBuilding.${index}.locationOwner` as const}
+                  control={control}
+                  label=""
+                  className={styles.cellField}
+                  aria-label="소재지(소유자)"
                 />
               </td>
               <td className={tableStyles.td}>
-                <input
-                  className={cn(styles.rowInput, styles.rowInputCenter)}
-                  {...register(`targetBuilding.${index}.lotNumber` as const)}
-                  aria-label='지번'
+                <FormInput
+                  name={`targetBuilding.${index}.lotNumber` as const}
+                  control={control}
+                  label=""
+                  className={cn(styles.cellField, styles.cellFieldCenter)}
+                  aria-label="지번"
                 />
               </td>
               <td className={tableStyles.td}>
-                <input
-                  className={cn(styles.rowInput, styles.rowInputCenter)}
-                  {...register(`targetBuilding.${index}.landCategory` as const)}
-                  aria-label='지목'
+                <FormInput
+                  name={`targetBuilding.${index}.landCategory` as const}
+                  control={control}
+                  label=""
+                  className={cn(styles.cellField, styles.cellFieldCenter)}
+                  aria-label="지목"
                 />
               </td>
               <td className={tableStyles.td}>
-                <input
-                  className={cn(styles.rowInput, styles.rowInputCenter)}
-                  {...register(`targetBuilding.${index}.areaBeforeInclusion` as const)}
-                  aria-label='편입 전 면적'
+                <FormInput
+                  name={`targetBuilding.${index}.areaBeforeInclusion` as const}
+                  control={control}
+                  label=""
+                  className={cn(styles.cellField, styles.cellFieldCenter)}
+                  aria-label="편입 전 면적"
                 />
               </td>
               <td className={tableStyles.td}>
-                <input
-                  className={cn(styles.rowInput, styles.rowInputCenter)}
-                  {...register(`targetBuilding.${index}.areaIncluded` as const)}
-                  aria-label='편입 면적'
+                <FormInput
+                  name={`targetBuilding.${index}.areaIncluded` as const}
+                  control={control}
+                  label=""
+                  className={cn(styles.cellField, styles.cellFieldCenter)}
+                  aria-label="편입 면적"
                 />
               </td>
               <td className={tableStyles.td}>
-                <input
-                  className={styles.rowInput}
-                  {...register(`targetBuilding.${index}.remarks` as const)}
-                  aria-label='비고'
+                <FormInput
+                  name={`targetBuilding.${index}.remarks` as const}
+                  control={control}
+                  label=""
+                  className={styles.cellField}
+                  aria-label="비고"
                 />
               </td>
               <td className={cn(tableStyles.td, tableStyles.tdActions)}>

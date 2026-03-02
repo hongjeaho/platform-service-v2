@@ -1,5 +1,12 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui'
-import { textCombinations } from '@/constants/design/typography'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Table,
+  tableStyles,
+} from '@/common/components/ui'
+import { textCombinations } from '@/constants/design'
 import { cn } from '@/lib/utils'
 
 import type { CityPlanningRow } from '../types'
@@ -9,7 +16,7 @@ interface CityPlanningViewProps {
   items?: CityPlanningRow[] | null
 }
 
-export function CityPlanningView({ items }: CityPlanningViewProps) {
+export default function CityPlanningView({ items }: CityPlanningViewProps) {
   const hasItems = items && items.length > 0
 
   return (
@@ -18,39 +25,40 @@ export function CityPlanningView({ items }: CityPlanningViewProps) {
         <CardTitle>도시계획 [사업인정]관계</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th className={cn(styles.th, styles.thTitle)}>제목</th>
-                <th className={styles.th}>내용</th>
+        <Table
+          header={
+            <tr>
+              <th className={cn(tableStyles.th, styles.thTitle)}>제목</th>
+              <th className={tableStyles.th}>내용</th>
+            </tr>
+          }
+        >
+          {hasItems ? (
+            items.map((row, index) => (
+              <tr key={`${row.title}-${index}`}>
+                <td className={cn(tableStyles.td, textCombinations.body)}>
+                  {row.title || '-'}
+                </td>
+                <td className={cn(tableStyles.td, textCombinations.body)}>
+                  {row.content || '-'}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {hasItems ? (
-                items.map((row, index) => (
-                  <tr key={`${row.title}-${index}`}>
-                    <td className={cn(styles.td, textCombinations.body)}>{row.title || '-'}</td>
-                    <td className={cn(styles.td, textCombinations.body)}>{row.content || '-'}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan={2}
-                    className={cn(
-                      styles.td,
-                      textCombinations.bodySm,
-                      'text-muted-foreground text-center',
-                    )}
-                  >
-                    표시할 데이터가 없습니다.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+            ))
+          ) : (
+            <tr>
+              <td
+                colSpan={2}
+                className={cn(
+                  tableStyles.td,
+                  textCombinations.bodySm,
+                  'text-muted-foreground text-center',
+                )}
+              >
+                표시할 데이터가 없습니다.
+              </td>
+            </tr>
+          )}
+        </Table>
       </CardContent>
     </Card>
   )
