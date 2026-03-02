@@ -33,7 +33,7 @@ import { brandColors, semanticColors, buttonVariants, statusColors } from '@/con
 
 ```typescript
 // 시맨틱 색상 토큰 사용
-<button className={buttonVariants.primary}>버튼</button>
+<Button className={buttonVariants.primary}>버튼</Button>
 <div className="bg-primary text-primary-foreground">배너</div>
 <span className={statusColors.완료}>완료</span>
 ```
@@ -129,14 +129,17 @@ import { padding, gap, borderRadius } from '@/constants/design/spacing'
 ### 주요 CSS 변수
 
 **Padding:**
+
 - `--padding-button-sm` / `md` / `lg` → 버튼 패딩
 - `--padding-card-sm` / `card` / `card-lg` → 카드 패딩
 - `--padding-input-default` → 입력 필드 패딩
 
 **Gap:**
+
 - `--gap-xs` (4px) / `sm` (8px) / `md` (16px) / `lg` (24px)
 
 **Size:**
+
 - `--size-checkbox` / `radio` → 체크박스/라디오 크기
 - `--size-icon-sm` / `md` → 아이콘 크기
 

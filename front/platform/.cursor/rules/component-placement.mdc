@@ -47,6 +47,47 @@ const Table: React.FC<TableProps> = (props) => { ... }
 - **단일 책임**: 한 컴포넌트는 한 가지 역할. 복잡해지면 하위 컴포넌트로 분리.
 - **API 호출**: orval에서 만든 API만 사용 한다. (**`/src/gen/hooks`, `/src/gen/model`**)
 
+## UI 컴포넌트 우선 사용
+
+- 새 UI(폼 필드, 버튼, 레이아웃 등)를 추가할 때는 **기본 HTML 태그**(`<input>`, `<button>`, `<select>`, `<textarea>`, `<div>` 등)를 쓰지 않고, **`@/common/components/ui`**에서 제공하는 컴포넌트를 **기본(default)**으로 사용한다.
+- 공통 컴포넌트가 디자인 토큰·접근성·일관된 스타일을 적용하므로, 기본 태그 사용을 최소화한다.
+
+### 태그 → 컴포넌트 매핑
+
+| 사용 목적           | 기본 태그(금지·최소화)    | 사용할 컴포넌트                                       |
+| ------------------- | ------------------------- | ----------------------------------------------------- |
+| 단일 라인 입력 (폼) | `<input>`                 | `FormInput` (react-hook-form 연동) / `Input` (비제어) |
+| 여러 줄 입력        | `<textarea>`              | `FormTextarea` / `Textarea`                           |
+| 버튼                | `<button>`                | `Button`                                              |
+| 선택(드롭다운)      | `<select>`                | `FormSelect` / `Select`                               |
+| 체크박스            | `<input type="checkbox">` | `FormCheckbox` / `Checkbox`                           |
+| 라디오 그룹         | `<input type="radio">`    | `FormRadioGroup` / `RadioGroup`                       |
+| 카드/패널           | `<div>`                   | `Card`, `CardHeader`, `CardTitle`, `CardContent` 등   |
+| 레이아웃/간격       | `<div>`                   | `Box`, `Container`                                    |
+| 테이블 레이아웃     | `<table>`                 | `Table`, `tableStyles`                                |
+| 페이지네이션        | 직접 구현                 | `Pagination`                                          |
+| 모달                | `<div>` + CSS             | `Modal`, `ModalHeader`, `ModalBody` 등                |
+
+- import는 `@/common/components/ui`에서 한 번에 한다.
+
+### 예시
+
+```tsx
+// ❌ 나쁜 예 — 기본 태그 직접 사용
+<input className={styles.input} {...register('name')} />
+<button className={styles.btn}>제출</button>
+
+// ✅ 좋은 예 — 공통 컴포넌트 사용
+import { FormInput, Button } from '@/common/components/ui'
+<FormInput name="name" control={control} label="이름" />
+<Button type="submit">제출</Button>
+```
+
+### 예외 (기본 태그 허용)
+
+- **테이블 셀 내 밀집 입력**: 한 행에 여러 필드가 있고 레이블/에러를 셀 단위로 쓰지 않는 경우, `<input>`/`<textarea>` 사용 허용. 이때도 스타일은 CSS Module + 디자인 토큰(예: `form-input` 클래스 또는 spacing/color 토큰)을 사용한다.
+- **공통 컴포넌트로 구현이 불가능하거나 과도하게 복잡해지는 경우**: 예외적으로 기본 태그 사용 가능. 필요 시 주석으로 UI 컴포넌트 미사용 사유를 한 줄 남긴다.
+
 ## 다수 페이지 기능의 컴포넌트 구조
 
 한 기능 하위에 `List`, `View`, `Write` 등 **여러 페이지**가 존재할 때, 전용 컴포넌트는 `components/<page>/` 하위로 분리한다.
@@ -128,3 +169,7 @@ src/components/LoginForm.tsx   # 로그인만 쓰면 views/login/ 에 둠
 
 - `yarn format` 로 소스 정리
 - `yarn lint:fix`로 lint 검사
+
+## 절대하면 안되는 명령어
+
+- `yarn build`
