@@ -1,9 +1,9 @@
 import type { DataTableColumn } from '@/common/components/ui'
 import { DataTable, Modal, ModalBody } from '@/common/components/ui'
 import { textCombinations } from '@/constants/design/typography'
+import type { ApplicationListItem } from '@/gen/model/application-list.types'
 import { cn } from '@/lib/utils'
 
-import type { ApplicationItem } from './ApplicationTable'
 import type { RejectHistoryItem } from './rejectDetailMock'
 import { getRejectDetailMock } from './rejectDetailMock'
 import styles from './RejectDetailModal.module.css'
@@ -11,7 +11,7 @@ import styles from './RejectDetailModal.module.css'
 interface RejectDetailModalProps {
   open: boolean
   onClose: () => void
-  item: ApplicationItem | null
+  item: ApplicationListItem | null
 }
 
 const COLUMNS: DataTableColumn<RejectHistoryItem>[] = [

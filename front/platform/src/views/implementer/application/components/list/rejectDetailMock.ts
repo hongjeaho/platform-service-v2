@@ -1,4 +1,4 @@
-import type { ApplicationItem } from './ApplicationTable'
+import type { ApplicationListItem } from '@/gen/model/application-list.types'
 
 /** 반려 이력 한 건 */
 export interface RejectHistoryItem {
@@ -15,13 +15,13 @@ export interface RejectDetail {
 
 /**
  * 반려 상세 Mock 데이터 반환
- * API 연동 전까지 item의 receptionDate → 재결 신청일, manager → 담당자,
- * rejectCount 기준으로 반려 이력 목록을 생성합니다.
+ * API 연동 전까지 item의 recepDt → 재결 신청일, charge → 담당자,
+ * rejectionCnt 기준으로 반려 이력 목록을 생성합니다.
  */
-export function getRejectDetailMock(item: ApplicationItem): RejectDetail {
-  const count = Math.max(1, item.rejectCount)
+export function getRejectDetailMock(item: ApplicationListItem): RejectDetail {
+  const count = Math.max(1, item.rejectionCnt)
   const rejections: RejectHistoryItem[] = []
-  const baseDate = new Date(item.receptionDate)
+  const baseDate = new Date(item.recepDt)
 
   for (let i = 0; i < count; i++) {
     const d = new Date(baseDate)
@@ -33,8 +33,8 @@ export function getRejectDetailMock(item: ApplicationItem): RejectDetail {
   }
 
   return {
-    reapplyDate: item.receptionDate,
-    manager: item.manager,
+    reapplyDate: item.recepDt,
+    manager: item.charge,
     rejections,
   }
 }

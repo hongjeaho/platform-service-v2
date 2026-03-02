@@ -2,10 +2,10 @@ import * as React from 'react'
 
 import { Box, Container, Pagination } from '@/common/components/ui'
 import { textCombinations } from '@/constants/design/typography'
+import type { ApplicationListItem } from '@/gen/model/application-list.types'
 import { cn } from '@/lib/utils'
 
 import ApplicationSubTitle from './components/ApplicationSubTitle'
-import type { ApplicationItem } from './components/list/ApplicationTable'
 import ApplicationTable from './components/list/ApplicationTable'
 import RejectDetailModal from './components/list/RejectDetailModal'
 import type { SearchValues } from './components/list/SearchForm'
@@ -13,53 +13,51 @@ import SearchForm from './components/list/SearchForm'
 import styles from './List.module.css'
 
 // TODO: API 연동 시 실제 데이터로 교체
-const MOCK_DATA: ApplicationItem[] = [
+const MOCK_DATA: ApplicationListItem[] = [
   {
-    id: 5881,
-    seq: 1,
-    receptionDate: '2026-01-19',
-    decisionOrganization: '서울특별시지방토지수용위원회',
-    manager: '최해경',
+    seqNo: 4162,
+    judgSeq: 6076355,
+    recepDt: '2026-01-19',
+    charge: '최해경',
+    caseNo: '26수용0005',
     implementer: '서울특별시 서초구청장',
-    caseNumber: '26수용0005',
-    projectName: '방배동 1344-5 - 1489 도로개설공사',
-    projectLink: '/implementer/6076355/view',
-    location: '-',
-    rejectCount: 0,
-    progressStatus: '재결접수',
-    ltisStatus: '안건상정',
-    decisionId: 5881,
+    caseTitle: '방배동 1344-5 - 1489 도로개설공사',
+    address: null,
+    ltisStatCd: '20',
+    ltisStatNm: '안건상정',
+    stateCd: '10',
+    stateNm: 'LTIS 입력정보 확인',
+    rejectionCnt: 0,
   },
   {
-    id: 5841,
-    seq: 2,
-    receptionDate: '2026-01-14',
-    decisionOrganization: '서울특별시지방토지수용위원회',
-    manager: '김혜일',
+    seqNo: 4161,
+    judgSeq: 6076303,
+    recepDt: '2026-01-14',
+    charge: '김혜일',
+    caseNo: '26수용0003',
     implementer: '불광제5주택재개발정비사업조합',
-    caseNumber: '26수용0003',
-    projectName: '불광제5주택재개발정비사업 3차',
-    projectLink: '/implementer/6076303/view',
-    location: '-',
-    rejectCount: 0,
-    progressStatus: '입력정보확인',
-    ltisStatus: '접수',
+    caseTitle: '불광제5주택재개발정비사업 3차',
+    address: null,
+    ltisStatCd: '10',
+    ltisStatNm: '접수',
+    stateCd: '91',
+    stateNm: 'LTIS 입력정보 확인 반려',
+    rejectionCnt: 0,
   },
   {
-    id: 5762,
-    seq: 3,
-    receptionDate: '2025-12-12',
-    decisionOrganization: '서울특별시지방토지수용위원회',
-    manager: '이미경',
+    seqNo: 4150,
+    judgSeq: 6075759,
+    recepDt: '2025-12-12',
+    charge: '이미경',
+    caseNo: '25수용0095',
     implementer: '청량리제8구역주택재개발정비사업조합',
-    caseNumber: '25수용0095',
-    projectName: '청량리제8구역 주택재개발정비사업(2차)',
-    projectLink: '/implementer/6075759/view',
-    location: '-',
-    rejectCount: 3,
-    progressStatus: '열람공고반려',
-    ltisStatus: '접수',
-    decisionId: 5762,
+    caseTitle: '청량리제8구역 주택재개발정비사업(2차)',
+    address: null,
+    ltisStatCd: '10',
+    ltisStatNm: '접수',
+    stateCd: '70',
+    stateNm: '열람공고반려',
+    rejectionCnt: 3,
   },
 ]
 
@@ -67,8 +65,10 @@ const PAGE_SIZE = 10
 
 export default function ApplicationList() {
   const [currentPage, setCurrentPage] = React.useState(1)
-  const [data] = React.useState<ApplicationItem[]>(MOCK_DATA)
-  const [selectedRejectItem, setSelectedRejectItem] = React.useState<ApplicationItem | null>(null)
+  const [data] = React.useState<ApplicationListItem[]>(MOCK_DATA)
+  const [selectedRejectItem, setSelectedRejectItem] = React.useState<ApplicationListItem | null>(
+    null,
+  )
   // TODO: API 연동 시 searchValues로 목록 조회, totalCount는 API 응답으로 교체
   // const [searchValues, setSearchValues] = React.useState<SearchValues | null>(null)
   const totalCount = MOCK_DATA.length
@@ -89,7 +89,7 @@ export default function ApplicationList() {
     // TODO: PDF 미리보기 API 연동
   }
 
-  const handleRejectDetail = (item: ApplicationItem) => {
+  const handleRejectDetail = (item: ApplicationListItem) => {
     setSelectedRejectItem(item)
   }
 

@@ -2,23 +2,24 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
-import type { ApplicationItem } from './ApplicationTable'
+import type { ApplicationListItem } from '@/gen/model/application-list.types'
+
 import RejectDetailModal from './RejectDetailModal'
 
-const mockItem: ApplicationItem = {
-  id: 5762,
-  seq: 3,
-  receptionDate: '2025-12-12',
-  decisionOrganization: '서울특별시지방토지수용위원회',
-  manager: '이미경',
+const mockItem: ApplicationListItem = {
+  seqNo: 4150,
+  judgSeq: 6075759,
+  recepDt: '2025-12-12',
+  charge: '이미경',
+  caseNo: '25수용0095',
   implementer: '청량리제8구역주택재개발정비사업조합',
-  caseNumber: '25수용0095',
-  projectName: '청량리제8구역 주택재개발정비사업(2차)',
-  location: '-',
-  rejectCount: 3,
-  progressStatus: '열람공고반려',
-  ltisStatus: '접수',
-  decisionId: 5762,
+  caseTitle: '청량리제8구역 주택재개발정비사업(2차)',
+  address: null,
+  ltisStatCd: '10',
+  ltisStatNm: '접수',
+  stateCd: '70',
+  stateNm: '열람공고반려',
+  rejectionCnt: 3,
 }
 
 describe('RejectDetailModal', () => {
