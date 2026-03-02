@@ -12,14 +12,14 @@
 
 ## Props
 
-| Prop | 타입 | 기본값 | 설명 |
-|------|------|--------|------|
-| `as` | `'div' \| 'main' \| 'section' \| 'article' \| 'aside'` | `'div'` | 렌더링할 시맨틱 HTML 요소 |
-| `size` | `ContainerSize` | `'6xl'` | 최대 너비 (sm ~ 6xl, full, screen) |
-| `centered` | `boolean` | `true` | 중앙 정렬 여부 (mx-auto) |
-| `withPadding` | `boolean` | `true` | 좌우 패딩 적용 여부 |
-| `children` | `ReactNode` | - | 컨테이너 내용 |
-| `className` | `string` | - | 추가 CSS 클래스 |
+| Prop          | 타입                                                   | 기본값  | 설명                               |
+| ------------- | ------------------------------------------------------ | ------- | ---------------------------------- |
+| `as`          | `'div' \| 'main' \| 'section' \| 'article' \| 'aside'` | `'div'` | 렌더링할 시맨틱 HTML 요소          |
+| `size`        | `ContainerSize`                                        | `'6xl'` | 최대 너비 (sm ~ 6xl, full, screen) |
+| `centered`    | `boolean`                                              | `true`  | 중앙 정렬 여부 (mx-auto)           |
+| `withPadding` | `boolean`                                              | `true`  | 좌우 패딩 적용 여부                |
+| `children`    | `ReactNode`                                            | -       | 컨테이너 내용                      |
+| `className`   | `string`                                               | -       | 추가 CSS 클래스                    |
 
 ## 사용 예시
 

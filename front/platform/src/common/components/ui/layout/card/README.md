@@ -31,34 +31,34 @@
 
 ### Card
 
-| Prop | 타입 | 기본값 | 설명 |
-|------|------|--------|------|
-| `variant` | `'default' \| 'elevated' \| 'outlined'` | `'default'` | Card 스타일 variant |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Card 크기 (padding) |
-| `interactive` | `boolean` | `false` | hover 효과 활성화 여부 |
-| `children` | `ReactNode` | - | Card 내용 |
-| `className` | `string` | - | 추가 CSS 클래스 |
+| Prop          | 타입                                    | 기본값      | 설명                   |
+| ------------- | --------------------------------------- | ----------- | ---------------------- |
+| `variant`     | `'default' \| 'elevated' \| 'outlined'` | `'default'` | Card 스타일 variant    |
+| `size`        | `'sm' \| 'md' \| 'lg'`                  | `'md'`      | Card 크기 (padding)    |
+| `interactive` | `boolean`                               | `false`     | hover 효과 활성화 여부 |
+| `children`    | `ReactNode`                             | -           | Card 내용              |
+| `className`   | `string`                                | -           | 추가 CSS 클래스        |
 
 ### CardHeader, CardContent, CardFooter
 
-| Prop | 타입 | 기본값 | 설명 |
-|------|------|--------|------|
-| `children` | `ReactNode` | - | 컨텐츠 |
-| `className` | `string` | - | 추가 CSS 클래스 |
+| Prop        | 타입        | 기본값 | 설명            |
+| ----------- | ----------- | ------ | --------------- |
+| `children`  | `ReactNode` | -      | 컨텐츠          |
+| `className` | `string`    | -      | 추가 CSS 클래스 |
 
 ### CardTitle
 
-| Prop | 타입 | 기본값 | 설명 |
-|------|------|--------|------|
-| `children` | `ReactNode` | - | 제목 텍스트 |
-| `className` | `string` | - | 추가 CSS 클래스 |
+| Prop        | 타입        | 기본값 | 설명            |
+| ----------- | ----------- | ------ | --------------- |
+| `children`  | `ReactNode` | -      | 제목 텍스트     |
+| `className` | `string`    | -      | 추가 CSS 클래스 |
 
 ### CardDescription
 
-| Prop | 타입 | 기본값 | 설명 |
-|------|------|--------|------|
-| `children` | `ReactNode` | - | 설명 텍스트 |
-| `className` | `string` | - | 추가 CSS 클래스 |
+| Prop        | 타입        | 기본값 | 설명            |
+| ----------- | ----------- | ------ | --------------- |
+| `children`  | `ReactNode` | -      | 설명 텍스트     |
+| `className` | `string`    | -      | 추가 CSS 클래스 |
 
 ## 사용 예시
 
@@ -284,32 +284,16 @@ Card 컴포넌트는 다음 디자인 토큰을 사용합니다:
 
 ```css
 /* Padding */
---padding-card-sm: 1rem        /* Small Card padding */
---padding-card: 1.5rem          /* Medium Card padding (기본값) */
---padding-card-lg: 2rem         /* Large Card padding */
-
-/* Gap */
---gap-xs: 0.25rem               /* CardDescription 간격 */
---gap-sm: 0.5rem                /* CardHeader, CardContent 간격 */
---gap-md: 1rem                  /* Card 내부 간격 (기본값) */
---gap-lg: 1.5rem                /* Large Card 간격 */
-
-/* Border Radius */
---radius-lg: 0.75rem            /* Card 모서리 둥글기 */
-
-/* Colors */
---card: var(--color-white)      /* Card 배경색 */
---card-foreground: var(--color-text-primary) /* Card 텍스트 색상 */
---border: var(--color-gray-300) /* Card 테두리 색상 */
-
-/* Shadows */
---shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05)
---shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1)
---shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1)
-
-/* Transitions */
---transition-base: 150ms
---transition-ease: cubic-bezier(0.4, 0, 0.2, 1)
+--padding-card-sm: 1rem /* Small Card padding */ --padding-card: 1.5rem
+  /* Medium Card padding (기본값) */ --padding-card-lg: 2rem /* Large Card padding */ /* Gap */
+  --gap-xs: 0.25rem /* CardDescription 간격 */ --gap-sm: 0.5rem /* CardHeader, CardContent 간격 */
+  --gap-md: 1rem /* Card 내부 간격 (기본값) */ --gap-lg: 1.5rem /* Large Card 간격 */
+  /* Border Radius */ --radius-lg: 0.75rem /* Card 모서리 둥글기 */ /* Colors */
+  --card: var(--color-white) /* Card 배경색 */ --card-foreground: var(--color-text-primary)
+  /* Card 텍스트 색상 */ --border: var(--color-gray-300) /* Card 테두리 색상 */ /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05) --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1)
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1) /* Transitions */ --transition-base: 150ms
+  --transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
 ```
 
 ## 접근성
