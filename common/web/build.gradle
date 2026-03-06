@@ -5,10 +5,11 @@ dependencies {
     api "$boot:spring-boot-starter-aop"
     api 'org.springframework.boot:spring-boot-starter-cache'
     api 'com.github.ben-manes.caffeine:caffeine'
+    api 'io.micrometer:micrometer-core'
+
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
     testImplementation 'org.springframework.security:spring-security-test'
-
     testImplementation testFixtures(project(':common-core'))
 }
