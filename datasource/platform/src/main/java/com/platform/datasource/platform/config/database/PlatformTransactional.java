@@ -1,6 +1,6 @@
 package com.platform.datasource.platform.config.database;
 
-import static com.platform.datasource.platform.config.database.PlatFormDatabaseSource.PLATFORM_DATASOURCE_MANAGER;
+import static com.platform.datasource.platform.config.database.PlatformDatabaseSource.PLATFORM_DATASOURCE_MANAGER;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -26,7 +26,7 @@ public @interface PlatformTransactional {
     Isolation isolation() default Isolation.DEFAULT;
 
     @AliasFor(annotation = Transactional.class)
-    int timeout() default 600;
+    int timeout() default 30;
 
     @AliasFor(annotation = Transactional.class)
     boolean readOnly() default false;

@@ -1,9 +1,9 @@
 package com.platform.datasource.platform.config;
 
-import static com.platform.datasource.platform.config.database.PlatFormDatabaseSource.PLATFORM_DATASOURCE;
-import static com.platform.datasource.platform.config.database.PlatFormDatabaseSource.PLATFORM_SQL_SESSION_FACTORY;
+import static com.platform.datasource.platform.config.database.PlatformDatabaseSource.PLATFORM_DATASOURCE;
+import static com.platform.datasource.platform.config.database.PlatformDatabaseSource.PLATFORM_SQL_SESSION_FACTORY;
 
-import com.platform.datasource.platform.config.database.PlatFormDatabaseSource;
+import com.platform.datasource.platform.config.database.PlatformDatabaseSource;
 import com.platform.datasource.platform.jooq.JooqPackageConstants;
 import java.util.Objects;
 import javax.sql.DataSource;
@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Import;
  * - Type Aliases 설정
  */
 @Configuration
-@Import(PlatFormDatabaseSource.class)
+@Import(PlatformDatabaseSource.class)
 @MapperScan(
         basePackages = {"com.platform.datasource.platform.mapper"},
         sqlSessionFactoryRef = PLATFORM_SQL_SESSION_FACTORY,

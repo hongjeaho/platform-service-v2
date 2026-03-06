@@ -1,8 +1,8 @@
 package com.platform.datasource.platform.config;
 
-import static com.platform.datasource.platform.config.database.PlatFormDatabaseSource.PLATFORM_DATASOURCE;
+import static com.platform.datasource.platform.config.database.PlatformDatabaseSource.PLATFORM_DATASOURCE;
 
-import com.platform.datasource.platform.config.database.PlatFormDatabaseSource;
+import com.platform.datasource.platform.config.database.PlatformDatabaseSource;
 import javax.sql.DataSource;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -30,7 +30,7 @@ import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
  * 성능 설정으로 적절한 데이터베이스 연결을 보장합니다.
  */
 @Configuration
-@Import(PlatFormDatabaseSource.class)
+@Import(PlatformDatabaseSource.class)
 public class JooqConfig {
 
     /**
