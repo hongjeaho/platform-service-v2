@@ -1,75 +1,91 @@
-import type { ButtonHTMLAttributes } from 'react'
+import type { ButtonProps } from './Button.type'
 
-type ButtonVariant = 'primary' | 'secondary' | 'danger'
-type ButtonSize = 'sm' | 'md' | 'lg'
+import { icons } from '@/styles'
+import styles from './Button.module.css'
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant
-  size?: ButtonSize
-  loading?: boolean
+/**
+ * 버튼 크기별 스타일 클래스 매핑 (CSS Module)
+ */
+const sizeClasses: Record<Required<ButtonProps>['size'], string> = {
+  sm: styles.sizeSm,
+  md: styles.sizeMd,
+  lg: styles.sizeLg,
 }
 
-const variantClasses: Record<ButtonVariant, string> = {
-  primary:
-    'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-600',
-  secondary:
-    'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500 focus:ring-offset-gray-200',
-  danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-600',
+/**
+ * 버튼 variant별 스타일 클래스 매핑 (CSS Module)
+ */
+const variantClasses: Record<Required<ButtonProps>['variant'], string> = {
+  primary: styles.variantPrimary,
+  secondary: styles.variantSecondary,
+  accent: styles.variantAccent,
+  destructive: styles.variantDestructive,
+  outline: styles.variantOutline,
+  ghost: styles.variantGhost,
+  link: styles.variantLink,
 }
 
-const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-4 py-2 text-base',
-  lg: 'px-6 py-3 text-lg',
-}
-
+/**
+ * 버튼 컴포넌트
+ *
+ * 디자인 시스템을 따르는 재사용 가능한 버튼 컴포넌트입니다.
+ * 디자인 토큰과 통합하여 일관된 스타일을 제공합니다.
+ * CSS Module을 사용하여 스타일을 캡슐화합니다.
+ *
+ * @example
+ * ```tsx
+ * <Button variant="primary" size="md">클릭하세요</Button>
+ * <Button variant="destructive" loading>로딩 중...</Button>
+ * <Button variant="outline" icon={<Plus />}>추가</Button>
+ * ```
+ */
 export function Button({
   variant = 'primary',
   size = 'md',
   loading = false,
   disabled = false,
+  icon,
+  iconPosition = 'left',
+  fullWidth = false,
   children,
-  className = '',
   ...props
 }: ButtonProps) {
+  const isDisabled = disabled || loading
+  const hasIconOnly = !children && (loading || icon)
+
+  // CSS Module 클래스 조합
+  const buttonClasses = [
+    styles.button,
+    sizeClasses[size],
+    variantClasses[variant],
+    isDisabled ? styles.disabled : '',
+    fullWidth ? styles.fullWidth : '',
+    hasIconOnly ? styles.iconOnly : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   return (
-    <button
-      className={`
-        inline-flex items-center justify-center
-        font-medium rounded-md
-        focus:outline-none focus:ring-2 focus:ring-offset-2
-        transition-colors duration-200
-        disabled:opacity-50 disabled:cursor-not-allowed
-        ${variantClasses[variant]}
-        ${sizeClasses[size]}
-        ${className}
-      `}
-      disabled={disabled || loading}
-      {...props}
-    >
+    <button className={buttonClasses} disabled={isDisabled} {...props}>
       {loading && (
-        <svg
-          className='animate-spin -ml-1 mr-2 h-4 w-4'
-          xmlns='http://www.w3.org/2000/svg'
-          fill='none'
-          viewBox='0 0 24 24'
-        >
-          <circle
-            className='opacity-25'
-            cx='12'
-            cy='12'
-            r='10'
-            stroke='currentColor'
-            strokeWidth='4'
-          />
-          <path
-            className='opacity-75'
-            fill='currentColor'
-            d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
-          />
-        </svg>
+        <span className={styles.icon} aria-hidden="true">
+          <icons.loading className={`${styles.spinner} h-4 w-4`} />
+        </span>
       )}
-      {children}
+
+      {!loading && icon && iconPosition === 'left' && (
+        <span className={styles.icon} aria-hidden="true">
+          {icon}
+        </span>
+      )}
+
+      {children && <span>{children}</span>}
+
+      {!loading && icon && iconPosition === 'right' && (
+        <span className={styles.icon} aria-hidden="true">
+          {icon}
+        </span>
+      )}
     </button>
   )
 }
