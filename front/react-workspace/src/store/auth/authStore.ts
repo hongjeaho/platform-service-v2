@@ -1,17 +1,6 @@
 import { create } from 'zustand'
 
-interface User {
-  id: number
-  name: string
-  email: string
-}
-
-interface AuthState {
-  user: User | null
-  isAuthenticated: boolean
-  login: (user: User) => void
-  logout: () => void
-}
+import type { AuthState } from './authStore.type'
 
 export const useAuthStore = create<AuthState>(set => ({
   user: null,
@@ -19,3 +8,7 @@ export const useAuthStore = create<AuthState>(set => ({
   login: user => set({ user, isAuthenticated: true }),
   logout: () => set({ user: null, isAuthenticated: false }),
 }))
+
+// Selectors for optimized re-renders
+export const selectUser = (state: AuthState) => state.user
+export const selectIsAuthenticated = (state: AuthState) => state.isAuthenticated

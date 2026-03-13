@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import { Button } from '../../../components/common/Button'
 import { useUsers } from '../hooks/useUsers'
 import type { User } from '../types/user.type'
+import {Button} from "@components/common/Button";
 
 export function Component() {
   const [searchQuery, setSearchQuery] = useState('')

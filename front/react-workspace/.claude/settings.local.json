@@ -10,7 +10,8 @@
       "Bash(yarn build-storybook:*)",
       "Bash(yarn remove:*)",
       "Bash(yarn lint:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(npm test:*)"
     ]
   }
 }
