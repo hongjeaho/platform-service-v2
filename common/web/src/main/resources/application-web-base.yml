@@ -1,0 +1,51 @@
+spring:
+  servlet:
+    multipart:
+      max-request-size: 3000MB
+      max-file-size: 3000MB
+
+springdoc:
+  packages-to-scan: com.platform.api,com
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  api-docs:
+    path: /api/public/api-docs/json
+  swagger-ui:
+    path: /public/swagger-ui
+    disable-swagger-default-url: true #기본 Swagger Petstore URL을 어떻게 비활성화
+    display-request-duration: true # API 응답 시간의 표시
+    operations-sorter: alpha
+
+server:
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,image/jpeg
+    min-response-size: 1024
+
+management:
+  endpoints:
+    web:
+      base-path: /public/platform/actuator
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+      show-components: when-authorized
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name:platform-api}
+      environment: ${spring.profiles.active:local}
+    enable:
+      jvm: true
+      system: true
+      tomcat: true
+      hikaricp: true
+      cache: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+      slo:
+        "[http.server.requests]": 50ms,100ms,200ms,500ms,1s,2s

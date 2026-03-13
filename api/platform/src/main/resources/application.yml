@@ -1,27 +1,30 @@
 server:
   port: 8080
+  shutdown: graceful  # 배포 시 진행 중인 요청 완료 후 종료
   tomcat:
     accept-count: 100       # 커넥션 큐 사이즈 (스레드가 부족할 때 요청을 대기시키는 큐의 크기)
     max-connections: 200    # 최대 커넥션 수 (최대 TCP 커넥션 수 (클라이언트 연결 수))
     connection-timeout: 20000  # 커넥션 타임아웃 (ms)
     threads:
-      max: 200 # 동시에 처리 가능한 요청 수
+      max: 100 # 동시에 처리 가능한 요청 수 (200 → 100, 커넥션 풀 40과 균형)
       min-spare: 20 # 기본 대기 스레드 수
 
 spring:
   profiles:
-    active: local
+    active: ${SPRING_PROFILES_ACTIVE:local}
     group:
       local: core, datasource-platform, web-base
       dev: core, datasource-platform, web-base, datasource-platform-dev
+  lifecycle:
+    timeout-per-shutdown-phase: 30s  # Graceful shutdown 대기 시간
 
 file:
-  upload-path: C:\filedownload/
-
+  upload-path: ${FILE_UPLOAD_PATH:./uploads}
 
 jwt:
+  secret: ${JWT_SECRET:local-dev-secret-change-in-production}
   expiration:
     period: 86400000 # 24 * 60 * 60 * 1000 (하루)
     #    period: 60000 # 60 * 1000 : 테스트용 (1분)
-    renew-before: 432000000 # 1 * 60 * 60 * 1000 (한시간)
+    renew-before: 3600000 # 1 * 60 * 60 * 1000 (한시간)
     #    renew-before: 20000 # 20 * 1000 : 테스트용 (20초)

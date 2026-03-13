@@ -50,6 +50,9 @@
   <springProfile name="dev">
     <logger name="org.jooq.tools.LoggerListener" level="DEBUG"/>
     <logger name="com.platform.api.platform" level="DEBUG"/>
+    <logger name="com.mysql" level="WARN" additivity="false">
+      <appender-ref ref="ASYNC"/>
+    </logger>
 
     <root level="INFO">
       <appender-ref ref="ASYNC"/>
@@ -59,15 +62,12 @@
   <springProfile name="prod">
     <logger name="org.jooq.tools.LoggerListener" level="INFO"/>
     <logger name="com.platform.api.platform" level="INFO"/>
+    <logger name="com.mysql" level="WARN" additivity="false">
+      <appender-ref ref="ASYNC"/>
+    </logger>
 
     <root level="WARN">
       <appender-ref ref="ASYNC"/>
     </root>
   </springProfile>
-
-
-  <!-- 공통 로거 설정 -->
-  <logger name="com.mysql" level="WARN" additivity="false">
-    <appender-ref ref="ASYNC"/>
-  </logger>
 </configuration>
