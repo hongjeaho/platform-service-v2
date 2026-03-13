@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(yarn create vite:*)",
+      "Bash(dir:*)",
+      "Bash(yarn install:*)",
+      "Bash(yarn build:*)",
+      "Bash(yarn add:*)",
+      "Bash(yarn test:run:*)",
+      "Bash(yarn build-storybook:*)",
+      "Bash(yarn remove:*)",
+      "Bash(yarn lint:*)",
+      "WebSearch"
+    ]
+  }
+}
