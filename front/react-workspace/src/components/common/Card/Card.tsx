@@ -28,7 +28,12 @@ export function Card({
       )}
 
       {onToggle != null && (
-        <button type='button' onClick={onToggle} className={styles.toggleButton}>
+        <button
+          type='button'
+          onClick={onToggle}
+          className={styles.toggleButton}
+          aria-expanded={isExpanded}
+        >
           {isExpanded ? 'Show less' : 'Show details'}
         </button>
       )}
