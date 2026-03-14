@@ -7,14 +7,14 @@
  */
 
 // 원시 토큰 import (단일 진실 공간)
-import { rawColors, darkModeColors, type RawColorKey, type DarkModeColorKey } from './tokens'
+import { type DarkModeColorKey,darkModeColors, type RawColorKey, rawColors } from './tokens'
 
 /**
  * 원시 토큰 재내보내기
  * 인라인 스타일이나 특수한 경우에 사용합니다
  */
-export { rawColors, darkModeColors }
-export type { RawColorKey, DarkModeColorKey }
+export { darkModeColors,rawColors }
+export type { DarkModeColorKey,RawColorKey }
 
 /**
  * Brand Colors

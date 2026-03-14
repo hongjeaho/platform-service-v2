@@ -102,7 +102,7 @@ import { padding, gap, layouts } from '@/styles'
 import { icons, iconSizes } from '@/styles'
 import { Icon } from './components/Icon' // 커스텀 아이콘 컴포넌트
 
-<Icon icon={icons.add} size={iconSizes.md} />
+;<Icon icon={icons.add} size={iconSizes.md} />
 ```
 
 ---
@@ -111,32 +111,32 @@ import { Icon } from './components/Icon' // 커스텀 아이콘 컴포넌트
 
 ### 색상
 
-| 그룹 | 설명 | 예시 |
-|------|------|------|
-| `semanticColors` | 의미 중심 상태 색상 | success, warning, error, info |
-| `colorPalettes` | 색상 스케일 (50-900) | primary, gray, success, error |
-| `statusColors` | 비즈니스 로직 매핑 | 접수, 검토중, 완료, 반려 |
-| `brandColors` | 브랜드 아이덴티티 | primary, primaryForeground |
+| 그룹                   | 설명                    | 예시                               |
+| ---------------------- | ----------------------- | ---------------------------------- |
+| `semanticColors`       | 의미 중심 상태 색상     | success, warning, error, info      |
+| `colorPalettes`        | 색상 스케일 (50-900)    | primary, gray, success, error      |
+| `statusColors`         | 비즈니스 로직 매핑      | 접수, 검토중, 완료, 반려           |
+| `brandColors`          | 브랜드 아이덴티티       | primary, primaryForeground         |
 | `semanticColorClasses` | TailwindCSS 클래스 조합 | bg-success text-success-foreground |
 
 ### 간격
 
-| 그룹 | 설명 | 예시 |
-|------|------|------|
-| `spacingScale` | 기본 4px 단위 | 0, xs, sm, md, lg, xl, 2xl, 3xl |
-| `padding` | 컴포넌트 내부 여백 | buttonSm, buttonMd, inputDefault |
-| `margin` | 요소 간 외부 여백 | formField, section, page |
-| `gap` | Flex/Grid 간격 | tight, default, loose, relaxed |
-| `layouts` | 페이지 레이아웃 | page, pageContentVertical, sectionPadding |
+| 그룹           | 설명               | 예시                                      |
+| -------------- | ------------------ | ----------------------------------------- |
+| `spacingScale` | 기본 4px 단위      | 0, xs, sm, md, lg, xl, 2xl, 3xl           |
+| `padding`      | 컴포넌트 내부 여백 | buttonSm, buttonMd, inputDefault          |
+| `margin`       | 요소 간 외부 여백  | formField, section, page                  |
+| `gap`          | Flex/Grid 간격     | tight, default, loose, relaxed            |
+| `layouts`      | 페이지 레이아웃    | page, pageContentVertical, sectionPadding |
 
 ### 타이포그래피
 
-| 그룹 | 설명 | 예시 |
-|------|------|------|
-| `textScale` | Tailwind 기준 텍스트 크기 | h1-h5, body, bodySm, bodyXs |
-| `fontWeights` | 폰트 굵기 | light, normal, medium, semibold, bold |
-| `lineHeights` | 줄 간격 | tight, normal, relaxed |
-| `textCombinations` | 자주 사용하는 조합 | h1, h2, body, button, label |
+| 그룹               | 설명                      | 예시                                  |
+| ------------------ | ------------------------- | ------------------------------------- |
+| `textScale`        | Tailwind 기준 텍스트 크기 | h1-h5, body, bodySm, bodyXs           |
+| `fontWeights`      | 폰트 굵기                 | light, normal, medium, semibold, bold |
+| `lineHeights`      | 줄 간격                   | tight, normal, relaxed                |
+| `textCombinations` | 자주 사용하는 조합        | h1, h2, body, button, label           |
 
 ---
 
@@ -201,11 +201,7 @@ function ThemeToggle() {
     document.documentElement.classList.toggle('dark', isDark)
   }, [isDark])
 
-  return (
-    <button onClick={() => setIsDark(!isDark)}>
-      {isDark ? '라이트 모드' : '다크 모드'}
-    </button>
-  )
+  return <button onClick={() => setIsDark(!isDark)}>{isDark ? '라이트 모드' : '다크 모드'}</button>
 }
 ```
 
@@ -221,18 +217,18 @@ import { darkModeColors } from '@/styles'
 
 ## 📱 반응형 브레이크포인트
 
-| 접두사 | 크기 | 사용 예시 |
-|--------|------|----------|
-| `sm:` | 640px | `className="sm:text-lg"` |
-| `md:` | 768px | `className="md:px-8"` |
-| `lg:` | 1024px | `className="lg:grid-cols-3"` |
-| `xl:` | 1280px | `className="xl:max-w-7xl"` |
+| 접두사 | 크기   | 사용 예시                     |
+| ------ | ------ | ----------------------------- |
+| `sm:`  | 640px  | `className="sm:text-lg"`      |
+| `md:`  | 768px  | `className="md:px-8"`         |
+| `lg:`  | 1024px | `className="lg:grid-cols-3"`  |
+| `xl:`  | 1280px | `className="xl:max-w-7xl"`    |
 | `2xl:` | 1536px | `className="2xl:grid-cols-4"` |
 
 ### 사용 예시
 
 ```tsx
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
   <div>항목 1</div>
   <div>항목 2</div>
   <div>항목 3</div>
@@ -339,6 +335,7 @@ import {
 ## 📝 버전 및 변경사항
 
 ### 버전: 1.0.0
+
 - **초기 구현**: 단일 진실 공간(Single Source of Truth) 구조 도입
 - **토큰 중앙화**: `tokens.ts` 파일을 통한 원시 토큰 관리
 - **TailwindCSS 클래스 기반**: JIT 컴파일 호환성 확보
