@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { icons } from '@/styles'
+
 import { Button } from './Button'
 
 const meta: Meta<typeof Button> = {
@@ -302,9 +303,7 @@ export const AllVariants: Story = {
           <Button variant='secondary' disabled>
             Disabled
           </Button>
-          <Button variant='destructive'>
-            Delete
-          </Button>
+          <Button variant='destructive'>Delete</Button>
         </div>
       </div>
 
@@ -357,7 +356,7 @@ export const Interactive: Story = {
 }
 
 export const Playground: Story = {
-  render: (args) => <Button {...args}>Button</Button>,
+  render: args => <Button {...args}>Button</Button>,
   parameters: {
     controls: { expanded: true },
   },

@@ -1,4 +1,4 @@
-import type { AriaAttributes, DOMAttributes, ReactNode } from 'react'
+import type { AriaAttributes, DOMAttributes, ReactNode, Ref } from 'react'
 
 // Design system imports
 import type { ButtonVariant as DSButtonVariant } from '@/styles'
@@ -18,7 +18,14 @@ export type IconPosition = 'left' | 'right'
  * CSS Module을 사용하므로 className prop은 제공되지 않습니다.
  * 필요한 속성만 명시적으로 정의합니다.
  */
-export interface ButtonProps extends DOMAttributes<HTMLButtonElement>, AriaAttributes {
+export interface ButtonProps
+  extends Omit<DOMAttributes<HTMLButtonElement>, 'className'>,
+    AriaAttributes {
+  /**
+   * ref (React 19: 일반 prop으로 전달)
+   */
+  ref?: Ref<HTMLButtonElement>
+
   /**
    * 버튼 variant (디자인 시스템 토큰 사용)
    * @default 'primary'

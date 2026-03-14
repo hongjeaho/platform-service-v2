@@ -1,7 +1,7 @@
-import type { ButtonProps } from './Button.type'
+import { icons, iconSizes } from '@/styles'
 
-import { icons } from '@/styles'
 import styles from './Button.module.css'
+import type { ButtonProps } from './Button.type'
 
 /**
  * 버튼 크기별 스타일 클래스 매핑 (CSS Module)
@@ -40,6 +40,7 @@ const variantClasses: Record<Required<ButtonProps>['variant'], string> = {
  * ```
  */
 export function Button({
+  ref,
   variant = 'primary',
   size = 'md',
   loading = false,
@@ -48,10 +49,25 @@ export function Button({
   iconPosition = 'left',
   fullWidth = false,
   children,
-  ...props
+  ...rest
 }: ButtonProps) {
   const isDisabled = disabled || loading
   const hasIconOnly = !children && (loading || icon)
+
+  // className은 CSS Module 캡슐화를 위해 전달하지 않음 (Rule 4)
+  const { className: _omitClassName, ...buttonProps } = rest as typeof rest & {
+    className?: string
+  }
+
+  if (
+    import.meta.env.DEV &&
+    hasIconOnly &&
+    !('aria-label' in rest && rest['aria-label'])
+  ) {
+    console.warn(
+      '[Button] 아이콘 전용 버튼에는 접근성을 위해 aria-label을 제공하세요.'
+    )
+  }
 
   // CSS Module 클래스 조합
   const buttonClasses = [
@@ -66,15 +82,21 @@ export function Button({
     .join(' ')
 
   return (
-    <button className={buttonClasses} disabled={isDisabled} {...props}>
+    <button
+      ref={ref}
+      className={buttonClasses}
+      disabled={isDisabled}
+      {...buttonProps}
+      type={buttonProps.type ?? 'button'}
+    >
       {loading && (
-        <span className={styles.icon} aria-hidden="true">
-          <icons.loading className={`${styles.spinner} h-4 w-4`} />
+        <span className={styles.icon} aria-hidden='true'>
+          <icons.loading className={`${styles.spinner} ${iconSizes.sm}`} />
         </span>
       )}
 
       {!loading && icon && iconPosition === 'left' && (
-        <span className={styles.icon} aria-hidden="true">
+        <span className={styles.icon} aria-hidden='true'>
           {icon}
         </span>
       )}
@@ -82,7 +104,7 @@ export function Button({
       {children && <span>{children}</span>}
 
       {!loading && icon && iconPosition === 'right' && (
-        <span className={styles.icon} aria-hidden="true">
+        <span className={styles.icon} aria-hidden='true'>
           {icon}
         </span>
       )}

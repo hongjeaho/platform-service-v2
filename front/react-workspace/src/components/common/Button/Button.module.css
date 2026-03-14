@@ -126,9 +126,9 @@
 }
 
 .variantLink {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-    color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  color: var(--primary);
 }
 
 .variantLink:hover:not(:disabled):not(.disabled) {
