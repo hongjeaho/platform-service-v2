@@ -1,0 +1,166 @@
+---
+description: 피처 컴포넌트(src/features) 작성 규칙 — 공통 컴포넌트 재사용·디자인 시스템·React 19
+globs: src/features/**/*.tsx
+alwaysApply: false
+---
+
+# 피처 컴포넌트 규칙 (`src/features`)
+
+특정 도메인/기능에 속하는 컴포넌트를 작성할 때 아래 규칙을 준수한다.
+
+## 1. 파일 구조
+
+피처 컴포넌트는 복잡도에 따라 필요한 파일만 생성한다:
+
+```
+# 단순 컴포넌트
+UserCard.tsx
+
+# 타입이 복잡한 경우
+UserCard/
+├── UserCard.tsx
+├── UserCard.type.ts   # props가 복잡하거나 외부에서 참조될 때
+└── index.ts           # 외부에서 import될 때
+```
+
+- Storybook(`.stories.tsx`)은 선택 사항이다.
+- CSS Module(`.module.css`)은 선택 사항이다 — Tailwind 클래스만으로 충분하면 생략한다.
+- 파일명과 컴포넌트명(PascalCase)을 일치시킨다.
+
+## 2. 공통 컴포넌트 재사용 — 최우선 원칙
+
+**`src/components/common`의 공통 컴포넌트를 반드시 재사용한다.**
+
+```tsx
+// ❌ BAD — 공통 컴포넌트가 있는데 직접 구현
+function UserCard() {
+  return (
+    <div className="rounded-lg border p-4">
+      <button className="bg-blue-500 text-white px-4 py-2">상세보기</button>
+    </div>
+  )
+}
+
+// ✅ GOOD — 공통 컴포넌트 재사용
+import { Card } from '@components/common/Card'
+import { Button } from '@components/common/Button'
+
+function UserCard() {
+  return (
+    <Card title={user.name}>
+      <Button variant="primary">상세보기</Button>
+    </Card>
+  )
+}
+```
+
+## 3. 타입 정의
+
+- `any` 사용은 금지한다.
+- 간단한 props는 컴포넌트 파일 내 `interface`로 선언해도 무방하다.
+- props가 복잡하거나 여러 파일에서 참조되는 경우 `[component].type.ts`로 분리한다.
+
+```tsx
+// ✅ GOOD — 단순 props는 파일 내 선언
+interface UserCardProps {
+  user: User
+  isExpanded?: boolean
+  onToggle?: () => void
+}
+```
+
+## 4. 디자인 시스템 준수
+
+`src/styles/README.md`를 반드시 참고한다.
+
+- 색상·타이포·간격·아이콘은 디자인 토큰(Tailwind 클래스, `@/styles` export)을 사용한다.
+- 임의 hex/rgb 값, 하드코딩 spacing/font-size는 금지한다.
+- `src/styles/` 내 토큰·globals·설정 파일은 수정하지 않는다.
+
+## 5. 스타일 작성
+
+Tailwind 클래스를 기본으로 사용한다. 컴포넌트 고유의 복잡한 스타일이 필요한 경우에만 CSS Module을 추가한다.
+
+```tsx
+// ✅ GOOD — Tailwind로 충분한 경우
+<div className="rounded-lg border border-gray-200 p-4 shadow-sm">
+
+// ✅ GOOD — 복잡한 애니메이션 등은 CSS Module 사용
+import styles from './UserCard.module.css'
+<div className={styles.cardExpanded}>
+```
+
+## 6. React 19 모범 사례
+
+### `forwardRef` 사용 금지 — ref를 일반 prop으로 받는다
+
+```tsx
+// ❌ React 18 이하 방식
+const UserCard = forwardRef<HTMLDivElement, UserCardProps>((props, ref) => (
+  <div ref={ref} {...props} />
+))
+
+// ✅ React 19
+function UserCard({ ref, ...props }: UserCardProps & { ref?: React.Ref<HTMLDivElement> }) {
+  return <div ref={ref} {...props} />
+}
+```
+
+### 폼 액션에 `useActionState` 활용
+
+```tsx
+const [state, action, isPending] = useActionState(submitForm, null)
+return <form action={action}>...</form>
+```
+
+## 7. 훅 사용 원칙
+
+- `useState`, `useEffect`는 최소화한다.
+- 파생 값은 state로 두지 않고 계산으로 해결한다.
+- `useEffect`는 동기화/사이드이펙트 목적에만 사용하고, 데이터 가공 용도로 사용하지 않는다.
+- 재사용 가능한 로직은 `src/features/[domain]/hooks/`의 커스텀 훅으로 분리한다.
+
+```tsx
+// ❌ BAD — 로직을 컴포넌트에 직접 작성
+function UserListPage() {
+  const [users, setUsers] = useState([])
+  useEffect(() => { fetch('/api/users').then(...) }, [])
+}
+
+// ✅ GOOD — 커스텀 훅으로 분리
+function UserListPage() {
+  const { users, isLoading } = useUsers()
+}
+```
+
+## 8. 접근성(a11y)
+
+- 시맨틱 태그를 우선 사용한다. 클릭 가능 요소는 `button`/`a`를 사용한다.
+- 텍스트 없는 아이콘 버튼에는 반드시 `aria-label`을 제공한다.
+
+```tsx
+// ❌ BAD
+<div onClick={handleSelect}>선택</div>
+
+// ✅ GOOD
+<button onClick={handleSelect}>선택</button>
+```
+
+## 9. 테스트 — 비즈니스 로직 중심
+
+피처 컴포넌트의 단위 테스트는 **비즈니스 로직이 있는 경우** 작성한다.
+
+- 복잡한 조건부 렌더링, 인터랙션, 상태 변화는 테스트로 커버한다.
+- 단순 UI 조합 컴포넌트(공통 컴포넌트만 조합한 경우)는 테스트 생략 가능하다.
+- 도메인 훅(`useUsers` 등)은 별도 훅 테스트 파일로 커버한다.
+
+```tsx
+// 비즈니스 로직이 있는 경우 테스트 작성
+describe('UserCard', () => {
+  it('토글 클릭 시 상세 정보를 표시한다', () => {
+    render(<UserCard user={mockUser} />)
+    fireEvent.click(screen.getByRole('button', { name: '상세보기' }))
+    expect(screen.getByText(mockUser.email)).toBeInTheDocument()
+  })
+})
+```
