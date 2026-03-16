@@ -1,0 +1,121 @@
+/**
+ * Input 컴포넌트 스타일 (CSS Module)
+ * 디자인 시스템 토큰 기반 (--input, --input-height-*, --padding-input-default, --border, --ring)
+ */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.label {
+  display: block;
+}
+
+.required {
+  color: var(--destructive);
+}
+
+.input {
+  display: block;
+  width: 100%;
+  font-family: var(--font-family-base);
+  color: var(--foreground);
+  border-radius: var(--radius);
+  outline: none;
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.input::placeholder {
+  color: var(--muted-foreground);
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Variants */
+.variantPrimary {
+  background-color: var(--input);
+  border: 1px solid var(--border);
+}
+
+.variantPrimary:hover:not(:disabled):not(.readOnly) {
+  border-color: color-mix(in srgb, var(--border) 80%, var(--foreground));
+}
+
+.variantSecondary {
+  background-color: var(--muted);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+.variantSecondary:hover:not(:disabled):not(.readOnly) {
+  background-color: color-mix(in srgb, var(--muted) 90%, transparent);
+  border-color: color-mix(in srgb, var(--border) 80%, var(--foreground));
+}
+
+.variantTertiary {
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+.variantTertiary:hover:not(:disabled):not(.readOnly) {
+  border-color: color-mix(in srgb, var(--border) 70%, var(--foreground));
+}
+
+/* Sizes - 디자인 토큰 --input-height-*, --padding-input-default 사용 */
+.sizeSm {
+  height: var(--input-height-sm);
+  padding: var(--padding-input-default);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.sizeMd {
+  height: var(--input-height-base);
+  padding: var(--padding-input-default);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.sizeLg {
+  height: var(--input-height-lg);
+  padding: var(--padding-input-default);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+/* States */
+.input:disabled,
+.input.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.input.readOnly {
+  cursor: default;
+  background-color: var(--muted);
+}
+
+.input.readOnly:focus-visible {
+  outline: none;
+}
+
+/* 에러 상태 (input에 적용) */
+.input.error {
+  border-color: var(--destructive);
+}
+
+.input.error:focus-visible {
+  outline-color: var(--destructive);
+}
+
+.errorMessage {
+  color: var(--destructive);
+}
