@@ -69,5 +69,23 @@ describe('Table', () => {
     const table = screen.getByRole('table', { name: '테이블' })
     expect(within(table).getByRole('cell', { name: '합계' })).toHaveAttribute('colspan', '2')
   })
+
+  it('rowSpan이 적용됩니다', () => {
+    render(
+      <Table ariaLabel='테이블'>
+        <TableBody>
+          <TableRow>
+            <TableCell rowSpan={2}>병합</TableCell>
+            <TableCell>첫째</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>둘째</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
+    )
+    const table = screen.getByRole('table', { name: '테이블' })
+    expect(within(table).getByRole('cell', { name: '병합' })).toHaveAttribute('rowspan', '2')
+  })
 })
 

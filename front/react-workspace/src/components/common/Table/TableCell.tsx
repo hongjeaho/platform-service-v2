@@ -7,9 +7,14 @@ function getAlignClass(align: NonNullable<TableCellProps['align']>) {
   return styles.alignCenter
 }
 
-export function TableCell({ align = 'center', colSpan, children }: TableCellProps) {
+export function TableCell({ align = 'center', colSpan, rowSpan, children }: TableCellProps) {
   return (
-    <td className={[styles.cellBase, getAlignClass(align)].join(' ')} data-align={align} colSpan={colSpan}>
+    <td
+      className={[styles.cellBase, getAlignClass(align)].join(' ')}
+      data-align={align}
+      colSpan={colSpan}
+      rowSpan={rowSpan}
+    >
       {children}
     </td>
   )

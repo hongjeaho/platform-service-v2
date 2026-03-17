@@ -44,8 +44,9 @@ striped와 hoverable가 모두 `true`일 때 가독성이 떨어지면 안된다
 
 ## TableCell / TableHead
 
-- colSpan: `number`
-- align: `center`, `right`, `left` (기본 : `center`)
+- `colSpan`: `number`
+- `rowSpan`: `number`
+- `align`: `center`, `right`, `left` (기본 : `center`)
 
 ## TableFooter
 

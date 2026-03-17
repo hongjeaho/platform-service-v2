@@ -126,6 +126,7 @@ export interface TableHeadProps {
    */
   align?: TableCellAlign
   colSpan?: number
+  rowSpan?: number
   children: ReactNode
 }
 
@@ -144,6 +145,7 @@ export interface TableCellProps {
    */
   align?: TableCellAlign
   colSpan?: number
+  rowSpan?: number
   children: ReactNode
 }
 
