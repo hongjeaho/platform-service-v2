@@ -1,0 +1,122 @@
+/**
+ * Textarea 컴포넌트 스타일 (CSS Module)
+ * 디자인 시스템 토큰 기반 (--input, --input-height-*, --padding-input-default, --border, --ring)
+ */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.label {
+  display: block;
+}
+
+.required {
+  color: var(--destructive);
+}
+
+.textarea {
+  display: block;
+  width: 100%;
+  font-family: var(--font-family-base);
+  color: var(--foreground);
+  border-radius: var(--radius);
+  outline: none;
+  resize: vertical;
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.textarea::placeholder {
+  color: var(--muted-foreground);
+}
+
+.textarea:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Variants */
+.variantPrimary {
+  background-color: var(--input);
+  border: 1px solid var(--border);
+}
+
+.variantPrimary:hover:not(:disabled):not(.readOnly) {
+  border-color: color-mix(in srgb, var(--border) 80%, var(--foreground));
+}
+
+.variantSecondary {
+  background-color: var(--muted);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+.variantSecondary:hover:not(:disabled):not(.readOnly) {
+  background-color: color-mix(in srgb, var(--muted) 90%, transparent);
+  border-color: color-mix(in srgb, var(--border) 80%, var(--foreground));
+}
+
+.variantTertiary {
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+.variantTertiary:hover:not(:disabled):not(.readOnly) {
+  border-color: color-mix(in srgb, var(--border) 70%, var(--foreground));
+}
+
+/* Sizes - min-height로 크기 구분 (textarea는 다중 행) */
+.sizeSm {
+  min-height: var(--input-height-sm);
+  padding: var(--padding-input-default);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.sizeMd {
+  min-height: var(--input-height-base);
+  padding: var(--padding-input-default);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.sizeLg {
+  min-height: var(--input-height-lg);
+  padding: var(--padding-input-default);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+/* States */
+.textarea:disabled,
+.textarea.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.textarea.readOnly {
+  cursor: default;
+  background-color: var(--muted);
+}
+
+.textarea.readOnly:focus-visible {
+  outline: none;
+}
+
+/* 에러 상태 (textarea에 적용) */
+.textarea.error {
+  border-color: var(--destructive);
+}
+
+.textarea.error:focus-visible {
+  outline-color: var(--destructive);
+}
+
+.errorMessage {
+  color: var(--destructive);
+}
