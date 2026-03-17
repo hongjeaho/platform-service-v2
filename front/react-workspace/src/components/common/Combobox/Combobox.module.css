@@ -1,0 +1,160 @@
+/**
+ * Combobox 컴포넌트 스타일 (CSS Module)
+ * 디자인 시스템 토큰 기반 (--input, --input-height-*, --padding-input-default, --border, --ring)
+ */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.label {
+  display: block;
+}
+
+.required {
+  color: var(--destructive);
+}
+
+/* 입력 영역(사용자 영역)만 테두리 + radius — 드롭다운에는 미적용 */
+.comboboxWrap {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.comboboxWrap:hover:not(.comboboxWrap.disabled) {
+  border-color: color-mix(in srgb, var(--border) 80%, var(--foreground));
+}
+
+.comboboxWrap:has(.input:focus-visible) {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.comboboxWrap.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.comboboxWrap.error {
+  border-color: var(--destructive);
+}
+
+.comboboxWrap.error:has(.input:focus-visible) {
+  outline-color: var(--destructive);
+}
+
+/* 내부 요소에는 테두리/링 미적용 — comboboxWrap에만 적용 */
+.comboboxWrap *:focus,
+.comboboxWrap *:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.triggerWrap {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  font-family: var(--font-family-base);
+  color: var(--foreground);
+  background-color: var(--input);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+  font: inherit;
+  color: inherit;
+}
+
+/* 글로벌 *:focus-visible(ring-2) 제거 — comboboxWrap에서만 링 표시 */
+.input:focus,
+.input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.input::placeholder {
+  color: var(--muted-foreground);
+}
+
+.triggerIcon {
+  flex-shrink: 0;
+  margin-left: var(--spacing-1);
+  padding-right: var(--padding-input-default);
+  color: var(--muted-foreground);
+  outline: none;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.triggerIcon:focus,
+.triggerIcon:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* input/span 기본 테두리 제거 (브라우저 기본 등) */
+.comboboxWrap .input,
+.comboboxWrap .triggerIcon {
+  border: none;
+}
+
+/* Sizes */
+.sizeSm .input {
+  height: var(--input-height-sm);
+  padding: var(--padding-input-default);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.sizeMd .input {
+  height: var(--input-height-base);
+  padding: var(--padding-input-default);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.sizeLg .input {
+  height: var(--input-height-lg);
+  padding: var(--padding-input-default);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+/* 드롭다운 목록 — 입력 영역 테두리/포커스 링과 분리된 별도 패널 */
+.listbox {
+  overflow-y: auto;
+  background-color: var(--popover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1));
+  z-index: var(--z-index-dropdown, 1000);
+}
+
+.listboxSizeSm {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.listboxSizeMd {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.listboxSizeLg {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.errorMessage {
+  color: var(--destructive);
+}

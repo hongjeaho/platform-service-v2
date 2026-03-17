@@ -1,0 +1,380 @@
+import { ChevronDown } from 'lucide-react'
+import React, {
+  Children,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
+
+import { textCombinations } from '@/styles'
+
+import { ComboboxContext } from './Combobox.context'
+import styles from './Combobox.module.css'
+import type { ComboboxProps, ComboboxSize } from './Combobox.type'
+import { ComboboxItem } from './ComboboxItem'
+
+const sizeClasses: Record<ComboboxSize, string> = {
+  sm: styles.sizeSm,
+  md: styles.sizeMd,
+  lg: styles.sizeLg,
+}
+
+const listboxSizeClasses: Record<ComboboxSize, string> = {
+  sm: styles.listboxSizeSm,
+  md: styles.listboxSizeMd,
+  lg: styles.listboxSizeLg,
+}
+
+const ITEM_HEIGHT_PX: Record<ComboboxSize, number> = {
+  sm: 32,
+  md: 40,
+  lg: 48,
+}
+
+interface ParsedItem {
+  value: string
+  textValue?: string
+  displayText: string
+  disabled?: boolean
+  element: React.ReactElement
+}
+
+function getTextFromNode(node: ReactNode): string {
+  if (node == null) return ''
+  if (typeof node === 'string' || typeof node === 'number') return String(node)
+  if (Array.isArray(node)) return node.map(getTextFromNode).join('')
+  if (React.isValidElement(node)) {
+    const props = node.props as { children?: ReactNode }
+    if (props.children != null) return getTextFromNode(props.children)
+  }
+  return ''
+}
+
+function flattenFragmentChildren(node: ReactNode): React.ReactElement[] {
+  const arr = Children.toArray(node)
+  const result: React.ReactElement[] = []
+  arr.forEach(child => {
+    if (React.isValidElement(child) && child.type === React.Fragment) {
+      const props = child.props as { children?: ReactNode }
+      result.push(...flattenFragmentChildren(props.children ?? null))
+    } else if (React.isValidElement(child)) result.push(child)
+  })
+  return result
+}
+
+function parseItems(children: ReactNode): ParsedItem[] {
+  const items: ParsedItem[] = []
+  const flat = flattenFragmentChildren(children)
+  flat.forEach(child => {
+    if (!React.isValidElement(child)) return
+    const props = child.props as {
+      value?: string
+      textValue?: string
+      disabled?: boolean
+      children?: ReactNode
+    }
+    if (props.value === undefined) return
+    const displayText =
+      props.textValue != null
+        ? String(props.textValue).trim()
+        : getTextFromNode(props.children).trim() || String(props.value)
+    items.push({
+      value: String(props.value),
+      textValue: props.textValue,
+      displayText: displayText || String(props.value),
+      disabled: props.disabled,
+      element: child,
+    })
+  })
+  return items
+}
+
+function getDisplayTextForValue(items: ParsedItem[], value: string): string {
+  const item = items.find(i => i.value === value)
+  return item?.displayText ?? value
+}
+
+/**
+ * Combobox 컴포넌트
+ * 입력 필드 + 실시간 필터링 드롭다운. RHF register() 및 value/onChange와 호환됩니다.
+ *
+ * @example
+ * ```tsx
+ * <Combobox placeholder="검색" label="과일" {...register('fruit')} error={errors.fruit?.message}>
+ *   <ComboboxItem value="0001">딸기</ComboboxItem>
+ *   <ComboboxItem value="0002">바나나</ComboboxItem>
+ * </Combobox>
+ * ```
+ */
+export function Combobox({
+  ref,
+  placeholder,
+  limit = 5,
+  defaultValue = '',
+  value: valueProp,
+  disabled = false,
+  size = 'md',
+  label,
+  error,
+  required = false,
+  id: idProp,
+  name,
+  onChange,
+  onValueChange,
+  onBlur,
+  children,
+}: ComboboxProps) {
+  const generatedId = useId()
+  const triggerId = idProp ?? generatedId
+  const listboxId = `${triggerId}-listbox`
+  const errorId = error ? `${triggerId}-error` : undefined
+
+  const [isOpen, setOpen] = useState(false)
+  const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
+  const [inputValue, setInputValueState] = useState(() =>
+    getDisplayTextForValue(parseItems(children), (defaultValue || valueProp) ?? ''),
+  )
+  const containerRef = useRef<HTMLDivElement>(null)
+  const hiddenInputRef = useRef<HTMLInputElement | null>(null)
+  const triggerInputRef = useRef<HTMLInputElement | null>(null)
+  /** blur 시 목록에 없는 검색어일 때 복원할 값 (선택된 값은 타이핑 중에도 유지) */
+  const lastSelectedValueRef = useRef<string>((defaultValue || valueProp) ?? '')
+
+  const items = useMemo(() => parseItems(children), [children])
+  const isControlled = valueProp !== undefined
+  const currentValue = isControlled ? valueProp : uncontrolledValue
+
+  const filteredItems = useMemo(() => {
+    const q = inputValue.trim().toLowerCase()
+    if (!q) return items.slice(0, limit)
+    return items.filter(i => i.displayText.toLowerCase().includes(q)).slice(0, limit)
+  }, [items, inputValue, limit])
+
+  const filteredValues = useMemo(() => new Set(filteredItems.map(i => i.value)), [filteredItems])
+
+  useEffect(() => {
+    if (isControlled && valueProp !== undefined) {
+      setInputValueState(getDisplayTextForValue(items, valueProp))
+      lastSelectedValueRef.current = valueProp
+    }
+  }, [isControlled, valueProp, items])
+
+  const setValue = useCallback(
+    (v: string, displayText: string) => {
+      lastSelectedValueRef.current = v
+      if (!isControlled) setUncontrolledValue(v)
+      setInputValueState(displayText)
+      setOpen(false)
+      onValueChange?.(v)
+      const input = hiddenInputRef.current
+      if (input) {
+        input.value = v
+        input.dispatchEvent(new Event('change', { bubbles: true }))
+      }
+      const syntheticEvent = {
+        target: { name: name ?? '', value: v },
+      } as React.ChangeEvent<HTMLInputElement>
+      onChange?.(syntheticEvent)
+    },
+    [isControlled, name, onChange, onValueChange],
+  )
+
+  const setInputValue = useCallback(
+    (v: string) => {
+      setInputValueState(v)
+      setOpen(true)
+      const currentDisplay = getDisplayTextForValue(items, currentValue)
+      if (currentValue && v !== currentDisplay) {
+        setUncontrolledValue('')
+        onValueChange?.('')
+        const input = hiddenInputRef.current
+        if (input) {
+          input.value = ''
+          input.dispatchEvent(new Event('change', { bubbles: true }))
+        }
+        onChange?.({
+          target: { name: name ?? '', value: '' },
+        } as React.ChangeEvent<HTMLInputElement>)
+      }
+    },
+    [currentValue, items, name, onChange, onValueChange],
+  )
+
+  useEffect(() => {
+    if (!isOpen) return
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isOpen])
+
+  const setHiddenInputRef = useCallback(
+    (el: HTMLInputElement | null) => {
+      hiddenInputRef.current = el
+      if (typeof ref === 'function') ref(el)
+      else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = el
+    },
+    [ref],
+  )
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.target.value
+    setInputValue(v)
+  }
+
+  /** 포커스 아웃 시: 드롭다운 목록에 없는 검색어면 마지막 선택값 표시 또는 빈 값으로 초기화 */
+  const handleBlur = useCallback(
+    (e: React.FocusEvent<HTMLInputElement>) => {
+      const trimmed = inputValue.trim()
+      const matchesSomeItem = items.some(i => i.displayText.toLowerCase() === trimmed.toLowerCase())
+      if (!matchesSomeItem) {
+        const restoreValue = lastSelectedValueRef.current
+        const displayForRestore = getDisplayTextForValue(items, restoreValue)
+        setInputValueState(displayForRestore)
+        if (!restoreValue) {
+          setUncontrolledValue('')
+          onValueChange?.('')
+          const input = hiddenInputRef.current
+          if (input) {
+            input.value = ''
+            input.dispatchEvent(new Event('change', { bubbles: true }))
+          }
+          onChange?.({
+            target: { name: name ?? '', value: '' },
+          } as React.ChangeEvent<HTMLInputElement>)
+        } else {
+          setUncontrolledValue(restoreValue)
+          onValueChange?.(restoreValue)
+          const input = hiddenInputRef.current
+          if (input) {
+            input.value = restoreValue
+            input.dispatchEvent(new Event('change', { bubbles: true }))
+          }
+          onChange?.({
+            target: { name: name ?? '', value: restoreValue },
+          } as React.ChangeEvent<HTMLInputElement>)
+        }
+      }
+      onBlur?.(e)
+    },
+    [inputValue, items, name, onChange, onValueChange, onBlur],
+  )
+
+  const contextValue = {
+    value: currentValue,
+    inputValue,
+    setInputValue,
+    onSelect: setValue,
+    isOpen,
+    listboxId,
+    triggerId,
+    disabled,
+    size,
+    filteredValues,
+  }
+
+  const listboxMaxHeight = ITEM_HEIGHT_PX[size] * limit
+
+  const comboboxWrapClasses = [
+    styles.comboboxWrap,
+    disabled ? styles.disabled : '',
+    error ? styles.error : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  const triggerWrapClasses = [styles.triggerWrap, sizeClasses[size]].filter(Boolean).join(' ')
+
+  return (
+    <ComboboxContext.Provider value={contextValue}>
+      <div ref={containerRef} className={styles.field}>
+        {label != null && (
+          <label htmlFor={triggerId} className={[styles.label, textCombinations.label].join(' ')}>
+            {label}
+            {required && <span className={styles.required}> *</span>}
+          </label>
+        )}
+        <input
+          ref={setHiddenInputRef}
+          type='hidden'
+          name={name}
+          value={currentValue}
+          readOnly
+          aria-hidden
+          tabIndex={-1}
+        />
+        <div className={comboboxWrapClasses}>
+          <div className={triggerWrapClasses}>
+            <input
+              ref={triggerInputRef}
+              type='text'
+              id={triggerId}
+              className={styles.input}
+              value={inputValue}
+              onChange={handleInputChange}
+              onFocus={() => !disabled && setOpen(true)}
+              onBlur={handleBlur}
+              placeholder={placeholder}
+              disabled={disabled}
+              autoComplete='off'
+              role='combobox'
+              aria-expanded={isOpen}
+              aria-haspopup='listbox'
+              aria-controls={listboxId}
+              aria-autocomplete='list'
+              aria-invalid={error ? 'true' : undefined}
+              aria-describedby={errorId}
+            />
+            <span
+              className={styles.triggerIcon}
+              aria-hidden
+              tabIndex={-1}
+              onClick={() => {
+                if (!disabled) {
+                  triggerInputRef.current?.focus()
+                  setOpen(true)
+                }
+              }}
+              onPointerDown={e => e.preventDefault()}
+            >
+              <ChevronDown size={16} aria-hidden />
+            </span>
+          </div>
+        </div>
+        {isOpen && (
+          <div
+            role='listbox'
+            id={listboxId}
+            className={[styles.listbox, listboxSizeClasses[size]].join(' ')}
+            style={{ maxHeight: listboxMaxHeight }}
+          >
+            {filteredItems.map(item => (
+              <ComboboxItem
+                key={item.value}
+                value={item.value}
+                disabled={item.disabled}
+                textValue={item.textValue}
+              >
+                {item.displayText}
+              </ComboboxItem>
+            ))}
+          </div>
+        )}
+        {error != null && (
+          <span
+            id={errorId}
+            className={[styles.errorMessage, textCombinations.bodySm].join(' ')}
+            role='alert'
+          >
+            {error}
+          </span>
+        )}
+      </div>
+    </ComboboxContext.Provider>
+  )
+}
