@@ -1,0 +1,77 @@
+/**
+ * CheckBox 컴포넌트 스타일 (CSS Module)
+ * 디자인 시스템 토큰 기반 (--size-checkbox, --radius, --ring, --primary)
+ */
+
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.wrapper:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.input {
+  margin: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  accent-color: var(--primary);
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+/* Variants - 체크박스 박스 스타일 */
+.variantPrimary {
+  /* 네이티브 checkbox + accent-color로 primary 적용 */
+}
+
+.variantSecondary {
+  accent-color: var(--secondary-foreground);
+}
+
+.variantTertiary {
+  accent-color: var(--foreground);
+}
+
+/* Sizes - --size-checkbox 토큰 활용 */
+.sizeSm {
+  width: var(--size-checkbox);
+  height: var(--size-checkbox);
+  min-width: var(--size-checkbox);
+  min-height: var(--size-checkbox);
+}
+
+.sizeMd {
+  width: var(--size-checkbox);
+  height: var(--size-checkbox);
+  min-width: var(--size-checkbox);
+  min-height: var(--size-checkbox);
+}
+
+.sizeLg {
+  width: calc(var(--size-checkbox) * 1.25);
+  height: calc(var(--size-checkbox) * 1.25);
+  min-width: calc(var(--size-checkbox) * 1.25);
+  min-height: calc(var(--size-checkbox) * 1.25);
+}
+
+.text {
+  font-family: var(--font-family-base);
+  color: var(--foreground);
+  user-select: none;
+}
