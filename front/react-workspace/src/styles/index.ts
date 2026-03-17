@@ -4,7 +4,7 @@
  */
 
 // Raw tokens (Single Source of Truth)
-export { type DarkModeColorKey, darkModeColors, type RawColorKey,rawColors } from './tokens'
+export { type DarkModeColorKey, darkModeColors, type RawColorKey, rawColors } from './tokens'
 
 // Color tokens
 export {

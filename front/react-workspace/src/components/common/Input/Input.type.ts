@@ -16,8 +16,7 @@ export type InputSize = 'sm' | 'md' | 'lg'
  * RHF(Controller/register) 및 value/onChange 제어로 사용 가능합니다.
  */
 export interface InputProps
-  extends Omit<DOMAttributes<HTMLInputElement>, 'className' | 'size'>,
-    AriaAttributes {
+  extends Omit<DOMAttributes<HTMLInputElement>, 'className' | 'size'>, AriaAttributes {
   /**
    * ref (React 19: 일반 prop으로 전달)
    */

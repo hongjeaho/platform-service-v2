@@ -65,9 +65,7 @@ export function Input({
   const errorId = error ? `${inputId}-error` : undefined
 
   const inputProps = Object.fromEntries(
-    Object.entries(rest as Record<string, unknown>).filter(
-      ([key]) => key !== 'className',
-    ),
+    Object.entries(rest as Record<string, unknown>).filter(([key]) => key !== 'className'),
   )
 
   const inputClasses = [
@@ -91,10 +89,7 @@ export function Input({
   return (
     <div className={fieldClasses}>
       {label != null && (
-        <label
-          htmlFor={inputId}
-          className={[styles.label, textCombinations.label].join(' ')}
-        >
+        <label htmlFor={inputId} className={[styles.label, textCombinations.label].join(' ')}>
           {label}
           {required && <span className={styles.required}> *</span>}
         </label>
@@ -123,7 +118,7 @@ export function Input({
         <span
           id={errorId}
           className={[styles.errorMessage, textCombinations.bodySm].join(' ')}
-          role="alert"
+          role='alert'
         >
           {error}
         </span>

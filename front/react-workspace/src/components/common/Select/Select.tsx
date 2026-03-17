@@ -1,16 +1,15 @@
+import { ChevronDown } from 'lucide-react'
 import React, {
+  Children,
+  Fragment,
+  isValidElement,
+  type ReactNode,
   useCallback,
   useEffect,
   useId,
   useRef,
   useState,
-  type ReactNode,
-  isValidElement,
-  Children,
-  Fragment,
 } from 'react'
-
-import { ChevronDown } from 'lucide-react'
 
 import { textCombinations } from '@/styles'
 
@@ -39,7 +38,7 @@ const ITEM_HEIGHT_PX: Record<SelectSize, number> = {
 
 function getDisplayForValue(children: ReactNode, value: string): ReactNode {
   let found: ReactNode = null
-  Children.forEach(children, (child) => {
+  Children.forEach(children, child => {
     if (found != null) return
     if (!isValidElement(child)) return
     const props = child.props as { value?: string; children?: ReactNode }
@@ -96,7 +95,9 @@ export function Select({
   const isControlled = valueProp !== undefined
   const currentValue = isControlled ? valueProp : uncontrolledValue
 
-  const displayLabel = currentValue ? getDisplayForValue(children, currentValue) ?? currentValue : null
+  const displayLabel = currentValue
+    ? (getDisplayForValue(children, currentValue) ?? currentValue)
+    : null
 
   const setValue = useCallback(
     (v: string) => {
@@ -167,17 +168,14 @@ export function Select({
     <SelectContext.Provider value={contextValue}>
       <div ref={containerRef} className={styles.field}>
         {label != null && (
-          <label
-            htmlFor={triggerId}
-            className={[styles.label, textCombinations.label].join(' ')}
-          >
+          <label htmlFor={triggerId} className={[styles.label, textCombinations.label].join(' ')}>
             {label}
             {required && <span className={styles.required}> *</span>}
           </label>
         )}
         <input
           ref={setHiddenInputRef}
-          type="hidden"
+          type='hidden'
           name={name}
           value={currentValue}
           readOnly
@@ -185,16 +183,16 @@ export function Select({
           tabIndex={-1}
         />
         <button
-          type="button"
+          type='button'
           id={triggerId}
           className={triggerClasses}
           disabled={disabled}
           aria-expanded={isOpen}
-          aria-haspopup="listbox"
+          aria-haspopup='listbox'
           aria-controls={listboxId}
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={errorId}
-          onClick={() => !disabled && setOpen((prev) => !prev)}
+          onClick={() => !disabled && setOpen(prev => !prev)}
           onBlur={onBlur}
         >
           <span>{displayLabel ?? placeholder ?? ''}</span>
@@ -204,7 +202,7 @@ export function Select({
         </button>
         {isOpen && (
           <div
-            role="listbox"
+            role='listbox'
             id={listboxId}
             className={[styles.listbox, listboxSizeClasses[size]].join(' ')}
             style={{ maxHeight: listboxMaxHeight }}
@@ -217,7 +215,7 @@ export function Select({
           <span
             id={errorId}
             className={[styles.errorMessage, textCombinations.bodySm].join(' ')}
-            role="alert"
+            role='alert'
           >
             {error}
           </span>

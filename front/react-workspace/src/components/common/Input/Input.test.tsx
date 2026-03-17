@@ -44,7 +44,7 @@ describe('Input', () => {
       ['primary', 'Primary'],
       ['secondary', 'Secondary'],
       ['tertiary', 'Tertiary'],
-    ] as const)('%s variant로 렌더링됩니다', (variant, _label) => {
+    ] as const)('%s variant로 렌더링됩니다', variant => {
       render(<Input variant={variant} placeholder='테스트' />)
       expect(screen.getByRole('textbox')).toBeInTheDocument()
     })
@@ -55,7 +55,7 @@ describe('Input', () => {
       ['sm', 'Small'],
       ['md', 'Medium'],
       ['lg', 'Large'],
-    ] as const)('%s 크기로 렌더링됩니다', (size, _label) => {
+    ] as const)('%s 크기로 렌더링됩니다', size => {
       render(<Input size={size} placeholder='테스트' />)
       expect(screen.getByRole('textbox')).toBeInTheDocument()
     })
@@ -76,9 +76,7 @@ describe('Input', () => {
   describe('제어 컴포넌트', () => {
     it('value와 onChange로 제어됩니다', () => {
       const handleChange = vi.fn()
-      render(
-        <Input value='초기값' onChange={handleChange} placeholder='제어' />,
-      )
+      render(<Input value='초기값' onChange={handleChange} placeholder='제어' />)
       const input = screen.getByRole('textbox')
       expect(input).toHaveValue('초기값')
       fireEvent.change(input, { target: { value: '변경' } })
@@ -96,20 +94,12 @@ describe('Input', () => {
   describe('접근성', () => {
     it('aria-invalid를 전달할 수 있습니다', () => {
       render(<Input aria-invalid placeholder='오류' />)
-      expect(screen.getByRole('textbox')).toHaveAttribute(
-        'aria-invalid',
-        'true',
-      )
+      expect(screen.getByRole('textbox')).toHaveAttribute('aria-invalid', 'true')
     })
 
     it('aria-describedby를 전달할 수 있습니다', () => {
-      render(
-        <Input aria-describedby='hint-id' placeholder='설명' />,
-      )
-      expect(screen.getByRole('textbox')).toHaveAttribute(
-        'aria-describedby',
-        'hint-id',
-      )
+      render(<Input aria-describedby='hint-id' placeholder='설명' />)
+      expect(screen.getByRole('textbox')).toHaveAttribute('aria-describedby', 'hint-id')
     })
   })
 

@@ -101,7 +101,6 @@ import { padding, gap, layouts } from '@/styles'
 ```tsx
 import { icons, iconSizes } from '@/styles'
 import { Icon } from './components/Icon' // 커스텀 아이콘 컴포넌트
-
 ;<Icon icon={icons.add} size={iconSizes.md} />
 ```
 

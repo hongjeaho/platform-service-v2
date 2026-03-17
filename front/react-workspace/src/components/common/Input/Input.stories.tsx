@@ -171,21 +171,18 @@ function RHFDemoFormInner() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex w-80 flex-col gap-4"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className='flex w-80 flex-col gap-4'>
       <Input
-        label="이름"
-        placeholder="이름을 입력하세요"
+        label='이름'
+        placeholder='이름을 입력하세요'
         required
         {...register('name', { required: '이름을 입력해 주세요.' })}
         error={errors.name?.message}
       />
       <Input
-        label="이메일"
-        type="email"
-        placeholder="example@email.com"
+        label='이메일'
+        type='email'
+        placeholder='example@email.com'
         required
         {...register('email', {
           required: '이메일을 입력해 주세요.',
@@ -196,10 +193,7 @@ function RHFDemoFormInner() {
         })}
         error={errors.email?.message}
       />
-      <button
-        type="submit"
-        className="rounded bg-primary px-4 py-2 text-primary-foreground"
-      >
+      <button type='submit' className='rounded bg-primary px-4 py-2 text-primary-foreground'>
         제출
       </button>
     </form>

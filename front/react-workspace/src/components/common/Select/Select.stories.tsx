@@ -50,12 +50,12 @@ type Story = StoryObj<typeof Select>
 
 const defaultChildren = (
   <>
-    <SelectItem value="0001">딸기</SelectItem>
-    <SelectItem value="0002">바나나</SelectItem>
-    <SelectItem value="0003">수박</SelectItem>
-    <SelectItem value="0004">사과</SelectItem>
-    <SelectItem value="0005">포도</SelectItem>
-    <SelectItem value="0006">키위</SelectItem>
+    <SelectItem value='0001'>딸기</SelectItem>
+    <SelectItem value='0002'>바나나</SelectItem>
+    <SelectItem value='0003'>수박</SelectItem>
+    <SelectItem value='0004'>사과</SelectItem>
+    <SelectItem value='0005'>포도</SelectItem>
+    <SelectItem value='0006'>키위</SelectItem>
   </>
 )
 
@@ -171,21 +171,21 @@ export const WithDisabledItem: Story = {
     placeholder: '선택하세요',
     children: (
       <>
-        <SelectItem value="a">옵션 A</SelectItem>
-        <SelectItem value="b" disabled>
+        <SelectItem value='a'>옵션 A</SelectItem>
+        <SelectItem value='b' disabled>
           옵션 B (비활성)
         </SelectItem>
-        <SelectItem value="c">옵션 C</SelectItem>
+        <SelectItem value='c'>옵션 C</SelectItem>
       </>
     ),
   },
   render: args => (
     <Select {...args}>
-      <SelectItem value="a">옵션 A</SelectItem>
-      <SelectItem value="b" disabled>
+      <SelectItem value='a'>옵션 A</SelectItem>
+      <SelectItem value='b' disabled>
         옵션 B (비활성)
       </SelectItem>
-      <SelectItem value="c">옵션 C</SelectItem>
+      <SelectItem value='c'>옵션 C</SelectItem>
     </Select>
   ),
 }
@@ -212,22 +212,19 @@ function RHFSelectFormInner() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex w-80 flex-col gap-4">
+    <form onSubmit={handleSubmit(onSubmit)} className='flex w-80 flex-col gap-4'>
       <Select
-        label="과일"
-        placeholder="선택하세요"
+        label='과일'
+        placeholder='선택하세요'
         required
         {...register('fruit', { required: '과일을 선택해 주세요.' })}
         error={errors.fruit?.message}
       >
-        <SelectItem value="0001">딸기</SelectItem>
-        <SelectItem value="0002">바나나</SelectItem>
-        <SelectItem value="0003">수박</SelectItem>
+        <SelectItem value='0001'>딸기</SelectItem>
+        <SelectItem value='0002'>바나나</SelectItem>
+        <SelectItem value='0003'>수박</SelectItem>
       </Select>
-      <button
-        type="submit"
-        className="rounded bg-primary px-4 py-2 text-primary-foreground"
-      >
+      <button type='submit' className='rounded bg-primary px-4 py-2 text-primary-foreground'>
         제출
       </button>
     </form>

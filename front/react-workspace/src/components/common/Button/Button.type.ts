@@ -19,8 +19,7 @@ export type IconPosition = 'left' | 'right'
  * 필요한 속성만 명시적으로 정의합니다.
  */
 export interface ButtonProps
-  extends Omit<DOMAttributes<HTMLButtonElement>, 'className'>,
-    AriaAttributes {
+  extends Omit<DOMAttributes<HTMLButtonElement>, 'className'>, AriaAttributes {
   /**
    * ref (React 19: 일반 prop으로 전달)
    */

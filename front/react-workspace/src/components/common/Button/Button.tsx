@@ -55,18 +55,13 @@ export function Button({
   const hasIconOnly = !children && (loading || icon)
 
   // className은 CSS Module 캡슐화를 위해 전달하지 않음 (Rule 4)
-  const { className: _omitClassName, ...buttonProps } = rest as typeof rest & {
+  const { className: _omit, ...buttonProps } = rest as typeof rest & {
     className?: string
   }
+  void _omit
 
-  if (
-    import.meta.env.DEV &&
-    hasIconOnly &&
-    !('aria-label' in rest && rest['aria-label'])
-  ) {
-    console.warn(
-      '[Button] 아이콘 전용 버튼에는 접근성을 위해 aria-label을 제공하세요.'
-    )
+  if (import.meta.env.DEV && hasIconOnly && !('aria-label' in rest && rest['aria-label'])) {
+    console.warn('[Button] 아이콘 전용 버튼에는 접근성을 위해 aria-label을 제공하세요.')
   }
 
   // CSS Module 클래스 조합

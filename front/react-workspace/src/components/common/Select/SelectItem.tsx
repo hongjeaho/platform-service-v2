@@ -1,8 +1,8 @@
 import { useContext } from 'react'
 
 import { SelectContext } from './Select.context'
-import styles from './SelectItem.module.css'
 import type { SelectItemProps } from './Select.type'
+import styles from './SelectItem.module.css'
 
 /**
  * SelectItem 컴포넌트
@@ -16,8 +16,7 @@ export function SelectItem({ value, disabled = false, textValue, children }: Sel
   const { value: selectedValue, onSelect, isOpen, size } = ctx
   const isSelected = selectedValue === value
 
-  const sizeClass =
-    size === 'sm' ? styles.sizeSm : size === 'lg' ? styles.sizeLg : styles.sizeMd
+  const sizeClass = size === 'sm' ? styles.sizeSm : size === 'lg' ? styles.sizeLg : styles.sizeMd
 
   const optionClasses = [
     styles.option,
@@ -42,9 +41,10 @@ export function SelectItem({ value, disabled = false, textValue, children }: Sel
 
   return (
     <div
-      role="option"
+      role='option'
       aria-selected={isSelected}
       aria-disabled={disabled}
+      aria-label={textValue}
       className={optionClasses}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
