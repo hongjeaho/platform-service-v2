@@ -1,0 +1,29 @@
+/**
+ * RadioGroup 컴포넌트 스타일 (CSS Module)
+ * 디자인 시스템 토큰 기반
+ */
+
+.group {
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+.orientationHorizontal {
+  flex-direction: row;
+}
+
+.orientationVertical {
+  flex-direction: column;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.errorMessage {
+  color: var(--destructive);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
