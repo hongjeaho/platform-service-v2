@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { renderHook } from '@testing-library/react'
+import { renderHook, waitFor } from '@testing-library/react'
 import type { ReactNode } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -80,7 +80,7 @@ describe('useUsers', () => {
     expect(result.current.isLoading).toBe(true)
 
     // Wait for the promise to resolve and state to update
-    await vi.waitFor(() => {
+    await waitFor(() => {
       expect(result.current.isSuccess).toBe(true)
     })
 
@@ -95,7 +95,7 @@ describe('useUsers', () => {
       wrapper: createQueryClientWrapper(),
     })
 
-    await vi.waitFor(() => {
+    await waitFor(() => {
       expect(result.current.isError).toBe(true)
     })
 
