@@ -1,0 +1,60 @@
+/**
+ * SelectItem 컴포넌트 스타일 (CSS Module)
+ * 디자인 시스템 토큰 기반
+ */
+
+.option {
+  display: block;
+  width: 100%;
+  padding: var(--padding-input-default);
+  font-family: var(--font-family-base);
+  color: var(--foreground);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 150ms ease;
+}
+
+.option:hover:not(.optionDisabled) {
+  background-color: var(--muted);
+}
+
+.option:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+
+.optionSelected {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.optionSelected:hover:not(.optionDisabled) {
+  background-color: color-mix(in srgb, var(--accent) 90%, black);
+}
+
+.optionDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Sizes - 트리거와 동일한 높이감 */
+.sizeSm {
+  min-height: var(--input-height-sm);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.sizeMd {
+  min-height: var(--input-height-base);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.sizeLg {
+  min-height: var(--input-height-lg);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}

@@ -1,0 +1,121 @@
+/**
+ * Select 컴포넌트 스타일 (CSS Module)
+ * 디자인 시스템 토큰 기반 (--input, --input-height-*, --padding-input-default, --border, --ring)
+ */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.label {
+  display: block;
+}
+
+.required {
+  color: var(--destructive);
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-family: var(--font-family-base);
+  color: var(--foreground);
+  background-color: var(--input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  outline: none;
+  cursor: pointer;
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+  appearance: none;
+  text-align: left;
+}
+
+.trigger:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--border) 80%, var(--foreground));
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.trigger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.triggerPlaceholder {
+  color: var(--muted-foreground);
+}
+
+/* Sizes */
+.sizeSm {
+  height: var(--input-height-sm);
+  padding: var(--padding-input-default);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.sizeMd {
+  height: var(--input-height-base);
+  padding: var(--padding-input-default);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.sizeLg {
+  height: var(--input-height-lg);
+  padding: var(--padding-input-default);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+/* 에러 상태 */
+.trigger.error {
+  border-color: var(--destructive);
+}
+
+.trigger.error:focus-visible {
+  outline-color: var(--destructive);
+}
+
+.errorMessage {
+  color: var(--destructive);
+}
+
+/* 리스트박스 컨테이너 */
+.listbox {
+  overflow-y: auto;
+  background-color: var(--popover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1));
+  z-index: var(--z-index-dropdown, 1000);
+}
+
+.listboxSizeSm {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.listboxSizeMd {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.listboxSizeLg {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.triggerIcon {
+  flex-shrink: 0;
+  margin-left: var(--spacing-1);
+  color: var(--muted-foreground);
+}
