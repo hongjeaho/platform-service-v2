@@ -1,0 +1,75 @@
+/**
+ * Table 컴포넌트 스타일 (CSS Module)
+ * 디자인 시스템 토큰 기반 (--border, --muted, --foreground 등)
+ */
+
+.tableWrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--font-family-base);
+  color: var(--foreground);
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.cellBase {
+  padding: var(--spacing-2) var(--spacing-3);
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.table thead th {
+  background-color: var(--background);
+}
+
+.table thead .cellBase {
+  border-bottom-width: 2px;
+}
+
+.head {
+  font-weight: var(--font-weight-semibold);
+  color: var(--foreground);
+}
+
+.alignLeft {
+  text-align: left;
+}
+
+.alignCenter {
+  text-align: center;
+}
+
+.alignRight {
+  text-align: right;
+}
+
+.footer {
+  background-color: var(--background);
+}
+
+/* Variants: data attributes to keep tests stable */
+.table[data-striped='true'] tbody tr:nth-child(even) {
+  background-color: var(--background);
+}
+
+.table[data-hoverable='true'] tbody tr:hover {
+  background-color: var(--input);
+}
+
+/* When both enabled, ensure hover overrides stripe without hurting readability */
+.table[data-striped='true'][data-hoverable='true'] tbody tr:hover {
+  background-color: var(--input);
+}
+
+/* Remove border on last row */
+.table tbody tr:last-child .cellBase {
+  border-bottom: none;
+}
+
