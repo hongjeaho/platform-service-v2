@@ -244,4 +244,3 @@ export const SpanVariants: Story = {
     </div>
   ),
 }
-

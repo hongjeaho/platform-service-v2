@@ -20,4 +20,3 @@ export function TableHead({ align = 'center', colSpan, rowSpan, children }: Tabl
     </th>
   )
 }
-

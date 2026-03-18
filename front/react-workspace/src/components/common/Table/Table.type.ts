@@ -148,4 +148,3 @@ export interface TableCellProps {
   rowSpan?: number
   children: ReactNode
 }
-

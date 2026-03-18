@@ -19,4 +19,3 @@ export function TableCell({ align = 'center', colSpan, rowSpan, children }: Tabl
     </td>
   )
 }
-

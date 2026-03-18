@@ -88,4 +88,3 @@ describe('Table', () => {
     expect(within(table).getByRole('cell', { name: '병합' })).toHaveAttribute('rowspan', '2')
   })
 })
-

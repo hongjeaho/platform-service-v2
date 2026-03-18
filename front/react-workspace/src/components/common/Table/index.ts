@@ -1,19 +1,17 @@
 export { Table } from './Table'
-export { TableHeader } from './TableHeader'
-export { TableBody } from './TableBody'
-export { TableFooter } from './TableFooter'
-export { TableRow } from './TableRow'
-export { TableCell } from './TableCell'
-export { TableHead } from './TableHead'
-
 export type {
   TableBodyProps,
   TableCellAlign,
   TableCellProps,
   TableFooterProps,
-  TableHeadProps,
   TableHeaderProps,
+  TableHeadProps,
   TableProps,
   TableRowProps,
 } from './Table.type'
-
+export { TableBody } from './TableBody'
+export { TableCell } from './TableCell'
+export { TableFooter } from './TableFooter'
+export { TableHead } from './TableHead'
+export { TableHeader } from './TableHeader'
+export { TableRow } from './TableRow'
