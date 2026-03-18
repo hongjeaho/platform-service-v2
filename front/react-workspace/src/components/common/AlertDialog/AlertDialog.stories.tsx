@@ -193,7 +193,7 @@ return (
 
       const handleConfirm = async () => {
         setResult('삭제 처리 중...')
-        await new Promise((resolve) => setTimeout(resolve, 1200))
+        await new Promise(resolve => setTimeout(resolve, 1200))
         setResult('삭제가 완료되었습니다.')
       }
 

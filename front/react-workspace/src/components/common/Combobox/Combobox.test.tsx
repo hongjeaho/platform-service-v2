@@ -77,13 +77,14 @@ describe('Combobox', () => {
       '%s 크기로 combobox를 렌더링합니다',
       // eslint-disable-next-line @typescript-eslint/no-unused-vars -- it.each 튜플 두 번째 요소는 테스트명 %s용
       (size, _label) => {
-      render(
-        <Combobox size={size} placeholder='검색' name='f'>
-          {defaultChildren}
-        </Combobox>,
-      )
-      expect(screen.getByRole('combobox')).toBeInTheDocument()
-    })
+        render(
+          <Combobox size={size} placeholder='검색' name='f'>
+            {defaultChildren}
+          </Combobox>,
+        )
+        expect(screen.getByRole('combobox')).toBeInTheDocument()
+      },
+    )
   })
 
   describe('인터랙션', () => {

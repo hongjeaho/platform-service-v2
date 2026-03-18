@@ -174,7 +174,11 @@ describe('Button', () => {
     })
 
     it('formAction 속성을 전달할 수 있습니다', () => {
-      render(<Button type='submit' formAction='/submit'>제출</Button>)
+      render(
+        <Button type='submit' formAction='/submit'>
+          제출
+        </Button>,
+      )
       expect(screen.getByRole('button')).toHaveAttribute('formaction', '/submit')
     })
   })
