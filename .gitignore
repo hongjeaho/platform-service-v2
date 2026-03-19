@@ -46,3 +46,5 @@ datasource/platform/gradle.properties
 gradle.properties.example
 datasource/platform/src/generated
 datasource/platform/src/generated
+front/react-workspace/tsconfig.node.tsbuildinfo
+front/react-workspace/tsconfig.app.tsbuildinfo
