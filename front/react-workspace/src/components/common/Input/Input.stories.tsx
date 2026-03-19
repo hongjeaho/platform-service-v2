@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useForm } from 'react-hook-form'
 
+import { Button } from '../Button'
 import { Input } from './Input'
 
 const meta: Meta<typeof Input> = {
@@ -193,15 +194,14 @@ function RHFDemoFormInner() {
         })}
         error={errors.email?.message}
       />
-      <button type='submit' className='rounded bg-primary px-4 py-2 text-primary-foreground'>
-        제출
-      </button>
+      <Button type='submit'>제출</Button>
     </form>
   )
 }
 
 const RHFUsageCode = `import { useForm } from 'react-hook-form'
 import { Input } from '@/components/common/Input'
+import { Button } from '@/components/common/Button'
 
 type FormValues = { name: string; email: string }
 
@@ -235,7 +235,7 @@ function MyForm() {
         })}
         error={errors.email?.message}
       />
-      <button type="submit">제출</button>
+      <Button type="submit">제출</Button>
     </form>
   )
 }

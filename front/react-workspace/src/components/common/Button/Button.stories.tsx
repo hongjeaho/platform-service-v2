@@ -17,6 +17,7 @@ const meta: Meta<typeof Button> = {
       options: ['primary', 'secondary', 'accent', 'destructive', 'outline', 'ghost', 'link'],
       description: '버튼 variant 스타일 (디자인 시스템)',
     },
+    children: { control: 'text', description: '버튼 텍스트' },
     size: {
       control: 'radio',
       options: ['sm', 'md', 'lg'],
@@ -179,6 +180,7 @@ export const IconOnly: Story = {
     size: 'sm',
     icon: <icons.delete />,
     children: '',
+    'aria-label': '삭제',
   },
 }
 
@@ -356,7 +358,11 @@ export const Interactive: Story = {
 }
 
 export const Playground: Story = {
-  render: args => <Button {...args}>Button</Button>,
+  args: {
+    variant: 'primary',
+    size: 'md',
+    children: 'Button',
+  },
   parameters: {
     controls: { expanded: true },
   },

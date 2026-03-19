@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useForm } from 'react-hook-form'
 
+import { Button } from '../Button'
 import { Textarea } from './Textarea'
 
 const meta: Meta<typeof Textarea> = {
@@ -181,15 +182,14 @@ function RHFDemoFormInner() {
         {...register('comment', { minLength: { value: 10, message: '10자 이상 입력해 주세요.' } })}
         error={errors.comment?.message}
       />
-      <button type='submit' className='rounded bg-primary px-4 py-2 text-primary-foreground'>
-        제출
-      </button>
+      <Button type='submit'>제출</Button>
     </form>
   )
 }
 
 const RHFUsageCode = `import { useForm } from 'react-hook-form'
 import { Textarea } from '@/components/common/Textarea'
+import { Button } from '@/components/common/Button'
 
 type FormValues = { description: string }
 
@@ -209,7 +209,7 @@ function MyForm() {
         {...register('description', { required: '설명을 입력해 주세요.' })}
         error={errors.description?.message}
       />
-      <button type="submit">제출</button>
+      <Button type="submit">제출</Button>
     </form>
   )
 }

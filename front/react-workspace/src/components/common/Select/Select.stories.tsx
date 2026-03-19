@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useForm } from 'react-hook-form'
 
+import { Button } from '../Button'
 import { Select, SelectItem } from '.'
 
 const meta: Meta<typeof Select> = {
@@ -69,7 +70,6 @@ export const Default: Story = {
     limit: 5,
     children: defaultChildren,
   },
-  render: args => <Select {...args}>{defaultChildren}</Select>,
 }
 
 // ============================================================================
@@ -83,7 +83,6 @@ export const WithLabel: Story = {
     required: true,
     children: defaultChildren,
   },
-  render: args => <Select {...args}>{defaultChildren}</Select>,
 }
 
 export const WithLabelAndError: Story = {
@@ -93,7 +92,6 @@ export const WithLabelAndError: Story = {
     error: '과일을 선택해 주세요.',
     children: defaultChildren,
   },
-  render: args => <Select {...args}>{defaultChildren}</Select>,
 }
 
 // ============================================================================
@@ -106,7 +104,6 @@ export const Small: Story = {
     placeholder: 'Small',
     children: defaultChildren,
   },
-  render: args => <Select {...args}>{defaultChildren}</Select>,
 }
 
 export const Medium: Story = {
@@ -115,7 +112,6 @@ export const Medium: Story = {
     placeholder: 'Medium',
     children: defaultChildren,
   },
-  render: args => <Select {...args}>{defaultChildren}</Select>,
 }
 
 export const Large: Story = {
@@ -124,7 +120,6 @@ export const Large: Story = {
     placeholder: 'Large',
     children: defaultChildren,
   },
-  render: args => <Select {...args}>{defaultChildren}</Select>,
 }
 
 // ============================================================================
@@ -137,7 +132,6 @@ export const Disabled: Story = {
     placeholder: '비활성화됨',
     children: defaultChildren,
   },
-  render: args => <Select {...args}>{defaultChildren}</Select>,
 }
 
 export const WithDefaultValue: Story = {
@@ -146,7 +140,6 @@ export const WithDefaultValue: Story = {
     defaultValue: '0002',
     children: defaultChildren,
   },
-  render: args => <Select {...args}>{defaultChildren}</Select>,
 }
 
 // ============================================================================
@@ -159,7 +152,6 @@ export const LimitTwo: Story = {
     limit: 2,
     children: defaultChildren,
   },
-  render: args => <Select {...args}>{defaultChildren}</Select>,
 }
 
 // ============================================================================
@@ -179,15 +171,6 @@ export const WithDisabledItem: Story = {
       </>
     ),
   },
-  render: args => (
-    <Select {...args}>
-      <SelectItem value='a'>옵션 A</SelectItem>
-      <SelectItem value='b' disabled>
-        옵션 B (비활성)
-      </SelectItem>
-      <SelectItem value='c'>옵션 C</SelectItem>
-    </Select>
-  ),
 }
 
 // ============================================================================
@@ -198,7 +181,7 @@ type RHFSelectForm = {
   fruit: string
 }
 
-function RHFSelectFormInner() {
+const RenderRHFSelectForm: Story['render'] = () => {
   const {
     register,
     handleSubmit,
@@ -224,15 +207,14 @@ function RHFSelectFormInner() {
         <SelectItem value='0002'>바나나</SelectItem>
         <SelectItem value='0003'>수박</SelectItem>
       </Select>
-      <button type='submit' className='rounded bg-primary px-4 py-2 text-primary-foreground'>
-        제출
-      </button>
+      <Button type='submit'>제출</Button>
     </form>
   )
 }
 
 const RHFUsageCode = `import { useForm } from 'react-hook-form'
 import { Select, SelectItem } from '@/components/common/Select'
+import { Button } from '@/components/common/Button'
 
 type FormValues = { fruit: string }
 
@@ -256,14 +238,14 @@ function MyForm() {
         <SelectItem value="0002">바나나</SelectItem>
         <SelectItem value="0003">수박</SelectItem>
       </Select>
-      <button type="submit">제출</button>
+      <Button type="submit">제출</Button>
     </form>
   )
 }
 `
 
 export const WithReactHookForm: Story = {
-  render: () => <RHFSelectFormInner />,
+  render: RenderRHFSelectForm,
   parameters: {
     docs: {
       description: {
@@ -293,7 +275,6 @@ export const Playground: Story = {
     required: false,
     children: defaultChildren,
   },
-  render: args => <Select {...args}>{defaultChildren}</Select>,
   parameters: {
     controls: { expanded: true },
   },

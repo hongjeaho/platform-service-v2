@@ -1,5 +1,5 @@
+import { useArgs } from '@storybook/preview-api'
 import type { Meta, StoryObj } from '@storybook/react'
-import { useState } from 'react'
 
 import { Button } from '../Button'
 import {
@@ -44,6 +44,55 @@ const meta: Meta<typeof SimpleAlertDialog> = {
 export default meta
 type Story = StoryObj<typeof SimpleAlertDialog>
 
+const RenderPrimitiveComposition: Story['render'] = ({
+  title,
+  description,
+  confirmLabel,
+  cancelLabel,
+  confirmVariant,
+}) => (
+  <AlertDialogRoot>
+    <AlertDialogTrigger asChild>
+      <Button variant='secondary'>삭제 확인창 열기</Button>
+    </AlertDialogTrigger>
+    <AlertDialogPortal>
+      <AlertDialogOverlay />
+      <AlertDialogContent>
+        <AlertDialogTitle>{title}</AlertDialogTitle>
+        <AlertDialogDescription>{description}</AlertDialogDescription>
+        <div className='mt-5 flex justify-end gap-2'>
+          <AlertDialogCancel>{cancelLabel}</AlertDialogCancel>
+          <AlertDialogAction variant={confirmVariant} onClick={() => alert('삭제되었습니다.')}>
+            {confirmLabel}
+          </AlertDialogAction>
+        </div>
+      </AlertDialogContent>
+    </AlertDialogPortal>
+  </AlertDialogRoot>
+)
+
+const RenderSimpleDefault: Story['render'] = () => {
+  const [{ open }, updateArgs] = useArgs()
+
+  return (
+    <>
+      <Button variant='secondary' onClick={() => updateArgs({ open: true })}>
+        확인창 열기
+      </Button>
+      <SimpleAlertDialog
+        open={open}
+        onOpenChange={nextOpen => updateArgs({ open: nextOpen })}
+        title='정말 삭제하시겠어요?'
+        description='이 작업은 되돌릴 수 없습니다.'
+        confirmLabel='삭제'
+        cancelLabel='취소'
+        confirmVariant='destructive'
+        onConfirm={() => alert('삭제되었습니다.')}
+      />
+    </>
+  )
+}
+
 export const PrimitiveComposition: Story = {
   parameters: {
     docs: {
@@ -63,26 +112,7 @@ export const PrimitiveComposition: Story = {
     cancelLabel: '취소',
     confirmVariant: 'destructive',
   },
-  render: ({ title, description, confirmLabel, cancelLabel, confirmVariant }) => (
-    <AlertDialogRoot>
-      <AlertDialogTrigger asChild>
-        <Button variant='secondary'>삭제 확인창 열기</Button>
-      </AlertDialogTrigger>
-      <AlertDialogPortal>
-        <AlertDialogOverlay />
-        <AlertDialogContent>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
-          <div className='mt-5 flex justify-end gap-2'>
-            <AlertDialogCancel>{cancelLabel}</AlertDialogCancel>
-            <AlertDialogAction variant={confirmVariant} onClick={() => alert('삭제되었습니다.')}>
-              {confirmLabel}
-            </AlertDialogAction>
-          </div>
-        </AlertDialogContent>
-      </AlertDialogPortal>
-    </AlertDialogRoot>
-  ),
+  render: RenderPrimitiveComposition,
 }
 
 export const SimpleDefault: Story = {
@@ -95,16 +125,16 @@ export const SimpleDefault: Story = {
       source: {
         type: 'code',
         code: `
-const [open, setOpen] = useState(false)
+const [{ open }, updateArgs] = useArgs()
 
 return (
   <>
-    <Button variant='secondary' onClick={() => setOpen(true)}>
+    <Button variant='secondary' onClick={() => updateArgs({ open: true })}>
       확인창 열기
     </Button>
     <SimpleAlertDialog
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={(nextOpen) => updateArgs({ open: nextOpen })}
       title='정말 삭제하시겠어요?'
       description='이 작업은 되돌릴 수 없습니다.'
       confirmLabel='삭제'
@@ -118,31 +148,41 @@ return (
       },
     },
   },
-  render: () => {
-    const Story = () => {
-      const [open, setOpen] = useState(false)
-
-      return (
-        <>
-          <Button variant='secondary' onClick={() => setOpen(true)}>
-            확인창 열기
-          </Button>
-          <SimpleAlertDialog
-            open={open}
-            onOpenChange={setOpen}
-            title='정말 삭제하시겠어요?'
-            description='이 작업은 되돌릴 수 없습니다.'
-            confirmLabel='삭제'
-            cancelLabel='취소'
-            confirmVariant='destructive'
-            onConfirm={() => alert('삭제되었습니다.')}
-          />
-        </>
-      )
-    }
-
-    return <Story />
+  args: {
+    open: false,
   },
+  render: RenderSimpleDefault,
+}
+
+const RenderSimpleAsyncConfirm: Story['render'] = () => {
+  const [args, updateArgs] = useArgs()
+  const { open } = args
+  const result = (args as unknown as { result?: string | null }).result ?? null
+
+  const handleConfirm = async () => {
+    updateArgs({ result: '삭제 처리 중...' } as any)
+    await new Promise(resolve => setTimeout(resolve, 1200))
+    updateArgs({ result: '삭제가 완료되었습니다.' } as any)
+  }
+
+  return (
+    <div className='flex flex-col items-center gap-3'>
+      <Button variant='secondary' onClick={() => updateArgs({ open: true })}>
+        비동기 확인창 열기
+      </Button>
+      {result != null && <p className='text-sm text-muted-foreground'>{result}</p>}
+      <SimpleAlertDialog
+        open={open}
+        onOpenChange={nextOpen => updateArgs({ open: nextOpen })}
+        title='정말 삭제하시겠어요?'
+        description='서버 요청이 완료될 때까지 잠시 기다립니다.'
+        confirmLabel='삭제'
+        cancelLabel='취소'
+        confirmVariant='destructive'
+        onConfirm={handleConfirm}
+      />
+    </div>
+  )
 }
 
 export const SimpleAsyncConfirm: Story = {
@@ -155,24 +195,23 @@ export const SimpleAsyncConfirm: Story = {
       source: {
         type: 'code',
         code: `
-const [open, setOpen] = useState(false)
-const [result, setResult] = useState<string | null>(null)
+const [{ open, result }, updateArgs] = useArgs()
 
 const handleConfirm = async () => {
-  setResult('삭제 처리 중...')
+  updateArgs({ result: '삭제 처리 중...' })
   await new Promise((resolve) => setTimeout(resolve, 1200))
-  setResult('삭제가 완료되었습니다.')
+  updateArgs({ result: '삭제가 완료되었습니다.' })
 }
 
 return (
   <div className='flex flex-col items-center gap-3'>
-    <Button variant='secondary' onClick={() => setOpen(true)}>
+    <Button variant='secondary' onClick={() => updateArgs({ open: true })}>
       비동기 확인창 열기
     </Button>
     {result != null && <p className='text-sm text-muted-foreground'>{result}</p>}
     <SimpleAlertDialog
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={(nextOpen) => updateArgs({ open: nextOpen })}
       title='정말 삭제하시겠어요?'
       description='서버 요청이 완료될 때까지 잠시 기다립니다.'
       confirmLabel='삭제'
@@ -186,37 +225,8 @@ return (
       },
     },
   },
-  render: () => {
-    const Story = () => {
-      const [open, setOpen] = useState(false)
-      const [result, setResult] = useState<string | null>(null)
-
-      const handleConfirm = async () => {
-        setResult('삭제 처리 중...')
-        await new Promise(resolve => setTimeout(resolve, 1200))
-        setResult('삭제가 완료되었습니다.')
-      }
-
-      return (
-        <div className='flex flex-col items-center gap-3'>
-          <Button variant='secondary' onClick={() => setOpen(true)}>
-            비동기 확인창 열기
-          </Button>
-          {result != null && <p className='text-sm text-muted-foreground'>{result}</p>}
-          <SimpleAlertDialog
-            open={open}
-            onOpenChange={setOpen}
-            title='정말 삭제하시겠어요?'
-            description='서버 요청이 완료될 때까지 잠시 기다립니다.'
-            confirmLabel='삭제'
-            cancelLabel='취소'
-            confirmVariant='destructive'
-            onConfirm={handleConfirm}
-          />
-        </div>
-      )
-    }
-
-    return <Story />
+  args: {
+    open: false,
   },
+  render: RenderSimpleAsyncConfirm,
 }

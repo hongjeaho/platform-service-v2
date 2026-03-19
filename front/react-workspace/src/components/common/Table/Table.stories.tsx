@@ -2,6 +2,47 @@ import type { Meta, StoryObj } from '@storybook/react'
 
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '.'
 
+type Story = StoryObj<typeof Table>
+
+const RenderTableDemo: Story['render'] = args => (
+  <div className='w-[720px]'>
+    <Table ariaLabel={args.ariaLabel} striped={args.striped} hoverable={args.hoverable}>
+      <TableHeader>
+        <TableRow>
+          <TableHead align='left'>이름</TableHead>
+          <TableHead>상태</TableHead>
+          <TableHead align='right'>금액</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableCell align='left'>딸기</TableCell>
+          <TableCell>접수</TableCell>
+          <TableCell align='right'>10,000</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell align='left'>바나나</TableCell>
+          <TableCell>검토중</TableCell>
+          <TableCell align='right'>7,000</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell align='left'>수박</TableCell>
+          <TableCell>완료</TableCell>
+          <TableCell align='right'>25,000</TableCell>
+        </TableRow>
+      </TableBody>
+      <TableFooter>
+        <TableRow>
+          <TableCell colSpan={2} align='left'>
+            합계
+          </TableCell>
+          <TableCell align='right'>42,000</TableCell>
+        </TableRow>
+      </TableFooter>
+    </Table>
+  </div>
+)
+
 const meta: Meta<typeof Table> = {
   title: 'Common/Table',
   component: Table,
@@ -10,186 +51,36 @@ const meta: Meta<typeof Table> = {
   },
   tags: ['autodocs'],
   argTypes: {
+    ariaLabel: { control: 'text', description: '테이블 접근성 레이블' },
     striped: { control: 'boolean', description: '줄무늬(행 교차 배경)' },
     hoverable: { control: 'boolean', description: '행 hover 강조' },
   },
+  render: RenderTableDemo,
 }
 
 export default meta
-type Story = StoryObj<typeof Table>
 
 export const Default: Story = {
-  args: { striped: false, hoverable: true },
-  render: args => (
-    <div className='w-[720px]'>
-      <Table ariaLabel='데모 테이블' striped={args.striped} hoverable={args.hoverable}>
-        <TableHeader>
-          <TableRow>
-            <TableHead align='left'>이름</TableHead>
-            <TableHead>상태</TableHead>
-            <TableHead align='right'>금액</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell align='left'>딸기</TableCell>
-            <TableCell>접수</TableCell>
-            <TableCell align='right'>10,000</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell align='left'>바나나</TableCell>
-            <TableCell>검토중</TableCell>
-            <TableCell align='right'>7,000</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell align='left'>수박</TableCell>
-            <TableCell>완료</TableCell>
-            <TableCell align='right'>25,000</TableCell>
-          </TableRow>
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={2} align='left'>
-              합계
-            </TableCell>
-            <TableCell align='right'>42,000</TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </div>
-  ),
+  args: { ariaLabel: '데모 테이블', striped: false, hoverable: true },
 }
 
 export const Striped: Story = {
-  args: { striped: true, hoverable: false },
-  render: args => (
-    <div className='w-[720px]'>
-      <Table ariaLabel='데모 테이블' striped={args.striped} hoverable={args.hoverable}>
-        <TableHeader>
-          <TableRow>
-            <TableHead align='left'>이름</TableHead>
-            <TableHead>상태</TableHead>
-            <TableHead align='right'>금액</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell align='left'>딸기</TableCell>
-            <TableCell>접수</TableCell>
-            <TableCell align='right'>10,000</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell align='left'>바나나</TableCell>
-            <TableCell>검토중</TableCell>
-            <TableCell align='right'>7,000</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell align='left'>수박</TableCell>
-            <TableCell>완료</TableCell>
-            <TableCell align='right'>25,000</TableCell>
-          </TableRow>
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={2} align='left'>
-              합계
-            </TableCell>
-            <TableCell align='right'>42,000</TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </div>
-  ),
+  args: { ariaLabel: '데모 테이블', striped: true, hoverable: false },
 }
 
 export const HoverableOff: Story = {
-  args: { striped: false, hoverable: false },
-  render: args => (
-    <div className='w-[720px]'>
-      <Table ariaLabel='데모 테이블' striped={args.striped} hoverable={args.hoverable}>
-        <TableHeader>
-          <TableRow>
-            <TableHead align='left'>이름</TableHead>
-            <TableHead>상태</TableHead>
-            <TableHead align='right'>금액</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell align='left'>딸기</TableCell>
-            <TableCell>접수</TableCell>
-            <TableCell align='right'>10,000</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell align='left'>바나나</TableCell>
-            <TableCell>검토중</TableCell>
-            <TableCell align='right'>7,000</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell align='left'>수박</TableCell>
-            <TableCell>완료</TableCell>
-            <TableCell align='right'>25,000</TableCell>
-          </TableRow>
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={2} align='left'>
-              합계
-            </TableCell>
-            <TableCell align='right'>42,000</TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </div>
-  ),
+  args: { ariaLabel: '데모 테이블', striped: false, hoverable: false },
 }
 
 export const StripedAndHoverable: Story = {
-  args: { striped: true, hoverable: true },
-  render: args => (
-    <div className='w-[720px]'>
-      <Table ariaLabel='데모 테이블' striped={args.striped} hoverable={args.hoverable}>
-        <TableHeader>
-          <TableRow>
-            <TableHead align='left'>이름</TableHead>
-            <TableHead>상태</TableHead>
-            <TableHead align='right'>금액</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell align='left'>딸기</TableCell>
-            <TableCell>접수</TableCell>
-            <TableCell align='right'>10,000</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell align='left'>바나나</TableCell>
-            <TableCell>검토중</TableCell>
-            <TableCell align='right'>7,000</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell align='left'>수박</TableCell>
-            <TableCell>완료</TableCell>
-            <TableCell align='right'>25,000</TableCell>
-          </TableRow>
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={2} align='left'>
-              합계
-            </TableCell>
-            <TableCell align='right'>42,000</TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </div>
-  ),
+  args: { ariaLabel: '데모 테이블', striped: true, hoverable: true },
 }
 
 export const AlignVariants: Story = {
-  render: () => (
+  args: { ariaLabel: '정렬 예시 테이블', striped: true, hoverable: true },
+  render: args => (
     <div className='w-[720px]'>
-      <Table ariaLabel='정렬 예시 테이블' striped hoverable>
+      <Table ariaLabel={args.ariaLabel} striped={args.striped} hoverable={args.hoverable}>
         <TableHeader>
           <TableRow>
             <TableHead align='left'>Left</TableHead>
@@ -210,9 +101,10 @@ export const AlignVariants: Story = {
 }
 
 export const SpanVariants: Story = {
-  render: () => (
+  args: { ariaLabel: '병합 예시 테이블', striped: true, hoverable: true },
+  render: args => (
     <div className='w-[720px]'>
-      <Table ariaLabel='병합 예시 테이블'>
+      <Table ariaLabel={args.ariaLabel} striped={args.striped} hoverable={args.hoverable}>
         <TableHeader>
           <TableRow>
             <TableHead rowSpan={2} align='left'>

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useForm } from 'react-hook-form'
 
+import { Button } from '../Button'
 import { RadioGroup } from './RadioGroup'
 import { RadioGroupItem } from './RadioGroupItem'
 
@@ -170,7 +171,7 @@ type RHFDemoForm = {
   fruit: string
 }
 
-function RHFDemoFormInner() {
+const RenderRHF: Story['render'] = () => {
   const {
     register,
     handleSubmit,
@@ -186,7 +187,6 @@ function RHFDemoFormInner() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='flex w-80 flex-col gap-4'>
       <RadioGroup
-        name='fruit'
         {...register('fruit', { required: '과일을 선택해 주세요.' })}
         error={errors.fruit?.message}
       >
@@ -200,15 +200,14 @@ function RHFDemoFormInner() {
           수박
         </RadioGroupItem>
       </RadioGroup>
-      <button type='submit' className='rounded bg-primary px-4 py-2 text-primary-foreground'>
-        제출
-      </button>
+      <Button type='submit'>제출</Button>
     </form>
   )
 }
 
 const RHFUsageCode = `import { useForm } from 'react-hook-form'
 import { RadioGroup, RadioGroupItem } from '@/components/common/RadioGroup'
+import { Button } from '@/components/common/Button'
 
 type FormValues = { fruit: string }
 
@@ -230,16 +229,16 @@ function MyForm() {
         <RadioGroupItem value="0002" textValue="바나나">바나나</RadioGroupItem>
         <RadioGroupItem value="0003" textValue="수박">수박</RadioGroupItem>
       </RadioGroup>
-      <button type="submit" className="rounded bg-primary px-4 py-2 text-primary-foreground">
+      <Button type="submit">
         제출
-      </button>
+      </Button>
     </form>
   )
 }
 `
 
 export const WithReactHookForm: Story = {
-  render: () => <RHFDemoFormInner />,
+  render: RenderRHF,
   parameters: {
     docs: {
       description: {

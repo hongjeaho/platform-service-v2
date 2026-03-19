@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useForm } from 'react-hook-form'
 
+import { Button } from '../Button'
 import { Combobox, ComboboxItem } from '.'
 
 const meta: Meta<typeof Combobox> = {
@@ -65,7 +66,6 @@ export const Default: Story = {
     limit: 5,
     children: defaultChildren,
   },
-  render: args => <Combobox {...args}>{defaultChildren}</Combobox>,
 }
 
 export const WithLabel: Story = {
@@ -75,7 +75,6 @@ export const WithLabel: Story = {
     required: true,
     children: defaultChildren,
   },
-  render: args => <Combobox {...args}>{defaultChildren}</Combobox>,
 }
 
 export const WithLabelAndError: Story = {
@@ -85,7 +84,6 @@ export const WithLabelAndError: Story = {
     error: '과일을 선택해 주세요.',
     children: defaultChildren,
   },
-  render: args => <Combobox {...args}>{defaultChildren}</Combobox>,
 }
 
 export const Small: Story = {
@@ -94,7 +92,6 @@ export const Small: Story = {
     placeholder: 'Small',
     children: defaultChildren,
   },
-  render: args => <Combobox {...args}>{defaultChildren}</Combobox>,
 }
 
 export const Medium: Story = {
@@ -103,7 +100,6 @@ export const Medium: Story = {
     placeholder: 'Medium',
     children: defaultChildren,
   },
-  render: args => <Combobox {...args}>{defaultChildren}</Combobox>,
 }
 
 export const Large: Story = {
@@ -112,7 +108,6 @@ export const Large: Story = {
     placeholder: 'Large',
     children: defaultChildren,
   },
-  render: args => <Combobox {...args}>{defaultChildren}</Combobox>,
 }
 
 export const Disabled: Story = {
@@ -121,7 +116,6 @@ export const Disabled: Story = {
     placeholder: '비활성화됨',
     children: defaultChildren,
   },
-  render: args => <Combobox {...args}>{defaultChildren}</Combobox>,
 }
 
 export const WithDefaultValue: Story = {
@@ -130,7 +124,6 @@ export const WithDefaultValue: Story = {
     defaultValue: '0002',
     children: defaultChildren,
   },
-  render: args => <Combobox {...args}>{defaultChildren}</Combobox>,
 }
 
 export const LimitTwo: Story = {
@@ -139,7 +132,6 @@ export const LimitTwo: Story = {
     limit: 2,
     children: defaultChildren,
   },
-  render: args => <Combobox {...args}>{defaultChildren}</Combobox>,
 }
 
 export const WithDisabledItem: Story = {
@@ -155,22 +147,13 @@ export const WithDisabledItem: Story = {
       </>
     ),
   },
-  render: args => (
-    <Combobox {...args}>
-      <ComboboxItem value='a'>옵션 A</ComboboxItem>
-      <ComboboxItem value='b' disabled>
-        옵션 B (비활성)
-      </ComboboxItem>
-      <ComboboxItem value='c'>옵션 C</ComboboxItem>
-    </Combobox>
-  ),
 }
 
 type RHFComboboxForm = {
   fruit: string
 }
 
-function RHFComboboxFormInner() {
+const RenderRHFComboboxForm: Story['render'] = () => {
   const {
     register,
     handleSubmit,
@@ -196,15 +179,14 @@ function RHFComboboxFormInner() {
         <ComboboxItem value='0002'>바나나</ComboboxItem>
         <ComboboxItem value='0003'>수박</ComboboxItem>
       </Combobox>
-      <button type='submit' className='rounded bg-primary px-4 py-2 text-primary-foreground'>
-        제출
-      </button>
+      <Button type='submit'>제출</Button>
     </form>
   )
 }
 
 const RHFUsageCode = `import { useForm } from 'react-hook-form'
 import { Combobox, ComboboxItem } from '@/components/common/Combobox'
+import { Button } from '@/components/common/Button'
 
 type FormValues = { fruit: string }
 
@@ -228,14 +210,14 @@ function MyForm() {
         <ComboboxItem value="0002">바나나</ComboboxItem>
         <ComboboxItem value="0003">수박</ComboboxItem>
       </Combobox>
-      <button type="submit">제출</button>
+      <Button type="submit">제출</Button>
     </form>
   )
 }
 `
 
 export const WithReactHookForm: Story = {
-  render: () => <RHFComboboxFormInner />,
+  render: RenderRHFComboboxForm,
   parameters: {
     docs: {
       description: {
@@ -261,7 +243,6 @@ export const Playground: Story = {
     required: false,
     children: defaultChildren,
   },
-  render: args => <Combobox {...args}>{defaultChildren}</Combobox>,
   parameters: {
     controls: { expanded: true },
   },

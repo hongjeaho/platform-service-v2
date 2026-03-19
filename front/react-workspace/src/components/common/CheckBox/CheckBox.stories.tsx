@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useForm } from 'react-hook-form'
 
+import { Button } from '../Button'
 import { CheckBox } from './CheckBox'
 
 const meta: Meta<typeof CheckBox> = {
@@ -161,15 +162,14 @@ function RHFDemoFormInner() {
           {errors.agree.message}
         </p>
       )}
-      <button type='submit' className='rounded bg-primary px-4 py-2 text-primary-foreground'>
-        제출
-      </button>
+      <Button type='submit'>제출</Button>
     </form>
   )
 }
 
 const RHFUsageCode = `import { useForm } from 'react-hook-form'
 import { CheckBox } from '@/components/common/CheckBox'
+import { Button } from '@/components/common/Button'
 
 type FormValues = { agree: boolean; marketing: boolean }
 
@@ -195,9 +195,7 @@ function MyForm() {
       {errors.agree?.message && (
         <p className="text-sm text-destructive" role="alert">{errors.agree.message}</p>
       )}
-      <button type="submit" className="rounded bg-primary px-4 py-2 text-primary-foreground">
-        제출
-      </button>
+      <Button type="submit">제출</Button>
     </form>
   )
 }
