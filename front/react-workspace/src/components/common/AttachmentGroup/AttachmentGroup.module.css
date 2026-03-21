@@ -1,0 +1,31 @@
+/**
+ * AttachmentGroup 컴포넌트 스타일
+ * 섹션 헤더 + 테이블형 테두리 컨테이너
+ */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 섹션 헤더 */
+.groupLabel {
+  padding: var(--spacing-2) var(--spacing-4);
+  background-color: var(--muted);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: var(--radius) var(--radius) 0 0;
+  color: var(--foreground);
+}
+
+/* 행들을 감싸는 테두리 박스 */
+.container {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* 섹션 헤더가 있을 때 컨테이너 상단 radius 제거 */
+.wrapper:has(.groupLabel) .container {
+  border-radius: 0 0 var(--radius) var(--radius);
+}

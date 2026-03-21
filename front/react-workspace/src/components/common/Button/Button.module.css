@@ -12,6 +12,7 @@
   gap: 0.5rem;
 
   /* 타이포그래피 */
+  white-space: nowrap;
   font-weight: 500;
   border-radius: var(--radius);
 
