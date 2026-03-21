@@ -1,0 +1,202 @@
+/**
+ * FileUpload 컴포넌트 스타일 (단일 파일, 인풋 필드형)
+ * 디자인 시스템 토큰 기반
+ */
+
+/* ============================================================================
+   숨겨진 파일 input
+   ============================================================================ */
+
+.hiddenInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ============================================================================
+   필드 레이아웃
+   ============================================================================ */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.label {
+  display: block;
+}
+
+.required {
+  color: var(--destructive);
+}
+
+/* ============================================================================
+   인풋 필드형 공통 (선택 전/후 동일 외형)
+   ============================================================================ */
+
+.singleField,
+.singleCard {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--input);
+  cursor: pointer;
+  outline: none;
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease;
+  overflow: hidden;
+}
+
+.singleField:hover:not(.disabled),
+.singleCard:hover:not(.disabled) {
+  border-color: color-mix(in srgb, var(--border) 60%, var(--foreground));
+}
+
+.singleField:focus-visible,
+.singleCard:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* 크기 */
+.sizeSm {
+  height: var(--input-height-sm);
+  padding: 0 var(--spacing-2);
+}
+
+.sizeMd {
+  height: var(--input-height-base);
+  padding: 0 var(--spacing-3);
+}
+
+.sizeLg {
+  height: var(--input-height-lg);
+  padding: 0 var(--spacing-4);
+}
+
+/* ============================================================================
+   선택 전: 인풋 필드형
+   ============================================================================ */
+
+/* "파일 선택" 뱃지 버튼 */
+.singleSelectBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  flex-shrink: 0;
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: calc(var(--radius) - 2px);
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* 안내 텍스트 */
+.singlePlaceholder {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted-foreground);
+}
+
+/* ============================================================================
+   선택 후: 파일 카드
+   ============================================================================ */
+
+.fileIcon {
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+.fileName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--foreground);
+}
+
+.fileSize {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+}
+
+.removeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--spacing-6);
+  height: var(--spacing-6);
+  margin-left: auto;
+  padding: 0;
+  border: none;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.removeButton:hover:not(:disabled) {
+  color: var(--destructive);
+  background-color: color-mix(in srgb, var(--destructive) 10%, transparent);
+}
+
+.removeButton:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.removeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================================================
+   공통 상태
+   ============================================================================ */
+
+.dragging {
+  border-color: var(--primary);
+  background-color: color-mix(in srgb, var(--primary) 6%, var(--background));
+}
+
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  border-color: var(--destructive);
+}
+
+.error:focus-visible {
+  outline-color: var(--destructive);
+}
+
+/* ============================================================================
+   에러 메시지
+   ============================================================================ */
+
+.errorMessage {
+  color: var(--destructive);
+}
