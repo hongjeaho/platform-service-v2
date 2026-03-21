@@ -4,9 +4,18 @@ import { useForm } from 'react-hook-form'
 import { Button } from '../Button'
 import { FileUpload } from './FileUpload'
 
+// ============================================================================
+// 공통 Render — meta.render로 연결
+// ============================================================================
+
+type Story = StoryObj<typeof FileUpload>
+
+const Render: Story['render'] = args => <FileUpload {...args} />
+
 const meta: Meta<typeof FileUpload> = {
   title: 'Common/FileUpload',
   component: FileUpload,
+  render: Render,
   parameters: {
     layout: 'centered',
   },
@@ -43,7 +52,6 @@ const meta: Meta<typeof FileUpload> = {
 }
 
 export default meta
-type Story = StoryObj<typeof FileUpload>
 
 // ============================================================================
 // 기본
@@ -116,14 +124,14 @@ export const Disabled: Story = {
 }
 
 // ============================================================================
-// React Hook Form
+// React Hook Form (예외 — 복합 컴포넌트 조합 예제)
 // ============================================================================
 
 type RHFDemoForm = {
   attachment: FileList
 }
 
-function RHFDemoFormInner() {
+const RHFRender: Story['render'] = args => {
   const {
     register,
     handleSubmit,
@@ -138,6 +146,7 @@ function RHFDemoFormInner() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='flex w-80 flex-col gap-4'>
       <FileUpload
+        {...args}
         label='첨부파일'
         required
         {...register('attachment', { required: '파일을 선택해 주세요.' })}
@@ -149,7 +158,8 @@ function RHFDemoFormInner() {
 }
 
 export const WithReactHookForm: Story = {
-  render: () => <RHFDemoFormInner />,
+  render: RHFRender,
+  args: {},
   parameters: {
     docs: {
       description: {

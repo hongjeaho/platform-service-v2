@@ -4,9 +4,18 @@ import { useForm } from 'react-hook-form'
 import { Button } from '../Button'
 import { MultiFileUpload } from './MultiFileUpload'
 
+// ============================================================================
+// 공통 Render — meta.render로 연결
+// ============================================================================
+
+type Story = StoryObj<typeof MultiFileUpload>
+
+const Render: Story['render'] = args => <MultiFileUpload {...args} />
+
 const meta: Meta<typeof MultiFileUpload> = {
   title: 'Common/MultiFileUpload',
   component: MultiFileUpload,
+  render: Render,
   parameters: {
     layout: 'centered',
   },
@@ -47,7 +56,6 @@ const meta: Meta<typeof MultiFileUpload> = {
 }
 
 export default meta
-type Story = StoryObj<typeof MultiFileUpload>
 
 // ============================================================================
 // 기본
@@ -127,14 +135,14 @@ export const Disabled: Story = {
 }
 
 // ============================================================================
-// React Hook Form
+// React Hook Form (예외 — 복합 컴포넌트 조합 예제)
 // ============================================================================
 
 type RHFDemoForm = {
   attachments: FileList
 }
 
-function RHFDemoFormInner() {
+const RHFRender: Story['render'] = args => {
   const {
     register,
     handleSubmit,
@@ -151,6 +159,7 @@ function RHFDemoFormInner() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='flex w-96 flex-col gap-4'>
       <MultiFileUpload
+        {...args}
         label='첨부파일'
         required
         maxFiles={5}
@@ -163,7 +172,8 @@ function RHFDemoFormInner() {
 }
 
 export const WithReactHookForm: Story = {
-  render: () => <RHFDemoFormInner />,
+  render: RHFRender,
+  args: {},
   parameters: {
     docs: {
       description: {
