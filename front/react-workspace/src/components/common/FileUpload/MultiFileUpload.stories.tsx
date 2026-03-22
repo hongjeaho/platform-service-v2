@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { Button } from '../Button'
 import { MultiFileUpload } from './MultiFileUpload'
+import type { ManagedFile, ServerFileInfo } from './MultiFileUpload.type'
 
 // ============================================================================
 // 공통 Render — meta.render로 연결
@@ -50,7 +52,7 @@ const meta: Meta<typeof MultiFileUpload> = {
       control: 'boolean',
       description: '필수 여부',
     },
-    onFilesChange: { action: 'filesChange' },
+    onManagedFilesChange: { action: 'managedFilesChange' },
     onChange: { action: 'changed' },
   },
 }
@@ -179,6 +181,123 @@ export const WithReactHookForm: Story = {
       description: {
         story:
           '복수 파일 선택. 드롭존이 항상 유지되어 파일을 계속 추가할 수 있습니다. `register()`를 스프레드하고 `error`를 연결합니다.',
+      },
+      source: {
+        language: 'tsx',
+        code: `
+const { register, handleSubmit, formState: { errors } } = useForm<{ attachments: FileList }>()
+
+const onSubmit = (data: { attachments: FileList }) => {
+  const fileNames = Array.from(data.attachments ?? []).map(f => f.name).join(', ')
+  alert(\`선택된 파일: \${fileNames || '없음'}\`)
+}
+
+<form onSubmit={handleSubmit(onSubmit)} className="flex w-96 flex-col gap-4">
+  <MultiFileUpload
+    label="첨부파일"
+    required
+    maxFiles={5}
+    {...register('attachments', { required: '파일을 선택해 주세요.' })}
+    error={errors.attachments?.message}
+  />
+  <Button type="submit">제출</Button>
+</form>
+        `.trim(),
+      },
+    },
+  },
+}
+
+// ============================================================================
+// React Hook Form — 수정 시나리오 (기존 파일 있음)
+// ============================================================================
+
+const existingFiles: ServerFileInfo[] = [
+  { seqNo: 101, name: '계획서_2024.pdf', size: 204800 },
+  { seqNo: 102, name: '결과보고.xlsx', size: 51200 },
+]
+
+type RHFEditDemoForm = { attachments: FileList }
+
+const RHFEditRender: Story['render'] = args => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RHFEditDemoForm>()
+
+  const [managedFiles, setManagedFiles] = useState<ManagedFile[]>([])
+
+  const onSubmit = () => {
+    const toDelete = managedFiles.filter(f => f.state === 'deleted').map(f => f.seqNo)
+    const toUpload = managedFiles.filter(f => f.state === 'added').map(f => f.file)
+
+    const parts: string[] = []
+    if (toDelete.length > 0) parts.push(`삭제된 파일 seqNo: [${toDelete.join(', ')}]`)
+    if (toUpload.length > 0) parts.push(`신규 업로드: ${toUpload.map(f => f.name).join(', ')}`)
+    if (parts.length === 0) parts.push('변경 없음 (기존 파일 유지)')
+
+    alert(parts.join('\n'))
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className='flex w-96 flex-col gap-4'>
+      <MultiFileUpload
+        {...args}
+        initialFiles={existingFiles}
+        label='첨부파일'
+        required
+        maxFiles={5}
+        {...register('attachments')}
+        error={errors.attachments?.message}
+        onManagedFilesChange={setManagedFiles}
+      />
+      <Button type='submit'>저장</Button>
+    </form>
+  )
+}
+
+export const WithReactHookFormEdit: Story = {
+  render: RHFEditRender,
+  args: {},
+  parameters: {
+    docs: {
+      description: {
+        story:
+          '수정 폼: 서버에서 받아온 기존 파일 목록(`initialFiles`)이 사전 표시됩니다. 기존 파일을 삭제하거나 새 파일을 추가할 수 있습니다. `onFilesChange`는 신규 업로드 파일만 전달합니다.',
+      },
+      source: {
+        language: 'tsx',
+        code: `
+// 서버 응답 데이터
+const existingFiles = [
+  { seqNo: 101, name: '계획서_2024.pdf', size: 204800 },
+  { seqNo: 102, name: '결과보고.xlsx', size: 51200 },
+]
+
+const { register, handleSubmit, formState: { errors } } = useForm<{ attachments: FileList }>()
+const [managedFiles, setManagedFiles] = useState<ManagedFile[]>([])
+
+const onSubmit = () => {
+  const toDelete = managedFiles.filter(f => f.state === 'deleted').map(f => f.seqNo)
+  const toUpload = managedFiles.filter(f => f.state === 'added').map(f => f.file)
+  // toDelete → 서버에 삭제 요청할 seqNo 목록
+  // toUpload → 신규 업로드할 File 목록
+}
+
+<form onSubmit={handleSubmit(onSubmit)} className="flex w-96 flex-col gap-4">
+  <MultiFileUpload
+    initialFiles={existingFiles}
+    label="첨부파일"
+    required
+    maxFiles={5}
+    {...register('attachments')}
+    error={errors.attachments?.message}
+    onManagedFilesChange={setManagedFiles}
+  />
+  <Button type="submit">저장</Button>
+</form>
+        `.trim(),
       },
     },
   },

@@ -131,15 +131,15 @@ describe('MultiFileUpload (복수 파일)', () => {
     })
 
     it('maxFiles 초과 시 추가되지 않습니다', async () => {
-      const handleFilesChange = vi.fn()
-      render(<MultiFileUpload maxFiles={1} onFilesChange={handleFilesChange} />)
+      const handleManagedFilesChange = vi.fn()
+      render(<MultiFileUpload maxFiles={1} onManagedFilesChange={handleManagedFilesChange} />)
       const input = document.querySelector('input[type="file"]') as HTMLInputElement
       await userEvent.upload(input, createFile('a.pdf'))
-      handleFilesChange.mockClear()
+      handleManagedFilesChange.mockClear()
       // 드롭으로 초과 시도
       const dropzone = screen.getByRole('button', { name: /파일 업로드 영역/ })
       fireEvent.drop(dropzone, { dataTransfer: { files: [createFile('b.pdf')] } })
-      expect(handleFilesChange).not.toHaveBeenCalled()
+      expect(handleManagedFilesChange).not.toHaveBeenCalled()
     })
   })
 
@@ -176,13 +176,13 @@ describe('MultiFileUpload (복수 파일)', () => {
   })
 
   describe('콜백', () => {
-    it('파일 선택 시 onFilesChange가 호출됩니다', async () => {
-      const handleFilesChange = vi.fn()
-      render(<MultiFileUpload onFilesChange={handleFilesChange} />)
+    it('파일 선택 시 onManagedFilesChange가 호출됩니다', async () => {
+      const handleManagedFilesChange = vi.fn()
+      render(<MultiFileUpload onManagedFilesChange={handleManagedFilesChange} />)
       const input = document.querySelector('input[type="file"]') as HTMLInputElement
       await userEvent.upload(input, createFile('test.txt'))
-      expect(handleFilesChange).toHaveBeenCalledWith([
-        expect.objectContaining({ name: 'test.txt' }),
+      expect(handleManagedFilesChange).toHaveBeenCalledWith([
+        expect.objectContaining({ state: 'added', name: 'test.txt' }),
       ])
     })
 

@@ -99,6 +99,7 @@ describe('FileUpload (단일 파일)', () => {
       await userEvent.click(screen.getByRole('button', { name: 'test.pdf 삭제' }))
       // 파일 삭제 버튼 클릭이 dropzone 클릭으로 버블링되지 않아야 함
       expect(screen.queryByText('test.pdf')).not.toBeInTheDocument()
+      expect(handleZoneClick).not.toHaveBeenCalled()
     })
   })
 
@@ -149,7 +150,7 @@ describe('FileUpload (단일 파일)', () => {
       render(<FileUpload />)
       const input = document.querySelector('input[type="file"]') as HTMLInputElement
       await userEvent.upload(input, createFile('my-doc.pdf'))
-      expect(screen.getByRole('button', { name: /my-doc\.pdf/ })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /선택된 파일:.*my-doc\.pdf/ })).toBeInTheDocument()
     })
 
     it('aria-invalid를 전달할 수 있습니다', () => {

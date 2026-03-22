@@ -1,9 +1,24 @@
 import type { AriaAttributes, ChangeEventHandler, FocusEventHandler, Ref } from 'react'
 
+import type { ServerFileInfo } from './FileUpload.type'
+
+export type { ServerFileInfo }
+
 /**
  * MultiFileUpload 드롭존 크기
  */
 export type MultiFileUploadSize = 'sm' | 'md' | 'lg'
+
+/**
+ * 수정 시나리오에서 파일의 상태를 나타내는 타입
+ * - existing: 서버에서 받아온 기존 파일 (변경 없음)
+ * - deleted:  기존 파일이 삭제됨 (서버에 삭제 요청 필요)
+ * - added:    새로 추가된 파일 (서버에 업로드 필요)
+ */
+export type ManagedFile =
+  | { state: 'existing'; seqNo: number; name: string; size: number }
+  | { state: 'deleted'; seqNo: number; name: string; size: number }
+  | { state: 'added'; file: File; name: string; size: number }
 
 /**
  * MultiFileUpload 컴포넌트 Props
@@ -15,7 +30,7 @@ export type MultiFileUploadSize = 'sm' | 'md' | 'lg'
  * @example
  * ```tsx
  * // 기본 사용
- * <MultiFileUpload label="첨부파일" onFilesChange={setFiles} />
+ * <MultiFileUpload label="첨부파일" onManagedFilesChange={setManagedFiles} />
  *
  * // RHF register 패턴
  * <MultiFileUpload
@@ -94,15 +109,17 @@ export interface MultiFileUploadProps extends AriaAttributes {
   onBlur?: FocusEventHandler<HTMLInputElement>
 
   /**
-   * 파일 목록 변경 콜백 (간단 setState 패턴용)
-   * 파일 추가 또는 삭제 시 호출됩니다.
+   * 수정 시나리오에서 서버에서 받아온 기존 파일 목록
+   * 제공 시 컴포넌트가 해당 파일들이 선택된 상태로 초기화됩니다.
    */
-  onFilesChange?: (files: File[]) => void
+  initialFiles?: ServerFileInfo[]
 
   /**
-   * 필드 컨테이너에 적용할 추가 클래스 (레이아웃 등)
+   * 파일 목록 변경 콜백
+   * 파일 추가·삭제 시 전체 ManagedFile[] 목록을 전달합니다.
+   * 수정 시나리오에서는 state 필드로 기존/삭제/신규를 구분합니다.
    */
-  className?: string
+  onManagedFilesChange?: (files: ManagedFile[]) => void
 
   /**
    * 접근성: 오류 시 true (error가 있으면 자동 설정)

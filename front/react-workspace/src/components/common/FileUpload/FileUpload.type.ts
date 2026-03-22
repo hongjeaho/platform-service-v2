@@ -6,6 +6,18 @@ import type { AriaAttributes, ChangeEventHandler, FocusEventHandler, Ref } from 
 export type FileUploadSize = 'sm' | 'md' | 'lg'
 
 /**
+ * 서버에서 받아온 기존 파일 정보 (수정 시나리오에서 사용)
+ */
+export type ServerFileInfo = {
+  /** 파일 일련번호 */
+  seqNo: number
+  /** 파일 이름 */
+  name: string
+  /** 파일 용량 (bytes) */
+  size: number
+}
+
+/**
  * FileUpload 컴포넌트 Props
  *
  * 단일 파일 선택을 위한 인풋 필드형 컴포넌트입니다.
@@ -87,15 +99,16 @@ export interface FileUploadProps extends AriaAttributes {
   onBlur?: FocusEventHandler<HTMLInputElement>
 
   /**
+   * 수정 시나리오에서 서버에서 받아온 기존 파일 정보
+   * 제공 시 컴포넌트가 해당 파일이 선택된 상태로 초기화됩니다.
+   */
+  initialFile?: ServerFileInfo
+
+  /**
    * 파일 변경 콜백 (간단 setState 패턴용)
    * 파일 선택 또는 삭제 시 호출됩니다.
    */
   onFilesChange?: (files: File[]) => void
-
-  /**
-   * 필드 컨테이너에 적용할 추가 클래스 (레이아웃 등)
-   */
-  className?: string
 
   /**
    * 접근성: 오류 시 true (error가 있으면 자동 설정)

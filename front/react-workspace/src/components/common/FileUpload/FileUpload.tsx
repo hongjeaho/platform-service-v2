@@ -3,18 +3,13 @@ import { useId, useRef, useState } from 'react'
 import { icons, iconSizes, textCombinations } from '@/styles'
 
 import styles from './FileUpload.module.css'
-import type { FileUploadProps, FileUploadSize } from './FileUpload.type'
+import type { FileUploadProps, FileUploadSize, ServerFileInfo } from './FileUpload.type'
+import { formatFileSize } from './utils'
 
 const sizeClasses: Record<FileUploadSize, string> = {
   sm: styles.sizeSm,
   md: styles.sizeMd,
   lg: styles.sizeLg,
-}
-
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
 /**
@@ -41,12 +36,12 @@ export function FileUpload({
   label,
   error,
   required = false,
-  className,
   id: idProp,
   name,
   onChange,
   onBlur,
   onFilesChange,
+  initialFile,
   'aria-invalid': ariaInvalid,
   'aria-describedby': ariaDescribedBy,
 }: FileUploadProps) {
@@ -54,7 +49,7 @@ export function FileUpload({
   const inputId = idProp ?? generatedId
   const errorId = error ? `${inputId}-error` : undefined
 
-  const [file, setFile] = useState<File | null>(null)
+  const [file, setFile] = useState<File | ServerFileInfo | null>(initialFile ?? null)
   const [isDragging, setIsDragging] = useState(false)
 
   const localRef = useRef<HTMLInputElement>(null)
@@ -115,7 +110,7 @@ export function FileUpload({
   const FileIcon = icons.document
   const CloseIcon = icons.close
 
-  const fieldClasses = [styles.field, className].filter(Boolean).join(' ')
+  const fieldClasses = styles.field
 
   const zoneStateClasses = [
     isDragging ? styles.dragging : '',

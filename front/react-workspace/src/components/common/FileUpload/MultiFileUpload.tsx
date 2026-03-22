@@ -3,18 +3,13 @@ import { useId, useRef, useState } from 'react'
 import { icons, iconSizes, textCombinations } from '@/styles'
 
 import styles from './MultiFileUpload.module.css'
-import type { MultiFileUploadProps, MultiFileUploadSize } from './MultiFileUpload.type'
+import type { ManagedFile, MultiFileUploadProps, MultiFileUploadSize } from './MultiFileUpload.type'
+import { formatFileSize } from './utils'
 
 const sizeClasses: Record<MultiFileUploadSize, string> = {
   sm: styles.sizeSm,
   md: styles.sizeMd,
   lg: styles.sizeLg,
-}
-
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
 /**
@@ -42,12 +37,12 @@ export function MultiFileUpload({
   label,
   error,
   required = false,
-  className,
   id: idProp,
   name,
   onChange,
   onBlur,
-  onFilesChange,
+  onManagedFilesChange,
+  initialFiles,
   'aria-invalid': ariaInvalid,
   'aria-describedby': ariaDescribedBy,
 }: MultiFileUploadProps) {
@@ -55,7 +50,9 @@ export function MultiFileUpload({
   const inputId = idProp ?? generatedId
   const errorId = error ? `${inputId}-error` : undefined
 
-  const [files, setFiles] = useState<File[]>([])
+  const [managedFiles, setManagedFiles] = useState<ManagedFile[]>(
+    initialFiles?.map(f => ({ ...f, state: 'existing' as const })) ?? [],
+  )
   const [isDragging, setIsDragging] = useState(false)
 
   const localRef = useRef<HTMLInputElement>(null)
@@ -69,21 +66,38 @@ export function MultiFileUpload({
     }
   }
 
-  const isAtLimit = maxFiles != null && files.length >= maxFiles
+  const visibleFiles = managedFiles.filter(f => f.state !== 'deleted')
+  const isAtLimit = maxFiles != null && visibleFiles.length >= maxFiles
 
   const addFiles = (newFiles: File[]) => {
-    const remaining = maxFiles != null ? maxFiles - files.length : newFiles.length
+    const remaining = maxFiles != null ? maxFiles - visibleFiles.length : newFiles.length
     const toAdd = newFiles.slice(0, remaining)
     if (toAdd.length === 0) return
-    const updated = [...files, ...toAdd]
-    setFiles(updated)
-    onFilesChange?.(updated)
+    const updated: ManagedFile[] = [
+      ...managedFiles,
+      ...toAdd.map(file => ({ state: 'added' as const, file, name: file.name, size: file.size })),
+    ]
+    setManagedFiles(updated)
+    onManagedFilesChange?.(updated)
   }
 
   const removeFile = (index: number) => {
-    const updated = files.filter((_, i) => i !== index)
-    setFiles(updated)
-    onFilesChange?.(updated)
+    const target = visibleFiles[index]
+    let updated: ManagedFile[]
+
+    if (target.state === 'existing') {
+      updated = managedFiles.map(f =>
+        f.state === 'existing' && f.seqNo === target.seqNo
+          ? { ...f, state: 'deleted' as const }
+          : f,
+      )
+    } else {
+      updated = managedFiles.filter(
+        f => !(f.state === 'added' && f.name === target.name && f.size === target.size),
+      )
+    }
+    setManagedFiles(updated)
+    onManagedFilesChange?.(updated)
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,7 +148,7 @@ export function MultiFileUpload({
     .filter(Boolean)
     .join(' ')
 
-  const fieldClasses = [styles.field, className].filter(Boolean).join(' ')
+  const fieldClasses = styles.field
 
   const hintText = (() => {
     if (accept && maxFiles) return `허용 형식: ${accept} · 최대 ${maxFiles}개`
@@ -195,9 +209,9 @@ export function MultiFileUpload({
       />
 
       {/* 파일 목록 */}
-      {files.length > 0 && (
+      {visibleFiles.length > 0 && (
         <ul className={styles.fileList} role='list' aria-label='선택된 파일 목록'>
-          {files.map((f, i) => (
+          {visibleFiles.map((f, i) => (
             <li key={`${f.name}-${i}`} className={styles.fileItem}>
               <FileIcon className={[iconSizes.sm, styles.fileIcon].join(' ')} aria-hidden='true' />
               <span className={[styles.fileName, textCombinations.bodySm].join(' ')}>{f.name}</span>
@@ -216,7 +230,7 @@ export function MultiFileUpload({
             </li>
           ))}
           <li className={[styles.fileCount, textCombinations.bodyXs].join(' ')} aria-live='polite'>
-            {files.length}개 파일 선택됨
+            {visibleFiles.length}개 파일 선택됨
           </li>
         </ul>
       )}
