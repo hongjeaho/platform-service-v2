@@ -73,17 +73,13 @@ export function Pagination({
     onPageChange(normalized)
   }
 
-  const focusCurrentPageAfterChange = () => {
+  useEffect(() => {
+    if (!shouldFocusRef.current) return
     requestAnimationFrame(() => {
       const node = pageButtonRefs.current[safeCurrentPage]
       if (node) node.focus()
       shouldFocusRef.current = false
     })
-  }
-
-  useEffect(() => {
-    if (!shouldFocusRef.current) return
-    focusCurrentPageAfterChange()
   }, [safeCurrentPage])
 
   const handlePageButtonKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {

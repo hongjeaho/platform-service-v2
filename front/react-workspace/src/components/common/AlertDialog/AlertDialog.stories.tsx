@@ -160,9 +160,9 @@ const RenderSimpleAsyncConfirm: Story['render'] = () => {
   const result = (args as unknown as { result?: string | null }).result ?? null
 
   const handleConfirm = async () => {
-    updateArgs({ result: '삭제 처리 중...' } as any)
+    updateArgs({ result: '삭제 처리 중...' } as Record<string, unknown>)
     await new Promise(resolve => setTimeout(resolve, 1200))
-    updateArgs({ result: '삭제가 완료되었습니다.' } as any)
+    updateArgs({ result: '삭제가 완료되었습니다.' } as Record<string, unknown>)
   }
 
   return (

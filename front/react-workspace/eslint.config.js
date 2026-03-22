@@ -54,9 +54,9 @@ export default tseslint.config([
             'react-refresh/only-export-components': 'off',
             'eslint-disable-next-line': 'off',
             'react-hooks/rules-of-hooks': 'error',
-            'react-hooks/exhaustive-deps': 'off',
+            'react-hooks/exhaustive-deps': 'warn',
             '@typescript-eslint/no-unused-expressions': 'off',
-            '@typescript-eslint/no-explicit-any': 'off',
+            '@typescript-eslint/no-explicit-any': 'warn',
             '@typescript-eslint/no-empty-object-type': 'off',
         },
         settings: {

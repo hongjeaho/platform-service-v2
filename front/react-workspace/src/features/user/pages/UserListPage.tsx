@@ -31,11 +31,11 @@ export function Component() {
   if (isError) {
     return (
       <div className='text-center py-12'>
-        <div className='bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto'>
-          <h3 className='text-lg font-semibold text-red-800 mb-2'>Error Loading Users</h3>
-          <p className='text-red-600 mb-4'>Failed to fetch users. Please try again.</p>
+        <div className='bg-error/10 border border-error rounded-lg p-6 max-w-md mx-auto'>
+          <h3 className='text-lg font-semibold text-error-foreground mb-2'>사용자 로드 실패</h3>
+          <p className='text-error mb-4'>사용자 목록을 불러오지 못했습니다. 다시 시도해 주세요.</p>
           <Button onClick={() => refetch()} variant='primary'>
-            Retry
+            다시 시도
           </Button>
         </div>
       </div>
@@ -87,13 +87,13 @@ export function Component() {
         <div className='flex gap-4'>
           <input
             type='text'
-            placeholder='Search by name or email...'
+            placeholder='이름 또는 이메일로 검색...'
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className='flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent'
+            className='flex-1 px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent'
           />
           <Button onClick={() => refetch()} variant='secondary' disabled={isFetching}>
-            {isFetching ? 'Refreshing...' : 'Refetch'}
+            {isFetching ? '새로고침 중...' : '새로고침'}
           </Button>
         </div>
       </div>
@@ -121,7 +121,7 @@ export function Component() {
           ))}
         </div>
       ) : (
-        <div className='text-center py-12 text-gray-500'>No users found matching your search.</div>
+        <div className='text-center py-12 text-muted-foreground'>검색 결과가 없습니다.</div>
       )}
     </div>
   )
