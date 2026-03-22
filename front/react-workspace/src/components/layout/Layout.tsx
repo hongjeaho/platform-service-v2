@@ -8,7 +8,7 @@ export function Layout() {
           <div className='flex justify-between h-16'>
             <div className='flex'>
               <div className='flex-shrink-0 flex items-center'>
-                <h1 className='text-xl font-bold text-indigo-600'>React Workspace</h1>
+                <h1 className='text-xl font-bold text-primary'>React Workspace</h1>
               </div>
               <div className='hidden sm:ml-6 sm:flex sm:space-x-8'>
                 <NavLink
@@ -16,8 +16,8 @@ export function Layout() {
                   className={({ isActive }) =>
                     `inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
                       isActive
-                        ? 'border-indigo-500 text-gray-900'
-                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                        ? 'border-primary text-foreground'
+                        : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'
                     }`
                   }
                 >
@@ -28,8 +28,8 @@ export function Layout() {
                   className={({ isActive }) =>
                     `inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
                       isActive
-                        ? 'border-indigo-500 text-gray-900'
-                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                        ? 'border-primary text-foreground'
+                        : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'
                     }`
                   }
                 >
