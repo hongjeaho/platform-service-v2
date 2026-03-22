@@ -5,7 +5,7 @@ import { icons, iconSizes, textCombinations } from '@/styles'
 import { Button } from '../Button'
 import { useAttachmentGroup } from './AttachmentGroup'
 import styles from './AttachmentRow.module.css'
-import type { AttachmentRowProps } from './AttachmentRow.type'
+import type { AttachmentRowProps, ManagedFile, SingleManagedFile } from './AttachmentRow.type'
 
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
@@ -40,7 +40,11 @@ export function AttachmentRow({
   name,
   onChange,
   onBlur,
+  initialFile,
+  initialFiles,
   onFilesChange,
+  onManagedFileChange,
+  onManagedFilesChange,
   'aria-invalid': ariaInvalid,
   'aria-describedby': ariaDescribedBy,
 }: AttachmentRowProps) {
@@ -51,8 +55,24 @@ export function AttachmentRow({
   const inputId = idProp ?? generatedId
   const errorId = error ? `${inputId}-error` : undefined
 
-  const [files, setFiles] = useState<File[]>([])
-  const [isExpanded, setIsExpanded] = useState(multiple)
+  // 수정 시나리오: 원본 서버 파일 참조 (seqNo 유지용)
+  const originalFileRef = useRef<typeof initialFile>(initialFile)
+
+  // ── Single 모드 상태 ──────────────────────────────────────────
+  const [managedFile, setManagedFile] = useState<SingleManagedFile | null>(() =>
+    initialFile ? { state: 'existing', ...initialFile } : null,
+  )
+
+  // ── Multi 모드 상태 ───────────────────────────────────────────
+  const [managedFiles, setManagedFiles] = useState<ManagedFile[]>(
+    () => initialFiles?.map(f => ({ state: 'existing' as const, ...f })) ?? [],
+  )
+
+  // 화면에 표시할 파일 (deleted 제외)
+  const visibleFile = managedFile?.state !== 'deleted' ? managedFile : null
+  const visibleFiles = managedFiles.filter(f => f.state !== 'deleted')
+
+  const [isExpanded, setIsExpanded] = useState(() => multiple && (initialFiles?.length ?? 0) > 0)
   const [isDragging, setIsDragging] = useState(false)
 
   const localRef = useRef<HTMLInputElement>(null)
@@ -66,29 +86,84 @@ export function AttachmentRow({
     }
   }
 
-  const isAtLimit = maxFiles != null && files.length >= maxFiles
+  const isAtLimit = maxFiles != null && visibleFiles.length >= maxFiles
   const isActionDisabled = disabled || (multiple ? isAtLimit : false)
 
-  const updateFiles = (updated: File[]) => {
-    setFiles(updated)
-    onFilesChange?.(updated)
+  // ── Single 파일 선택 ──────────────────────────────────────────
+  const selectSingleFile = (file: File) => {
+    const original = originalFileRef.current
+    const next: SingleManagedFile = original
+      ? { state: 'replace', seqNo: original.seqNo, name: file.name, size: file.size, file }
+      : { state: 'added', file, name: file.name, size: file.size }
+    setManagedFile(next)
+    onManagedFileChange?.(next)
+    onFilesChange?.([file])
   }
 
+  // ── Single 파일 삭제 ──────────────────────────────────────────
+  const deleteSingleFile = () => {
+    const original = originalFileRef.current
+    const next: SingleManagedFile | null = original
+      ? { state: 'deleted', seqNo: original.seqNo, name: original.name, size: original.size }
+      : null
+    setManagedFile(next)
+    onManagedFileChange?.(next)
+    onFilesChange?.([])
+  }
+
+  // ── Multi 파일 추가 ───────────────────────────────────────────
+  const addMultiFiles = (newFiles: File[]) => {
+    const remaining = maxFiles != null ? maxFiles - visibleFiles.length : newFiles.length
+    const toAdd = newFiles.slice(0, remaining)
+    if (toAdd.length === 0) return
+    const added: ManagedFile[] = toAdd.map(f => ({
+      state: 'added' as const,
+      file: f,
+      name: f.name,
+      size: f.size,
+    }))
+    const updated = [...managedFiles, ...added]
+    setManagedFiles(updated)
+    onManagedFilesChange?.(updated)
+    onFilesChange?.(
+      updated
+        .filter((f): f is Extract<ManagedFile, { state: 'added' }> => f.state === 'added')
+        .map(f => f.file),
+    )
+    if (!isExpanded) setIsExpanded(true)
+  }
+
+  // ── Multi 파일 삭제 ───────────────────────────────────────────
+  const removeMultiFile = (target: ManagedFile) => {
+    const updated =
+      target.state === 'existing'
+        ? managedFiles.map(f => (f === target ? { ...f, state: 'deleted' as const } : f))
+        : managedFiles.filter(f => f !== target)
+    setManagedFiles(updated)
+    onManagedFilesChange?.(updated)
+    onFilesChange?.(
+      updated
+        .filter((f): f is Extract<ManagedFile, { state: 'added' }> => f.state === 'added')
+        .map(f => f.file),
+    )
+    if (updated.filter(f => f.state !== 'deleted').length === 0) setIsExpanded(false)
+  }
+
+  // ── 통합 파일 추가 (입력/드롭 이벤트용) ─────────────────────
   const addFiles = (newFiles: File[]) => {
     if (multiple) {
-      const remaining = maxFiles != null ? maxFiles - files.length : newFiles.length
-      const toAdd = newFiles.slice(0, remaining)
-      if (toAdd.length === 0) return
-      updateFiles([...files, ...toAdd])
+      addMultiFiles(newFiles)
     } else {
-      updateFiles(newFiles.slice(0, 1))
+      selectSingleFile(newFiles[0])
     }
   }
 
   const removeFile = (index: number) => {
-    const updated = files.filter((_, i) => i !== index)
-    updateFiles(updated)
-    if (updated.length === 0) setIsExpanded(false)
+    if (multiple) {
+      removeMultiFile(visibleFiles[index])
+    } else {
+      deleteSingleFile()
+    }
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,13 +202,12 @@ export function AttachmentRow({
   // 버튼 레이블·variant 계산
   const buttonLabel = (() => {
     if (multiple) return '파일 추가'
-    return files.length > 0 ? '교체' : '파일 선택'
+    return visibleFile ? '교체' : '파일 선택'
   })()
 
-  const buttonVariant = !multiple && files.length > 0 ? 'secondary' : 'primary'
+  const buttonVariant = !multiple && visibleFile ? 'secondary' : 'primary'
   const buttonIcon = (() => {
-    if (!multiple && files.length > 0)
-      return <EditIcon className={iconSizes.sm} aria-hidden='true' />
+    if (!multiple && visibleFile) return <EditIcon className={iconSizes.sm} aria-hidden='true' />
     if (multiple) return <FolderIcon className={iconSizes.sm} aria-hidden='true' />
     return <AttachIcon className={iconSizes.sm} aria-hidden='true' />
   })()
@@ -177,27 +251,27 @@ export function AttachmentRow({
       {/* 컬럼 3: 상태 영역 */}
       <div className={styles.statusCol}>
         {/* 싱글: 파일 없음 */}
-        {!multiple && files.length === 0 && (
+        {!multiple && visibleFile === null && (
           <span className={[styles.placeholder, textCombinations.bodySm].join(' ')}>
             파일을 선택하세요
           </span>
         )}
 
         {/* 싱글: 파일 선택됨 */}
-        {!multiple && files.length === 1 && (
+        {!multiple && visibleFile !== null && (
           <div className={styles.singleFileRow}>
             <FileIcon className={[iconSizes.sm, styles.fileIcon].join(' ')} aria-hidden='true' />
             <span className={[styles.fileName, textCombinations.bodySm].join(' ')}>
-              {files[0].name}
+              {visibleFile.name}
             </span>
             <span className={[styles.fileSize, textCombinations.bodyXs].join(' ')}>
-              {formatFileSize(files[0].size)}
+              {formatFileSize(visibleFile.size)}
             </span>
             <button
               type='button'
               className={styles.removeButton}
               onClick={() => removeFile(0)}
-              aria-label={`${files[0].name} 삭제`}
+              aria-label={`${visibleFile.name} 삭제`}
               disabled={disabled}
             >
               <CloseIcon className={iconSizes.sm} aria-hidden='true' />
@@ -206,14 +280,14 @@ export function AttachmentRow({
         )}
 
         {/* 멀티: 파일 없음 */}
-        {multiple && files.length === 0 && (
+        {multiple && visibleFiles.length === 0 && (
           <span className={[styles.placeholder, textCombinations.bodySm].join(' ')}>
             파일을 선택하세요
           </span>
         )}
 
         {/* 멀티: 파일 있음 — 요약 + 펼침/접힘 */}
-        {multiple && files.length > 0 && (
+        {multiple && visibleFiles.length > 0 && (
           <>
             <div className={styles.multiSummaryRow}>
               <AttachIcon
@@ -221,7 +295,7 @@ export function AttachmentRow({
                 aria-hidden='true'
               />
               <span className={[styles.fileCount, textCombinations.bodySm].join(' ')}>
-                {files.length}개 첨부됨
+                {visibleFiles.length}개 첨부됨
               </span>
               <button
                 type='button'
@@ -242,7 +316,7 @@ export function AttachmentRow({
 
             {isExpanded && (
               <ul className={styles.fileList} role='list' aria-label={`${label} 파일 목록`}>
-                {files.map((f, i) => (
+                {visibleFiles.map((f, i) => (
                   <li key={`${f.name}-${i}`} className={styles.fileItem}>
                     <FileIcon
                       className={[iconSizes.sm, styles.fileIcon].join(' ')}

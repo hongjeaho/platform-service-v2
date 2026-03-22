@@ -1,5 +1,22 @@
 import type { AriaAttributes, ChangeEventHandler, FocusEventHandler, Ref } from 'react'
 
+import type { ManagedFile, ServerFileInfo } from '../FileUpload/MultiFileUpload.type'
+
+export type { ManagedFile, ServerFileInfo }
+
+/**
+ * 단일 파일 수정 시나리오 상태
+ * - existing: 서버에서 받아온 기존 파일 (변경 없음)
+ * - deleted:  기존 파일이 삭제됨 (서버에 삭제 요청 필요)
+ * - replace:  기존 파일을 새 파일로 교체 (서버에 삭제 + 업로드 필요)
+ * - added:    초기 파일 없이 새로 추가된 파일 (서버에 업로드 필요)
+ */
+export type SingleManagedFile =
+  | { state: 'existing'; seqNo: number; name: string; size: number }
+  | { state: 'deleted'; seqNo: number; name: string; size: number }
+  | { state: 'replace'; seqNo: number; name: string; size: number; file: File }
+  | { state: 'added'; file: File; name: string; size: number }
+
 /**
  * AttachmentRow 컴포넌트 Props
  *
@@ -84,9 +101,33 @@ export interface AttachmentRowProps extends AriaAttributes {
   onBlur?: FocusEventHandler<HTMLInputElement>
 
   /**
+   * 수정 시나리오: 서버에서 받아온 기존 파일 (multiple=false 일 때 사용)
+   * 제공 시 컴포넌트가 해당 파일이 선택된 상태로 초기화됩니다.
+   */
+  initialFile?: ServerFileInfo
+
+  /**
+   * 수정 시나리오: 서버에서 받아온 기존 파일 목록 (multiple=true 일 때 사용)
+   * 제공 시 컴포넌트가 해당 파일들이 선택된 상태로 초기화됩니다.
+   */
+  initialFiles?: ServerFileInfo[]
+
+  /**
    * 파일 목록 변경 콜백 (간단 setState 패턴용)
    */
   onFilesChange?: (files: File[]) => void
+
+  /**
+   * 단일 파일 상태 변경 콜백 (수정 시나리오용, multiple=false)
+   * 파일 추가·삭제·교체 시 SingleManagedFile 또는 null을 전달합니다.
+   */
+  onManagedFileChange?: (file: SingleManagedFile | null) => void
+
+  /**
+   * 복수 파일 상태 변경 콜백 (수정 시나리오용, multiple=true)
+   * 파일 추가·삭제 시 전체 ManagedFile[] 목록(deleted 포함)을 전달합니다.
+   */
+  onManagedFilesChange?: (files: ManagedFile[]) => void
 
   /**
    * 접근성: 오류 시 true (error가 있으면 자동 설정)

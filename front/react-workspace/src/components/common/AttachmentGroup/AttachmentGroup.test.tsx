@@ -284,4 +284,158 @@ describe('AttachmentRow', () => {
       expect(getFileInput()).toHaveAttribute('accept', '.pdf')
     })
   })
+
+  describe('수정 시나리오 — 싱글 파일 (initialFile)', () => {
+    const serverFile = { seqNo: 1, name: '기존파일.pdf', size: 1024 }
+
+    it('initialFile 제공 시 기존 파일명이 표시됩니다', () => {
+      render(<AttachmentRow label='서류' initialFile={serverFile} />)
+      expect(screen.getByText('기존파일.pdf')).toBeInTheDocument()
+    })
+
+    it('initialFile 제공 시 "교체" 버튼이 표시됩니다', () => {
+      render(<AttachmentRow label='서류' initialFile={serverFile} />)
+      expect(screen.getByRole('button', { name: '교체' })).toBeInTheDocument()
+    })
+
+    it('기존 파일 삭제 시 placeholder가 표시됩니다', async () => {
+      render(<AttachmentRow label='서류' initialFile={serverFile} />)
+      await userEvent.click(screen.getByRole('button', { name: '기존파일.pdf 삭제' }))
+      expect(screen.queryByText('기존파일.pdf')).not.toBeInTheDocument()
+      expect(screen.getByText('파일을 선택하세요')).toBeInTheDocument()
+    })
+
+    it('기존 파일 삭제 시 onManagedFileChange가 deleted 상태로 호출됩니다', async () => {
+      const handleChange = vi.fn()
+      render(
+        <AttachmentRow label='서류' initialFile={serverFile} onManagedFileChange={handleChange} />,
+      )
+      await userEvent.click(screen.getByRole('button', { name: '기존파일.pdf 삭제' }))
+      expect(handleChange).toHaveBeenCalledWith(
+        expect.objectContaining({ state: 'deleted', seqNo: 1 }),
+      )
+    })
+
+    it('기존 파일이 있을 때 새 파일 선택 시 onManagedFileChange가 replace 상태로 호출됩니다', async () => {
+      const handleChange = vi.fn()
+      render(
+        <AttachmentRow label='서류' initialFile={serverFile} onManagedFileChange={handleChange} />,
+      )
+      await userEvent.upload(getFileInput(), createFile('새파일.pdf'))
+      expect(handleChange).toHaveBeenCalledWith(
+        expect.objectContaining({ state: 'replace', seqNo: 1, name: '새파일.pdf' }),
+      )
+    })
+
+    it('initialFile 없이 새 파일 선택 시 onManagedFileChange가 added 상태로 호출됩니다', async () => {
+      const handleChange = vi.fn()
+      render(<AttachmentRow label='서류' onManagedFileChange={handleChange} />)
+      await userEvent.upload(getFileInput(), createFile('신규파일.pdf'))
+      expect(handleChange).toHaveBeenCalledWith(
+        expect.objectContaining({ state: 'added', name: '신규파일.pdf' }),
+      )
+    })
+
+    it('added 파일 삭제 시 onManagedFileChange가 null로 호출됩니다', async () => {
+      const handleChange = vi.fn()
+      render(<AttachmentRow label='서류' onManagedFileChange={handleChange} />)
+      await userEvent.upload(getFileInput(), createFile('신규파일.pdf'))
+      handleChange.mockClear()
+      await userEvent.click(screen.getByRole('button', { name: '신규파일.pdf 삭제' }))
+      expect(handleChange).toHaveBeenCalledWith(null)
+    })
+
+    it('기존 파일 삭제 후 새 파일 선택 시 onManagedFileChange가 replace 상태로 호출됩니다', async () => {
+      const handleChange = vi.fn()
+      render(
+        <AttachmentRow label='서류' initialFile={serverFile} onManagedFileChange={handleChange} />,
+      )
+      await userEvent.click(screen.getByRole('button', { name: '기존파일.pdf 삭제' }))
+      handleChange.mockClear()
+      await userEvent.upload(getFileInput(), createFile('재선택.pdf'))
+      expect(handleChange).toHaveBeenCalledWith(
+        expect.objectContaining({ state: 'replace', seqNo: 1, name: '재선택.pdf' }),
+      )
+    })
+  })
+
+  describe('수정 시나리오 — 멀티 파일 (initialFiles)', () => {
+    const serverFiles = [
+      { seqNo: 2, name: '계약서.pdf', size: 512 },
+      { seqNo: 3, name: '첨부.docx', size: 256 },
+    ]
+
+    it('initialFiles 제공 시 기존 파일 목록이 표시됩니다', () => {
+      render(<AttachmentRow label='서류' multiple initialFiles={serverFiles} />)
+      expect(screen.getByText('계약서.pdf')).toBeInTheDocument()
+      expect(screen.getByText('첨부.docx')).toBeInTheDocument()
+    })
+
+    it('initialFiles 제공 시 파일 목록이 기본 펼침 상태입니다', () => {
+      render(<AttachmentRow label='서류' multiple initialFiles={serverFiles} />)
+      expect(screen.getByRole('list')).toBeInTheDocument()
+    })
+
+    it('initialFiles 제공 시 파일 개수가 표시됩니다', () => {
+      render(<AttachmentRow label='서류' multiple initialFiles={serverFiles} />)
+      expect(screen.getByText('2개 첨부됨')).toBeInTheDocument()
+    })
+
+    it('기존 파일 삭제 시 UI에서 사라집니다', async () => {
+      render(<AttachmentRow label='서류' multiple initialFiles={serverFiles} />)
+      await userEvent.click(screen.getByRole('button', { name: '계약서.pdf 삭제' }))
+      expect(screen.queryByText('계약서.pdf')).not.toBeInTheDocument()
+      expect(screen.getByText('1개 첨부됨')).toBeInTheDocument()
+    })
+
+    it('기존 파일 삭제 시 onManagedFilesChange에 deleted 상태가 포함됩니다', async () => {
+      const handleChange = vi.fn()
+      render(
+        <AttachmentRow
+          label='서류'
+          multiple
+          initialFiles={serverFiles}
+          onManagedFilesChange={handleChange}
+        />,
+      )
+      await userEvent.click(screen.getByRole('button', { name: '계약서.pdf 삭제' }))
+      const [files] = handleChange.mock.calls[handleChange.mock.calls.length - 1]
+      expect(files).toContainEqual(expect.objectContaining({ state: 'deleted', seqNo: 2 }))
+      expect(files).toContainEqual(expect.objectContaining({ state: 'existing', seqNo: 3 }))
+    })
+
+    it('새 파일 추가 시 onManagedFilesChange에 added 상태가 포함됩니다', async () => {
+      const handleChange = vi.fn()
+      render(
+        <AttachmentRow
+          label='서류'
+          multiple
+          initialFiles={serverFiles}
+          onManagedFilesChange={handleChange}
+        />,
+      )
+      await userEvent.upload(getFileInput(), createFile('신규.pdf'))
+      const [files] = handleChange.mock.calls[handleChange.mock.calls.length - 1]
+      expect(files).toContainEqual(expect.objectContaining({ state: 'added', name: '신규.pdf' }))
+    })
+
+    it('삭제·추가 혼재 시 onManagedFilesChange가 전체 목록을 전달합니다', async () => {
+      const handleChange = vi.fn()
+      render(
+        <AttachmentRow
+          label='서류'
+          multiple
+          initialFiles={serverFiles}
+          onManagedFilesChange={handleChange}
+        />,
+      )
+      await userEvent.click(screen.getByRole('button', { name: '계약서.pdf 삭제' }))
+      await userEvent.upload(getFileInput(), createFile('신규.pdf'))
+      const [files] = handleChange.mock.calls[handleChange.mock.calls.length - 1]
+      expect(files).toHaveLength(3)
+      expect(files.filter((f: { state: string }) => f.state === 'deleted')).toHaveLength(1)
+      expect(files.filter((f: { state: string }) => f.state === 'existing')).toHaveLength(1)
+      expect(files.filter((f: { state: string }) => f.state === 'added')).toHaveLength(1)
+    })
+  })
 })
