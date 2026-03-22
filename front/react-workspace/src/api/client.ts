@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+import { tokenService } from './tokenService'
+
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL ?? 'https://jsonplaceholder.typicode.com',
   timeout: 10000,
@@ -11,7 +13,7 @@ export const apiClient = axios.create({
 // Request interceptor - Add auth token
 apiClient.interceptors.request.use(
   config => {
-    const token = localStorage.getItem('token')
+    const token = tokenService.get()
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -27,8 +29,8 @@ apiClient.interceptors.response.use(
   response => response,
   error => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token')
-      window.location.href = '/login'
+      tokenService.remove()
+      window.location.replace('/login')
     }
     return Promise.reject(error)
   },
