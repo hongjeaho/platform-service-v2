@@ -49,3 +49,5 @@ datasource/platform/src/generated
 front/react-workspace/tsconfig.node.tsbuildinfo
 front/react-workspace/tsconfig.app.tsbuildinfo
 front/react-workspace/.claude/settings.local.json
+front/react-workspace/src/api/generated/model
+front/react-workspace/src/api/generated/hooks
