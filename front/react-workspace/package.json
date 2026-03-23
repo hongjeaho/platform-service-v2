@@ -9,7 +9,7 @@
     "build": "tsc -b && vite build",
     "lint:fix": "eslint src --fix",
     "format": "prettier --write \"src\"",
-    "orval": "orval --config config/orval.config.ts",
+    "orval": "orval --config config/orval.local.config.ts",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build -o storybook-static",
     "test": "vitest",

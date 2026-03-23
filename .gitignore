@@ -48,3 +48,4 @@ datasource/platform/src/generated
 datasource/platform/src/generated
 front/react-workspace/tsconfig.node.tsbuildinfo
 front/react-workspace/tsconfig.app.tsbuildinfo
+front/react-workspace/.claude/settings.local.json
