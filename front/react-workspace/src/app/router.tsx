@@ -1,6 +1,7 @@
 import { createBrowserRouter, useRouteError } from 'react-router'
 
 import { Layout } from '../components/layout/Layout'
+// import { ProtectedRoute } from '../features/auth/components/ProtectedRoute'
 
 function PageLoader() {
   return (
@@ -50,6 +51,12 @@ export const router = createBrowserRouter([
         lazy: {
           Component: async () => (await import('../features/user/pages/UserListPage')).Component,
         },
+        // 예시: 인증이 필요한 라우트에 ProtectedRoute 적용
+        // Component: () => (
+        //   <ProtectedRoute>
+        //     <UserListPage />
+        //   </ProtectedRoute>
+        // ),
       },
       {
         path: '*',
