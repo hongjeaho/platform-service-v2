@@ -1,4 +1,0 @@
-/* 컬럼 최소 너비 (테이블 제목 열) - Table + tableStyles 사용, 너비만 로컬 유지 */
-.thTitle {
-  width: 280px;
-}

@@ -1,8 +1,0 @@
-/* 컬럼 최소 너비 (테이블 제목 열) */
-.thTitle {
-  width: 280px;
-}
-
-.errorMessage {
-  margin-top: var(--gap-xs);
-}
