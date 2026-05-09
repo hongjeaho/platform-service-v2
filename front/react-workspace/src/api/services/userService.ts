@@ -1,4 +1,5 @@
-import type { User } from '../../features/user/types/user.type'
+import type { User } from '@features/user/types/user.type'
+
 import { apiClient } from '../client'
 
 export const userService = {

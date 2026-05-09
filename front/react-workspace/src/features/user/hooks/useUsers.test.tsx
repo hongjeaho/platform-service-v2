@@ -1,14 +1,14 @@
+import { userService } from '@api/services/userService'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { renderHook, waitFor } from '@testing-library/react'
 import type { ReactNode } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { userService } from '../../../api/services/userService'
 import type { User } from '../types/user.type'
 import { useUsers } from './useUsers'
 
 // Mock userService
-vi.mock('../../../api/services/userService', () => ({
+vi.mock('@api/services/userService', () => ({
   userService: {
     getAll: vi.fn(),
   },

@@ -1,6 +1,5 @@
+import { userService } from '@api/services/userService'
 import { useQuery } from '@tanstack/react-query'
-
-import { userService } from '../../../api/services/userService'
 
 const userKeys = {
   all: ['users'] as const,

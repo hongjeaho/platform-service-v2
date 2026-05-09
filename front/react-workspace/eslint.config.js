@@ -54,6 +54,12 @@ export default tseslint.config([
       '@typescript-eslint/no-unused-expressions': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-empty-object-type': 'off',
+      'no-restricted-imports': ['error', {
+        patterns: [{
+          regex: '^(\\.\\./){2,}',
+          message: '2단계 이상 상대 경로 import 금지. 경로 alias(@/*, @components/*, @features/*, @api/*, @styles/*)를 사용하세요.',
+        }],
+      }],
     },
     settings: {
       react: {

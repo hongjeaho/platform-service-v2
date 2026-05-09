@@ -1,6 +1,6 @@
+import { Button } from '@components/common/Button'
 import { Link } from 'react-router'
 
-import { Button } from '@components/common/Button'
 import {
   selectIsAuthenticated,
   selectLogin,
