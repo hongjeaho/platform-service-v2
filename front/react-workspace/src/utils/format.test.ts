@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 
-import { formatCurrency, formatDate, formatDateTime, formatFileSize,formatNumber, formatPhoneNumber } from './format'
+import {
+  formatCurrency,
+  formatDate,
+  formatDateTime,
+  formatFileSize,
+  formatNumber,
+  formatPhoneNumber,
+} from './format'
 
 describe('formatDate', () => {
   it('Date 객체를 포맷팅한다', () => {
