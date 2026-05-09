@@ -12,3 +12,5 @@ export const useAuthStore = create<AuthState>(set => ({
 // Selectors for optimized re-renders
 export const selectUser = (state: AuthState) => state.user
 export const selectIsAuthenticated = (state: AuthState) => state.isAuthenticated
+export const selectLogin = (state: AuthState) => state.login
+export const selectLogout = (state: AuthState) => state.logout

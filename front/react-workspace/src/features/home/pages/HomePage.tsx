@@ -1,7 +1,13 @@
 import { Link } from 'react-router'
 
-import { Button } from '../../../components/common/Button'
-import { selectIsAuthenticated, selectUser, useAuthStore } from '../../../store/auth/authStore'
+import { Button } from '@components/common/Button'
+import {
+  selectIsAuthenticated,
+  selectLogin,
+  selectLogout,
+  selectUser,
+  useAuthStore,
+} from '@/store/auth/authStore.ts'
 
 const techStack = [
   { name: 'React 19', color: 'bg-cyan-500', description: 'UI Library with Compiler' },
@@ -18,7 +24,8 @@ const techStack = [
 export function Component() {
   const user = useAuthStore(selectUser)
   const isAuthenticated = useAuthStore(selectIsAuthenticated)
-  const { login, logout } = useAuthStore()
+  const login = useAuthStore(selectLogin)
+  const logout = useAuthStore(selectLogout)
 
   const handleLoginTest = () => {
     if (isAuthenticated) {
