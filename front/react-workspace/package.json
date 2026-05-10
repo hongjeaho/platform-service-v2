@@ -28,6 +28,15 @@
     "tailwind-merge": "^3.4.0",
     "zustand": "^5.0.2"
   },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "eslint --fix --cache --cache-location node_modules/.cache/eslint/",
+      "prettier --write --cache"
+    ],
+    "src/**/*.{css,json,md}": [
+      "prettier --write --cache"
+    ]
+  },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@storybook/addon-a11y": "^8.6.18",
@@ -61,6 +70,7 @@
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^16.0.0",
     "jsdom": "^26.0.3",
+    "lint-staged": "^17.0.4",
     "orval": "^8.0.0",
     "prettier": "^3.6.2",
     "storybook": "^8.6.18",
