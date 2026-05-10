@@ -153,3 +153,16 @@ type(scope): 한글 요약 (50자 이내)
 ```
 
 브랜치 형식: `type/description` 또는 `type/ISSUE-NUMBER-description`
+
+### Git Hooks (Husky)
+
+커밋 시 자동으로 두 가지 검사가 실행됩니다:
+
+| 훅 | 시점 | 검사 내용 |
+|---|---|---|
+| `pre-commit` | 커밋 직후 | staged `.ts/.tsx` 파일 ESLint + Prettier 자동 수정 |
+| `commit-msg` | 메시지 작성 후 | Conventional Commits 형식 검증 |
+
+- fix 불가능한 lint 에러가 있으면 커밋 차단 → `pnpm lint:fix && pnpm format` 실행 후 재시도
+- 커밋 메시지 형식 위반 시 커밋 차단 → 위 형식에 맞게 수정 후 재시도
+- GUI Git 클라이언트(Fork 등) 사용 시 `~/.config/husky/init.sh`에 nvm PATH 설정 필요
