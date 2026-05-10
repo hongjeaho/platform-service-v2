@@ -1,0 +1,22 @@
+npx --no -- commitlint --edit "$1" || {
+  echo ""
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "  커밋 메시지 형식이 잘못되었습니다."
+  echo ""
+  echo "  올바른 형식: type(scope): 한글 요약 (50자 이내)"
+  echo ""
+  echo "  허용 type:"
+  echo "    feat     새로운 기능"
+  echo "    fix      버그 수정"
+  echo "    refactor 코드 리팩토링"
+  echo "    chore    빌드/설정 변경"
+  echo "    docs     문서 수정"
+  echo "    test     테스트 추가/수정"
+  echo "    style    코드 스타일 변경"
+  echo ""
+  echo "  예시:"
+  echo "    feat(auth): 리프레시 토큰 갱신 API 추가"
+  echo "    fix(store): Zustand 셀렉터 누락 수정"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  exit 1
+}

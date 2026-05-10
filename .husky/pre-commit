@@ -1,0 +1,10 @@
+cd front/react-workspace && pnpm lint-staged --no-stash || {
+  echo ""
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "  커밋 전 lint/format을 실행해 주세요:"
+  echo ""
+  echo "  cd front/react-workspace"
+  echo "  pnpm lint:fix && pnpm format"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  exit 1
+}
