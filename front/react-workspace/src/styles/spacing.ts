@@ -83,13 +83,28 @@ export const borderRadius = {
  * CSS 변수에 매핑되는 실제 값
  */
 export const borderRadiusValues = {
-  sm: 'var(--radius-sm)', // 0.125rem
-  base: 'var(--radius-base)', // 0.25rem
-  md: 'var(--radius-md)', // 0.375rem
-  lg: 'var(--radius-lg)', // 0.5rem
-  xl: 'var(--radius-xl)', // 0.75rem
-  '2xl': 'var(--radius-2xl)', // 1rem
-  full: 'var(--radius-full)', // 9999px
+  sm: 'var(--radius-sm)', // 4px
+  base: 'var(--radius-base)', // 4px
+  md: 'var(--radius-md)', // 12px
+  lg: 'var(--radius-lg)', // 16px
+  xl: 'var(--radius-xl)', // 24px
+  '2xl': 'var(--radius-2xl)', // 32px
+  full: 'var(--radius-full)', // 9999px — pill
+} as const
+
+/**
+ * 8px 기반 시맨틱 스페이싱 (Civic Authority)
+ * 컴포넌트 스타일 작업 시 이 스케일을 기준으로 삼을 것
+ */
+export const spacingScaleV2 = {
+  xs: '0.25rem', // 4px
+  base: '0.5rem', // 8px — 기본 단위
+  sm: '0.75rem', // 12px
+  md: '1.5rem', // 24px — 카드 패딩, 컬럼 gap
+  lg: '3rem', // 48px — 섹션 간 분리
+  xl: '5rem', // 80px — 페이지 레벨 섹션
+  gutter: '1.5rem', // 24px — 그리드 컬럼 간격
+  margin: '2rem', // 32px — 페이지 아우터 마진
 } as const
 
 /**
@@ -188,6 +203,7 @@ export const zIndex = {
  * 간격 타입 정의
  */
 export type SpacingSize = keyof typeof spacingScale
+export type SpacingSizeV2 = keyof typeof spacingScaleV2
 export type PaddingVariant = keyof typeof padding
 export type MarginVariant = keyof typeof margin
 export type GapSize = keyof typeof gap

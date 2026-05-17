@@ -1,10 +1,17 @@
 /**
  * 디자인 토큰 중앙 export
- * 모든 디자인 토큰을 한 곳에서 관리합니다
+ * Civic Authority & Fairness 디자인 시스템
  */
 
 // Raw tokens (Single Source of Truth)
-export { type DarkModeColorKey, darkModeColors, type RawColorKey, rawColors } from './tokens'
+export {
+  type DarkModeColorKey,
+  darkModeColors,
+  type ExtendedColorKey,
+  extendedColors,
+  type RawColorKey,
+  rawColors,
+} from './tokens'
 
 // Color tokens
 export {
@@ -14,18 +21,25 @@ export {
   type ButtonVariant,
   buttonVariants,
   chartColors,
+  type ColorPalette,
   colorPalettes,
+  type ColorShade,
   destructiveColors,
   neutralColors,
   secondaryColors,
+  type SemanticColorClass,
   semanticColorClasses,
   semanticColors,
   shadows,
   type ShadowSize,
   type ShadowValue,
   shadowValues,
+  type StatusChipType,
+  statusChipVariants,
   statusColors,
   type StatusType,
+  type SurfaceColorKey,
+  surfaceColors,
   type ThemeColorKey,
   themeColors,
   type ThemeMode,
@@ -33,6 +47,8 @@ export {
 
 // Typography tokens
 export {
+  type DisplayScale,
+  displayScale,
   type Duration,
   durations,
   type Easing,
@@ -45,6 +61,8 @@ export {
   lineHeights,
   type TextCombination,
   textCombinations,
+  textCombinationsV2,
+  type TextCombinationV2,
   type TextScale,
   textScale,
   transitions,
@@ -78,7 +96,9 @@ export {
   padding,
   type PaddingVariant,
   spacingScale,
+  spacingScaleV2,
   type SpacingSize,
+  type SpacingSizeV2,
   zIndex,
   type ZIndexLayer,
 } from './spacing'

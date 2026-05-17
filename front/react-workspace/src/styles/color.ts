@@ -1,31 +1,34 @@
 /**
  * 색상 디자인 토큰
- * TailwindCSS v4 + OKLCH 기반 색상 시스템
+ * Civic Authority & Fairness — TailwindCSS v4 + OKLCH 기반
  *
- * 원시 토큰은 src/styles/tokens.ts에서 관리됩니다 (Single Source of Truth)
- * CSS 변수와 동기화되어 있습니다 (src/styles/globals.css)
+ * 원시 토큰: src/styles/tokens.ts (Single Source of Truth)
  */
 
-// 원시 토큰 import (단일 진실 공간)
-import { type DarkModeColorKey, darkModeColors, type RawColorKey, rawColors } from './tokens'
+import {
+  type DarkModeColorKey,
+  darkModeColors,
+  type ExtendedColorKey,
+  extendedColors,
+  type RawColorKey,
+  rawColors,
+} from './tokens'
 
-/**
- * 원시 토큰 재내보내기
- * 인라인 스타일이나 특수한 경우에 사용합니다
- */
-export { darkModeColors, rawColors }
-export type { DarkModeColorKey, RawColorKey }
+export { darkModeColors, extendedColors, rawColors }
+export type { DarkModeColorKey, ExtendedColorKey, RawColorKey }
 
 /**
  * Brand Colors
  */
 export const brandColors = {
-  primary: rawColors.primary,
+  primary: rawColors.primary, // Rich Navy — 확정 버튼
   primaryForeground: rawColors.primaryForeground,
+  deepNavy: extendedColors.deepNavy, // Deep Navy — 헤더/브랜딩
+  skyBlue: extendedColors.skyBlue, // Sky Blue — 일반 액션/링크
 } as const
 
 /**
- * Accent Colors - 강조 및 인터랙션
+ * Accent Colors
  */
 export const accentColors = {
   accent: rawColors.accent,
@@ -33,7 +36,7 @@ export const accentColors = {
 } as const
 
 /**
- * Secondary Colors - 보조 액션
+ * Secondary Colors
  */
 export const secondaryColors = {
   secondary: rawColors.secondary,
@@ -41,7 +44,7 @@ export const secondaryColors = {
 } as const
 
 /**
- * Semantic Colors - 상태 표시
+ * Semantic Colors
  */
 export const semanticColors = {
   success: rawColors.success,
@@ -55,7 +58,7 @@ export const semanticColors = {
 } as const
 
 /**
- * Neutral Colors - 배경, 텍스트
+ * Neutral Colors
  */
 export const neutralColors = {
   background: rawColors.background,
@@ -78,7 +81,7 @@ export const borderColors = {
 } as const
 
 /**
- * Destructive Colors - 삭제, 거부 등
+ * Destructive Colors
  */
 export const destructiveColors = {
   destructive: rawColors.destructive,
@@ -97,8 +100,42 @@ export const chartColors = {
 } as const
 
 /**
- * 비즈니스 로직별 색상 매핑
- * 심의 진행 상황별 색상 클래스
+ * Material You 서피스 시스템 색상 그룹
+ */
+export const surfaceColors = {
+  surface: extendedColors.surface,
+  surfaceDim: extendedColors.surfaceDim,
+  surfaceContainerLowest: extendedColors.surfaceContainerLowest,
+  surfaceContainerLow: extendedColors.surfaceContainerLow,
+  surfaceContainer: extendedColors.surfaceContainer,
+  surfaceContainerHigh: extendedColors.surfaceContainerHigh,
+  surfaceContainerHighest: extendedColors.surfaceContainerHighest,
+  onSurface: extendedColors.onSurface,
+  onSurfaceVariant: extendedColors.onSurfaceVariant,
+  inverseSurface: extendedColors.inverseSurface,
+  inverseOnSurface: extendedColors.inverseOnSurface,
+  outline: extendedColors.outline,
+  outlineVariant: extendedColors.outlineVariant,
+} as const
+
+export type SurfaceColorKey = keyof typeof surfaceColors
+
+/**
+ * 상태 칩 variant — Pill 형태, 저채도 배경 + 고채도 텍스트
+ * 사용: <span className={statusChipVariants['완료']}>완료</span>
+ */
+export const statusChipVariants = {
+  접수: 'bg-info/15 text-info border border-info/30 rounded-full',
+  검토중: 'bg-warning/15 text-warning-foreground border border-warning/30 rounded-full',
+  완료: 'bg-success/15 text-success border border-success/30 rounded-full',
+  반려: 'bg-error/15 text-error border border-error/30 rounded-full',
+  보류: 'bg-muted text-muted-foreground border border-border rounded-full',
+} as const
+
+export type StatusChipType = keyof typeof statusChipVariants
+
+/**
+ * 비즈니스 로직별 색상 매핑 (기존 — 하위 호환)
  */
 export const statusColors = {
   접수: 'bg-info text-info-foreground',
@@ -109,8 +146,7 @@ export const statusColors = {
 } as const
 
 /**
- * 시맨틱 색상 클래스 매핑
- * TailwindCSS 클래스 기반 색상 조합
+ * 시맨틱 색상 클래스 매핑 (기존 — 하위 호환)
  */
 export const semanticColorClasses = {
   success: 'bg-success text-success-foreground',
@@ -126,6 +162,8 @@ export const semanticColorClasses = {
 
 /**
  * 버튼 variant 색상 매핑
+ * primary = Rich Navy (확정: 제출/확인/저장)
+ * accent  = Sky Blue (일반: 수정/조회/검색)
  */
 export const buttonVariants = {
   primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
@@ -134,7 +172,7 @@ export const buttonVariants = {
   destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
   outline: 'border border-border bg-background hover:bg-accent/10 hover:text-accent',
   ghost: 'hover:bg-accent/10 hover:text-foreground',
-  link: 'underline-offset-4 hover:underline text-primary',
+  link: 'underline-offset-4 hover:underline text-accent',
 } as const
 
 /**
@@ -151,56 +189,49 @@ export const shadows = {
 } as const
 
 /**
- * 그림자 효과 실제 값 (인라인 스타일용)
+ * 소프트 섀도우 실제 값 (인라인 스타일용)
+ * 불투명도 4–10% 수준 — 높은 값 사용 금지
  */
 export const shadowValues = {
-  sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-  md: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-  base: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-  lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-  xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-  '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-  inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+  sm: '0 2px 8px 0 oklch(0 0 0 / 4%)',
+  md: '0 4px 12px 0 oklch(0 0 0 / 6%), 0 1px 4px 0 oklch(0 0 0 / 4%)',
+  base: '0 4px 12px 0 oklch(0 0 0 / 6%), 0 2px 6px -1px oklch(0 0 0 / 5%)',
+  lg: '0 8px 24px -4px oklch(0 0 0 / 8%), 0 4px 8px -2px oklch(0 0 0 / 5%)',
+  xl: '0 16px 40px -8px oklch(0 0 0 / 10%), 0 8px 16px -4px oklch(0 0 0 / 6%)',
+  '2xl': '0 24px 48px -12px oklch(0 0 0 / 14%)',
+  card: '0 1px 4px 0 oklch(0 0 0 / 6%)',
+  modal: '0 8px 32px 0 oklch(0 0 0 / 10%), 0 4px 12px 0 oklch(0 0 0 / 7%)',
+  inner: 'inset 0 1px 3px 0 oklch(0 0 0 / 5%)',
   none: 'none',
 } as const
 
 /**
- * 색상 타입 정의
- */
-export type StatusType = keyof typeof statusColors
-export type ButtonVariant = keyof typeof buttonVariants
-export type ShadowSize = keyof typeof shadows
-export type ShadowValue = keyof typeof shadowValues
-export type SemanticColorClass = keyof typeof semanticColorClasses
-
-/**
- * 색상 팔레트 스케일
- * 디자인 시스템 50-900 색상 스케일
+ * 색상 팔레트 스케일 (50-900)
  */
 export const colorPalettes = {
   primary: {
-    50: 'oklch(0.95 0.02 240)',
-    100: 'oklch(0.9 0.04 240)',
-    200: 'oklch(0.85 0.06 240)',
-    300: 'oklch(0.75 0.08 240)',
-    400: 'oklch(0.65 0.1 240)',
-    500: 'oklch(0.45 0.15 240)',
-    600: 'oklch(0.38 0.15 240)',
-    700: 'oklch(0.33 0.13 240)',
-    800: 'oklch(0.28 0.11 240)',
-    900: 'oklch(0.2 0.08 240)',
+    50: 'oklch(0.96 0.02 255)',
+    100: 'oklch(0.92 0.03 255)',
+    200: 'oklch(0.87 0.04 253)',
+    300: 'oklch(0.78 0.06 250)',
+    400: 'oklch(0.63 0.09 248)',
+    500: 'oklch(0.44 0.14 235)', // Sky Blue
+    600: 'oklch(0.36 0.11 242)',
+    700: 'oklch(0.30 0.09 245)',
+    800: 'oklch(0.26 0.08 248)', // Rich Navy
+    900: 'oklch(0.17 0.06 250)', // Deep Navy
   },
   gray: {
-    50: 'oklch(0.98 0.001 240)',
-    100: 'oklch(0.96 0.002 240)',
-    200: 'oklch(0.91 0.003 240)',
-    300: 'oklch(0.83 0.004 240)',
-    400: 'oklch(0.67 0.005 240)',
-    500: 'oklch(0.52 0.006 240)',
-    600: 'oklch(0.41 0.007 240)',
-    700: 'oklch(0.32 0.008 240)',
-    800: 'oklch(0.24 0.009 240)',
-    900: 'oklch(0.17 0.01 240)',
+    50: 'oklch(0.98 0.001 260)',
+    100: 'oklch(0.96 0.002 260)',
+    200: 'oklch(0.91 0.003 258)',
+    300: 'oklch(0.83 0.004 256)',
+    400: 'oklch(0.67 0.005 254)',
+    500: 'oklch(0.52 0.006 252)',
+    600: 'oklch(0.41 0.007 252)',
+    700: 'oklch(0.32 0.008 250)',
+    800: 'oklch(0.24 0.009 250)',
+    900: 'oklch(0.15 0.04 250)',
   },
   success: {
     50: 'oklch(0.97 0.02 145)',
@@ -208,10 +239,10 @@ export const colorPalettes = {
     200: 'oklch(0.91 0.06 145)',
     300: 'oklch(0.85 0.08 145)',
     400: 'oklch(0.75 0.12 145)',
-    500: 'oklch(0.6 0.15 145)',
-    600: 'oklch(0.5 0.15 145)',
+    500: 'oklch(0.60 0.15 145)',
+    600: 'oklch(0.50 0.15 145)',
     700: 'oklch(0.45 0.13 145)',
-    800: 'oklch(0.4 0.11 145)',
+    800: 'oklch(0.40 0.11 145)',
     900: 'oklch(0.32 0.09 145)',
   },
   error: {
@@ -220,19 +251,19 @@ export const colorPalettes = {
     200: 'oklch(0.91 0.06 27)',
     300: 'oklch(0.85 0.08 27)',
     400: 'oklch(0.75 0.12 27)',
-    500: 'oklch(0.577 0.245 27.325)',
-    600: 'oklch(0.5 0.24 27)',
-    700: 'oklch(0.45 0.22 27)',
-    800: 'oklch(0.4 0.2 27)',
-    900: 'oklch(0.35 0.18 27)',
+    500: 'oklch(0.45 0.22 27)', // #ba1a1a
+    600: 'oklch(0.40 0.20 27)',
+    700: 'oklch(0.35 0.18 27)',
+    800: 'oklch(0.30 0.16 27)',
+    900: 'oklch(0.25 0.14 27)',
   },
   warning: {
     50: 'oklch(0.98 0.02 70)',
     100: 'oklch(0.96 0.04 70)',
     200: 'oklch(0.93 0.06 70)',
     300: 'oklch(0.88 0.08 70)',
-    400: 'oklch(0.8 0.12 70)',
-    500: 'oklch(0.7 0.15 70)',
+    400: 'oklch(0.80 0.12 70)',
+    500: 'oklch(0.70 0.15 70)',
     600: 'oklch(0.62 0.15 70)',
     700: 'oklch(0.52 0.13 70)',
     800: 'oklch(0.45 0.11 70)',
@@ -243,72 +274,72 @@ export const colorPalettes = {
     100: 'oklch(0.95 0.04 230)',
     200: 'oklch(0.91 0.06 230)',
     300: 'oklch(0.85 0.08 230)',
-    400: 'oklch(0.73 0.1 230)',
-    500: 'oklch(0.6 0.12 230)',
+    400: 'oklch(0.73 0.10 230)',
+    500: 'oklch(0.60 0.12 230)',
     600: 'oklch(0.52 0.13 230)',
     700: 'oklch(0.46 0.12 230)',
     800: 'oklch(0.41 0.11 230)',
-    900: 'oklch(0.38 0.1 230)',
+    900: 'oklch(0.38 0.10 230)',
   },
 } as const
 
 /**
- * 색상 팔레트 타입 정의
- */
-export type ColorPalette = keyof typeof colorPalettes
-export type ColorShade = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900
-
-/**
- * 테마 변형 색상
- * 라이트/다크 모드 색상 정의
+ * 테마 변형 색상 (하위 호환)
  */
 export const themeColors = {
   light: {
-    background: 'oklch(0.98 0 0)',
-    foreground: 'oklch(0.2 0.02 240)',
-    card: 'oklch(1 0 0)',
-    cardForeground: 'oklch(0.2 0.02 240)',
-    popover: 'oklch(1 0 0)',
-    popoverForeground: 'oklch(0.2 0.02 240)',
-    primary: 'oklch(0.45 0.15 240)',
-    primaryForeground: 'oklch(0.98 0 0)',
-    secondary: 'oklch(0.9 0.02 240)',
-    secondaryForeground: 'oklch(0.25 0.05 240)',
-    muted: 'oklch(0.95 0.005 240)',
-    mutedForeground: 'oklch(0.5 0.02 240)',
-    accent: 'oklch(0.55 0.18 220)',
-    accentForeground: 'oklch(0.98 0 0)',
-    destructive: 'oklch(0.577 0.245 27.325)',
-    destructiveForeground: 'oklch(0.98 0 0)',
-    border: 'oklch(0.88 0.01 240)',
-    input: 'oklch(0.96 0.005 240)',
-    ring: 'oklch(0.45 0.15 240)',
+    background: rawColors.background,
+    foreground: rawColors.foreground,
+    card: rawColors.card,
+    cardForeground: rawColors.cardForeground,
+    popover: rawColors.popover,
+    popoverForeground: rawColors.popoverForeground,
+    primary: rawColors.primary,
+    primaryForeground: rawColors.primaryForeground,
+    secondary: rawColors.secondary,
+    secondaryForeground: rawColors.secondaryForeground,
+    muted: rawColors.muted,
+    mutedForeground: rawColors.mutedForeground,
+    accent: rawColors.accent,
+    accentForeground: rawColors.accentForeground,
+    destructive: rawColors.destructive,
+    destructiveForeground: rawColors.destructiveForeground,
+    border: rawColors.border,
+    input: rawColors.input,
+    ring: rawColors.ring,
   },
   dark: {
-    background: 'oklch(0.145 0 0)',
-    foreground: 'oklch(0.985 0 0)',
-    card: 'oklch(0.205 0 0)',
-    cardForeground: 'oklch(0.985 0 0)',
-    popover: 'oklch(0.205 0 0)',
-    popoverForeground: 'oklch(0.985 0 0)',
-    primary: 'oklch(0.922 0 0)',
-    primaryForeground: 'oklch(0.205 0 0)',
-    secondary: 'oklch(0.269 0 0)',
-    secondaryForeground: 'oklch(0.985 0 0)',
-    muted: 'oklch(0.269 0 0)',
-    mutedForeground: 'oklch(0.708 0 0)',
-    accent: 'oklch(0.269 0 0)',
-    accentForeground: 'oklch(0.985 0 0)',
-    destructive: 'oklch(0.704 0.191 22.216)',
-    destructiveForeground: 'oklch(0.985 0 0)',
-    border: 'oklch(1 0 0 / 10%)',
-    input: 'oklch(1 0 0 / 15%)',
-    ring: 'oklch(0.556 0 0)',
+    background: darkModeColors.background,
+    foreground: darkModeColors.foreground,
+    card: darkModeColors.card,
+    cardForeground: darkModeColors.cardForeground,
+    popover: darkModeColors.popover,
+    popoverForeground: darkModeColors.popoverForeground,
+    primary: darkModeColors.primary,
+    primaryForeground: darkModeColors.primaryForeground,
+    secondary: darkModeColors.secondary,
+    secondaryForeground: darkModeColors.secondaryForeground,
+    muted: darkModeColors.muted,
+    mutedForeground: darkModeColors.mutedForeground,
+    accent: darkModeColors.accent,
+    accentForeground: darkModeColors.accentForeground,
+    destructive: darkModeColors.destructive,
+    destructiveForeground: darkModeColors.destructiveForeground,
+    border: darkModeColors.border,
+    input: darkModeColors.input,
+    ring: darkModeColors.ring,
   },
 } as const
 
 /**
- * 테마 타입 정의
+ * 타입 정의
  */
+export type StatusType = keyof typeof statusColors
+export type ButtonVariant = keyof typeof buttonVariants
+export type ShadowSize = keyof typeof shadows
+export type ShadowValue = keyof typeof shadowValues
+export type SemanticColorClass = keyof typeof semanticColorClasses
+export type ColorPalette = keyof typeof colorPalettes
+export type ColorShade = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900
 export type ThemeMode = 'light' | 'dark'
 export type ThemeColorKey = keyof typeof themeColors.light
