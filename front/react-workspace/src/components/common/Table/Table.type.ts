@@ -37,6 +37,12 @@ export interface TableProps {
   hoverable?: boolean
 
   /**
+   * 컬럼 구분선을 표시합니다. rowSpan/colSpan이 있는 복합 테이블에 권장.
+   * @default false
+   */
+  bordered?: boolean
+
+  /**
    * 접근성: table에 부여할 aria-label
    */
   ariaLabel?: string
@@ -108,6 +114,11 @@ export interface TableFooterProps {
  * ```
  */
 export interface TableRowProps {
+  /**
+   * rowSpan 그룹의 마지막 행에 표시합니다. 그룹 간 경계선(2px)을 강조합니다.
+   * @default false
+   */
+  groupEnd?: boolean
   children: ReactNode
 }
 

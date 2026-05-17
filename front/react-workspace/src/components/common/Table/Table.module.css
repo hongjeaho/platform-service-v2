@@ -1,43 +1,110 @@
 /**
- * Table 컴포넌트 스타일 (CSS Module)
- * 디자인 시스템 토큰 기반 (--border, --muted, --foreground 등)
+ * Table 컴포넌트 스타일
+ * border-collapse: collapse — rowSpan/colSpan 경계선 올바르게 처리
+ * 외곽 border/radius는 tableWrap에서 담당
  */
 
 .tableWrap {
   width: 100%;
   overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--card);
 }
 
 .table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: collapse;
   font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
   color: var(--foreground);
-  background-color: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
 }
 
+/* ── 공통 셀 ── */
 .cellBase {
-  padding: var(--spacing-2) var(--spacing-3);
+  padding: var(--spacing-4) var(--spacing-4);
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
+  line-height: var(--line-height-normal);
+  white-space: nowrap;
 }
 
-.table thead th {
-  background-color: var(--background);
-}
-
+/* ── 헤더 ── */
 .table thead .cellBase {
-  border-bottom-width: 2px;
-}
-
-.head {
+  background-color: var(--surface-container-highest);
   font-weight: var(--font-weight-semibold);
   color: var(--foreground);
 }
 
+/* 헤더 마지막 행만 2px 하단 구분선 (thead → tbody 경계) */
+.table thead tr:last-child .cellBase {
+  border-bottom: 2px solid var(--border);
+}
+
+/* rowSpan 헤더 셀: 하단이 thead-tbody 경계에 위치하므로 동일하게 2px 적용 */
+.table thead .cellBase[rowspan] {
+  border-bottom: 2px solid var(--border);
+}
+
+/* ── 바디 마지막 행 하단 선 제거 ── */
+.table tbody tr:last-child .cellBase {
+  border-bottom: none;
+}
+
+/* ── rowSpan 바디 셀 (그룹 구분 역할) ── */
+.table tbody .cellBase[rowspan] {
+  background-color: var(--surface-container-low);
+  font-weight: var(--font-weight-medium);
+  vertical-align: middle;
+  border-bottom: 2px solid var(--border);
+}
+
+.table[data-hoverable='true'] tbody tr:hover .cellBase[rowspan] {
+  background-color: var(--surface-container);
+}
+
+/* ── 그룹 경계 행 (마지막 span 서브행) ── */
+.table tbody tr[data-group-end='true'] .cellBase {
+  border-bottom: 2px solid var(--border);
+}
+
+/* ── 푸터 ── */
+.table tfoot .cellBase {
+  background-color: var(--surface-container-low);
+  font-weight: var(--font-weight-medium);
+  border-top: 2px solid var(--border);
+  border-bottom: none;
+  color: var(--foreground);
+}
+
+/* ── 호버 ── */
+.table[data-hoverable='true'] tbody tr {
+  transition: background-color var(--transition-fast) var(--transition-ease);
+}
+
+.table[data-hoverable='true'] tbody tr:hover .cellBase {
+  background-color: var(--surface-container-low);
+}
+
+/* ── 줄무늬 ── */
+.table[data-striped='true'] tbody tr:nth-child(even) .cellBase {
+  background-color: var(--surface-container-low);
+}
+
+.table[data-striped='true'][data-hoverable='true'] tbody tr:hover .cellBase {
+  background-color: var(--surface-container);
+}
+
+/* ── 컬럼 구분선 (bordered=true) ── */
+.table[data-bordered='true'] .cellBase {
+  border-right: 1px solid var(--border);
+}
+
+.table[data-bordered='true'] .cellBase:last-child {
+  border-right: none;
+}
+
+/* ── 정렬 ── */
 .alignLeft {
   text-align: left;
 }
@@ -48,27 +115,4 @@
 
 .alignRight {
   text-align: right;
-}
-
-.footer {
-  background-color: var(--background);
-}
-
-/* Variants: data attributes to keep tests stable */
-.table[data-striped='true'] tbody tr:nth-child(even) {
-  background-color: var(--background);
-}
-
-.table[data-hoverable='true'] tbody tr:hover {
-  background-color: var(--input);
-}
-
-/* When both enabled, ensure hover overrides stripe without hurting readability */
-.table[data-striped='true'][data-hoverable='true'] tbody tr:hover {
-  background-color: var(--input);
-}
-
-/* Remove border on last row */
-.table tbody tr:last-child .cellBase {
-  border-bottom: none;
 }

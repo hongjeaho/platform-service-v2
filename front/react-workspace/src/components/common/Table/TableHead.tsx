@@ -10,7 +10,7 @@ function getAlignClass(align: NonNullable<TableHeadProps['align']>) {
 export function TableHead({ align = 'center', colSpan, rowSpan, children }: TableHeadProps) {
   return (
     <th
-      className={[styles.cellBase, styles.head, getAlignClass(align)].join(' ')}
+      className={[styles.cellBase, getAlignClass(align)].join(' ')}
       data-align={align}
       colSpan={colSpan}
       rowSpan={rowSpan}

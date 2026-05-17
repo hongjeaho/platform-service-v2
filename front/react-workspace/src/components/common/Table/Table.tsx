@@ -4,6 +4,7 @@ import type { TableProps } from './Table.type'
 export function Table({
   striped = false,
   hoverable = true,
+  bordered = false,
   ariaLabel,
   ariaDescribedBy,
   children,
@@ -14,6 +15,7 @@ export function Table({
         className={styles.table}
         data-striped={striped ? 'true' : 'false'}
         data-hoverable={hoverable ? 'true' : 'false'}
+        data-bordered={bordered ? 'true' : 'false'}
         aria-label={ariaLabel}
         aria-describedby={ariaDescribedBy}
       >
