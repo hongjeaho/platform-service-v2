@@ -1,4 +1,4 @@
-cd front/react-workspace && pnpm lint-staged --no-stash || {
+cd front/react-workspace && pnpm lint-staged || {
   echo ""
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo "  커밋 전 lint/format을 실행해 주세요:"
