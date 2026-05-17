@@ -52,8 +52,6 @@ pnpm test:run                   # 단일 실행
 pnpm storybook                  # 컴포넌트 문서 (port 6006)
 ```
 
-> 프론트엔드 상세 규칙: `front/react-workspace/CLAUDE.md`
-
 ## Architecture
 
 ### 모듈 구조
