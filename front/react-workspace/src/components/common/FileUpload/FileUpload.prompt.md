@@ -97,3 +97,13 @@
 # 완료 시 산출물
 
 작업 종료 후 공통 컴포넌트 룰(common-component-rule.mdc) 적용 결과를 체크리스트로 반환할 것.
+
+---
+
+## Design Token Reference
+
+- **아이콘**: `icons.attachment`, `icons.document`, `icons.close`, `iconSizes.sm` — `src/styles/icons.ts`
+- **타이포**: `textCombinations.label` (라벨), `textCombinations.bodySm` (파일명·에러), `textCombinations.bodyXs` (파일 크기)
+- **색상**: CSS Module 내 `var(--border)` (드롭존 테두리), `var(--primary)` (파일 선택 버튼), `var(--destructive)` (에러 상태), `var(--accent)` (드래그 오버 하이라이트)
+- **스페이싱**: CSS Module 내 `var(--spacing-sm)` (드롭존 패딩), `var(--spacing-xs)` (아이콘-텍스트 gap), `var(--radius)` (드롭존 반경)
+- 참고: `docs/design/components.md`, `docs/design/color.md`

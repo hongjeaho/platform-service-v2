@@ -44,3 +44,12 @@
 # 완료 시 산출물
 
 작업 종료 후 공통 컴포넌트 룰(common-component-rule.mdc) 적용 결과를 체크리스트로 반환할 것.
+
+---
+
+## Design Token Reference
+
+- **색상**: CSS Module 내 `var(--primary)` (선택된 라디오 원), `var(--border)` (미선택 원 테두리), `var(--destructive)` (에러 상태)
+- **스페이싱**: CSS Module 내 `var(--spacing-xs)` (라디오-레이블 gap), `var(--spacing-sm)` (아이템 간 간격)
+- **직접 import 없음**: `@/styles` import 없이 CSS Module + CSS 변수만 사용
+- 참고: `docs/design/components.md`, `docs/design/color.md`

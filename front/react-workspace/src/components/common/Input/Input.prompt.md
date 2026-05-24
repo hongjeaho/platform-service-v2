@@ -33,3 +33,13 @@
 # 완료 시 산출물
 
 작업 종료 후 공통 컴포넌트 룰(common-component-rule.mdc) 적용 결과를 체크리스트로 반환할 것.
+
+---
+
+## Design Token Reference
+
+- **타이포**: `textCombinations.label` (라벨), `textCombinations.bodySm` (에러 메시지) — `src/styles/typography.ts`
+- **색상**: CSS Module 내 `var(--border)` (기본), `var(--ring)` (포커스 링 2px Sky Blue), `var(--destructive)` (에러 테두리)
+- **스페이싱**: CSS Module 내 `var(--spacing-sm)` (필드 내부 패딩), `var(--radius)` (8px)
+- **에러 처리**: `aria-invalid`, `aria-describedby`로 접근성 연결 필수
+- 참고: `docs/design/components.md#입력-필드`, `docs/design/color.md`

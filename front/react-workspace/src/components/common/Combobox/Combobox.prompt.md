@@ -56,3 +56,14 @@
 # 완료 시 산출물
 
 작업 종료 후 공통 컴포넌트 룰(common-component-rule.mdc) 적용 결과를 체크리스트로 반환할 것.
+
+---
+
+## Design Token Reference
+
+- **타이포**: `textCombinations.label` (라벨), `textCombinations.bodySm` (에러 메시지)
+- **색상**: CSS Module 내 `var(--border)` (기본 테두리), `var(--ring)` (포커스 링), `var(--destructive)` (에러), `var(--card)` (드롭다운 배경)
+- **스페이싱**: CSS Module 내 `var(--spacing-sm)` (트리거 패딩), `var(--radius)` (트리거 반경), `var(--shadow-base)` (드롭다운 섀도우)
+- **z-index**: `zIndex.dropdown` (1000) — 드롭다운 리스트박스에 적용
+- **직접 import**: `textCombinations` from `@/styles`
+- 참고: `docs/design/components.md#입력-필드`, `docs/design/spacing.md`

@@ -47,3 +47,14 @@
 # 완료 시 산출물
 
 작업 종료 후 공통 컴포넌트 룰(common-component-rule.mdc) 적용 결과를 체크리스트로 반환할 것.
+
+---
+
+## Design Token Reference
+
+- **아이콘**: `icons.first`, `icons.prev`, `icons.next`, `icons.last`, `iconSizes.sm` — `src/styles/icons.ts`
+- **색상**: CSS Module 내 `var(--primary)` (활성 페이지 원), `var(--border)` (비활성 버튼 테두리), `var(--accent)` (secondary variant)
+- **반경**: CSS Module 내 `var(--radius-full)` (9999px — 페이지 버튼 동그라미)
+- **스페이싱**: CSS Module 내 `var(--spacing-xs)` (버튼 간격)
+- **직접 import**: `icons`, `iconSizes` from `@/styles`
+- 참고: `docs/design/spacing.md#보더-반경`, `docs/design/color.md`
