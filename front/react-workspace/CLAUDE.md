@@ -190,7 +190,21 @@ const userKeys = {
 
 ## Design System
 
-> 상세 디자인 규칙: `docs/design_system.md` — 색상 토큰, 타이포그래피, 스페이싱, 섀도우 전체 정의
+**컴포넌트 스타일 작업 전 반드시 `/ds [domain]` 커맨드로 관련 토큰을 먼저 로드할 것.**
+**신규 공통 컴포넌트는 반드시 `/ds-gen ComponentName` 커맨드로 시작할 것.**
+
+| 커맨드 | 용도 |
+|---|---|
+| `/ds color` | 색상 토큰 로드 |
+| `/ds type` | 타이포그래피 토큰 로드 |
+| `/ds spacing` | 스페이싱·반경·섀도우 로드 |
+| `/ds components` | 컴포넌트 사용 규칙 로드 |
+| `/ds tokens` | TypeScript import 레퍼런스 로드 |
+| `/ds all` | 전체 디자인 시스템 로드 |
+| `/ds-gen Name` | 디자인 토큰 기반 컴포넌트 스켈레톤 생성 |
+
+> 스펙 문서: `docs/design/` (overview · color · typography · spacing · components · tokens)
+> 토큰 구현: `src/styles/` — 상세 아키텍처는 `src/styles/CLAUDE.md` 참조
 
 ### 디자인 토큰 사용 원칙
 
