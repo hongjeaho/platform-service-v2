@@ -1,4 +1,4 @@
-package com.platform.api.platform.service;
+package com.platform.api.platform.auth.service;
 
 import com.platform.datasource.platform.repository.authority.AuthorityRepository;
 import lombok.RequiredArgsConstructor;
