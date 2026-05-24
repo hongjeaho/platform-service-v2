@@ -8,3 +8,28 @@ cd front/react-workspace && pnpm lint-staged || {
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   exit 1
 }
+
+# 디자인 토큰 하드코딩 검사 (staged .tsx/.ts/.css 파일)
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+CHECK_SCRIPT="$REPO_ROOT/.claude/check-design-tokens.sh"
+STAGED=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(tsx|ts|css)$' || true)
+if [ -n "$STAGED" ] && [ -f "$CHECK_SCRIPT" ]; then
+  HAS_VIOLATION=0
+  while IFS= read -r FILE; do
+    # git은 repo root 기준 상대경로 반환 → 절대경로로 변환
+    if bash "$CHECK_SCRIPT" "$REPO_ROOT/$FILE"; then
+      : # no violation
+    else
+      HAS_VIOLATION=1
+    fi
+  done <<< "$STAGED"
+
+  if [ "$HAS_VIOLATION" -eq 1 ]; then
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "  ❌ 디자인 토큰 위반으로 커밋이 차단됩니다."
+    echo "  위 파일을 수정 후 다시 커밋하세요."
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    exit 1
+  fi
+fi
