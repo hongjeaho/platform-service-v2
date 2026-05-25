@@ -11,9 +11,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -50,18 +47,6 @@ public class PlatformDatabaseSource {
     public final static String PLATFORM_DATASOURCE_MANAGER = "platformTransactionManager";
 
     /**
-     * 플랫폼 JDBC 템플릿의 빈 이름<br>
-     * 표준 JDBC 작업으로 SQL 쿼리를 실행하는 데 사용됨
-     */
-    public static final String PLATFORM_DOMAIN_JDBC_TEMPLATE = "platformDomainJdbcTemplate";
-
-    /**
-     * 플랫폼 명명된 매개변수 JDBC 작업의 빈 이름<br>
-     * 명명된 매개변수를 사용하여 SQL 쿼리를 실행하는 데 사용됨
-     */
-    public static final String PLATFORM_DOMAIN_NAMED_PARAMETER_JDBC_OPERATIONS = "platformDomainNamedParameterJdbcOperations";
-
-    /**
      * 플랫폼 SQL 세션 팩토리의 빈 이름<br>
      * MyBatis SqlSessionFactory 생성 및 관리에 사용됨
      */
@@ -87,31 +72,5 @@ public class PlatformDatabaseSource {
     @Bean(PLATFORM_DATASOURCE_MANAGER)
     public PlatformTransactionManager platFormTransactionManager(@Qualifier(PLATFORM_DATASOURCE) final DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
-    }
-
-    /**
-     * 플랫폼 데이터 소스를 위한 NamedParameterJdbcTemplate을 생성함<br>
-     * 이를 통해 SQL 쿼리에서 위치 매개변수 대신 명명된 매개변수(예: :paramName)를 사용할 수 있음
-     *
-     * @param dataSource 템플릿을 생성할 플랫폼 데이터 소스
-     * @return 플랫폼 데이터 소스를 위한 NamedParameterJdbcOperations 인스턴스
-     */
-    @Bean(name = PLATFORM_DOMAIN_NAMED_PARAMETER_JDBC_OPERATIONS)
-    public NamedParameterJdbcOperations platFormDomainNamedParameterJdbcOperations(
-            @Qualifier(PLATFORM_DATASOURCE) final DataSource dataSource) {
-        return new NamedParameterJdbcTemplate(dataSource);
-    }
-
-    /**
-     * 플랫폼 데이터 소스를 위한 표준 JdbcTemplate을 생성함<br>
-     * 이는 표준 JDBC 작업으로 SQL 쿼리를 실행하기 위한 더 간단한 인터페이스를 제공함
-     * 
-     * @param dataSource 템플릿을 생성할 플랫폼 데이터 소스
-     * @return 플랫폼 데이터 소스를 위한 JdbcTemplate 인스턴스
-     */
-    @Bean(name = PLATFORM_DOMAIN_JDBC_TEMPLATE)
-    public JdbcTemplate platFormDomainJdbcTemplate(
-            @Qualifier(PLATFORM_DATASOURCE) final DataSource dataSource) {
-        return new JdbcTemplate(dataSource);
     }
 }
