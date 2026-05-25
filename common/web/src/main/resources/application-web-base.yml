@@ -6,8 +6,8 @@ spring:
 
 springdoc:
   packages-to-scan: com.platform.api,com
-  default-consumes-media-type: application/json;charset=UTF-8
-  default-produces-media-type: application/json;charset=UTF-8
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
   api-docs:
     path: /api/public/api-docs/json
   swagger-ui:

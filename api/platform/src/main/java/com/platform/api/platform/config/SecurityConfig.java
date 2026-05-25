@@ -47,8 +47,7 @@ public class SecurityConfig {
 
   private static final List<String> ALLOWED_ORIGINS = List.of(
       "http://localhost",
-      "http://localhost:3000",
-      "https://dev.platform.go.kr"
+      "http://localhost:3000"
   );
 
   public SecurityConfig(UserDetailsService userDetailsService, JWTCheckFilter jwtCheckFilter,
