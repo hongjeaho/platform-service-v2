@@ -43,16 +43,13 @@ CREATE TABLE board_attachment
 
 insert into system_group_code (group_code, group_name, group_desc, used, created_by, created_time,
                                  updated_by, updated_time)
-values ('CB001', '송달 결과', '송달 결과', true, 1, now(), 1, now());
+values ('CB001', '게시판 구분', '게시판 구분', true, 1, now(), 1, now());
+
 
 insert into system_code (code, group_code, code_name, code_order, code_desc, used, created_by,
                            created_time, updated_by, updated_time)
-values ('CB001001', 'CB001', '송달 결과', 1, '송달 결과 및 관련 첨부문서 확인 목적 게시글', true, 1, now(), 1, now());
+values ('CB001001', 'CB001', '공지사항', 1, '공지사항', true, 1, now(), 1, now());
 
 insert into system_code (code, group_code, code_name, code_order, code_desc, used, created_by,
                            created_time, updated_by, updated_time)
-values ('CB001002', 'CB001', '공지사항', 1, '공지사항', true, 1, now(), 1, now());
-
-insert into system_code (code, group_code, code_name, code_order, code_desc, used, created_by,
-                           created_time, updated_by, updated_time)
-values ('CB001003', 'CB001', '묻고 답하기', 1, '묻고 답하기', true, 1, now(), 1, now());
+values ('CB001002', 'CB001', '묻고 답하기', 1, '묻고 답하기', true, 1, now(), 1, now());
