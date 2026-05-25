@@ -42,21 +42,15 @@ export const router = createBrowserRouter([
         index: true,
         HydrateFallback: PageLoader,
         lazy: {
-          Component: async () => (await import('../features/home/pages/HomePage')).Component,
+          Component: async () => (await import('../features/board/pages/BoardListPage')).Component,
         },
       },
       {
-        path: 'users',
+        path: 'board',
         HydrateFallback: PageLoader,
         lazy: {
-          Component: async () => (await import('../features/user/pages/UserListPage')).Component,
+          Component: async () => (await import('../features/board/pages/BoardListPage')).Component,
         },
-        // 예시: 인증이 필요한 라우트에 ProtectedRoute 적용
-        // Component: () => (
-        //   <ProtectedRoute>
-        //     <UserListPage />
-        //   </ProtectedRoute>
-        // ),
       },
       {
         path: '*',

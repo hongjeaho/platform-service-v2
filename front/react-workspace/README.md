@@ -89,8 +89,7 @@ src/
 │       └── Layout.tsx     # 기본 레이아웃
 ├── features/               # 도메인별 피처
 │   ├── auth/              # 인증 관련
-│   ├── home/              # 홈 피처
-│   └── user/              # 사용자 피처
+│   └── board/             # 게시판 피처
 ├── hooks/                  # 커스텀 훅
 ├── store/                  # Zustand stores
 │   └── auth/              # 인증 상태
@@ -149,7 +148,7 @@ import { buttonVariants, semanticColorClasses } from '@/styles'
 **예시:**
 ```
 feat(auth): 로그인 폼 구현
-fix(user): 사용자 목록 정렬 버그 수정
+fix(board): 게시판 목록 정렬 버그 수정
 docs(readme): 설치 방법 문서 추가
 ```
 
@@ -173,7 +172,7 @@ pnpm orval
 pnpm test:run
 
 # 특정 파일 테스트
-pnpm test UserListPage
+pnpm test BoardListPage
 
 # 커버리지 확인
 pnpm test:run -- --coverage

@@ -6,7 +6,9 @@ import { apiClient } from './client'
  * 중첩된 객체 타입
  */
 type NestedValue = string | number | boolean | null | undefined | NestedObject | NestedValue[]
-type NestedObject = Record<string, NestedValue>
+interface NestedObject {
+  [key: string]: NestedValue
+}
 
 /**
  * 객체를 평탄화합니다 (중첩된 객체를 dot notation으로 변환).
