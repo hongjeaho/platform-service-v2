@@ -1,0 +1,52 @@
+/**
+ * DataTable 컴포넌트 스타일
+ * Table + Pagination 조합 래퍼
+ */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding-top: var(--spacing-2);
+}
+
+/* ── 상태 컨테이너 (에러 / 빈 데이터) ── */
+.stateContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-3);
+  min-height: 160px;
+  padding: var(--spacing-8) var(--spacing-4);
+}
+
+.stateMessage {
+  color: var(--muted-foreground);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+/* ── 스켈레톤 행 ── */
+.skeleton {
+  display: block;
+  height: 1rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--muted);
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
