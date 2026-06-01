@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import { DataTable } from '.'
+import { DataTableSkeleton } from './DataTableSkeleton'
 
 interface Row {
   id: number
@@ -171,5 +172,63 @@ describe('DataTable', () => {
     const rowCheckbox = screen.getByRole('checkbox', { name: '1번 행 선택' })
     await userEvent.click(rowCheckbox)
     expect(onSelectionChange).toHaveBeenCalledWith([data[0]])
+  })
+
+  it('페이지 변경 시 onPageChange가 호출됩니다', async () => {
+    const onPageChange = vi.fn()
+    render(
+      <DataTable
+        data={data}
+        columns={columns}
+        pagination={{ totalPages: 5, onPageChange }}
+        ariaLabel='테이블'
+      />,
+    )
+    await userEvent.click(screen.getByRole('button', { name: '3' }))
+    expect(onPageChange).toHaveBeenCalledWith(3)
+  })
+
+  it('페이지 변경 시 currentPage가 내부적으로 업데이트됩니다', async () => {
+    render(
+      <DataTable
+        data={data}
+        columns={columns}
+        pagination={{ totalPages: 5, onPageChange: () => {} }}
+        ariaLabel='테이블'
+      />,
+    )
+    await userEvent.click(screen.getByRole('button', { name: '2' }))
+    expect(screen.getByRole('button', { name: '2' })).toHaveAttribute('aria-current', 'page')
+  })
+
+  it('페이지 변경 시 선택된 행이 초기화됩니다', async () => {
+    const onSelectionChange = vi.fn()
+    render(
+      <DataTable
+        data={data}
+        columns={columns}
+        selectable
+        onSelectionChange={onSelectionChange}
+        pagination={{ totalPages: 3, onPageChange: () => {} }}
+        ariaLabel='테이블'
+      />,
+    )
+    await userEvent.click(screen.getByRole('checkbox', { name: '1번 행 선택' }))
+    await userEvent.click(screen.getByRole('button', { name: '2' }))
+    expect(onSelectionChange).toHaveBeenLastCalledWith([])
+  })
+})
+
+describe('DataTableSkeleton', () => {
+  it('pageSize만큼 행이 렌더됩니다', () => {
+    const { container } = render(<DataTableSkeleton pageSize={5} columnCount={3} />)
+    expect(container.querySelectorAll('tr')).toHaveLength(5)
+  })
+
+  it('각 행에 columnCount만큼 셀이 렌더됩니다', () => {
+    const { container } = render(<DataTableSkeleton pageSize={2} columnCount={4} />)
+    container.querySelectorAll('tr').forEach(row => {
+      expect(row.querySelectorAll('td')).toHaveLength(4)
+    })
   })
 })
