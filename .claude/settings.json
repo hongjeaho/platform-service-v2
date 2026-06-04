@@ -1,0 +1,6 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "bash /Volumes/MyPassport/workspace/platform-service-v2/.claude/statusline-command.sh"
+  }
+}

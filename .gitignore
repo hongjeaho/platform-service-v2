@@ -38,17 +38,14 @@ out/
 ### VS Code ###
 .vscode/
 front/platform/stats.html
-.claude/
-front/platform/.claude/
 front/platform/html
 %programdata%/Geni
 # datasource-platform 모듈의 로컬 설정
 datasource/platform/gradle.properties
 gradle.properties.example
 datasource/platform/src/generated
-datasource/platform/src/generated
 front/react-workspace/tsconfig.node.tsbuildinfo
 front/react-workspace/tsconfig.app.tsbuildinfo
-front/react-workspace/.claude/
+**/.claude/settings.local.json
 front/react-workspace/src/api/generated/model
 front/react-workspace/src/api/generated/hooks

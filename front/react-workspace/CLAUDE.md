@@ -143,11 +143,11 @@ const userKeys = {
 
 ## Design System
 
-**신규 공통 컴포넌트는 반드시 `/ds-gen ComponentName` 커맨드로 시작할 것.**
+**신규 공통 컴포넌트는 반드시 `/common-gen ComponentName` 커맨드로 시작할 것.**
 
 | 커맨드 | 용도 |
 |---|---|
-| `/ds-gen Name` | 디자인 토큰 기반 컴포넌트 스켈레톤 생성 |
+| `/common-gen Name` | 디자인 토큰 기반 공통 컴포넌트 스켈레톤 생성 |
 
 > 스펙 문서: `docs/design/` (overview · color · typography · spacing · components · tokens)
 > 토큰 구현: `src/styles/` — 상세 아키텍처는 `src/styles/CLAUDE.md` 참조
