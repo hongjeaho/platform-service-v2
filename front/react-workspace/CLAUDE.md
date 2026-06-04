@@ -143,17 +143,10 @@ const userKeys = {
 
 ## Design System
 
-**컴포넌트 스타일 작업 전 반드시 `/ds [domain]` 커맨드로 관련 토큰을 먼저 로드할 것.**
 **신규 공통 컴포넌트는 반드시 `/ds-gen ComponentName` 커맨드로 시작할 것.**
 
 | 커맨드 | 용도 |
 |---|---|
-| `/ds color` | 색상 토큰 로드 |
-| `/ds type` | 타이포그래피 토큰 로드 |
-| `/ds spacing` | 스페이싱·반경·섀도우 로드 |
-| `/ds components` | 컴포넌트 사용 규칙 로드 |
-| `/ds tokens` | TypeScript import 레퍼런스 로드 |
-| `/ds all` | 전체 디자인 시스템 로드 |
 | `/ds-gen Name` | 디자인 토큰 기반 컴포넌트 스켈레톤 생성 |
 
 > 스펙 문서: `docs/design/` (overview · color · typography · spacing · components · tokens)
@@ -165,3 +158,40 @@ const userKeys = {
 - 하드코딩 hex/rgb/px 값 절대 금지 — `var(--primary)`, `rawColors.primary` 등 토큰 경유
 - `bg-gray-*`, `text-blue-*` 등 Tailwind 기본 색상 팔레트 직접 사용 금지 — 디자인 토큰으로만
 - 공통 컴포넌트는 `className` prop을 받지 않음 — CSS Module 내 CSS 변수로만 스타일링
+
+## 기획 및 설계 워크플로우
+
+**신규 기능 기획 시 반드시 `/feature-planner {기능명}` 커맨드로 시작할 것.**
+
+아이디어 → spec → spec-fixed → PRD+ADR → issues 파이프라인을 단계별 승인 게이트(GATE)와 함께 실행한다.
+
+| 커맨드 | 용도 |
+|---|---|
+| `/feature-planner {기능명}` | 기능 기획 워크플로우 시작 |
+
+### 파이프라인 개요
+
+```
+/feature-planner {기능명}
+    ↓ 단계 0: spec.md 생성 및 진입 조건 검증
+    ↓ 단계 1: 요구사항 인터뷰 → spec-fixed.md [GATE]
+    ↓ 단계 2: PRD + ADR 작성 → prd.md [GATE × 2]
+    ↓ 단계 3: 이슈 분해 → issues.md [GATE]
+```
+
+**산출물 경로**: `src/features/{name}/docs/`
+
+### 승인 게이트 요약
+
+| 지점 | 확인 내용 |
+|------|----------|
+| 단계 1 후 | spec-fixed.md — 모호성 제거, 용어 확정 |
+| 단계 2-2 후 | 아키텍처 3안 중 하나 선택 |
+| 단계 2-4 후 | Out of Scope — 범위 확정 |
+| 단계 3 후 | 이슈 목록 — 수직슬라이스·AC·의존성 확인 |
+
+### 이슈 분해 원칙 (수직 슬라이싱)
+
+- "이 이슈만 완료하면 사용자에게 보여줄 수 있는 동작이 있는가?" → **Yes**여야 함
+- 수평 슬라이싱 금지 (API만 → Store만 → UI만 순서로 분리하지 않는다)
+- AC는 반드시 Given-When-Then 형식으로 작성
