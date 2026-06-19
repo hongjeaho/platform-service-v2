@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useId, useRef, useState } from 'react'
+import React, { useEffect, useId, useRef, useState } from 'react'
 
 import { RadioGroupContext } from './RadioGroup.context'
 import styles from './RadioGroup.module.css'
@@ -46,31 +46,25 @@ export function RadioGroup({
   const isControlled = valueProp !== undefined
   const currentValue = isControlled ? valueProp : uncontrolledValue
 
-  const setValue = useCallback(
-    (v: string) => {
-      if (!isControlled) setUncontrolledValue(v)
-      onValueChange?.(v)
-      const input = hiddenInputRef.current
-      if (input) {
-        input.value = v
-        input.dispatchEvent(new Event('change', { bubbles: true }))
-      }
-      const syntheticEvent = {
-        target: { name: name ?? '', value: v },
-      } as React.ChangeEvent<HTMLInputElement>
-      onChange?.(syntheticEvent)
-    },
-    [isControlled, name, onChange, onValueChange],
-  )
+  const setValue = (v: string) => {
+    if (!isControlled) setUncontrolledValue(v)
+    onValueChange?.(v)
+    const input = hiddenInputRef.current
+    if (input) {
+      input.value = v
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+    const syntheticEvent = {
+      target: { name: name ?? '', value: v },
+    } as React.ChangeEvent<HTMLInputElement>
+    onChange?.(syntheticEvent)
+  }
 
-  const setHiddenInputRef = useCallback(
-    (el: HTMLInputElement | null) => {
-      hiddenInputRef.current = el
-      if (typeof ref === 'function') ref(el)
-      else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = el
-    },
-    [ref],
-  )
+  const setHiddenInputRef = (el: HTMLInputElement | null) => {
+    hiddenInputRef.current = el
+    if (typeof ref === 'function') ref(el)
+    else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = el
+  }
 
   const contextValue = {
     value: currentValue,

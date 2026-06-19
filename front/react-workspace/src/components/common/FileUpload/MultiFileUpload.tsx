@@ -4,7 +4,7 @@ import { icons, iconSizes, textCombinations } from '@/styles'
 
 import styles from './MultiFileUpload.module.css'
 import type { ManagedFile, MultiFileUploadProps, MultiFileUploadSize } from './MultiFileUpload.type'
-import { formatFileSize } from './utils'
+import { formatFileSize } from '@/utils/format'
 
 const sizeClasses: Record<MultiFileUploadSize, string> = {
   sm: styles.sizeSm,

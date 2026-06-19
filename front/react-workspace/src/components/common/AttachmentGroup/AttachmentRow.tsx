@@ -1,17 +1,12 @@
 import { useId, useRef, useState } from 'react'
 
 import { icons, iconSizes, textCombinations } from '@/styles'
+import { formatFileSize } from '@/utils/format'
 
 import { Button } from '../Button'
 import { useAttachmentGroup } from './AttachmentGroup'
 import styles from './AttachmentRow.module.css'
 import type { AttachmentRowProps, ManagedFile, SingleManagedFile } from './AttachmentRow.type'
-
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-}
 
 /**
  * AttachmentRow 컴포넌트
