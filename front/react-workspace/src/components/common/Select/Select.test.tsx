@@ -195,4 +195,103 @@ describe('SelectItem', () => {
     const disabledOption = screen.getByRole('option', { name: '옵션 B' })
     expect(disabledOption).toHaveAttribute('aria-disabled', 'true')
   })
+
+  it('Enter 키로 옵션을 선택할 수 있습니다', () => {
+    const onValueChange = vi.fn()
+    render(
+      <Select placeholder='선택' name='x' onValueChange={onValueChange}>
+        <SelectItem value='a'>옵션 A</SelectItem>
+      </Select>,
+    )
+    fireEvent.click(screen.getByRole('button'))
+    const option = screen.getByRole('option', { name: '옵션 A' })
+    fireEvent.keyDown(option, { key: 'Enter' })
+    expect(onValueChange).toHaveBeenCalledWith('a')
+  })
+
+  it('Space 키로 옵션을 선택할 수 있습니다', () => {
+    const onValueChange = vi.fn()
+    render(
+      <Select placeholder='선택' name='x' onValueChange={onValueChange}>
+        <SelectItem value='a'>옵션 A</SelectItem>
+      </Select>,
+    )
+    fireEvent.click(screen.getByRole('button'))
+    const option = screen.getByRole('option', { name: '옵션 A' })
+    fireEvent.keyDown(option, { key: ' ' })
+    expect(onValueChange).toHaveBeenCalledWith('a')
+  })
+
+  it('disabled 옵션은 Enter 키로 선택되지 않습니다', () => {
+    const onValueChange = vi.fn()
+    render(
+      <Select placeholder='선택' name='x' onValueChange={onValueChange}>
+        <SelectItem value='a' disabled>
+          옵션 A
+        </SelectItem>
+      </Select>,
+    )
+    fireEvent.click(screen.getByRole('button'))
+    const option = screen.getByRole('option', { name: '옵션 A' })
+    fireEvent.keyDown(option, { key: 'Enter' })
+    expect(onValueChange).not.toHaveBeenCalled()
+  })
+
+  it('다른 키는 선택 동작을 하지 않습니다', () => {
+    const onValueChange = vi.fn()
+    render(
+      <Select placeholder='선택' name='x' onValueChange={onValueChange}>
+        <SelectItem value='a'>옵션 A</SelectItem>
+      </Select>,
+    )
+    fireEvent.click(screen.getByRole('button'))
+    const option = screen.getByRole('option', { name: '옵션 A' })
+    fireEvent.keyDown(option, { key: 'Escape' })
+    expect(onValueChange).not.toHaveBeenCalled()
+  })
+
+  it('이미 선택된 옵션은 aria-selected="true"로 렌더됩니다', () => {
+    render(
+      <Select placeholder='선택' name='x' defaultValue='a'>
+        <SelectItem value='a'>옵션 A</SelectItem>
+      </Select>,
+    )
+    fireEvent.click(screen.getByRole('button'))
+    expect(screen.getByRole('option', { name: '옵션 A' })).toHaveAttribute('aria-selected', 'true')
+  })
+
+  it('disabled 옵션은 클릭해도 선택되지 않습니다', () => {
+    const onValueChange = vi.fn()
+    render(
+      <Select placeholder='선택' name='x' onValueChange={onValueChange}>
+        <SelectItem value='a' disabled>
+          옵션 A
+        </SelectItem>
+      </Select>,
+    )
+    fireEvent.click(screen.getByRole('button'))
+    const option = screen.getByRole('option', { name: '옵션 A' })
+    fireEvent.click(option)
+    expect(onValueChange).not.toHaveBeenCalled()
+  })
+
+  it('size sm인 Select 내에서 옵션이 렌더됩니다', () => {
+    render(
+      <Select placeholder='선택' name='x' size='sm'>
+        <SelectItem value='a'>옵션 A</SelectItem>
+      </Select>,
+    )
+    fireEvent.click(screen.getByRole('button'))
+    expect(screen.getByRole('option', { name: '옵션 A' })).toBeInTheDocument()
+  })
+
+  it('size lg인 Select 내에서 옵션이 렌더됩니다', () => {
+    render(
+      <Select placeholder='선택' name='x' size='lg'>
+        <SelectItem value='a'>옵션 A</SelectItem>
+      </Select>,
+    )
+    fireEvent.click(screen.getByRole('button'))
+    expect(screen.getByRole('option', { name: '옵션 A' })).toBeInTheDocument()
+  })
 })

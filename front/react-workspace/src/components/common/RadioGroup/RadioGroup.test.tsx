@@ -181,4 +181,63 @@ describe('RadioGroup', () => {
       expect(screen.getByRole('radio', { name: '바나나' })).toHaveAttribute('aria-disabled', 'true')
     })
   })
+
+  describe('키보드 인터랙션', () => {
+    it('Space 키로 항목을 선택할 수 있습니다', () => {
+      render(
+        <RadioGroup name='fruit' defaultValue='0001'>
+          {defaultItems}
+        </RadioGroup>,
+      )
+      const radios = screen.getAllByRole('radio')
+      fireEvent.keyDown(radios[1], { key: ' ' })
+      expect(radios[1]).toHaveAttribute('aria-checked', 'true')
+    })
+
+    it('Enter 키로 항목을 선택할 수 있습니다', () => {
+      render(
+        <RadioGroup name='fruit' defaultValue='0001'>
+          {defaultItems}
+        </RadioGroup>,
+      )
+      const radios = screen.getAllByRole('radio')
+      fireEvent.keyDown(radios[2], { key: 'Enter' })
+      expect(radios[2]).toHaveAttribute('aria-checked', 'true')
+    })
+
+    it('ArrowRight 키로 다음 항목으로 포커스가 이동합니다', () => {
+      render(
+        <RadioGroup name='fruit' defaultValue='0001'>
+          {defaultItems}
+        </RadioGroup>,
+      )
+      const radios = screen.getAllByRole('radio')
+      fireEvent.keyDown(radios[0], { key: 'ArrowRight' })
+      expect(document.activeElement).toBe(radios[1])
+    })
+
+    it('ArrowLeft 키로 이전 항목으로 포커스가 이동합니다', () => {
+      render(
+        <RadioGroup name='fruit' defaultValue='0001'>
+          {defaultItems}
+        </RadioGroup>,
+      )
+      const radios = screen.getAllByRole('radio')
+      fireEvent.keyDown(radios[1], { key: 'ArrowLeft' })
+      expect(document.activeElement).toBe(radios[0])
+    })
+
+    it('포커스가 그룹 밖으로 이동하면 onBlur가 호출됩니다', () => {
+      const handleBlur = vi.fn()
+      render(
+        <RadioGroup name='fruit' defaultValue='0001' onBlur={handleBlur}>
+          {defaultItems}
+        </RadioGroup>,
+      )
+      const radios = screen.getAllByRole('radio')
+      fireEvent.focus(radios[0])
+      fireEvent.focusOut(radios[0], { relatedTarget: null })
+      expect(handleBlur).toHaveBeenCalledOnce()
+    })
+  })
 })

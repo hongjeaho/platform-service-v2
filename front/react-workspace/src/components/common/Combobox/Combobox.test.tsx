@@ -152,6 +152,29 @@ describe('Combobox', () => {
       fireEvent.focus(combobox)
       expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
     })
+
+    it('검색 결과가 없을 때 listbox는 열려 있지만 옵션이 없습니다 (empty state)', () => {
+      render(
+        <Combobox placeholder='검색' name='fruit'>
+          {defaultChildren}
+        </Combobox>,
+      )
+      fireEvent.focus(screen.getByRole('combobox'))
+      fireEvent.change(screen.getByRole('combobox'), { target: { value: '일치하는옵션없음' } })
+      expect(screen.getByRole('listbox')).toBeInTheDocument()
+      expect(screen.queryAllByRole('option')).toHaveLength(0)
+    })
+
+    it('chevron 아이콘 클릭 시 드롭다운이 열립니다', () => {
+      render(
+        <Combobox placeholder='검색' name='fruit'>
+          {defaultChildren}
+        </Combobox>,
+      )
+      expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
+      fireEvent.click(document.querySelector('.triggerIcon')!)
+      expect(screen.getByRole('listbox')).toBeInTheDocument()
+    })
   })
 
   describe('비제어 / defaultValue', () => {
@@ -244,5 +267,34 @@ describe('ComboboxItem', () => {
     expect(options).toHaveLength(2)
     const disabledOption = screen.getByRole('option', { name: '옵션 B' })
     expect(disabledOption).toHaveAttribute('aria-disabled', 'true')
+  })
+
+  it('disabled 옵션 클릭 시 선택되지 않고 listbox가 유지됩니다', () => {
+    render(
+      <Combobox placeholder='검색' name='fruit'>
+        <ComboboxItem value='a'>옵션 A</ComboboxItem>
+        <ComboboxItem value='b' disabled>
+          옵션 B
+        </ComboboxItem>
+      </Combobox>,
+    )
+    fireEvent.focus(screen.getByRole('combobox'))
+    fireEvent.click(screen.getByRole('option', { name: '옵션 B' }))
+    expect(screen.getByRole('listbox')).toBeInTheDocument()
+    const hidden = document.querySelector('input[type="hidden"][name="fruit"]')
+    expect(hidden).toHaveValue('')
+  })
+
+  it('옵션에서 Enter 키 입력 시 선택됩니다', () => {
+    render(
+      <Combobox placeholder='검색' name='fruit'>
+        {defaultChildren}
+      </Combobox>,
+    )
+    fireEvent.focus(screen.getByRole('combobox'))
+    const option = screen.getByRole('option', { name: '딸기' })
+    fireEvent.keyDown(option, { key: 'Enter' })
+    expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
+    expect(screen.getByRole('combobox')).toHaveValue('딸기')
   })
 })

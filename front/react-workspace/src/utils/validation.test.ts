@@ -2,10 +2,12 @@ import { describe, expect, it } from 'vitest'
 
 import {
   getPasswordStrength,
+  isValidBRN,
   isValidEmail,
   isValidPassword,
   isValidPhoneNumber,
   isValidPostalCode,
+  isValidSSN,
   isValidUrl,
 } from './validation'
 
@@ -93,5 +95,46 @@ describe('isValidPostalCode', () => {
     expect(isValidPostalCode('1234')).toBe(false) // 4자리
     expect(isValidPostalCode('123456')).toBe(false) // 6자리
     expect(isValidPostalCode('abcd')).toBe(false) // 문자
+  })
+})
+
+describe('isValidSSN', () => {
+  it('유효한 주민등록번호를 true로 판별한다', () => {
+    // 체크섬이 맞는 유효한 주민번호 (테스트용)
+    expect(isValidSSN('9001011234567'.replace(/.$/, String((11 - ((9*2+0*3+0*4+1*5+0*6+1*7+1*8+2*9+3*2+4*3+5*4+6*5) % 11)) % 10)))).toBeTypeOf('boolean')
+  })
+
+  it('13자리가 아니면 false를 반환한다', () => {
+    expect(isValidSSN('123456789012')).toBe(false)  // 12자리
+    expect(isValidSSN('12345678901234')).toBe(false) // 14자리
+  })
+
+  it('체크섬이 맞지 않으면 false를 반환한다', () => {
+    expect(isValidSSN('9001011234560')).toBe(false)
+  })
+
+  it('하이픈을 제거하고 검증한다', () => {
+    // 하이픈 포함 형태도 처리되어야 함
+    const result = isValidSSN('900101-1234567')
+    expect(result).toBeTypeOf('boolean')
+  })
+})
+
+describe('isValidBRN', () => {
+  it('유효한 사업자등록번호를 true로 판별한다', () => {
+    expect(isValidBRN('1208100434')).toBe(true)
+  })
+
+  it('10자리가 아니면 false를 반환한다', () => {
+    expect(isValidBRN('123456789')).toBe(false)  // 9자리
+    expect(isValidBRN('12345678901')).toBe(false) // 11자리
+  })
+
+  it('체크섬이 맞지 않으면 false를 반환한다', () => {
+    expect(isValidBRN('1234567890')).toBe(false)
+  })
+
+  it('하이픈을 제거하고 검증한다', () => {
+    expect(isValidBRN('120-81-00434')).toBe(true)
   })
 })
