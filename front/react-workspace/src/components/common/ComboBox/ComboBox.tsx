@@ -3,24 +3,24 @@ import React, { Children, type ReactNode, useEffect, useId, useRef, useState } f
 
 import { textCombinations } from '@/styles'
 
-import { ComboboxContext } from './Combobox.context'
-import styles from './Combobox.module.css'
-import type { ComboboxProps, ComboboxSize } from './Combobox.type'
-import { ComboboxItem } from './ComboboxItem'
+import { ComboBoxContext } from './ComboBox.context'
+import styles from './ComboBox.module.css'
+import type { ComboBoxProps, ComboBoxSize } from './ComboBox.type'
+import { ComboBoxItem } from './ComboBoxItem'
 
-const sizeClasses: Record<ComboboxSize, string> = {
+const sizeClasses: Record<ComboBoxSize, string> = {
   sm: styles.sizeSm,
   md: styles.sizeMd,
   lg: styles.sizeLg,
 }
 
-const listboxSizeClasses: Record<ComboboxSize, string> = {
+const listboxSizeClasses: Record<ComboBoxSize, string> = {
   sm: styles.listboxSizeSm,
   md: styles.listboxSizeMd,
   lg: styles.listboxSizeLg,
 }
 
-const ITEM_HEIGHT_PX: Record<ComboboxSize, number> = {
+const ITEM_HEIGHT_PX: Record<ComboBoxSize, number> = {
   sm: 32,
   md: 40,
   lg: 48,
@@ -90,18 +90,18 @@ function getDisplayTextForValue(items: ParsedItem[], value: string): string {
 }
 
 /**
- * Combobox 컴포넌트
+ * ComboBox 컴포넌트
  * 입력 필드 + 실시간 필터링 드롭다운. RHF register() 및 value/onChange와 호환됩니다.
  *
  * @example
  * ```tsx
- * <Combobox placeholder="검색" label="과일" {...register('fruit')} error={errors.fruit?.message}>
- *   <ComboboxItem value="0001">딸기</ComboboxItem>
- *   <ComboboxItem value="0002">바나나</ComboboxItem>
- * </Combobox>
+ * <ComboBox placeholder="검색" label="과일" {...register('fruit')} error={errors.fruit?.message}>
+ *   <ComboBoxItem value="0001">딸기</ComboBoxItem>
+ *   <ComboBoxItem value="0002">바나나</ComboBoxItem>
+ * </ComboBox>
  * ```
  */
-export function Combobox({
+export function ComboBox({
   ref,
   placeholder,
   limit = 5,
@@ -118,7 +118,7 @@ export function Combobox({
   onValueChange,
   onBlur,
   children,
-}: ComboboxProps) {
+}: ComboBoxProps) {
   const generatedId = useId()
   const triggerId = idProp ?? generatedId
   const listboxId = `${triggerId}-listbox`
@@ -259,6 +259,7 @@ export function Combobox({
 
   const comboboxWrapClasses = [
     styles.comboboxWrap,
+    isOpen ? styles.open : '',
     disabled ? styles.disabled : '',
     error ? styles.error : '',
   ]
@@ -268,7 +269,7 @@ export function Combobox({
   const triggerWrapClasses = [styles.triggerWrap, sizeClasses[size]].filter(Boolean).join(' ')
 
   return (
-    <ComboboxContext.Provider value={contextValue}>
+    <ComboBoxContext.Provider value={contextValue}>
       <div ref={containerRef} className={styles.field}>
         {label != null && (
           <label htmlFor={triggerId} className={[styles.label, textCombinations.label].join(' ')}>
@@ -324,22 +325,24 @@ export function Combobox({
           </div>
         </div>
         {isOpen && (
-          <div
-            role='listbox'
-            id={listboxId}
-            className={[styles.listbox, listboxSizeClasses[size]].join(' ')}
-            style={{ maxHeight: listboxMaxHeight }}
-          >
-            {filteredItems.map(item => (
-              <ComboboxItem
-                key={item.value}
-                value={item.value}
-                disabled={item.disabled}
-                textValue={item.textValue}
-              >
-                {item.displayText}
-              </ComboboxItem>
-            ))}
+          <div className={[styles.listbox, listboxSizeClasses[size]].join(' ')}>
+            <div
+              role='listbox'
+              id={listboxId}
+              className={styles.listboxScroll}
+              style={{ maxHeight: listboxMaxHeight }}
+            >
+              {filteredItems.map(item => (
+                <ComboBoxItem
+                  key={item.value}
+                  value={item.value}
+                  disabled={item.disabled}
+                  textValue={item.textValue}
+                >
+                  {item.displayText}
+                </ComboBoxItem>
+              ))}
+            </div>
           </div>
         )}
         {error != null && (
@@ -352,6 +355,6 @@ export function Combobox({
           </span>
         )}
       </div>
-    </ComboboxContext.Provider>
+    </ComboBoxContext.Provider>
   )
 }

@@ -155,7 +155,7 @@ export function Select({
   const triggerClasses = [
     styles.trigger,
     sizeClasses[size],
-    disabled ? '' : '',
+    isOpen ? styles.open : '',
     error ? styles.error : '',
     !displayLabel && placeholder ? styles.triggerPlaceholder : '',
   ]
@@ -201,14 +201,16 @@ export function Select({
           </span>
         </button>
         {isOpen && (
-          <div
-            role='listbox'
-            id={listboxId}
-            className={[styles.listbox, listboxSizeClasses[size]].join(' ')}
-            style={{ maxHeight: listboxMaxHeight }}
-            aria-activedescendant={undefined}
-          >
-            {children}
+          <div className={[styles.listbox, listboxSizeClasses[size]].join(' ')}>
+            <div
+              role='listbox'
+              id={listboxId}
+              className={styles.listboxScroll}
+              style={{ maxHeight: listboxMaxHeight }}
+              aria-activedescendant={undefined}
+            >
+              {children}
+            </div>
           </div>
         )}
         {error != null && (

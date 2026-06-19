@@ -2,11 +2,11 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useForm } from 'react-hook-form'
 
 import { Button } from '../Button'
-import { Combobox, ComboboxItem } from '.'
+import { ComboBox, ComboBoxItem } from '.'
 
-const meta: Meta<typeof Combobox> = {
-  title: 'Common/Combobox',
-  component: Combobox,
+const meta: Meta<typeof ComboBox> = {
+  title: 'Common/ComboBox',
+  component: ComboBox,
   parameters: {
     layout: 'centered',
   },
@@ -47,16 +47,16 @@ const meta: Meta<typeof Combobox> = {
 }
 
 export default meta
-type Story = StoryObj<typeof Combobox>
+type Story = StoryObj<typeof ComboBox>
 
 const defaultChildren = (
   <>
-    <ComboboxItem value='0001'>딸기</ComboboxItem>
-    <ComboboxItem value='0002'>바나나</ComboboxItem>
-    <ComboboxItem value='0003'>수박</ComboboxItem>
-    <ComboboxItem value='0004'>사과</ComboboxItem>
-    <ComboboxItem value='0005'>포도</ComboboxItem>
-    <ComboboxItem value='0006'>키위</ComboboxItem>
+    <ComboBoxItem value='0001'>딸기</ComboBoxItem>
+    <ComboBoxItem value='0002'>바나나</ComboBoxItem>
+    <ComboBoxItem value='0003'>수박</ComboBoxItem>
+    <ComboBoxItem value='0004'>사과</ComboBoxItem>
+    <ComboBoxItem value='0005'>포도</ComboBoxItem>
+    <ComboBoxItem value='0006'>키위</ComboBoxItem>
   </>
 )
 
@@ -139,53 +139,53 @@ export const WithDisabledItem: Story = {
     placeholder: '검색 또는 선택',
     children: (
       <>
-        <ComboboxItem value='a'>옵션 A</ComboboxItem>
-        <ComboboxItem value='b' disabled>
+        <ComboBoxItem value='a'>옵션 A</ComboBoxItem>
+        <ComboBoxItem value='b' disabled>
           옵션 B (비활성)
-        </ComboboxItem>
-        <ComboboxItem value='c'>옵션 C</ComboboxItem>
+        </ComboBoxItem>
+        <ComboBoxItem value='c'>옵션 C</ComboBoxItem>
       </>
     ),
   },
 }
 
-type RHFComboboxForm = {
+type RHFComboBoxForm = {
   fruit: string
 }
 
-const RenderRHFComboboxForm: Story['render'] = () => {
+const RenderRHFComboBoxForm: Story['render'] = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RHFComboboxForm>({
+  } = useForm<RHFComboBoxForm>({
     defaultValues: { fruit: '' },
   })
 
-  const onSubmit = (data: RHFComboboxForm) => {
+  const onSubmit = (data: RHFComboBoxForm) => {
     alert(JSON.stringify(data, null, 2))
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='flex w-80 flex-col gap-4'>
-      <Combobox
+      <ComboBox
         label='과일'
         placeholder='검색 또는 선택'
         required
         {...register('fruit', { required: '과일을 선택해 주세요.' })}
         error={errors.fruit?.message}
       >
-        <ComboboxItem value='0001'>딸기</ComboboxItem>
-        <ComboboxItem value='0002'>바나나</ComboboxItem>
-        <ComboboxItem value='0003'>수박</ComboboxItem>
-      </Combobox>
+        <ComboBoxItem value='0001'>딸기</ComboBoxItem>
+        <ComboBoxItem value='0002'>바나나</ComboBoxItem>
+        <ComboBoxItem value='0003'>수박</ComboBoxItem>
+      </ComboBox>
       <Button type='submit'>제출</Button>
     </form>
   )
 }
 
 const RHFUsageCode = `import { useForm } from 'react-hook-form'
-import { Combobox, ComboboxItem } from '@/components/common/Combobox'
+import { ComboBox, ComboBoxItem } from '@/components/common/ComboBox'
 import { Button } from '@/components/common/Button'
 
 type FormValues = { fruit: string }
@@ -199,17 +199,17 @@ function MyForm() {
 
   return (
     <form onSubmit={handleSubmit((data) => console.log(data))} className="flex flex-col gap-4">
-      <Combobox
+      <ComboBox
         label="과일"
         placeholder="검색 또는 선택"
         required
         {...register('fruit', { required: '과일을 선택해 주세요.' })}
         error={errors.fruit?.message}
       >
-        <ComboboxItem value="0001">딸기</ComboboxItem>
-        <ComboboxItem value="0002">바나나</ComboboxItem>
-        <ComboboxItem value="0003">수박</ComboboxItem>
-      </Combobox>
+        <ComboBoxItem value="0001">딸기</ComboBoxItem>
+        <ComboBoxItem value="0002">바나나</ComboBoxItem>
+        <ComboBoxItem value="0003">수박</ComboBoxItem>
+      </ComboBox>
       <Button type="submit">제출</Button>
     </form>
   )
@@ -217,7 +217,7 @@ function MyForm() {
 `
 
 export const WithReactHookForm: Story = {
-  render: RenderRHFComboboxForm,
+  render: RenderRHFComboBoxForm,
   parameters: {
     docs: {
       description: {
