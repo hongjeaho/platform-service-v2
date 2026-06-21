@@ -109,7 +109,7 @@ feature-path와 이슈 번호가 결정되면 아래 형식으로 출력한다.
 | 항목 | 경로 |
 |------|------|
 | 이슈 파일 (읽기) | `src/features/{feature-path}/docs/issue-{N}.md` |
-| 수정 대상 파일 | `git diff $(git rev-parse --abbrev-ref origin/HEAD | sed 's/origin\///') ...HEAD --name-only -- src/` 결과 중 비테스트 파일 |
+| 수정 대상 파일 | `git diff {기본브랜치}...HEAD --name-only -- src/` 결과 중 비테스트 파일 (기본브랜치 탐지는 단계 3-1 참조) |
 
 ---
 
@@ -123,7 +123,7 @@ feature-path와 이슈 번호가 결정되면 아래 형식으로 출력한다.
     │   └─ 실패 테스트 존재 시: 즉시 중단 → tdd-green 먼저 실행 요청
     ↓ 단계 3: 리팩토링 대상 파일 식별
     │   ├─ git diff {기본브랜치}...HEAD --name-only -- src/
-    │   ├─ issue-{N}.md 시그니처와 교차 검증 (범위 좁힘)
+    │   ├─ issue-{N}.md 시그니처 파일 목록과 교집합 추출
     │   ├─ *.test.ts / *.test.tsx 제외
     │   └─ 범용 점검 기준 5가지 적용
     ↓ 단계 4: 리팩토링 대상 목록 보고 → 개발자 승인 대기 [GATE]
@@ -155,12 +155,6 @@ feature-path와 이슈 번호가 결정되면 아래 형식으로 출력한다.
 pnpm test:run
 ```
 
-`pnpm test:run`이 없으면 폴백:
-
-```bash
-npx vitest run
-```
-
 **전체 통과** → 단계 3으로 진행.
 
 **실패 테스트 존재 시** → 즉시 중단:
@@ -189,10 +183,16 @@ git diff ${BASE}...HEAD --name-only -- src/
 
 `origin/HEAD`가 설정되지 않은 경우 `main` → `master` 순으로 존재 여부를 확인해 fallback한다.
 
-### 3-2. issue-{N}.md 시그니처와 교차 검증
+### 3-2. 시그니처 파일 목록과 교집합 추출
 
-`src/features/{feature-path}/docs/issue-{N}.md`의 `## 시그니처` 섹션에 명시된 파일 목록과 비교해
-관련성이 낮은 파일을 제외한다.
+`src/features/{feature-path}/docs/issue-{N}.md`의 `## 시그니처` 섹션에서 파일 경로를 추출한다.
+git diff 결과와 교집합을 구해 **두 목록 모두에 존재하는 파일만** 남긴다.
+
+```
+리팩토링 대상 = git diff 결과 ∩ 시그니처에 명시된 파일 경로
+```
+
+시그니처에 없는 파일은 이 이슈와 무관한 변경이므로 목록에서 제거한다.
 
 ### 3-3. 테스트 파일 제외
 
@@ -251,9 +251,9 @@ git diff ${BASE}...HEAD --name-only -- src/
 ### 처리 흐름
 
 1. 리팩토링 변경 적용
-2. 전체 테스트 실행 (단계 2와 동일한 폴백 적용):
+2. 전체 테스트 실행:
    ```bash
-   pnpm test:run   # 없으면 npx vitest run
+   pnpm test:run
    ```
 3. **전체 통과** → 다음 항목으로 이동
 4. **실패 발생** → Edit 도구로 변경 내용을 수동 원복한 뒤 다른 접근 방식으로 1회 재시도
@@ -293,6 +293,23 @@ git diff ${BASE}...HEAD --name-only -- src/
 🧪 최종 테스트: {통과 수}/{전체 수} 통과
 ```
 
+### 다음 단계
+
+커밋 완료 후 issue-{N}.md의 상위 문서(issues.md 등)를 확인해 남은 이슈 여부를 판단한다.
+
+**다음 이슈가 있는 경우:**
+```
+➡️  다음 단계: /tdd-red {N+1}  (issue-{N+1} 테스트 코드 작성)
+```
+
+**마지막 이슈인 경우:**
+```
+🎉 모든 이슈 완료 — {feature-path}
+
+  모든 이슈의 TDD 사이클이 완료되었습니다.
+  PR 생성 또는 코드 리뷰를 진행해주세요.
+```
+
 ---
 
 ## 제약 사항
@@ -301,8 +318,8 @@ git diff ${BASE}...HEAD --name-only -- src/
 |------|------|
 | 새 기능 추가 | 금지 — 동작 변경 없이 구조만 개선 |
 | 테스트 파일 수정 | 금지 (`.test.ts` / `.test.tsx`) |
-| 수정 범위 | `src/features/{feature-path}/` 내부만 |
-| git diff 외 파일 | `git diff {기본브랜치}...HEAD` 결과 외 파일 수정 금지 |
+| 수정 범위 | `git diff {기본브랜치}...HEAD --name-only -- src/` 결과 중 비테스트 파일만 |
+| diff 외 파일 | diff 결과에 없는 파일 수정 금지 (tdd-green이 건드리지 않은 파일 포함) |
 | 피드백 루프 | 실패 시 1회 재시도 후 건너뜀 — 무한 반복 금지 |
 | 승인 전 수정 | 단계 4 승인 전 코드 변경 금지 |
 
