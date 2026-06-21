@@ -172,7 +172,7 @@ const userKeys = {
 | `/feature-planner {feature-path}` | 경로 직접 지정 (예: `notice/list`) |
 
 > `main`·`master`·`develop` 등 보호 브랜치에서 실행 시, 먼저 feature 브랜치 생성을 안내한다.
-> 확정된 `feature-path`는 세션 컨텍스트에 저장되어 이후 `/test-scenarios`, `/tdd-red`, `/tdd-green`, `/tdd-refactor` 스킬에 자동 전달된다.
+> 확정된 `feature-path`는 세션 컨텍스트에 저장되어 이후 `/test-scenarios`, `/tdd-red`, `/tdd-green`, `/tdd-refactor`, `/e2e-test`, `/security-review`, `/create-pr` 스킬에 자동 전달된다.
 
 ### 파이프라인 개요
 
@@ -208,10 +208,13 @@ const userKeys = {
 3. `/tdd-green N`         — 최소 구현, 테스트 전체 통과 (skill)
 4. `@ac-verifier N`       — AC 충족 독립 검증, 테스트 통과 ≠ AC 충족 (agent)
 5. `/tdd-refactor N`      — 구조 개선, 깨지면 즉시 롤백 (skill)
-6. `/security-review N`   — 타입·보안 점검 (skill)
-7. commit → PR --base feature/\<spec\> → squash merge → 이슈 클로즈
+6. `/e2e-test N`          — PRD 사용자 스토리 기반 Playwright E2E 테스트 (skill)
+7. `/security-review N`   — 타입·보안 점검 (skill)
+8. `/create-pr`           — E2E 검증 → push → PR 생성 (skill)
 
 각 단계는 인간 승인 게이트가 있다. **자동으로 다음 단계로 넘어가지 말 것.**
+
+> 이슈 1개를 처음부터 끝까지 한 번에 실행하려면 `/tdd-cycle N`을 사용한다.
 
 ### 이슈 분해 원칙 (수직 슬라이싱)
 
