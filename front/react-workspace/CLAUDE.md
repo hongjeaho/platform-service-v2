@@ -161,34 +161,57 @@ const userKeys = {
 
 ## 기획 및 설계 워크플로우
 
-**신규 기능 기획 시 반드시 `/feature-planner {기능명}` 커맨드로 시작할 것.**
+**신규 기능 기획 시 반드시 `/feature-planner` 커맨드로 시작할 것.**
 
 아이디어 → spec → spec-fixed → PRD+ADR → issues 파이프라인을 단계별 승인 게이트(GATE)와 함께 실행한다.
 
-| 커맨드 | 용도 |
+| 커맨드 형식 | 동작 |
 |---|---|
-| `/feature-planner {기능명}` | 기능 기획 워크플로우 시작 |
+| `/feature-planner` | 현재 git 브랜치에서 feature-path 자동 추론 |
+| `/feature-planner {기능 설명}` | 브랜치 추론 + 설명 추가 |
+| `/feature-planner {feature-path}` | 경로 직접 지정 (예: `notice/list`) |
+
+> `main`·`master`·`develop` 등 보호 브랜치에서 실행 시, 먼저 feature 브랜치 생성을 안내한다.
+> 확정된 `feature-path`는 세션 컨텍스트에 저장되어 이후 `/test-scenarios`, `/tdd-red`, `/tdd-green`, `/tdd-refactor` 스킬에 자동 전달된다.
 
 ### 파이프라인 개요
 
 ```
-/feature-planner {기능명}
-    ↓ 단계 0: spec.md 생성 및 진입 조건 검증
+/feature-planner
+    ↓ 브랜치 → feature-path 자동 추론 (보호 브랜치 시 생성 안내) [GATE]
+    ↓ 단계 0: spec.md 확인 / 생성 → 진입 조건 검증 [GATE]
     ↓ 단계 1: 요구사항 인터뷰 → spec-fixed.md [GATE]
-    ↓ 단계 2: PRD + ADR 작성 → prd.md [GATE × 2]
+    ↓ 단계 2: PRD 뼈대 → 아키텍처 3안 선택 [GATE] → ADR → Out of Scope [GATE]
     ↓ 단계 3: 이슈 분해 → issues.md [GATE]
+    ↓ /test-scenarios 핸드오프 (feature-path 자동 전달)
 ```
 
-**산출물 경로**: `src/features/{name}/docs/`
+**산출물 경로**: `/src/features/{feature-path}/docs/`
 
 ### 승인 게이트 요약
 
 | 지점 | 확인 내용 |
 |------|----------|
+| 단계 0 진입 | 브랜치 추론 경로 확정 |
+| 단계 0 — spec.md | 기존 spec 검토 또는 신규 생성 확인 |
 | 단계 1 후 | spec-fixed.md — 모호성 제거, 용어 확정 |
 | 단계 2-2 후 | 아키텍처 3안 중 하나 선택 |
 | 단계 2-4 후 | Out of Scope — 범위 확정 |
 | 단계 3 후 | 이슈 목록 — 수직슬라이스·AC·의존성 확인 |
+
+## TDD 이슈 사이클
+
+새 이슈 작업 시 다음 순서를 따른다:
+
+1. `/test-scenarios N`    — 시그니처 + 시나리오 (skill)
+2. `/tdd-red N`           — 실패 테스트 작성 (skill)
+3. `/tdd-green N`         — 최소 구현, 테스트 전체 통과 (skill)
+4. `@ac-verifier N`       — AC 충족 독립 검증, 테스트 통과 ≠ AC 충족 (agent)
+5. `/tdd-refactor N`      — 구조 개선, 깨지면 즉시 롤백 (skill)
+6. `/security-review N`   — 타입·보안 점검 (skill)
+7. commit → PR --base feature/\<spec\> → squash merge → 이슈 클로즈
+
+각 단계는 인간 승인 게이트가 있다. **자동으로 다음 단계로 넘어가지 말 것.**
 
 ### 이슈 분해 원칙 (수직 슬라이싱)
 
