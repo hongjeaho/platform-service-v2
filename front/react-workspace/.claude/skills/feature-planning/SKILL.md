@@ -1,9 +1,13 @@
 ---
 name: feature-planning
 description: |
-   아이디어를 개발 가능한 이슈 단위로 변환하는 기획 워크플로우 스킬. /feature-planner 명령어로 진입.
+   아이디어를 개발 가능한 이슈 단위로 변환하는 기획 워크플로우 스킬.
+   /feature-planner 명령어로 진입. Git 브랜치명(feature/xxx)을 자동 파싱해 feature-path를 설정한다.
+   main·master·develop 등 보호 브랜치에서 실행 시 feature 브랜치 생성을 먼저 안내한다.
+   feature-path는 세션 컨텍스트에 저장되어 이후 /test-scenarios, /tdd-red, /tdd-green, /tdd-refactor 스킬에 자동 전달된다.
    사용자가 새로운 기능을 기획하거나, "기능 기획", "PRD 작성", "이슈 분해", "요구사항 정리",
-   "spec 작성", "feature planning", "수직 슬라이싱", "ADR" 등을 언급하면 반드시 이 스킬을 사용할 것.
+   "spec 작성", "feature planning", "수직 슬라이싱", "ADR", "브랜치 기반 기획" 등을 언급하면
+   반드시 이 스킬을 사용할 것.
    아이디어 → spec → spec-fixed → prd → issues 파이프라인을 단계별 승인 게이트(GATE)와 함께 실행한다.
    기능 설계 시작 전, 기획 문서 작성 요청이 들어올 때, 이슈 분해가 필요할 때 적극적으로 활성화할 것.
 ---
@@ -15,9 +19,117 @@ description: |
 
 ---
 
-## 경로 네이밍 규칙
+## 브랜치 기반 경로 자동 추론 (핵심 변경)
 
 ### 입력 형식
+
+```
+/feature-planner                          ← 현재 브랜치에서 자동 추론
+/feature-planner {기능 설명}              ← 현재 브랜치 + 설명 추가
+/feature-planner {feature-path}           ← 경로 직접 지정 (기존 방식)
+/feature-planner {feature-path} {설명}   ← 경로 + 설명 (기존 방식)
+```
+
+### 브랜치 → feature-path 자동 파싱
+
+`/feature-planner`만 입력하거나 첫 토큰이 `{설명}`처럼 보일 때 (슬래시 없고 한글/자연어인 경우),
+아래 순서로 `feature-path`를 결정한다.
+
+**Step 1: 현재 브랜치 확인**
+```bash
+git branch --show-current
+```
+
+**Step 2: 보호 브랜치 감지 → 브랜치 생성 프로세스**
+
+브랜치명이 `main`, `master`, `develop`, `dev` 중 하나이거나,
+`feature/` · `feat/` prefix가 없는 경우 → **기획 전에 브랜치를 먼저 만든다.**
+
+```
+⚠️  현재 브랜치: main (보호 브랜치)
+    기획 문서와 이후 코드 작업은 feature 브랜치에서 진행해야 합니다.
+
+    기능명을 알려주시면 브랜치명을 제안해드릴게요.
+    예) "공지 목록"       → feature/notice/list
+        "태그 관리"       → feature/tag
+        "공지 검색 조건"  → feature/notice/list-search
+```
+
+사용자가 기능명을 입력하면:
+
+1. **브랜치명 제안**
+   ```
+   제안 브랜치명: feature/{feature-path}
+   예) feature/notice/list
+
+   ✅ 이 이름으로 생성할까요?
+      변경하려면 원하는 이름을 입력해주세요.
+   ```
+
+2. **사용자 확인 후 브랜치 생성 명령어 제시**
+   > Claude는 git 명령을 직접 실행하지 않는다. 사용자가 직접 실행하도록 명령어를 제시한다.
+   ```bash
+   git checkout -b feature/notice/list
+   # 또는 이미 원격에 브랜치가 있다면:
+   git checkout -t origin/feature/notice/list
+   ```
+   ```
+   위 명령어를 실행하신 후 "완료"라고 말씀해주세요.
+   브랜치 전환이 확인되면 기획을 시작합니다.
+   ```
+
+3. **사용자가 "완료" 응답 시**
+   - `feature-path`를 브랜치명에서 추론해 컨텍스트에 저장
+   - 경로 확인 메시지 출력 후 spec.md 처리로 진행
+
+**Step 3: 브랜치 → feature-path 변환 규칙**
+
+> **브랜치 컨벤션**
+> - `/` : 계층 구분자 (도메인/기능/하위기능)
+> - `-` : 같은 계층 내 단어 연결
+>
+> 예) `feature/notice/list-search` → 도메인 `notice`, 기능 `list-search`
+
+| 브랜치명 | feature-path | 문서 경로 |
+|---------|-------------|---------|
+| `feature/tag` | `tag` | `/src/features/tag/docs/` |
+| `feature/notice/list` | `notice/list` | `/src/features/notice/list/docs/` |
+| `feature/notice/list-search` | `notice/list-search` | `/src/features/notice/list-search/docs/` |
+| `feat/notice/category/detail` | `notice/category/detail` | `/src/features/notice/category/detail/docs/` |
+| `feature/notice/tag-filter` | `notice/tag-filter` | `/src/features/notice/tag-filter/docs/` |
+
+**변환 알고리즘:**
+1. `feature/` 또는 `feat/` prefix 제거
+2. 나머지를 그대로 `feature-path`로 사용 (슬래시·하이픈 변환 없음)
+
+**Step 4: 추론 결과 사용자에게 확인**
+```
+🌿 현재 브랜치: feature/notice/list
+📁 추론된 경로: notice/list
+   → 문서 경로: /src/features/notice/list/docs/
+
+경로가 맞으면 계속 진행합니다. 다르면 말씀해주세요.
+```
+
+**Step 5: 컨텍스트 저장**
+
+경로 확정 후 세션 컨텍스트에 기록한다.
+이후 `/tdd-red`, `/tdd-green`, `/tdd-refactor` 스킬은 이 값을 자동으로 사용한다.
+
+```
+[CONTEXT] feature-path: notice/list
+          docs-root: /src/features/notice/list/docs/
+          branch: feature/notice/list
+```
+
+> **이 컨텍스트가 있으면** `/tdd-red 1` 처럼 번호만 입력해도 경로를 자동으로 채운다.
+> 컨텍스트가 없으면 TDD 스킬은 `/tdd-red {feature-path} 1` 형식을 요구한다.
+
+---
+
+## 경로 네이밍 규칙 (직접 지정 시)
+
+직접 경로를 입력할 때의 형식 (브랜치 추론이 실패하거나 override할 때 사용).
 
 ```
 /feature-planner {feature-path}
@@ -25,7 +137,6 @@ description: |
 ```
 
 `{feature-path}`는 **기능의 위치를 나타내는 경로 전체**다.
-도메인만 넣는 것이 아니라 기능명까지 포함해서 입력한다.
 
 | 입력 예시 | 의미 | 문서 경로 |
 |----------|------|----------|
@@ -34,14 +145,10 @@ description: |
 | `/feature-planner notice/list 페이지네이션 포함` | 설명 추가 | `/src/features/notice/list/docs/` |
 | `/feature-planner notice/category/detail` | 3단계 중첩 | `/src/features/notice/category/detail/docs/` |
 
-> **주의:** `/feature-planner notice`만 입력하면 `notice` 자체가 기능명이 된다.
-> `notice` 하위의 세부 기능을 기획할 때는 `/feature-planner notice/list`처럼 슬래시 포함해서 입력한다.
-
-**파싱 규칙:**
-- 첫 번째 공백 이전 → `{feature-path}` (슬래시 포함 가능)
-- 첫 번째 공백 이후 → `{기능 설명}` (spec.md 자동 생성에 사용)
-- 슬래시가 있으면 마지막 세그먼트가 기능명, 전체가 경로
-- 한글·공백이 포함된 경우: 공백을 `-`로, 한글은 영문 slug로 변환하도록 사용자에게 제안
+**파싱 규칙 (직접 지정 vs 브랜치 추론 구분):**
+- 첫 토큰에 슬래시(`/`)가 있거나, 영문+하이픈 조합 → `{feature-path}` 직접 지정으로 판단
+- 첫 토큰이 한글이거나 자연어 문장 → `{기능 설명}`으로 판단 → 브랜치 추론 실행
+- 입력이 없음 → 브랜치 추론 실행
 
 ### 산출물 경로
 
@@ -49,20 +156,22 @@ description: |
 /src/features/{feature-path}/docs/
 ```
 
-| 예시 | 실제 경로 |
-|------|----------|
-| `tag` | `/src/features/tag/docs/` |
-| `notice/list` | `/src/features/notice/list/docs/` |
-| `notice/category/detail` | `/src/features/notice/category/detail/docs/` |
-
 ---
 
 ## 파이프라인 개요
 
 ```
-/feature-planner {feature-path} [{기능 설명}]
+/feature-planner [{feature-path}] [{기능 설명}]
     ↓
-feature-path 파싱 → 경로 확정 후 사용자에게 보여주기
+feature-path 결정
+  ├─ 직접 지정 → 그대로 사용
+  └─ 브랜치 추론 → git branch --show-current
+       ├─ main / master / develop / dev 감지
+       │    └─ ⚠️ 보호 브랜치 경고 → 기능명 수집 → 브랜치명 제안
+       │         → 사용자가 직접 git checkout -b 실행 → "완료" 응답 → 재확인
+       └─ feature/* / feat/* 감지 → 변환 → 사용자 확인
+    ↓
+[CONTEXT 저장: feature-path, docs-root, branch]
     ↓
 spec.md 존재 확인 (/src/features/{feature-path}/docs/spec.md)
     ├─ 있음
@@ -76,7 +185,7 @@ spec.md 존재 확인 (/src/features/{feature-path}/docs/spec.md)
     ↓ 단계 1: 요구사항 인터뷰 → spec-fixed.md [GATE]
     ↓ 단계 2: PRD + ADR 작성 → prd.md [GATE × 2]
     ↓ 단계 3: 이슈 분해 → issues.md [GATE]
-    ↓ /test-scenarios 핸드오프
+    ↓ /test-scenarios 핸드오프 (feature-path 자동 전달)
 ```
 
 **산출물 경로**: `/src/features/{feature-path}/docs/`
@@ -87,11 +196,12 @@ spec.md 존재 확인 (/src/features/{feature-path}/docs/spec.md)
 
 ### 경로 확정 안내
 
-스킬 진입 직후 파싱 결과를 아래 형식으로 사용자에게 먼저 보여준다.
+스킬 진입 직후 파싱/추론 결과를 아래 형식으로 사용자에게 먼저 보여준다.
 사용자가 수정을 요청하면 반영한 뒤 진행한다.
 
 ```
-📁 문서 경로: /src/features/{feature-path}/docs/
+🌿 브랜치: feature/notice/list        ← 브랜치 추론 시에만 표시
+📁 문서 경로: /src/features/notice/list/docs/
 
 변경이 필요하면 말씀해주세요. 없으면 계속 진행합니다.
 ```
@@ -442,13 +552,50 @@ PRD를 실행 가능한 작업 단위로 변환한다.
 issues.md 확정 후 `/test-scenarios` 스킬로 이관한다.
 각 이슈의 AC(Given-When-Then)가 테스트 시나리오의 입력이 된다.
 
+**TDD 스킬로의 컨텍스트 전달:**
+이 스킬에서 확정된 `[CONTEXT]`가 살아있는 동안 TDD·test-scenarios 스킬은 경로 입력을 요구하지 않는다.
+```
+다음 단계: /test-scenarios  (feature-path 생략 가능 — 컨텍스트에서 자동 로드)
+           /tdd-red 1       (feature-path 생략 가능 — 컨텍스트에서 자동 로드)
+```
+
+---
+
+## TDD · test-scenarios 스킬 연동 규칙
+
+### 컨텍스트 유효 범위
+
+`/feature-planner`가 세션에서 실행되어 `[CONTEXT]`가 기록된 경우:
+
+| 스킬 호출 | 동작 |
+|----------|------|
+| `/test-scenarios` | 컨텍스트의 feature-path + issues.md 자동 로드 |
+| `/tdd-red 1` | 컨텍스트의 feature-path + 이슈 번호 1 사용 |
+| `/tdd-green 2` | 컨텍스트의 feature-path + 이슈 번호 2 사용 |
+| `/tdd-refactor 1` | 컨텍스트의 feature-path + 이슈 번호 1 사용 |
+| `/test-scenarios notice/list` | 명시적 경로 우선 (컨텍스트 무시) |
+| `/tdd-red notice/list 1` | 명시적 경로 우선 (컨텍스트 무시) |
+
+### 컨텍스트가 없을 때
+
+TDD 스킬을 단독으로 실행하는 경우:
+```
+/tdd-red {feature-path} {이슈 번호}
+/tdd-red notice/list 1
+```
+
+### 브랜치가 이미 `feature/xxx` 형태라면
+
+TDD 스킬도 `/tdd-red`만 입력 시 현재 브랜치에서 자동 추론을 시도한다.
+단, feature-planning 컨텍스트가 있으면 git 추론보다 컨텍스트를 우선한다.
+
 ---
 
 ## 승인 게이트 요약
 
 | 지점 | 확인 내용 | 긍정 응답 예시 |
 |------|----------|--------------|
-| 단계 0 진입 | 경로 확정 | yes / ok / 확인 / 좋아 또는 수정 요청 |
+| 단계 0 진입 | 브랜치 추론 경로 확정 | yes / ok / 확인 / 좋아 또는 수정 요청 |
 | 단계 0 — spec.md 확인 | 기존 spec 검토 또는 신규 생성 확인 | yes / ok / 확인 / 좋아 또는 수정 요청 |
 | 단계 0 후 | 진입 조건 체크리스트 자동 확인 | — (자동 진행) |
 | 단계 1 후 | spec-fixed.md — 모호성 제거, 용어 확정 | yes / ok / 확인 / 좋아 |
