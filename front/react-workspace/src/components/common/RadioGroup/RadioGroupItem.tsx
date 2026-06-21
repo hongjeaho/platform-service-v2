@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useRef } from 'react'
+import React, { useContext, useRef } from 'react'
 
 import { RadioGroupContext } from './RadioGroup.context'
 import type { RadioGroupSize } from './RadioGroup.type'
@@ -25,37 +25,34 @@ export function RadioGroupItem({
   const ctx = useContext(RadioGroupContext)
   const itemRef = useRef<HTMLButtonElement>(null)
 
-  const handleClick = useCallback(() => {
+  const handleClick = () => {
     if (!ctx) return
     const disabled = ctx.disabled || itemDisabled
     if (disabled) return
     ctx.onSelect(value)
-  }, [ctx, itemDisabled, value])
+  }
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (!ctx) return
-      const disabled = ctx.disabled || itemDisabled
-      if (e.key === ' ' || e.key === 'Enter') {
-        e.preventDefault()
-        if (!disabled) ctx.onSelect(value)
-        return
-      }
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-        e.preventDefault()
-        const next = itemRef.current?.nextElementSibling as HTMLElement | null
-        next?.focus()
-        return
-      }
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        e.preventDefault()
-        const prev = itemRef.current?.previousElementSibling as HTMLElement | null
-        prev?.focus()
-        return
-      }
-    },
-    [ctx, itemDisabled, value],
-  )
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!ctx) return
+    const disabled = ctx.disabled || itemDisabled
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault()
+      if (!disabled) ctx.onSelect(value)
+      return
+    }
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault()
+      const next = itemRef.current?.nextElementSibling as HTMLElement | null
+      next?.focus()
+      return
+    }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      const prev = itemRef.current?.previousElementSibling as HTMLElement | null
+      prev?.focus()
+      return
+    }
+  }
 
   if (!ctx) return null
 

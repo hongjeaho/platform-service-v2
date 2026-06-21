@@ -1,35 +1,26 @@
 import { ChevronDown } from 'lucide-react'
-import React, {
-  Children,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import React, { Children, type ReactNode, useEffect, useId, useRef, useState } from 'react'
 
 import { textCombinations } from '@/styles'
 
-import { ComboboxContext } from './Combobox.context'
-import styles from './Combobox.module.css'
-import type { ComboboxProps, ComboboxSize } from './Combobox.type'
-import { ComboboxItem } from './ComboboxItem'
+import { ComboBoxContext } from './ComboBox.context'
+import styles from './ComboBox.module.css'
+import type { ComboBoxProps, ComboBoxSize } from './ComboBox.type'
+import { ComboBoxItem } from './ComboBoxItem'
 
-const sizeClasses: Record<ComboboxSize, string> = {
+const sizeClasses: Record<ComboBoxSize, string> = {
   sm: styles.sizeSm,
   md: styles.sizeMd,
   lg: styles.sizeLg,
 }
 
-const listboxSizeClasses: Record<ComboboxSize, string> = {
+const listboxSizeClasses: Record<ComboBoxSize, string> = {
   sm: styles.listboxSizeSm,
   md: styles.listboxSizeMd,
   lg: styles.listboxSizeLg,
 }
 
-const ITEM_HEIGHT_PX: Record<ComboboxSize, number> = {
+const ITEM_HEIGHT_PX: Record<ComboBoxSize, number> = {
   sm: 32,
   md: 40,
   lg: 48,
@@ -99,18 +90,18 @@ function getDisplayTextForValue(items: ParsedItem[], value: string): string {
 }
 
 /**
- * Combobox 컴포넌트
+ * ComboBox 컴포넌트
  * 입력 필드 + 실시간 필터링 드롭다운. RHF register() 및 value/onChange와 호환됩니다.
  *
  * @example
  * ```tsx
- * <Combobox placeholder="검색" label="과일" {...register('fruit')} error={errors.fruit?.message}>
- *   <ComboboxItem value="0001">딸기</ComboboxItem>
- *   <ComboboxItem value="0002">바나나</ComboboxItem>
- * </Combobox>
+ * <ComboBox placeholder="검색" label="과일" {...register('fruit')} error={errors.fruit?.message}>
+ *   <ComboBoxItem value="0001">딸기</ComboBoxItem>
+ *   <ComboBoxItem value="0002">바나나</ComboBoxItem>
+ * </ComboBox>
  * ```
  */
-export function Combobox({
+export function ComboBox({
   ref,
   placeholder,
   limit = 5,
@@ -127,7 +118,7 @@ export function Combobox({
   onValueChange,
   onBlur,
   children,
-}: ComboboxProps) {
+}: ComboBoxProps) {
   const generatedId = useId()
   const triggerId = idProp ?? generatedId
   const listboxId = `${triggerId}-listbox`
@@ -144,17 +135,15 @@ export function Combobox({
   /** blur 시 목록에 없는 검색어일 때 복원할 값 (선택된 값은 타이핑 중에도 유지) */
   const lastSelectedValueRef = useRef<string>((defaultValue || valueProp) ?? '')
 
-  const items = useMemo(() => parseItems(children), [children])
+  const items = parseItems(children)
   const isControlled = valueProp !== undefined
   const currentValue = isControlled ? valueProp : uncontrolledValue
 
-  const filteredItems = useMemo(() => {
-    const q = inputValue.trim().toLowerCase()
-    if (!q) return items.slice(0, limit)
-    return items.filter(i => i.displayText.toLowerCase().includes(q)).slice(0, limit)
-  }, [items, inputValue, limit])
-
-  const filteredValues = useMemo(() => new Set(filteredItems.map(i => i.value)), [filteredItems])
+  const q = inputValue.trim().toLowerCase()
+  const filteredItems = !q
+    ? items.slice(0, limit)
+    : items.filter(i => i.displayText.toLowerCase().includes(q)).slice(0, limit)
+  const filteredValues = new Set(filteredItems.map(i => i.value))
 
   useEffect(() => {
     if (isControlled && valueProp !== undefined) {
@@ -163,46 +152,40 @@ export function Combobox({
     }
   }, [isControlled, valueProp, items])
 
-  const setValue = useCallback(
-    (v: string, displayText: string) => {
-      lastSelectedValueRef.current = v
-      if (!isControlled) setUncontrolledValue(v)
-      setInputValueState(displayText)
-      setOpen(false)
-      onValueChange?.(v)
+  const setValue = (v: string, displayText: string) => {
+    lastSelectedValueRef.current = v
+    if (!isControlled) setUncontrolledValue(v)
+    setInputValueState(displayText)
+    setOpen(false)
+    onValueChange?.(v)
+    const input = hiddenInputRef.current
+    if (input) {
+      input.value = v
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+    const syntheticEvent = {
+      target: { name: name ?? '', value: v },
+    } as React.ChangeEvent<HTMLInputElement>
+    onChange?.(syntheticEvent)
+  }
+
+  const setInputValue = (v: string) => {
+    setInputValueState(v)
+    setOpen(true)
+    const currentDisplay = getDisplayTextForValue(items, currentValue)
+    if (currentValue && v !== currentDisplay) {
+      setUncontrolledValue('')
+      onValueChange?.('')
       const input = hiddenInputRef.current
       if (input) {
-        input.value = v
+        input.value = ''
         input.dispatchEvent(new Event('change', { bubbles: true }))
       }
-      const syntheticEvent = {
-        target: { name: name ?? '', value: v },
-      } as React.ChangeEvent<HTMLInputElement>
-      onChange?.(syntheticEvent)
-    },
-    [isControlled, name, onChange, onValueChange],
-  )
-
-  const setInputValue = useCallback(
-    (v: string) => {
-      setInputValueState(v)
-      setOpen(true)
-      const currentDisplay = getDisplayTextForValue(items, currentValue)
-      if (currentValue && v !== currentDisplay) {
-        setUncontrolledValue('')
-        onValueChange?.('')
-        const input = hiddenInputRef.current
-        if (input) {
-          input.value = ''
-          input.dispatchEvent(new Event('change', { bubbles: true }))
-        }
-        onChange?.({
-          target: { name: name ?? '', value: '' },
-        } as React.ChangeEvent<HTMLInputElement>)
-      }
-    },
-    [currentValue, items, name, onChange, onValueChange],
-  )
+      onChange?.({
+        target: { name: name ?? '', value: '' },
+      } as React.ChangeEvent<HTMLInputElement>)
+    }
+  }
 
   useEffect(() => {
     if (!isOpen) return
@@ -213,14 +196,11 @@ export function Combobox({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isOpen])
 
-  const setHiddenInputRef = useCallback(
-    (el: HTMLInputElement | null) => {
-      hiddenInputRef.current = el
-      if (typeof ref === 'function') ref(el)
-      else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = el
-    },
-    [ref],
-  )
+  const setHiddenInputRef = (el: HTMLInputElement | null) => {
+    hiddenInputRef.current = el
+    if (typeof ref === 'function') ref(el)
+    else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = el
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = e.target.value
@@ -228,42 +208,39 @@ export function Combobox({
   }
 
   /** 포커스 아웃 시: 드롭다운 목록에 없는 검색어면 마지막 선택값 표시 또는 빈 값으로 초기화 */
-  const handleBlur = useCallback(
-    (e: React.FocusEvent<HTMLInputElement>) => {
-      const trimmed = inputValue.trim()
-      const matchesSomeItem = items.some(i => i.displayText.toLowerCase() === trimmed.toLowerCase())
-      if (!matchesSomeItem) {
-        const restoreValue = lastSelectedValueRef.current
-        const displayForRestore = getDisplayTextForValue(items, restoreValue)
-        setInputValueState(displayForRestore)
-        if (!restoreValue) {
-          setUncontrolledValue('')
-          onValueChange?.('')
-          const input = hiddenInputRef.current
-          if (input) {
-            input.value = ''
-            input.dispatchEvent(new Event('change', { bubbles: true }))
-          }
-          onChange?.({
-            target: { name: name ?? '', value: '' },
-          } as React.ChangeEvent<HTMLInputElement>)
-        } else {
-          setUncontrolledValue(restoreValue)
-          onValueChange?.(restoreValue)
-          const input = hiddenInputRef.current
-          if (input) {
-            input.value = restoreValue
-            input.dispatchEvent(new Event('change', { bubbles: true }))
-          }
-          onChange?.({
-            target: { name: name ?? '', value: restoreValue },
-          } as React.ChangeEvent<HTMLInputElement>)
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const trimmed = inputValue.trim()
+    const matchesSomeItem = items.some(i => i.displayText.toLowerCase() === trimmed.toLowerCase())
+    if (!matchesSomeItem) {
+      const restoreValue = lastSelectedValueRef.current
+      const displayForRestore = getDisplayTextForValue(items, restoreValue)
+      setInputValueState(displayForRestore)
+      if (!restoreValue) {
+        setUncontrolledValue('')
+        onValueChange?.('')
+        const input = hiddenInputRef.current
+        if (input) {
+          input.value = ''
+          input.dispatchEvent(new Event('change', { bubbles: true }))
         }
+        onChange?.({
+          target: { name: name ?? '', value: '' },
+        } as React.ChangeEvent<HTMLInputElement>)
+      } else {
+        setUncontrolledValue(restoreValue)
+        onValueChange?.(restoreValue)
+        const input = hiddenInputRef.current
+        if (input) {
+          input.value = restoreValue
+          input.dispatchEvent(new Event('change', { bubbles: true }))
+        }
+        onChange?.({
+          target: { name: name ?? '', value: restoreValue },
+        } as React.ChangeEvent<HTMLInputElement>)
       }
-      onBlur?.(e)
-    },
-    [inputValue, items, name, onChange, onValueChange, onBlur],
-  )
+    }
+    onBlur?.(e)
+  }
 
   const contextValue = {
     value: currentValue,
@@ -282,6 +259,7 @@ export function Combobox({
 
   const comboboxWrapClasses = [
     styles.comboboxWrap,
+    isOpen ? styles.open : '',
     disabled ? styles.disabled : '',
     error ? styles.error : '',
   ]
@@ -291,7 +269,7 @@ export function Combobox({
   const triggerWrapClasses = [styles.triggerWrap, sizeClasses[size]].filter(Boolean).join(' ')
 
   return (
-    <ComboboxContext.Provider value={contextValue}>
+    <ComboBoxContext.Provider value={contextValue}>
       <div ref={containerRef} className={styles.field}>
         {label != null && (
           <label htmlFor={triggerId} className={[styles.label, textCombinations.label].join(' ')}>
@@ -347,22 +325,24 @@ export function Combobox({
           </div>
         </div>
         {isOpen && (
-          <div
-            role='listbox'
-            id={listboxId}
-            className={[styles.listbox, listboxSizeClasses[size]].join(' ')}
-            style={{ maxHeight: listboxMaxHeight }}
-          >
-            {filteredItems.map(item => (
-              <ComboboxItem
-                key={item.value}
-                value={item.value}
-                disabled={item.disabled}
-                textValue={item.textValue}
-              >
-                {item.displayText}
-              </ComboboxItem>
-            ))}
+          <div className={[styles.listbox, listboxSizeClasses[size]].join(' ')}>
+            <div
+              role='listbox'
+              id={listboxId}
+              className={styles.listboxScroll}
+              style={{ maxHeight: listboxMaxHeight }}
+            >
+              {filteredItems.map(item => (
+                <ComboBoxItem
+                  key={item.value}
+                  value={item.value}
+                  disabled={item.disabled}
+                  textValue={item.textValue}
+                >
+                  {item.displayText}
+                </ComboBoxItem>
+              ))}
+            </div>
           </div>
         )}
         {error != null && (
@@ -375,6 +355,6 @@ export function Combobox({
           </span>
         )}
       </div>
-    </ComboboxContext.Provider>
+    </ComboBoxContext.Provider>
   )
 }

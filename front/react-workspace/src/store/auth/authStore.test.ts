@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import { useAuthStore } from './authStore'
+import {
+  selectIsAuthenticated,
+  selectLogin,
+  selectLogout,
+  selectUser,
+  useAuthStore,
+} from './authStore'
 
 describe('authStore', () => {
   beforeEach(() => {
@@ -46,5 +52,39 @@ describe('authStore', () => {
 
     useAuthStore.getState().login(user2)
     expect(useAuthStore.getState().user).toEqual(user2)
+  })
+})
+
+describe('authStore selectors', () => {
+  const mockUser = { id: 1, name: 'Test User', email: 'test@example.com' }
+
+  beforeEach(() => {
+    useAuthStore.setState({ user: null, isAuthenticated: false })
+  })
+
+  it('selectUser는 현재 user를 반환한다', () => {
+    useAuthStore.getState().login(mockUser)
+    expect(selectUser(useAuthStore.getState())).toEqual(mockUser)
+  })
+
+  it('selectIsAuthenticated는 인증 상태를 반환한다', () => {
+    expect(selectIsAuthenticated(useAuthStore.getState())).toBe(false)
+    useAuthStore.getState().login(mockUser)
+    expect(selectIsAuthenticated(useAuthStore.getState())).toBe(true)
+  })
+
+  it('selectLogin은 login 함수를 반환한다', () => {
+    const login = selectLogin(useAuthStore.getState())
+    expect(login).toBeTypeOf('function')
+    login(mockUser)
+    expect(useAuthStore.getState().isAuthenticated).toBe(true)
+  })
+
+  it('selectLogout은 logout 함수를 반환한다', () => {
+    useAuthStore.getState().login(mockUser)
+    const logout = selectLogout(useAuthStore.getState())
+    expect(logout).toBeTypeOf('function')
+    logout()
+    expect(useAuthStore.getState().isAuthenticated).toBe(false)
   })
 })

@@ -1,35 +1,29 @@
 import type { Ref } from 'react'
 
 /**
- * Combobox 크기
+ * 폼 필드 컴포넌트 공통 크기
+ * Select · Combobox 등 필드형 컴포넌트가 공유합니다.
  */
-export type ComboboxSize = 'sm' | 'md' | 'lg'
+export type FieldSize = 'sm' | 'md' | 'lg'
 
 /**
- * Combobox 컴포넌트 Props
- * 입력 필드 + 실시간 필터링 드롭다운. 라벨·에러 포함. RHF register() 및 value/onChange 제어 사용 가능.
- *
- * @example
- * ```tsx
- * <Combobox placeholder="검색" label="과일" {...register('fruit')} error={errors.fruit?.message}>
- *   <ComboboxItem value="0001">딸기</ComboboxItem>
- *   <ComboboxItem value="0002">바나나</ComboboxItem>
- * </Combobox>
- * ```
+ * 폼 필드 컴포넌트 공통 Props
+ * RHF register() 및 value/onChange 제어 모두 호환.
+ * Select · ComboBox 가 이 인터페이스를 상속합니다.
  */
-export interface ComboboxProps {
+export interface BaseFieldProps {
   /**
    * ref (React 19: 일반 prop, 숨김 input에 부착되어 RHF register와 연동)
    */
   ref?: Ref<HTMLInputElement>
 
   /**
-   * 트리거 input에 표시할 placeholder
+   * 트리거에 표시할 placeholder
    */
   placeholder?: string
 
   /**
-   * 목록에 표시할 최대 항목 수
+   * 목록에 표시할 최대 항목 수 (스크롤 시 더 표시)
    * @default 5
    */
   limit?: number
@@ -54,7 +48,7 @@ export interface ComboboxProps {
    * 크기
    * @default 'md'
    */
-  size?: ComboboxSize
+  size?: FieldSize
 
   /**
    * 필드 라벨 (있으면 label 요소로 렌더링)
@@ -78,7 +72,7 @@ export interface ComboboxProps {
   id?: string
 
   /**
-   * name (폼 제출·RHF register용)
+   * name (폼 제출 · RHF register용)
    */
   name?: string
 
@@ -97,20 +91,15 @@ export interface ComboboxProps {
    */
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
 
-  /** 옵션으로 사용할 ComboboxItem 자식 */
+  /** 옵션으로 사용할 Item 자식 */
   children: React.ReactNode
 }
 
 /**
- * ComboboxItem 컴포넌트 Props
- * Combobox 내부에서만 유효하며, Context 없으면 렌더되지 않음.
- *
- * @example
- * ```tsx
- * <ComboboxItem value="0001" textValue="딸기">딸기</ComboboxItem>
- * ```
+ * 필드 내 개별 옵션 항목 공통 Props
+ * SelectItem · ComboBoxItem 이 이 인터페이스를 상속합니다.
  */
-export interface ComboboxItemProps {
+export interface BaseItemProps {
   /**
    * 옵션 값 (폼 제출·선택 시 전달되는 값)
    */
@@ -123,27 +112,10 @@ export interface ComboboxItemProps {
   disabled?: boolean
 
   /**
-   * 접근성/필터링용 텍스트 (미제공 시 children 사용)
+   * 접근성/스크린리더용 텍스트 (미제공 시 children 사용)
    */
   textValue?: string
 
   /** 표시할 내용 */
   children: React.ReactNode
-}
-
-/**
- * Combobox Context 값 (Combobox ↔ ComboboxItem 연동용)
- */
-export interface ComboboxContextValue {
-  value: string
-  inputValue: string
-  setInputValue: (v: string) => void
-  onSelect: (value: string, displayText: string) => void
-  isOpen: boolean
-  listboxId: string
-  triggerId: string
-  disabled: boolean
-  size: ComboboxSize
-  /** 현재 필터를 통과한 value 집합 (ComboboxItem이 이에 포함될 때만 렌더) */
-  filteredValues: Set<string>
 }

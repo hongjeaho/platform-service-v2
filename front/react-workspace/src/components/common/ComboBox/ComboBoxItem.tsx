@@ -1,16 +1,16 @@
 import { useContext } from 'react'
 
-import { ComboboxContext } from './Combobox.context'
-import type { ComboboxItemProps } from './Combobox.type'
-import styles from './ComboboxItem.module.css'
+import { ComboBoxContext } from './ComboBox.context'
+import type { ComboBoxItemProps } from './ComboBox.type'
+import styles from './ComboBoxItem.module.css'
 
 /**
- * ComboboxItem 컴포넌트
- * Combobox 내부에서만 사용하며, 개별 옵션 한 건의 표시·선택 반응을 담당합니다.
+ * ComboBoxItem 컴포넌트
+ * ComboBox 내부에서만 사용하며, 개별 옵션 한 건의 표시·선택 반응을 담당합니다.
  * Context 없이 사용 시, 또는 현재 필터에 포함되지 않으면 렌더하지 않습니다.
  */
-export function ComboboxItem({ value, disabled = false, textValue, children }: ComboboxItemProps) {
-  const ctx = useContext(ComboboxContext)
+export function ComboBoxItem({ value, disabled = false, textValue, children }: ComboBoxItemProps) {
+  const ctx = useContext(ComboBoxContext)
   if (!ctx) return null
   if (!ctx.filteredValues.has(value)) return null
 
@@ -59,4 +59,4 @@ export function ComboboxItem({ value, disabled = false, textValue, children }: C
   )
 }
 
-ComboboxItem.displayName = 'ComboboxItem'
+ComboBoxItem.displayName = 'ComboBoxItem'

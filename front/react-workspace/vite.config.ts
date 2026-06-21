@@ -25,7 +25,10 @@ export default defineConfig(({ mode }) => {
         plugins: [
             react({
                 babel: {
-                    plugins: [['babel-plugin-react-compiler']],
+                    // test 모드에서는 React Compiler를 비활성화한다.
+                    // 컴파일러가 useMemo/useCallback을 재작성하면 v8 소스맵이 어긋나
+                    // 실제로는 실행된 코드가 미커버로 보고되는 false negative가 발생한다.
+                    plugins: mode !== 'test' ? [['babel-plugin-react-compiler']] : [],
                 },
             }),
             tsconfigPaths(),
@@ -72,12 +75,26 @@ export default defineConfig(({ mode }) => {
                 reporter: ['text', 'json', 'html', 'lcov'],
                 exclude: [
                     'node_modules/',
-                    'src/gen/',
                     'src/test/',
                     '**/*.d.ts',
                     '**/*.config.*',
                     '**/mockData',
                     'dist/',
+                    // 테스트 대상이 아닌 파일
+                    '.storybook/**',           // Storybook — 테스트로 실행 불가
+                    'src/main.tsx',
+                    'src/App.tsx',
+                    '**/index.ts',
+                    '.prettierrc.cjs',
+                    'config/**',               // Orval 환경설정
+                    '**/*.stories.tsx',        // Storybook 파일 — 테스트로 실행 불가
+                    '**/*.type.ts',            // 타입 정의만 존재, 런타임 로직 없음
+                    'src/app/**',
+                    'src/api/**',              // Orval 자동생성 — 수동 수정 금지
+                    'src/app/router.tsx',      // 라우트 선언부 — 통합 테스트 영역
+                    'src/features/**/pages/',  // 페이지 컴포넌트 — e2e/통합 테스트 영역
+                    'src/features/**/hooks/',  // TanStack Query 훅 — API 모킹 필요, 통합 테스트 영역
+                    'src/components/layout/Layout.tsx', // 라우팅 셸 (NavLink + Outlet) — 통합/e2e 테스트 영역
                 ],
                 // 문 라인 기준 커버리지 임계값
                 thresholds: {

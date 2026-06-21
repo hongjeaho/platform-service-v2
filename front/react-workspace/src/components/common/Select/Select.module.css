@@ -26,7 +26,7 @@
   color: var(--foreground);
   background-color: var(--input);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-md);
   outline: none;
   cursor: pointer;
   transition:
@@ -36,13 +36,18 @@
   text-align: left;
 }
 
+.trigger.open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
 .trigger:hover:not(:disabled) {
   border-color: color-mix(in srgb, var(--border) 80%, var(--foreground));
 }
 
 .trigger:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 35%, transparent);
 }
 
 .trigger:disabled {
@@ -82,7 +87,8 @@
 }
 
 .trigger.error:focus-visible {
-  outline-color: var(--destructive);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 35%, transparent);
 }
 
 .errorMessage {
@@ -90,13 +96,32 @@
 }
 
 /* 리스트박스 컨테이너 */
+/* 드롭다운 외부 컨테이너 */
 .listbox {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  border-top: none;
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1));
+  margin-top: calc(var(--spacing-1) * -1);
+  z-index: var(--z-index-dropdown, 1000);
+}
+
+/* 드롭다운 내부 스크롤 컨테이너 */
+.listboxScroll {
   overflow-y: auto;
   background-color: var(--popover);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1));
-  z-index: var(--z-index-dropdown, 1000);
+}
+
+.listboxScroll::-webkit-scrollbar {
+  width: 6px;
+}
+.listboxScroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.listboxScroll::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius-full);
 }
 
 .listboxSizeSm {
