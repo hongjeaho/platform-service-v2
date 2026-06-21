@@ -88,7 +88,7 @@ feature-path와 이슈 번호가 결정되면 아래 형식으로 출력한다.
 ```
 🌿 브랜치: feature/notice/list        ← 브랜치 추론 시에만 표시
 📁 feature-path: notice/list
-📄 읽기: /src/features/notice/list/docs/issue-1.md
+📄 읽기: src/features/notice/list/docs/issue-1.md
 🧪 TDD Red — 실패하는 테스트 코드 작성을 시작합니다.
 ```
 
@@ -96,7 +96,7 @@ feature-path와 이슈 번호가 결정되면 아래 형식으로 출력한다.
 
 ```
 📁 feature-path: notice/list  (feature-planner 컨텍스트에서 로드)
-📄 읽기: /src/features/notice/list/docs/issue-1.md
+📄 읽기: src/features/notice/list/docs/issue-1.md
 🧪 TDD Red — 실패하는 테스트 코드 작성을 시작합니다.
 ```
 
