@@ -53,7 +53,7 @@ export default defineConfig(({ mode }) => {
             include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
 
             // 테스트 제외 파일
-            exclude: ['node_modules', 'dist', '.idea', '.git', '.cache'],
+            exclude: ['node_modules', 'dist', '.idea', '.git', '.cache', 'e2e'],
 
             // 테스트 설정 파일
             setupFiles: ['./src/test/setup.ts'],
