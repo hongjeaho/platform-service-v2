@@ -364,7 +364,7 @@ pnpm test:coverage
 ⚠️ 미해결 항목: (있으면 표시)
    - [ ] {미통과 시나리오 — 원인 요약}
 
-다음 단계: /tdd-refactor {N}  (리팩토링)
+다음 단계: /ac-verifier {N}  (AC 충족 검증) → /tdd-refactor {N}  (리팩토링)
 ```
 
 ---

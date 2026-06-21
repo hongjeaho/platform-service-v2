@@ -110,9 +110,9 @@ description: |
 ```
 🌿 브랜치: feature/notice/list            ← 브랜치 추론 시에만 표시
 📁 feature-path: notice/list
-📋 태스크: /src/features/notice/list/docs/task.md — Task {N}
-📄 참조: /src/features/notice/list/docs/prd.md
-✏️  기록: /src/features/notice/list/docs/issue-{N}.md
+📋 태스크: src/features/notice/list/docs/task.md — Task {N}
+📄 참조: src/features/notice/list/docs/prd.md
+✏️  기록: src/features/notice/list/docs/issue-{N}.md
 
 변경이 필요하면 말씀해주세요. 없으면 바로 분석을 시작합니다.
 ```
@@ -121,9 +121,9 @@ description: |
 
 ```
 📁 feature-path: notice/list  (feature-planner 컨텍스트에서 로드)
-📋 태스크: /src/features/notice/list/docs/task.md — Task {N}
-📄 참조: /src/features/notice/list/docs/prd.md
-✏️  기록: /src/features/notice/list/docs/issue-{N}.md
+📋 태스크: src/features/notice/list/docs/task.md — Task {N}
+📄 참조: src/features/notice/list/docs/prd.md
+✏️  기록: src/features/notice/list/docs/issue-{N}.md
 ```
 
 ### 태스크 번호가 없는 경우
@@ -148,7 +148,10 @@ description: |
 ```
 /test-scenarios [{feature-path}] [{N}]
     ↓ feature-path 결정 (컨텍스트 → 직접 지정 → 브랜치 추론)
-    │   └─ 보호 브랜치 감지 시: 브랜치 생성 안내 → 완료 확인 후 재진입
+    │   ├─ 보호 브랜치 감지 시:
+    │   │     ↓ 기능명 입력 요청 → 브랜치명 제안 → 사용자 직접 생성
+    │   │     ↓ "완료" 응답 시 → feature-path 확정 후 재진입
+    │   └─ feature/* 브랜치: prefix 제거 → feature-path 확정
     ↓ 태스크 번호 확인 (없으면 질문)
     ↓ 경로 및 파일 확인 안내
     ↓ 단계 1: task.md(Task N) + prd.md 참고 + 코드베이스 분석 → 시그니처 도출
@@ -195,6 +198,7 @@ description: |
 ### 도출 항목
 
 태스크에 포함된 코드 영역에 따라 해당하는 항목만 도출한다.
+해당 사항이 없는 섹션(예: Store 액션이 없는 태스크)은 출력 및 기록에서 완전히 생략한다.
 
 #### 함수 시그니처 (API 서비스 / 유틸 함수)
 
@@ -274,6 +278,7 @@ type {컴포넌트명}Props = {
 
 - 파일이 없으면 새로 생성한다.
 - 파일이 이미 있으면 기존 내용 **위**에 시그니처 섹션을 삽입한다.
+- 해당 사항이 없는 하위 섹션(컴포넌트 Props, API 서비스, 훅, Store 액션)은 생략한다.
 
 **기록 형식:**
 
@@ -365,15 +370,15 @@ type {컴포넌트명}Props = {
 
 ### API 서비스 / 훅
 
-- [정상] {함수명} — should {기대동작} when {조건}
-- [경계] {함수명} — should {기대동작} when {조건}
-- [예외] {함수명} — should {기대동작} when {조건}
+- [ ] [정상] {함수명} — should {기대동작} when {조건}
+- [ ] [경계] {함수명} — should {기대동작} when {조건}
+- [ ] [예외] {함수명} — should {기대동작} when {조건}
 
 ### 컴포넌트
 
-- [정상] {컴포넌트명} — should {기대동작} when {조건}
-- [경계] {컴포넌트명} — should {기대동작} when {조건}
-- [예외] {컴포넌트명} — should {기대동작} when {조건}
+- [ ] [정상] {컴포넌트명} — should {기대동작} when {조건}
+- [ ] [경계] {컴포넌트명} — should {기대동작} when {조건}
+- [ ] [예외] {컴포넌트명} — should {기대동작} when {조건}
 
 ### AC 커버리지
 
