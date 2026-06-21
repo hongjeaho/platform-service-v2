@@ -117,8 +117,7 @@ feature-path와 이슈 번호가 결정되면 아래 형식으로 출력한다.
 
 | 항목 | 내용 |
 |------|------|
-| 테스트 러너 | `package.json`의 `test` 스크립트가 vitest를 실행함을 가정 |
-| 폴백 | `pnpm test:run` 없으면 `npx vitest run` 직접 사용 |
+| 테스트 러너 | `pnpm test:run` (`package.json`의 vitest 스크립트) |
 | 테스트 환경 | Vitest + React Testing Library |
 | API 클라이언트 | 직접 작성 금지 — `src/api/generated/`의 orval 생성 hook/api 사용 |
 
@@ -151,16 +150,8 @@ feature-path와 이슈 번호가 결정되면 아래 형식으로 출력한다.
 
 ## 단계 1: 실패 테스트 목록 확인
 
-아래 명령어를 순서대로 시도한다.
-
 ```bash
 pnpm test:run
-```
-
-`pnpm test:run`이 없으면 폴백:
-
-```bash
-npx vitest run
 ```
 
 실행 결과에서 `FAIL` 로 시작하는 줄과 `Tests X failed` 항목을 수집해 실패 테스트 목록을 만든다.
@@ -176,7 +167,8 @@ npx vitest run
 
 **불일치하는 경우** (체크박스 수 > Tests 수):
 
-import 대상 모듈이 없어 vitest가 테스트를 인식하지 못한 것이다.
+`/tdd-red`가 스켈레톤을 생성하지 못하고 종료되었거나, 그 이후 파일이 삭제된 비정상 케이스다.
+import 대상 모듈이 없어 vitest가 테스트를 인식하지 못한 것이므로,
 시그니처만 있는 stub 파일을 생성해 전체 테스트가 인식되도록 한다.
 
 ```ts
@@ -195,6 +187,7 @@ export function SomeComponent(_props: SomeComponentProps) {
 ```
 
 stub 생성 후 `pnpm test:run`을 재실행해 Tests 수가 일치하는지 확인한다.
+
 
 ---
 
