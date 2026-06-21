@@ -293,7 +293,7 @@ pnpm e2e e2e/{feature-path}/issue-{N}.spec.ts
 ✅ 실행 결과: {M}/{M} 통과
 🚫 단위 테스트 중복 제외: {K}개
 
-다음 단계: commit → PR --base feature/{spec} → squash merge → 이슈 클로즈
+다음 단계: /security-review {N}  (타입·보안 점검)
 ```
 
 ---

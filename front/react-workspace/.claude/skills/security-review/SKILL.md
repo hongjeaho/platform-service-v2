@@ -6,14 +6,14 @@ description: |
   feature-path 결정은 tdd-refactor와 동일한 4단계 우선순위 로직 적용
   (컨텍스트 → 직접 지정 → 브랜치 추론 → 직접 입력).
   결과는 src/features/{feature-path}/docs/issue-{N}.md 하단 ## 보안 검토 섹션에 기록.
-  /tdd-refactor 완료 후, git commit 전 실행.
+  /e2e-test 완료 후, git commit 전 실행.
   사용자가 "보안 검토", "security review", "취약점 점검", "타입 오류 확인",
   "커밋 전 검사", "audit", "lint 점검", "하드코딩 시크릿" 등을 언급하면 이 스킬을 사용할 것.
 ---
 
 # Security Review Workflow
 
-`/tdd-refactor` 완료 후 **커밋 전** 타입 오류·보안 취약점·코드 품질을 일괄 점검하는 파이프라인.
+`/e2e-test` 완료 후 **커밋 전** 타입 오류·보안 취약점·코드 품질을 일괄 점검하는 파이프라인.
 발견된 이슈를 세 분류로 나눠 개발자에게 보고하고, 승인 후 "즉시 수정 필요" 항목만 처리한다.
 
 ---
