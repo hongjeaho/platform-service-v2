@@ -43,7 +43,7 @@ git branch --show-current
 **Step 2: 보호 브랜치 감지 → 브랜치 생성 프로세스**
 
 브랜치명이 `main`, `master`, `develop`, `dev` 중 하나이거나,
-`feature/` · `feat/` prefix가 없는 경우 → **기획 전에 브랜치를 먼저 만든다.**
+`feature/` prefix가 없는 경우 → **기획 전에 브랜치를 먼저 만든다.**
 
 ```
 ⚠️  현재 브랜치: main (보호 브랜치)
@@ -95,11 +95,10 @@ git branch --show-current
 | `feature/tag` | `tag` | `/src/features/tag/docs/` |
 | `feature/notice/list` | `notice/list` | `/src/features/notice/list/docs/` |
 | `feature/notice/list-search` | `notice/list-search` | `/src/features/notice/list-search/docs/` |
-| `feat/notice/category/detail` | `notice/category/detail` | `/src/features/notice/category/detail/docs/` |
 | `feature/notice/tag-filter` | `notice/tag-filter` | `/src/features/notice/tag-filter/docs/` |
 
 **변환 알고리즘:**
-1. `feature/` 또는 `feat/` prefix 제거
+1. `feature/` prefix 제거
 2. 나머지를 그대로 `feature-path`로 사용 (슬래시·하이픈 변환 없음)
 
 **Step 4: 추론 결과 사용자에게 확인**
@@ -169,7 +168,7 @@ feature-path 결정
        ├─ main / master / develop / dev 감지
        │    └─ ⚠️ 보호 브랜치 경고 → 기능명 수집 → 브랜치명 제안
        │         → 사용자가 직접 git checkout -b 실행 → "완료" 응답 → 재확인
-       └─ feature/* / feat/* 감지 → 변환 → 사용자 확인
+       └─ feature/* 감지 → 변환 → 사용자 확인
     ↓
 [CONTEXT 저장: feature-path, docs-root, branch]
     ↓

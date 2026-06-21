@@ -52,7 +52,7 @@ description: |
 
 #### 보호 브랜치 감지
 
-브랜치명이 `main`, `master`, `develop`, `dev` 이거나 `feature/` · `feat/` prefix가 없는 경우:
+브랜치명이 `main`, `master`, `develop`, `dev` 이거나 `feature/` prefix가 없는 경우:
 
 ```
 ⚠️  현재 브랜치: main (보호 브랜치)
@@ -96,11 +96,10 @@ description: |
 | `feature/tag` | `tag` |
 | `feature/notice/list` | `notice/list` |
 | `feature/notice/list-search` | `notice/list-search` |
-| `feat/notice/category/detail` | `notice/category/detail` |
 | `feature/notice/tag-filter` | `notice/tag-filter` |
 
 **변환 알고리즘:**
-1. `feature/` 또는 `feat/` prefix 제거
+1. `feature/` prefix 제거
 2. 나머지를 그대로 `feature-path`로 사용 (슬래시·하이픈 변환 없음)
 
 ### 경로 확정 안내

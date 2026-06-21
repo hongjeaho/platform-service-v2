@@ -53,7 +53,7 @@ git 명령을 실행하거나 사용자에게 경로를 묻지 않는다.
 
 위 두 경우에 해당하지 않으면 `git branch --show-current`를 실행해 브랜치에서 추론한다.
 
-브랜치명이 `main`, `master`, `develop`, `dev` 이거나 `feature/` · `feat/` prefix가 없는 경우:
+브랜치명이 `main`, `master`, `develop`, `dev` 이거나 `feature/` prefix가 없는 경우:
 
 ```
 ⚠️  현재 브랜치: main (보호 브랜치)
@@ -68,9 +68,8 @@ git 명령을 실행하거나 사용자에게 경로를 묻지 않는다.
 | `feature/tag` | `tag` |
 | `feature/notice/list` | `notice/list` |
 | `feature/notice/list-search` | `notice/list-search` |
-| `feat/notice/category/detail` | `notice/category/detail` |
 
-**변환 알고리즘:** `feature/` 또는 `feat/` prefix를 제거하고 나머지를 그대로 사용한다.
+**변환 알고리즘:** `feature/` prefix를 제거하고 나머지를 그대로 사용한다.
 
 **4순위: 직접 입력 요청**
 
