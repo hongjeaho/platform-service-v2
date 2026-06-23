@@ -102,7 +102,7 @@ export $(grep -v '^#' .env | xargs)
 | `DB_USERNAME` | JOOQ/Flyway Gradle 태스크용 DB 유저 | — |
 | `DB_PASSWORD` | JOOQ/Flyway Gradle 태스크용 DB 패스워드 | — |
 
-> `DB_JDBC_URL`, `DB_USERNAME`, `DB_PASSWORD`는 `./gradlew :datasource:platform:generateJooq` 실행 시 필요합니다. 설정하지 않으면 `gradle.properties`의 로컬 기본값을 사용합니다.
+> `DB_JDBC_URL`, `DB_USERNAME`, `DB_PASSWORD`는 `./gradlew :datasource:platform:generateJooq` 실행 시 필요합니다. 환경변수를 설정하지 않으면 `datasource/platform/gradle.properties`의 로컬 기본값을 사용합니다. **아래 JOOQ 코드 생성 섹션에서 파일 생성 방법을 확인하세요.**
 > `JWT_SECRET`은 로컬 개발 시 기본값이 적용되므로 별도 설정이 없어도 무방합니다.
 
 ### 프론트엔드 초기 설정
@@ -126,9 +126,23 @@ Vite는 `/api` 경로를 `http://localhost:8080`으로 프록시합니다. (`vit
 백엔드 실행 전, DB 스키마를 기반으로 JOOQ 코드를 생성합니다.
 Docker MySQL이 실행 중인 상태에서 아래 명령어를 실행합니다.
 
+**1단계 - DB 접속 정보 파일 생성 (최초 1회):**
+
+`datasource/platform/gradle.properties`는 `.gitignore`에 등록되어 있어 커밋되지 않습니다. 예시 파일을 복사해서 생성합니다.
+
+```bash
+cp datasource/platform/gradle.properties.example datasource/platform/gradle.properties
+```
+
+docker-compose 기본값(root/root/store)을 사용한다면 별도 수정 없이 바로 사용할 수 있습니다.
+
+**2단계 - JOOQ 코드 생성:**
+
 ```bash
 ./gradlew :datasource:platform:generateJooq
 ```
+
+> 환경변수 `DB_JDBC_URL`, `DB_USERNAME`, `DB_PASSWORD`가 설정된 경우 gradle.properties보다 우선 적용됩니다.
 
 ---
 

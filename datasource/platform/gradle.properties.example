@@ -1,0 +1,9 @@
+# datasource/platform/gradle.properties.example
+# 이 파일을 복사해서 gradle.properties로 저장 후 실제 DB 정보를 입력하세요.
+# cp datasource/platform/gradle.properties.example datasource/platform/gradle.properties
+#
+# gradle.properties는 .gitignore에 등록되어 있어 커밋되지 않습니다.
+
+db.url=jdbc:mysql://localhost:3306/store?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+db.user=root
+db.password=root

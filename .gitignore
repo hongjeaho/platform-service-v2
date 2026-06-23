@@ -40,9 +40,8 @@ out/
 front/platform/stats.html
 front/platform/html
 %programdata%/Geni
-# datasource-platform 모듈의 로컬 설정
+# datasource-platform 모듈의 로컬 설정 (로컬 전용, 커밋 금지)
 datasource/platform/gradle.properties
-gradle.properties.example
 datasource/platform/src/generated
 front/react-workspace/tsconfig.node.tsbuildinfo
 front/react-workspace/tsconfig.app.tsbuildinfo
