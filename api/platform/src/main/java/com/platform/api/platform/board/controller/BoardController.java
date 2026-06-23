@@ -97,14 +97,14 @@ public class BoardController {
 
     @Operation(summary = "게시글 삭제")
     @ApiResponses({
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "삭제 성공"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "삭제 성공"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "게시글 없음")
     })
     @DeleteMapping("/{seq}")
-    public ResponseEntity<Void> delete(
+    public ResponseEntity<ApiResponse<Void>> delete(
         @Parameter(description = "게시글 일련번호") @PathVariable Long seq
     ) {
         boardService.delete(seq);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.of(null));
     }
 }
