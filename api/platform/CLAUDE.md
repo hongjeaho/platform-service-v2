@@ -92,7 +92,23 @@ com.platform.api.platform.
 | `Sender` | 알림·이메일·SMS 발송 | `CaseNotificationSender` |
 | `Builder` | 복잡한 객체 조립 (여러 소스 조합) | `CaseDocumentBuilder` |
 | `Processor` | 단계적 처리 흐름 실행 | `CaseApprovalProcessor` |
-| `Reader` | 조회 전용 복합 조회 (여러 Repository 조합) | `CaseSummaryReader` |
+
+> ⚠️ `Reader`는 Helper가 아닌 **Service 레이어** 컴포넌트로 분류한다.
+> 여러 Repository를 조합하는 복합 조회가 필요하면 `{Domain}Reader`를 `@Service`로 선언하고
+> `@PlatformTransactional(readOnly = true)`를 적용한다.
+> Helper 규칙(Repository 주입 금지, 트랜잭션 금지)이 적용되지 않는다.
+>
+> ```java
+> @Service
+> @RequiredArgsConstructor
+> public class CaseSummaryReader {
+>     private final CaseRepository caseRepository;
+>     private final UserRepository userRepository;
+>
+>     @PlatformTransactional(readOnly = true)
+>     public CaseSummaryResponse read(Long caseSeq) { ... }
+> }
+> ```
 
 ```
 service/
@@ -283,3 +299,4 @@ Swagger UI: `/public/swagger-ui/index.html`
 | Response DTO | `{Domain}Response` 또는 기능 명시 | `CaseDetailResponse` |
 | 도메인 Enum | `{Domain}StatusType` | `CaseStatusType`, `ReceiptStatusType` |
 | 캐시 상수 | `{DOMAIN}_CACHE_NAME` | `CASE_TEMPLATE_CACHE_NAME` |
+

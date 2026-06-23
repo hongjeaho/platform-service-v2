@@ -75,3 +75,58 @@ type(scope): 한글 요약 (50자 이내)
 - fix 불가능한 lint 에러가 있으면 커밋 차단 → `pnpm lint:fix && pnpm format` 실행 후 재시도
 - 커밋 메시지 형식 위반 시 커밋 차단 → 위 형식에 맞게 수정 후 재시도
 - GUI Git 클라이언트(Fork 등) 사용 시 `~/.config/husky/init.sh`에 nvm PATH 설정 필요
+
+## 백엔드 기획 및 TDD 워크플로우
+
+### 기획 워크플로우
+
+**신규 백엔드 기능 기획 시 반드시 `/feature-planner-be` 커맨드로 시작할 것.**
+
+| 커맨드 형식 | 동작 |
+|---|---|
+| `/feature-planner-be` | 현재 git 브랜치에서 feature-path 자동 추론 |
+| `/feature-planner-be {기능 설명}` | 브랜치 추론 + 설명 추가 |
+| `/feature-planner-be {feature-path}` | 경로 직접 지정 |
+
+파이프라인: 아이디어 → spec → spec-fixed → prd(+ADR) → issues (단계별 승인 GATE)
+
+산출물 경로: `api/{module-name}/src/main/java/{pkg-root}/{feature-path}/docs/`
+
+### TDD 이슈 사이클
+
+새 이슈 작업 시 다음 순서를 따른다:
+
+1. `/test-scenarios-be N` — 이슈 AC → Java 시그니처 확정 + 테스트 시나리오 도출 [GATE × 2]
+2. `/tdd-red-be N`        — 시나리오 → JUnit 실패 테스트 작성 (Service 단위 + Controller 슬라이스)
+3. `/tdd-green-be N`      — 테스트 통과 최소 구현 (Repository → Service → Controller)
+4. `/ac-verifier-be N`    — AC 충족 독립 검증 (테스트 통과 ≠ AC 충족) [GATE]
+5. `/tdd-refactor-be N`   — 구조 개선 (Helper 추출, 패턴 일관성), 깨지면 즉시 롤백 [GATE]
+6. `/security-review-be N`— 보안 취약점·패턴 위반·코드 품질 점검 [GATE]
+7. `/create-pr`           — 모든 이슈 완료 후 git commit 안내 + PR 제목·본문 생성 [GATE × 2]
+
+각 단계는 **담당 영역만** 건드린다.
+
+| 단계 | 작성 대상 | 수정 금지 |
+|------|----------|---------|
+| `tdd-red-be` | `src/test/` 테스트 파일 | `src/main/` 기존 구현 코드 (컴파일 에러 해소용 스켈레톤 시그니처만 예외) |
+| `tdd-green-be` | `src/main/` 구현 파일 | `src/test/` 테스트 파일 |
+| `tdd-refactor-be` | `src/main/` 구현 파일 | `src/test/` 테스트 파일 |
+
+**자동으로 다음 단계로 넘어가지 말 것 — 각 단계 완료 후 개발자가 확인한다.**
+
+#### 테스트 레이어
+
+| 레이어 | 어노테이션 | Mock 대상 |
+|--------|-----------|---------|
+| Service 단위 | `@ExtendWith(MockitoExtension.class)` | Repository (`@Mock`) |
+| Controller 슬라이스 | `@WebMvcTest` | Service (`@MockBean`) |
+
+#### 빠른 실행 명령어
+
+```bash
+# 특정 도메인 테스트만
+./gradlew :api:platform:test --tests "com.platform.api.platform.{domain}.*"
+
+# 전체 테스트
+./gradlew :api:platform:test
+```
