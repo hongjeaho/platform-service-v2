@@ -206,7 +206,7 @@ const userKeys = {
 1. `/test-scenarios N`    — 시그니처 + 시나리오 (skill)
 2. `/tdd-red N`           — 실패 테스트 작성 (skill)
 3. `/tdd-green N`         — 최소 구현, 테스트 전체 통과 (skill)
-4. `@ac-verifier N`       — AC 충족 독립 검증, 테스트 통과 ≠ AC 충족 (agent)
+4. `/ac-verifier N`       — AC 충족 독립 검증, 테스트 통과 ≠ AC 충족 (skill)
 5. `/tdd-refactor N`      — 구조 개선, 깨지면 즉시 롤백 (skill)
 6. `/e2e-test N`          — PRD 사용자 스토리 기반 Playwright E2E 테스트 (skill)
 7. `/security-review N`   — 타입·보안 점검 (skill)

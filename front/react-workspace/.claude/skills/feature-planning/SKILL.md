@@ -183,7 +183,7 @@ spec.md 존재 확인 (/src/features/{feature-path}/docs/spec.md)
     ↓ 단계 0: 진입 조건 검증
     ↓ 단계 1: 요구사항 인터뷰 → spec-fixed.md [GATE]
     ↓ 단계 2: PRD + ADR 작성 → prd.md [GATE × 2]
-    ↓ 단계 3: 이슈 분해 → issues.md [GATE]
+    ↓ 단계 3: 이슈 분해 → task.md [GATE]
     ↓ /test-scenarios 핸드오프 (feature-path 자동 전달)
 ```
 
@@ -533,7 +533,7 @@ PRD를 실행 가능한 작업 단위로 변환한다.
 ### [GATE] 최종 승인
 
 ```
-[GATE] issues.md를 사용자에게 보여주고 긍정 응답을 받을 때까지 대기.
+[GATE] task.md를 사용자에게 보여주고 긍정 응답을 받을 때까지 대기.
        확인 항목:
          - 수직 슬라이스 기준을 충족하는가
          - AC가 Given-When-Then 형식으로 구체적으로 작성되었는가
@@ -543,13 +543,13 @@ PRD를 실행 가능한 작업 단위로 변환한다.
 
 ### 산출물
 
-- `/src/features/{feature-path}/docs/issues.md`
+- `/src/features/{feature-path}/docs/task.md`
 - 프로젝트 칸반 보드 Todo 컬럼에 배치
 
 ### 핸드오프
 
-issues.md 확정 후 `/test-scenarios` 스킬로 이관한다.
-각 이슈의 AC(Given-When-Then)가 테스트 시나리오의 입력이 된다.
+task.md 확정 후 `/test-scenarios` 스킬로 이관한다.
+각 이슈의 AC(Given-When-Then)가 `/test-scenarios`에서 `issue-{N}.md` 생성의 입력이 된다.
 
 **TDD 스킬로의 컨텍스트 전달:**
 이 스킬에서 확정된 `[CONTEXT]`가 살아있는 동안 TDD·test-scenarios 스킬은 경로 입력을 요구하지 않는다.
@@ -568,7 +568,7 @@ issues.md 확정 후 `/test-scenarios` 스킬로 이관한다.
 
 | 스킬 호출 | 동작 |
 |----------|------|
-| `/test-scenarios` | 컨텍스트의 feature-path + issues.md 자동 로드 |
+| `/test-scenarios` | 컨텍스트의 feature-path + task.md 자동 로드 |
 | `/tdd-red 1` | 컨텍스트의 feature-path + 이슈 번호 1 사용 |
 | `/tdd-green 2` | 컨텍스트의 feature-path + 이슈 번호 2 사용 |
 | `/tdd-refactor 1` | 컨텍스트의 feature-path + 이슈 번호 1 사용 |

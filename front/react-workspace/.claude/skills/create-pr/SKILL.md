@@ -115,7 +115,6 @@ Base 브랜치: <base>
 ## 단계 4: E2E 실행
 
 ```bash
-cd /Volumes/MyPassport/workspace/platform-service-v2/front/react-workspace
 pnpm e2e
 ```
 
