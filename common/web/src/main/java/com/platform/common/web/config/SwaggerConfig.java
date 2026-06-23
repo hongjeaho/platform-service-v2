@@ -35,14 +35,15 @@ public class SwaggerConfig {
 
     @Bean
     public String createSwaggerJwtToken() {
-        AuthUser authUser = new AuthUser();
-        authUser.setSeq(1L);
-        authUser.setUserId("admin");
-        authUser.setRoles(Set.of(
-            BasicAuthority.builder().role("ADMIN").build(),
-            BasicAuthority.builder().role("DECISION").build(),
-            BasicAuthority.builder().role("IMPLEMENTER").build()
-        ));
+        AuthUser authUser = AuthUser.builder()
+            .seq(1L)
+            .userId("admin")
+            .roles(Set.of(
+                BasicAuthority.builder().role("ADMIN").build(),
+                BasicAuthority.builder().role("DECISION").build(),
+                BasicAuthority.builder().role("IMPLEMENTER").build()
+            ))
+            .build();
         return "Bearer " + jwtTokenUtil.makeAuthToken(authUser);
     }
 }
