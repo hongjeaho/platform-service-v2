@@ -1,7 +1,7 @@
 package com.platform.common.web.config;
 
-import com.platform.common.core.authority.AuthUser;
-import com.platform.common.core.authority.BasicAuthority;
+import com.platform.common.core.auth.AuthUser;
+import com.platform.common.core.auth.BasicAuthority;
 import com.platform.common.core.util.JwtTokenUtil;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

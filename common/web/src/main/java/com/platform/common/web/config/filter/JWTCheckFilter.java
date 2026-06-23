@@ -1,6 +1,6 @@
 package com.platform.common.web.config.filter;
 
-import com.platform.common.core.authority.AuthUser;
+import com.platform.common.core.auth.AuthUser;
 import com.platform.common.core.util.JwtTokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,6 +1,6 @@
 package com.platform.common.web.config.resolver;
 
-import com.platform.common.core.authority.AuthUser;
+import com.platform.common.core.auth.AuthUser;
 import com.platform.common.core.dto.AbstractResponse;
 import com.platform.common.web.annotation.Auditing;
 import java.lang.reflect.Field;

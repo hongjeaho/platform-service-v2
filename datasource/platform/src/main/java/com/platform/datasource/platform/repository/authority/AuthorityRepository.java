@@ -1,7 +1,7 @@
 package com.platform.datasource.platform.repository.authority;
 
-import com.platform.common.core.authority.AuthUser;
-import com.platform.common.core.authority.BasicAuthority;
+import com.platform.common.core.auth.AuthUser;
+import com.platform.common.core.auth.BasicAuthority;
 import com.platform.datasource.platform.jooq.generated.tables.JRoles;
 import com.platform.datasource.platform.jooq.generated.tables.JUserRoles;
 import com.platform.datasource.platform.jooq.generated.tables.JUsers;

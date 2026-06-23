@@ -1,6 +1,6 @@
 package com.platform.api.platform.auth.dto;
 
-import com.platform.common.core.authority.AuthUser;
+import com.platform.common.core.auth.AuthUser;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**

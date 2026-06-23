@@ -1,4 +1,4 @@
-package com.platform.common.core.authority;
+package com.platform.common.core.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;

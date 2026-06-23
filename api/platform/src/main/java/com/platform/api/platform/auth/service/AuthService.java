@@ -1,8 +1,8 @@
 package com.platform.api.platform.auth.service;
 
 import com.platform.api.platform.auth.dto.LoginResponse;
-import com.platform.common.core.authority.AuthRequest;
-import com.platform.common.core.authority.AuthUser;
+import com.platform.common.core.auth.AuthRequest;
+import com.platform.common.core.auth.AuthUser;
 import com.platform.common.core.util.JwtTokenUtil;
 import com.platform.datasource.platform.config.database.PlatformTransactional;
 import lombok.RequiredArgsConstructor;
