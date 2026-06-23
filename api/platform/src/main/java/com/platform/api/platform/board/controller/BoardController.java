@@ -4,7 +4,7 @@ import com.platform.api.platform.board.dto.BoardCreateRequest;
 import com.platform.api.platform.board.dto.BoardResponse;
 import com.platform.api.platform.board.dto.BoardUpdateRequest;
 import com.platform.api.platform.board.service.BoardService;
-import com.platform.common.web.dto.ApiResponse;
+import com.platform.common.web.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

@@ -3,7 +3,7 @@ package com.platform.api.platform.auth.controller;
 import com.platform.api.platform.auth.service.AuthService;
 import com.platform.common.core.auth.AuthRequest;
 import com.platform.common.core.auth.AuthUser;
-import com.platform.common.web.dto.ApiResponse;
+import com.platform.common.web.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

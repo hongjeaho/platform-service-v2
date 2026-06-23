@@ -1,6 +1,5 @@
-package com.platform.common.web.dto;
+package com.platform.common.web.response;
 
-import com.platform.common.web.dto.meta.PageMeta;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.AllArgsConstructor;
