@@ -1,5 +1,6 @@
 package com.platform.api.platform.users.service;
 
+import com.platform.api.platform.users.dto.CheckDuplicateResponse;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
 import com.platform.api.platform.users.dto.UsersSignupResponse;
 import com.platform.datasource.platform.jooq.generated.tables.pojos.UsersEntity;
@@ -138,5 +139,36 @@ class UsersServiceTest {
             .isInstanceOf(IllegalStateException.class);
 
         verify(usersRepository, never()).insertUser(any());
+    }
+
+    // ========== 이슈 #1: 아이디 중복 확인 API ==========
+
+    @Test
+    @DisplayName("존재하지 않는 userId로 중복 확인 시 사용 가능 응답을 반환한다")
+    void checkDuplicateUserId_returnAvailableTrue_whenUserIdNotExists() {
+        // Given
+        String userId = "newuser";
+        when(usersRepository.existsByUserId(userId)).thenReturn(false);
+
+        // When
+        CheckDuplicateResponse response = usersService.checkDuplicateUserId(userId);
+
+        // Then
+        assertThat(response).isNotNull();
+        assertThat(response.isAvailable()).isTrue();
+        assertThat(response.getMessage()).isEqualTo("사용 가능합니다.");
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 userId로 중복 확인 시 IllegalStateException을 던진다")
+    void checkDuplicateUserId_throwIllegalStateException_whenUserIdAlreadyExists() {
+        // Given
+        String userId = "existinguser";
+        when(usersRepository.existsByUserId(userId)).thenReturn(true);
+
+        // When & Then
+        assertThatThrownBy(() -> usersService.checkDuplicateUserId(userId))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining("이미 사용 중인 아이디입니다.");
     }
 }

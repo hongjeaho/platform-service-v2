@@ -1,5 +1,6 @@
 package com.platform.api.platform.users.service;
 
+import com.platform.api.platform.users.dto.CheckDuplicateResponse;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
 import com.platform.api.platform.users.dto.UsersSignupResponse;
 import com.platform.datasource.platform.config.database.PlatformTransactional;
@@ -45,5 +46,15 @@ public class UsersService {
         response.setUserId(request.getUserId());
         response.setUserName(request.getUserName());
         return response;
+    }
+
+    // ========== 이슈 #1: 아이디 중복 확인 API ==========
+
+    @PlatformTransactional(readOnly = true)
+    public CheckDuplicateResponse checkDuplicateUserId(String userId) {
+        if (usersRepository.existsByUserId(userId)) {
+            throw new IllegalStateException("이미 사용 중인 아이디입니다.");
+        }
+        return CheckDuplicateResponse.available();
     }
 }
