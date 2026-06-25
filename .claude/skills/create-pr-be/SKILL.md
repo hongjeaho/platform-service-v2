@@ -1,12 +1,12 @@
 ---
-name: create-pr
+name: create-pr-be
 description: |
   백엔드 TDD 이슈 사이클 완료 후 git commit → PR 생성까지 안내하는 스킬.
-  /create-pr 명령어로 진입. /feature-planner-be 세션 컨텍스트가 있으면
+  /create-pr-be 명령어로 진입. /feature-planner-be 세션 컨텍스트가 있으면
   feature-path, module-name을 자동 로드하고, 없으면 Git 브랜치명을 자동 파싱한다.
   issue-{N}.md와 git diff를 읽어 PR 제목·본문을 자동 생성하고,
   git commit 명령어와 gh pr create 명령어를 제시한다.
-  사용자가 "PR 생성", "백엔드 PR", "create-pr", "Pull Request 생성",
+  사용자가 "PR 생성", "백엔드 PR", "create-pr-be", "Pull Request 생성",
   "브랜치 merge 요청", "PR 만들기", "커밋하고 PR" 등을 언급하면 반드시 이 스킬을 사용할 것.
   /security-review-be 완료 직후 실행한다.
   Claude는 git add / git commit / git push / gh pr create를 직접 실행하지 않는다.
@@ -26,11 +26,11 @@ description: |
 ## 입력 형식
 
 ```
-/create-pr                              ← 컨텍스트 또는 브랜치 추론 (이슈 번호 질문)
-/create-pr {N}                          ← 단일 이슈 지정
-/create-pr {N1},{N2},...                ← 다중 이슈 (예: /create-pr 1,2,3)
-/create-pr {feature-path} {N}          ← 경로 직접 지정 + 단일 이슈
-/create-pr {feature-path} {N1},{N2}   ← 경로 직접 지정 + 다중 이슈
+/create-pr-be                              ← 컨텍스트 또는 브랜치 추론 (이슈 번호 질문)
+/create-pr-be {N}                          ← 단일 이슈 지정
+/create-pr-be {N1},{N2},...                ← 다중 이슈 (예: /create-pr-be 1,2,3)
+/create-pr-be {feature-path} {N}          ← 경로 직접 지정 + 단일 이슈
+/create-pr-be {feature-path} {N1},{N2}   ← 경로 직접 지정 + 다중 이슈
 ```
 
 다중 이슈를 지정하면 `issue-1.md`, `issue-2.md` ... 를 모두 읽어 PR 본문을 통합 작성한다.
@@ -69,7 +69,7 @@ description: |
 ## 파이프라인 개요
 
 ```
-/create-pr [{feature-path}] [{N}]
+/create-pr-be [{feature-path}] [{N}]
     ↓ 컨텍스트 결정
     ↓ 이슈 번호 확인 (없으면 질문)
     ↓ 단계 1: PR 사전 체크리스트 확인
@@ -143,7 +143,7 @@ git log --oneline -5
 | 이슈가 5개 이상 | 이슈별 커밋 필수 (revert 단위 명확화) |
 
 > 일반적으로 `/security-review-be` 완료 시점까지 커밋을 보류하고,
-> `/create-pr`에서 한 번에 커밋·푸시·PR 생성을 진행하는 것을 권장한다.
+> `/create-pr-be`에서 한 번에 커밋·푸시·PR 생성을 진행하는 것을 권장한다.
 
 | 상황 | 처리 방식 |
 |------|---------|
@@ -315,7 +315,7 @@ EOF
   ✅ /ac-verifier-be {N}    — AC 충족 검증
   ✅ /tdd-refactor-be {N}   — 코드 구조 개선
   ✅ /security-review-be {N}— 보안 검토
-  ✅ /create-pr             — PR 생성
+  ✅ /create-pr-be             — PR 생성
 
 다음 이슈가 있으면 /test-scenarios-be {다음 이슈 번호} 로 시작하세요.
 ```
