@@ -158,6 +158,9 @@ Controller 테스트:
 
 ### 어노테이션 구성
 
+> **전제 조건**: 테스트 대상 Service는 반드시 **생성자 주입(`@RequiredArgsConstructor`)**을 사용해야 한다.
+> `@Autowired` 필드 주입 방식의 Service에서는 `@InjectMocks`가 Mock을 주입하지 못한다.
+
 ```java
 @ExtendWith(MockitoExtension.class)
 class {Domain}ServiceTest {
@@ -165,6 +168,7 @@ class {Domain}ServiceTest {
     @Mock
     private {Domain}Repository {domain}Repository;  // 실제 의존 Repository
 
+    // @RequiredArgsConstructor + @InjectMocks → Mockito가 생성자 인자에 @Mock을 자동 연결
     @InjectMocks
     private {Domain}Service {domain}Service;
 
@@ -193,6 +197,13 @@ class {Domain}ServiceTest {
     create_throwWhenDuplicateTitle
 ```
 
+| 시나리오 (한국어) | 메서드명 (영어) |
+|---|---|
+| 공지가 없을 때 빈 목록 반환 | `getList_returnEmptyWhenNoticeNotExists` |
+| 중복 제목으로 409 반환 | `create_throwConflictWhenDuplicateTitle` |
+| 존재하지 않는 ID로 400 반환 | `getDetail_throwWhenNoticeNotFound` |
+| 페이지 크기 초과 시 400 반환 | `getList_throwWhenPageSizeExceedsLimit` |
+
 ### 예외 검증
 
 ```java
@@ -204,6 +215,21 @@ assertThatThrownBy(() -> service.getDetail(999L))
 // IllegalStateException (409) 검증
 assertThatThrownBy(() -> service.create(duplicateRequest))
     .isInstanceOf(IllegalStateException.class);
+```
+
+### 스켈레톤이 null/빈값을 반환하는 경우 Then 작성 규칙
+
+스켈레톤이 `return null` 또는 `return List.of()`를 반환하므로, Then 검증은 **필드 직접 접근 전에 null 체크**를 먼저 한다.
+필드에 직접 접근하면 NPE가 발생해 "에러 실패"가 되므로 금지.
+
+```java
+// ✅ 올바른 패턴 — null 반환 스켈레톤에서 assertion fail 유도
+NoticeListResponse result = service.create(request);
+assertThat(result).isNotNull();               // Red: null → 여기서 assertion fail (NPE 아님)
+assertThat(result.getTitle()).isEqualTo("제목");  // Green: 구현 후 이 줄까지 실행됨
+
+// ❌ 금지 패턴 — NPE 발생 → assertion fail이 아닌 "에러 실패"
+assertThat(service.create(request).getTitle()).isEqualTo("제목");
 ```
 
 ### 실행
@@ -252,21 +278,40 @@ class {Domain}ControllerTest {
 - When: `mockMvc.perform(get("/api/...").param(...))` or `post(...)`, `put(...)`, `delete(...)`
 - Then: `.andExpect(status().isOk())`, `.andExpect(jsonPath("$.data").exists())`
 
-### @Auditing 파라미터가 있는 Controller 테스트
+### Bean Validation 실패 케이스
 
-`issue-{N}.md`의 시그니처에 `@Auditing` 파라미터가 있는 경우, 테스트에서는 해당 파라미터를
-`@AutoConfigureMockMvc(addFilters = false)`와 함께 사용하면 `@Auditing` 리졸버가 작동하지 않을 수 있다.
-이 경우 `@MockBean`으로 처리하거나 아래와 같이 작성한다.
+`@Valid + @NotBlank` 등 Bean Validation 위반은 `addFilters=false` 환경에서도 동작한다.
 
 ```java
-// @Auditing 파라미터가 있는 엔드포인트 테스트
+@Test
+@DisplayName("빈 제목으로 요청 시 400을 반환한다")
+void create_returns400_whenTitleIsBlank() throws Exception {
+    mockMvc.perform(post("/api/public/notice")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"title\":\"\"}"))   // @NotBlank 위반
+        .andExpect(status().isBadRequest());
+}
+```
+
+> Service Mock 설정 없이도 `MethodArgumentNotValidException`이 Controller 계층에서 즉시 발생한다.
+
+### @Auditing 파라미터가 있는 Controller 테스트
+
+> `@Auditing` — 커스텀 애노테이션. JWT에서 현재 로그인 사용자를 읽어 `createdBy`/`updatedBy`를 자동 주입하는 `HandlerMethodArgumentResolver`. `@RequestBody` 파라미터와 쌍으로 선언해 사용한다.
+
+`issue-{N}.md`의 시그니처에 `@Auditing` 파라미터가 있는 경우, `addFilters=false` 환경에서는
+`@Auditing` 리졸버가 작동하지 않아 파라미터가 null로 처리된다.
+아래 방법 A를 기본값으로 사용한다(Service Mock이 `any()`를 사용하므로 테스트 자체는 정상 실패).
+
+```java
+// @Auditing 파라미터가 있는 엔드포인트 테스트 (방법 A 기본값)
 @Test
 @DisplayName("유효한 요청 시 201 Created를 반환한다")
 void create_returns201_whenValidRequest() throws Exception {
-    // Given — Service mock (audited 파라미터는 Service가 받으므로 any() 사용)
+    // Given — audited 파라미터는 null이 되므로 Service mock에 any() 사용
     when(service.create(any())).thenReturn(response);
 
-    // When & Then — JSON body만 전송, @Auditing은 addFilters=false 환경에서 null 또는 빈 객체
+    // When & Then
     mockMvc.perform(post("/api/notice")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
@@ -275,8 +320,8 @@ void create_returns201_whenValidRequest() throws Exception {
 }
 ```
 
-> `addFilters=false` 환경에서 `@Auditing`은 null로 처리될 수 있다.
-> Service Mock이 `any()` 매처를 사용하므로 테스트 자체는 정상 실패(assertion fail)한다.
+> `@Auditing` null 주입 자체를 검증해야 하는 경우(예: audited 필드 누락 시 400)에만
+> 방법 B(SecurityConfig import)로 테스트를 별도 작성한다.
 
 ### 인증 처리
 
@@ -302,6 +347,8 @@ class {Domain}ControllerTest {
 
 > 방법 A는 인증 자체를 테스트하지 않고 Controller 로직에만 집중합니다.
 > Controller 슬라이스 테스트의 목적(HTTP 상태코드·응답 JSON 검증)에 가장 적합합니다.
+>
+> **JWT 인증 필요 엔드포인트**: 방법 A로 기능 로직을 검증하되, 방법 B로 401 케이스 1개 이상 추가 권장.
 
 **방법 B (고급 — 인증·인가 동작 자체를 검증해야 할 때만)**
 
@@ -336,6 +383,20 @@ class {Domain}ControllerTest {
 
 > 방법 B는 의존 빈 목록이 `SecurityConfig.java` 변경 시 stale해질 수 있습니다.
 > `api/{module-name}/src/main/java/{pkg-root}/config/SecurityConfig.java`를 직접 확인하세요.
+
+> **⚠️ 방법 B ObjectMapper 제약**: `@MockBean ObjectMapper objectMapper`로 등록되므로
+> 테스트 본문에서 `objectMapper.writeValueAsString(request)` 호출 시 `null`을 반환한다.
+> 방법 B에서는 JSON 본문을 수동 문자열로 작성할 것.
+>
+> ```java
+> // 방법 B — JSON 수동 작성
+> mockMvc.perform(post("/api/notice")
+>         .contentType(MediaType.APPLICATION_JSON)
+>         .content("{\"title\":\"제목\",\"content\":\"내용\"}"))
+>     .andExpect(status().isCreated());
+>
+> // objectMapper.writeValueAsString(request) ← 방법 A에서만 사용 가능
+> ```
 
 ### 응답 형식 — ApiResponse<T>
 
@@ -381,7 +442,7 @@ public class NoticeListService {
 
     @PlatformTransactional
     public NoticeListResponse create(NoticeListCreateRequest request) {
-        return null;        // null 반환 → assertion 실패 유도
+        return null;
     }
 }
 ```
@@ -407,6 +468,36 @@ public class NoticeListController {
     }
 }
 ```
+
+**Repository 스켈레톤 예시** (Service 테스트에서 `@Mock`으로 주입하므로 컴파일 가능 상태만 확보):
+
+> **`ds-pkg-root` 결정**: Repository 파일을 처음 생성하기 전에 아래 명령으로 실제 경로를 확인한다.
+> ```bash
+> find datasource/{module-name}/src/main/java -name "*Repository*.java" | head -1
+> ```
+> 예) `datasource/platform/src/main/java/com/platform/datasource/platform/repository/board/BoardContentRepository.java`
+> → `ds-pkg-root`: `com/platform/datasource/platform`
+
+```java
+// datasource/{module-name}/src/main/java/{ds-pkg-root}/repository/{feature-path}/NoticeListRepository.java
+@Repository
+@RequiredArgsConstructor
+public class NoticeListRepository {
+
+    private final DSLContext dsl;
+
+    public List<NoticeEntity> findAll(int page, int pageSize) {
+        return List.of();   // 스켈레톤 — 빈 값 반환
+    }
+
+    public Long save(NoticeEntity entity) {
+        return null;        // 스켈레톤 — null 반환
+    }
+}
+```
+
+> JOOQ 클래스(`JNotice`, `NoticeEntity`)가 아직 생성되지 않은 경우 import를 주석 처리하고
+> `List<Object>` 등 임시 타입으로 대체한 뒤, `/tdd-green-be`에서 Flyway + generateJooq 실행 후 교체한다.
 
 스켈레톤 생성 후 재실행. 여전히 에러 실패이면 원인을 파악해 스켈레톤을 수정한다.
 

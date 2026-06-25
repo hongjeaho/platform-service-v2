@@ -164,7 +164,13 @@ feature-path를 입력해주세요.
 
 **기존 패턴 탐색 순서:**
 
-1. `api/{module-name}/src/main/java/{pkg-root}/board/` — 레퍼런스 도메인 (Controller·Service·DTO 패턴)
+1. 동일 모듈 내 가장 완성도 높은 기존 도메인 — Controller·Service·DTO 패턴 참고
+   ```bash
+   find api/{module-name}/src/main/java/{pkg-root} -name "*Service.java" \
+     ! -path "*/config/*" ! -path "*/common/*" | head -5
+   ```
+   결과를 사용자에게 보여주고, 참고할 도메인을 확인한다.
+   > 특정 도메인을 고정 레퍼런스로 삼지 않는다. 후보 중 가장 유사한 유스케이스를 가진 도메인을 선택한다.
 2. `datasource/{module-name}/src/main/java/.../repository/` — 기존 Repository 메서드 패턴
 3. `api/{module-name}/src/main/java/{pkg-root}/config/cache/CacheNames.java` — 재사용 가능한 캐시 상수
 4. `api/{module-name}/src/main/java/{pkg-root}/{feature-path}/service/helper/` — 기존 Helper (있는 경우)
@@ -172,7 +178,7 @@ feature-path를 입력해주세요.
 ### 시그니처 도출 규칙
 
 - **구현 코드는 절대 작성하지 않는다.** 클래스/메서드 시그니처와 DTO 필드 선언만 작성한다.
-- **board 패턴을 우선 따른다.** 패턴에서 벗어나는 경우 그 이유를 명시한다.
+- **기존 도메인 패턴을 따른다.** 패턴에서 벗어나는 경우 그 이유를 명시한다.
 - **단일 책임 원칙** — 메서드 하나는 하나의 UseCase를 담당한다. issues.md의 수직 슬라이스 기준을 따른다.
 - **spec-fixed.md 용어 정의 우선** — 클래스/메서드 이름은 spec-fixed.md의 용어 정의를 따른다.
 
@@ -194,7 +200,8 @@ public ResponseEntity<ApiResponse<{ResponseType}>> {methodName}(
 );
 
 // ── 쓰기 엔드포인트 (POST, PUT) — createdBy/updatedBy 자동 주입이 필요한 경우
-//    @Auditing 이중 파라미터 패턴 사용 (api/platform/CLAUDE.md 참조)
+//    @Auditing: 커스텀 애노테이션. JWT에서 현재 로그인 사용자를 읽어 createdBy/updatedBy를 자동 주입하는 HandlerMethodArgumentResolver.
+//    이중 파라미터 패턴 사용 — @RequestBody로 받은 req를 audited에 복사한 뒤 감사 필드를 채운다.
 @PostMapping("{uri}")
 public ResponseEntity<ApiResponse<{ResponseType}>> {methodName}(
     @RequestBody @Valid {Domain}CreateRequest req,
@@ -223,14 +230,14 @@ public {ReturnType} {methodName}({ParamType} {paramName}, ...);
 // 예외: IllegalArgumentException({상황}) | IllegalStateException({상황})
 ```
 
-#### Repository 메서드 시그니처
+#### Repository 메서드 시그니처 (신규 메서드가 있는 경우만)
 
 ```java
 // {Domain}Repository.{methodName}: {한 줄 설명} (JOOQ | MyBatis)
 public {ReturnType} {methodName}({ParamType} {paramName}, ...);
 ```
 
-#### DTO 필드 선언
+#### DTO 필드 선언 (신규 DTO가 있는 경우만)
 
 ```java
 // {Domain}CreateRequest / {Domain}Response 등
@@ -238,17 +245,25 @@ public {ReturnType} {methodName}({ParamType} {paramName}, ...);
 private {FieldType} {fieldName};  // 주요 필드만, @Schema 설명 포함
 ```
 
-#### Helper 시그니처 (Service 복잡도 초과 시만)
+#### Helper 시그니처 (시그니처 명시 또는 Service 복잡도 초과 시만)
 
 ```java
 // {Domain}{Role}.{methodName}: {한 줄 설명}
-// 역할 접미사: Validator | Calculator | Converter | Sender | Builder | Processor
+// 역할 접미사: Validator | Calculator | Converter | Sender | Builder | Processor  (feature-planner-be 참조)
 // ※ Reader는 Helper가 아닌 @Service 레이어 컴포넌트 (Repository 주입·트랜잭션 허용)
+//    사용 기준: 복수 Repository 조합, 조회 로직이 Service 200줄 초과, 또는 안 C(CQRS-lite) 선택 시
+//    단순 findById · findAll은 Service에서 Repository를 직접 호출한다
 public {ReturnType} {methodName}({ParamType} {paramName});
 // 제약: Repository 주입 금지, 트랜잭션 금지
 ```
 
 ### 출력 형식 (사용자에게 보여주는 형태)
+
+> ※ 아래는 모든 계층이 포함된 예시. **해당 없는 섹션은 출력하지 않는다.**
+> - Controller·Service: 이슈에 항상 포함
+> - Repository: 신규 메서드가 있는 경우만
+> - DTO: 신규 DTO가 있는 경우만 (예: DELETE 204 응답은 DTO 없음)
+> - Helper: 시그니처에 명시되었거나 Service 복잡도 초과 시만
 
 ```
 ## Issue {N} 시그니처
@@ -259,18 +274,18 @@ public {ReturnType} {methodName}({ParamType} {paramName});
 ### Service
 {Service 메서드 시그니처}
 
-### Repository
+### Repository  ← 신규 메서드가 있는 경우만
 {Repository 메서드 시그니처}
 
-### DTO
+### DTO  ← 신규 DTO가 있는 경우만
 {DTO 필드 선언}
 
-### Helper (필요 시)
+### Helper  ← 시그니처 명시 또는 Service 복잡도 초과 시만
 {Helper 메서드 시그니처}
 
 ---
 📌 참고한 기존 패턴: {파일 경로 목록}
-📌 board 패턴과의 차이: {없음 | 차이 내용 + 이유}
+📌 기존 패턴과의 차이: {없음 | 차이 내용 + 이유}
 ```
 
 ---
@@ -280,7 +295,7 @@ public {ReturnType} {methodName}({ParamType} {paramName});
 ```
 [GATE 1] 위 시그니처를 검토해주세요.
          - 메서드명·파라미터·반환타입이 spec-fixed.md 용어와 일치하는가?
-         - board 패턴에서 벗어난 경우 이유가 타당한가?
+         - 기존 도메인 패턴에서 벗어난 경우 이유가 타당한가?
          - @PlatformTransactional readOnly 설정이 올바른가?
          수정이 필요하면 말씀해주세요.
          승인(yes / ok / 확인 / 좋아)하면 issue-{N}.md에 기록합니다.
@@ -305,6 +320,8 @@ public {ReturnType} {methodName}({ParamType} {paramName});
 
 **기록 형식:**
 
+> 해당 없는 섹션은 생략한다. (Controller·Service는 항상 포함. Repository·DTO·Helper는 조건부)
+
 ````markdown
 ## 시그니처
 
@@ -318,17 +335,17 @@ public {ReturnType} {methodName}({ParamType} {paramName});
 {승인된 Service 시그니처}
 ```
 
-### Repository
+### Repository  ← 신규 메서드가 있는 경우만
 ```java
 {승인된 Repository 시그니처}
 ```
 
-### DTO
+### DTO  ← 신규 DTO가 있는 경우만
 ```java
 {승인된 DTO 필드}
 ```
 
-### Helper (필요 시)
+### Helper  ← 시그니처 명시 또는 Service 복잡도 초과 시만
 ```java
 {승인된 Helper 시그니처}
 ```
@@ -440,7 +457,7 @@ public {ReturnType} {methodName}({ParamType} {paramName});
 
 | 지점 | 확인 내용 | 긍정 응답 예시 |
 |------|----------|--------------|
-| GATE 1 | 시그니처 — 용어 일치, board 패턴 준수, readOnly 설정 | yes / ok / 확인 / 좋아 |
+| GATE 1 | 시그니처 — 용어 일치, 프로젝트 컨벤션 준수, readOnly 설정 | yes / ok / 확인 / 좋아 |
 | GATE 2 | 시나리오 — AC 커버리지 완성도, Service·Controller 레이어 분리, 예외 케이스 | yes / ok / 확인 / 좋아 |
 
 GATE가 없으면 잘못된 시그니처로 테스트가 작성되고 나중에 수정 비용이 커진다.

@@ -33,7 +33,7 @@ public class AuthorityRepository {
 	public AuthUser findAuthorById(String id) {
 		Map<AuthUser, List<BasicAuthority>> userMap = dslContext.select(
 				DSL.row(USERS.SEQ, USERS.USER_EMAIL, USERS.USER_ID, USERS.USER_PASSWORD, USERS.USER_NAME).as("user"),
-				DSL.row(USER_ROLES.USER_SEQ, ROLES.USER_ROLE_NAME.as("role")).as("roles")
+				DSL.row(USER_ROLES.USER_SEQ, ROLES.ROLE_NAME.as("role")).as("roles")
 			)
 			.from(USERS)
 			.join(USER_ROLES).on(USERS.SEQ.eq(USER_ROLES.USER_SEQ))

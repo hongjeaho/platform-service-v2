@@ -29,9 +29,14 @@ subprojects {
     apply plugin: "io.spring.dependency-management"
     apply plugin: "idea"
     apply plugin: 'groovy'
+    apply plugin: 'jacoco'
 
     repositories {
         mavenCentral()
+    }
+
+    jacoco {
+        toolVersion = "0.8.12"
     }
 
     configurations {
@@ -57,6 +62,16 @@ subprojects {
 
     test {
         useJUnitPlatform()
+        finalizedBy jacocoTestReport
+    }
+
+    jacocoTestReport {
+        dependsOn test
+        reports {
+            xml.required = true
+            html.required = true
+            csv.required = false
+        }
     }
 }
 
@@ -78,6 +93,42 @@ subprojects {
         project(projectName) {
 
         }
+    }
+}
+
+// common-jooq: 코드 생성 전략 클래스만 존재하므로 JaCoCo 제외
+project(":common-jooq") {
+    jacocoTestReport.enabled = false
+    test.finalizedBy = []
+}
+
+// 모노레포 전체 통합 커버리지 리포트 (common-jooq 제외)
+task jacocoMergedReport(type: JacocoReport, group: 'verification',
+    description: '전체 모듈 통합 커버리지 리포트 (common-jooq 제외)') {
+
+    def coverageProjects = subprojects.findAll { it.name != 'common-jooq' }
+
+    dependsOn(coverageProjects.collect { it.test })
+
+    additionalSourceDirs.setFrom(
+        files(coverageProjects.collect { it.sourceSets.main.allSource.srcDirs })
+    )
+    sourceDirectories.setFrom(
+        files(coverageProjects.collect { it.sourceSets.main.allSource.srcDirs })
+    )
+    classDirectories.setFrom(
+        files(coverageProjects.collect { it.sourceSets.main.output })
+    )
+    executionData.setFrom(
+        files(coverageProjects.collect { "${it.buildDir}/jacoco/test.exec" })
+            .filter { it.exists() }
+    )
+
+    reports {
+        html.required = true
+        html.outputLocation = layout.buildDirectory.dir("reports/jacoco/merged")
+        xml.required = true
+        xml.outputLocation = layout.buildDirectory.file("reports/jacoco/merged/jacoco.xml")
     }
 }
 

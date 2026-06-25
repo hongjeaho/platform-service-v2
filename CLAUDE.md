@@ -102,7 +102,7 @@ type(scope): 한글 요약 (50자 이내)
 4. `/ac-verifier-be N`    — AC 충족 독립 검증 (테스트 통과 ≠ AC 충족) [GATE]
 5. `/tdd-refactor-be N`   — 구조 개선 (Helper 추출, 패턴 일관성), 깨지면 즉시 롤백 [GATE]
 6. `/security-review-be N`— 보안 취약점·패턴 위반·코드 품질 점검 [GATE]
-7. `/create-pr`           — 모든 이슈 완료 후 git commit 안내 + PR 제목·본문 생성 [GATE × 2]
+7. `/create-pr-be`        — 모든 이슈 완료 후 git commit 안내 + PR 제목·본문 생성 [GATE × 2]
 
 각 단계는 **담당 영역만** 건드린다.
 

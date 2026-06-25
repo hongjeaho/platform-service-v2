@@ -8,7 +8,7 @@ description: |
   사용자가 "백엔드 TDD Refactor", "백엔드 리팩토링", "Service 구조 개선",
   "Helper 추출", "tdd-refactor-be", "Spring Boot Refactor",
   "테스트 유지 리팩토링", "백엔드 코드 개선" 등을 언급하면 반드시 이 스킬을 사용할 것.
-  /tdd-green-be 스킬이 모든 테스트를 통과시킨 직후 실행한다.
+  /ac-verifier-be 완료 직후 실행한다.
   테스트 파일(src/test/)은 절대 수정하지 않으며, 구현 코드(src/main/)만 리팩토링한다.
   새 기능 추가 금지 — 동작을 바꾸지 않고 구조만 개선한다.
 ---
@@ -16,7 +16,7 @@ description: |
 # TDD Refactor Workflow [백엔드 · Spring Boot]
 
 `/tdd-green-be`가 통과시킨 **모든 테스트를 깨뜨리지 않으면서** 코드 구조를 개선하는 파이프라인.
-`board` 도메인을 레퍼런스로 삼아 패턴 일관성을 유지한다.
+`CLAUDE.md` 컨벤션을 기준으로 패턴 일관성을 유지한다.
 
 ---
 
@@ -65,7 +65,7 @@ description: |
 |------|------|
 | 이슈 파일 (읽기) | `api/{module-name}/src/main/java/{pkg-root}/{feature-path}/docs/issue-{N}.md` |
 | 수정 대상 파일 | `git diff {base}...HEAD --name-only -- api/ datasource/` 결과 중 비테스트 파일 |
-| 레퍼런스 | `api/{module-name}/src/main/java/{pkg-root}/board/` |
+| 참고 | 동일 모듈 내 기존 도메인 (`find api/{module-name}/src/main/java/{pkg-root} -name "*Service.java"`) |
 
 ---
 
@@ -97,7 +97,7 @@ description: |
 
 - 계층별 책임 (Controller / Service / Helper / DTO)
 - Helper 추출 기준 (200줄 / private 5개)
-- Helper 역할 접미사 규칙 (Validator / Calculator / Converter / Sender / Builder / Processor)
+- Helper 역할 접미사 규칙 (Validator / Calculator / Converter / Sender / Builder / Processor) — feature-planner-be에서 정의된 목록 참조
   ※ Reader는 Helper가 아닌 Service 레이어 컴포넌트 (@Service, Repository 주입 허용, @PlatformTransactional(readOnly=true))
 - 트랜잭션 규칙 (`@PlatformTransactional`)
 - 네이밍 규칙 (클래스명, 메서드명, DTO명)
@@ -109,7 +109,7 @@ description: |
 ## 단계 2: 전체 테스트 통과 확인
 
 ```bash
-./gradlew :api:{module-name}:test 2>&1 | tail -20
+./gradlew :api:{module-name}:test 2>&1 | tail -50
 ```
 
 **전체 통과** → 단계 3으로 진행.
@@ -162,9 +162,12 @@ git diff ${BASE}...HEAD --name-only -- api/ datasource/
 
 ### 3-2. 이슈 관련 파일 교집합
 
-`issue-{N}.md`의 `## Acceptance Criteria`에 언급된 클래스명을 기반으로,
+`issue-{N}.md`의 `## 시그니처` 섹션에 선언된 클래스명(Controller·Service·Repository·Helper 등)을 기반으로,
 git diff 결과와 교집합을 추출한다.
 이슈와 무관한 파일(타 도메인 수정 등)은 목록에서 제거한다.
+
+> ※ `## Acceptance Criteria`는 Given-When-Then 동작 설명이므로 클래스명을 포함하지 않는다.
+>    반드시 `## 시그니처` 섹션을 참조할 것.
 
 ### 3-3. 테스트 파일 제외
 
@@ -181,8 +184,8 @@ git diff 결과와 교집합을 추출한다.
 | **네이밍 명확성** | 클래스·메서드·DTO 이름이 CLAUDE.md 네이밍 규칙을 따르는가 |
 | **단일 책임** | 하나의 클래스/메서드가 너무 많은 역할을 담당하는가 |
 | **트랜잭션 경계** | `@PlatformTransactional` 적용 단위가 올바른가 (Helper·Repository에 적용 금지) |
-| **board 패턴 일관성** | `board` 도메인 패턴에서 벗어난 구조가 있는가. 벗어난다면 이유가 ADR에 기록되었는가 |
-| **Converter 추출** | `private toResponse()` 등 DTO 변환 로직이 2개 이상 메서드에서 반복되는가. 반복되면 `{Domain}Converter` Helper로 추출 |
+| **프로젝트 컨벤션 일관성** | `CLAUDE.md` 컨벤션(레이어 책임·네이밍·트랜잭션)에서 벗어난 구조가 있는가. 벗어난다면 이유가 ADR에 기록되었는가 |
+| **Converter 추출** | 아래 중 하나에 해당하면 `{Domain}Converter` Helper로 추출: 1) 동일 변환 로직이 복수 Service 클래스에 중복 존재하는 경우 (같은 Service 내 private 메서드 재호출은 해당 없음) / 2) 비즈니스 분기(if·switch)가 포함된 변환 로직이 재사용되거나 복잡한 경우 (null 방어용 단순 ternary·Optional 제외) / 3) 복수 엔티티를 조합하는 변환 (Service SRP 침해). 단순 필드 복사 수준의 변환은 Service private 메서드로 유지 |
 
 개선이 필요한 항목만 목록에 남긴다.
 
@@ -199,7 +202,7 @@ git diff 결과와 교집합을 추출한다.
   1. api/platform/src/.../service/NoticeListService.java
      → Helper 추출: Service 230줄 — 검증 로직을 NoticeListValidator로 분리 권장
   2. api/platform/src/.../controller/NoticeListController.java
-     → 네이밍: getNoticeListItems() → getList() (board 패턴과 불일치)
+     → 네이밍: getNoticeListItems() → getList() (CLAUDE.md 네이밍 규칙 불일치)
   3. datasource/platform/src/.../repository/NoticeListRepository.java
      → 중복: findByCondition 패턴이 3곳에서 반복
 
@@ -213,7 +216,15 @@ git diff 결과와 교집합을 추출한다.
 ✅ 리팩토링 대상 없음
 
 변경된 파일을 검토했으나 개선이 필요한 항목이 없습니다.
-board 패턴과 일관성이 유지되고 있습니다.
+프로젝트 컨벤션과 일관성이 유지되고 있습니다.
+```
+
+개선 항목이 없더라도 `issue-{N}.md` **최하단**에 아래 섹션을 추가한 뒤 단계 6으로 진행한다.
+
+```markdown
+## 리팩토링 결과
+리팩토링일: {YYYY-MM-DD}
+완료: 0건 / 건너뜀: 0건
 ```
 
 ---
@@ -227,10 +238,10 @@ board 패턴과 일관성이 유지되고 있습니다.
 1. 리팩토링 변경 적용
 2. 전체 테스트 실행:
    ```bash
-   ./gradlew :api:{module-name}:test 2>&1 | tail -20
+   ./gradlew :api:{module-name}:test 2>&1 | tail -50
    ```
 3. **전체 통과** → 다음 항목으로 이동
-4. **실패 발생** → `git checkout HEAD -- {변경된 파일 경로}`로 원복 → 다른 방식으로 1회 재시도
+4. **실패 발생** → `git restore {변경된 파일 경로}`로 원복 → 다른 방식으로 1회 재시도
 5. **재시도도 실패** → 건너뜀 + 사용자 보고:
    ```
    ⚠️ 건너뜀: {파일명}
@@ -300,6 +311,14 @@ public class NoticeListService {
   - NoticeListRepository.java — 중복 쿼리 추출 시 JOOQ DSL 타입 에러 미해결 (수동 확인 필요)
 
 🧪 최종 테스트: {통과 수}/{전체 수} 통과
+```
+
+결과 요약 출력 후 `issue-{N}.md` 최하단에 아래 섹션을 추가한다.
+
+```markdown
+## 리팩토링 결과
+리팩토링일: {YYYY-MM-DD}
+완료: {N}건 / 건너뜀: {N}건
 ```
 
 ### 다음 단계
