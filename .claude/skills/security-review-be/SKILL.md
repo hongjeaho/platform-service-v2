@@ -10,12 +10,12 @@ description: |
   사용자가 "백엔드 보안 검토", "Spring Security 점검", "보안 취약점",
   "security-review-be", "하드코딩 시크릿", "백엔드 커밋 전 검사",
   "Controller 패턴 검사", "SQL Injection 점검" 등을 언급하면 반드시 이 스킬을 사용할 것.
-  /ac-verifier-be 완료 직후, git commit 전에 실행한다.
+  /tdd-refactor-be 완료 직후, git commit 전에 실행한다.
 ---
 
 # Security Review Workflow [백엔드 · Spring Boot]
 
-`/ac-verifier-be` 완료 후 **커밋 전** 보안 취약점·Spring Boot 패턴 위반·코드 품질을 일괄 점검하는 파이프라인.
+`/tdd-refactor-be` 완료 후 **커밋 전** 보안 취약점·Spring Boot 패턴 위반·코드 품질을 일괄 점검하는 파이프라인.
 발견된 이슈를 세 분류로 나눠 개발자에게 보고하고, 승인 후 "즉시 수정 필요" 항목만 처리한다.
 
 ---
@@ -80,7 +80,7 @@ git show-ref --verify --quiet refs/heads/main && echo main || echo master
     ↓ 단계 3: Spring Boot 패턴 위반 검사 (6가지)
     ↓ 단계 4: 코드 품질 정적 분석
     ↓ 단계 5: 결과 세 분류로 정리 후 보고 [GATE]
-    ↓ 단계 6: 승인 후 "즉시 수정 필요" 항목만 처리
+    ↓ 단계 6: 승인 후 "즉시 수정 필요" 항목만 처리 (항목 없으면 건너뜀)
     ↓ 단계 7: 재확인 → issue-{N}.md 기록
 ```
 
@@ -89,7 +89,7 @@ git show-ref --verify --quiet refs/heads/main && echo main || echo master
 ## 단계 1: 빌드 컴파일 검사
 
 ```bash
-./gradlew :api:{module-name}:build -x test 2>&1 | tail -30
+./gradlew :api:{module-name}:build -x test 2>&1 | tail -50
 ```
 
 컴파일 오류가 있으면 **즉시 수정 필요**로 분류한다.
@@ -164,8 +164,9 @@ public ResponseEntity<?> create(@RequestBody @Valid NoticeCreateRequest req)  //
 ### 3-3. Helper 위반 검사 (Repository 주입 / 트랜잭션)
 
 ```bash
-# helper/ 디렉토리 내 Repository 주입 확인
-grep -rEn "@Autowired|private.*Repository" api/{module-name}/src/main/java/{pkg-root}/{feature-path}/service/helper/
+# @RequiredArgsConstructor 기반 생성자 주입 — private final 필드로 감지 (@Autowired 필드 주입도 방어적으로 포함)
+# Repository / Dao / Store / Mapper 접미사 모두 포함
+grep -rEn "private final.*(Repository|Dao|Store|Mapper)|@Autowired" api/{module-name}/src/main/java/{pkg-root}/{feature-path}/service/helper/
 
 # helper/ 디렉토리 내 @Transactional 또는 @PlatformTransactional 확인
 grep -rEn "@Transactional|@PlatformTransactional" api/{module-name}/src/main/java/{pkg-root}/{feature-path}/service/helper/
@@ -194,35 +195,68 @@ grep -rEn "throw new RuntimeException|throw new Exception" api/{module-name}/src
 
 ### 3-6. SecurityConfig 엔드포인트 정합성
 
-`prd.md`가 있는 경우 API 명세 섹션에서 "인증 불필요 / JWT 필요" 설정을 읽어,
-실제 Controller의 URI prefix(`/api/public/` vs `/api/`)와 일치하는지 확인한다.
+`prd.md`가 있는 경우 API 명세 섹션에서 "인증 불필요 / JWT 필요 / ADMIN 전용" 설정을 읽어,
+실제 Controller의 URI prefix와 어노테이션이 일치하는지 확인한다.
 
 **prd.md가 없는 경우:** 이 검사를 건너뛰고 아래와 같이 표시한다.
 ```
 3-6 skip — prd.md 없음 (SecurityConfig 정합성 검사는 prd.md 기반이므로 수동 확인 권장)
 ```
 
-| prd.md 명세 | 기대 URI prefix |
-|-----------|--------------|
-| 인증 불필요 | `/api/public/{domain}/**` |
-| JWT 인증 필요 | `/api/{domain}/**` |
-| ADMIN 전용 | `/api/{domain}/**` + `@PreAuthorize("hasAuthority('ADMIN')")` |
+| prd.md 명세 | 기대 URI prefix | 추가 확인 |
+|-----------|--------------|---------|
+| 인증 불필요 | `/api/public/{domain}/**` | — |
+| JWT 인증 필요 | `/api/{domain}/**` | — |
+| ADMIN 전용 | `/api/{domain}/**` | `@PreAuthorize("hasAuthority('ADMIN')")` 존재 여부 |
 
-불일치 시 **즉시 수정 필요**.
+**URI prefix 확인:**
+
+```bash
+grep -rn "@RequestMapping\|@GetMapping\|@PostMapping\|@PutMapping\|@DeleteMapping" \
+  api/{module-name}/src/main/java/{pkg-root}/{feature-path}/controller/
+```
+
+**ADMIN 전용 엔드포인트 추가 확인 (prd.md에 ADMIN 전용이 명시된 경우만):**
+
+```bash
+grep -rn "@PreAuthorize" \
+  api/{module-name}/src/main/java/{pkg-root}/{feature-path}/controller/
+```
+
+결과가 비어 있으면 **즉시 수정 필요** — `@PreAuthorize("hasAuthority('ADMIN')")` 누락.
+
+URI prefix 불일치 또는 ADMIN 전용인데 `@PreAuthorize` 없으면 **즉시 수정 필요**.
 
 ---
 
 ## 단계 4: 코드 품질 정적 분석
 
-변경된 구현 파일 각각을 아래 기준으로 읽어 확인한다.
+변경된 구현 파일 각각을 아래 기준으로 확인한다.
+
+### 4-1. Swagger 어노테이션 누락 grep
+
+```bash
+# Controller 클래스에 @Tag 없는 파일 탐지
+grep -rLn "@Tag" api/{module-name}/src/main/java/{pkg-root}/{feature-path}/controller/
+
+# @GetMapping/@PostMapping 등 엔드포인트 메서드 목록 추출 — 파일 직접 읽어 @Operation 누락 확인
+grep -rn "@GetMapping\|@PostMapping\|@PutMapping\|@DeleteMapping\|@PatchMapping" \
+  api/{module-name}/src/main/java/{pkg-root}/{feature-path}/controller/
+```
+
+`-L` 옵션 결과(매칭 없는 파일 목록)에 파일이 있으면 `@Tag` 누락 → **즉시 수정 필요**.
+엔드포인트 메서드 위에 `@Operation`이 없으면 → **즉시 수정 필요**.
+
+### 4-2. 나머지 항목 (파일 직접 읽어 확인)
 
 | 항목 | 기준 | 분류 |
 |------|------|------|
 | 민감 정보 로깅 | 비밀번호·토큰·개인정보를 `log.info/debug`로 출력 | 즉시 수정 필요 |
 | SQL 동적 문자열 조합 | MyBatis Mapper에서 `${}` 파라미터 사용 (SQL Injection 위험) | 즉시 수정 필요 |
-| Swagger 어노테이션 누락 | Controller 클래스에 `@Tag` 없음, 또는 엔드포인트에 `@Operation` 없음 | 권장 수정 |
 | `@Transactional` 직접 사용 | `@PlatformTransactional` 대신 Spring 기본 사용 | 권장 수정 |
 | 응답 DTO에 엔티티 직접 노출 | `{Domain}Entity`를 Controller에서 직접 반환 | 권장 수정 |
+| Request DTO에 내부 ID 필드 노출 | `id`, `seqNo`, `createdBy` 등 DB 생성 필드가 Request에 존재 (Mass Assignment 위험) | 권장 수정 |
+| `@PageableDefault` 누락 | `Pageable` 파라미터를 사용하는 경우에만 해당. 기본값 없음 — 무한 페이지 크기 허용 위험. `int page, int pageSize` 직접 파라미터 방식은 해당 없음 | 권장 수정 |
 | 미사용 import | 컴파일은 되나 사용하지 않는 import 다수 | 무시 가능 |
 | TODO 주석 잔존 | 구현 파일에 `// TODO` 주석 | 무시 가능 |
 
@@ -236,8 +270,8 @@ grep -rEn "throw new RuntimeException|throw new Exception" api/{module-name}/src
 
 | 분류 | 포함 항목 |
 |------|----------|
-| **즉시 수정 필요** | 컴파일 오류, 하드코딩 시크릿, Controller try-catch, @Valid 누락, Helper 위반, DDL 직접 실행, 잘못된 URI/인증 설정, 민감 정보 로깅, SQL Injection `${}` |
-| **권장 수정** | `RuntimeException` 직접 사용, `@Transactional` 직접 사용, 엔티티 직접 노출, Swagger 어노테이션 누락 |
+| **즉시 수정 필요** | 컴파일 오류, 하드코딩 시크릿, Controller try-catch, @Valid 누락, Helper 위반(Repository/Dao/Store/Mapper 주입·트랜잭션), DDL 직접 실행, 잘못된 URI/인증 설정, 민감 정보 로깅, SQL Injection `${}`, Swagger 어노테이션 누락(`@Tag`·`@Operation`) |
+| **권장 수정** | `RuntimeException` 직접 사용, `@Transactional` 직접 사용, 엔티티 직접 노출, Request DTO 내부 ID 필드 노출, `@PageableDefault` 누락 (`Pageable` 파라미터 사용 시에만) |
 | **무시 가능** | 미사용 import, TODO 주석 |
 
 ### 출력 형식
@@ -290,7 +324,7 @@ grep -rEn "throw new RuntimeException|throw new Exception" api/{module-name}/src
 - `src/test/` 파일 수정 금지
 - 수정 후 전체 테스트 재실행해 회귀 없음 확인:
   ```bash
-  ./gradlew :api:{module-name}:test 2>&1 | tail -20
+  ./gradlew :api:{module-name}:test 2>&1 | tail -50
   ```
 
 ### 항목 진행 중 상태 출력
@@ -319,8 +353,8 @@ grep -rEn "throw new RuntimeException|throw new Exception" api/{module-name}/src
 ### 재확인
 
 ```bash
-./gradlew :api:{module-name}:build -x test 2>&1 | tail -10   # 컴파일 오류 0건
-./gradlew :api:{module-name}:test 2>&1 | tail -10             # 전체 테스트 통과
+./gradlew :api:{module-name}:build -x test 2>&1 | tail -50   # 컴파일 오류 0건
+./gradlew :api:{module-name}:test 2>&1 | tail -50             # 전체 테스트 통과
 ```
 
 **클린 기준:** 두 조건 모두 충족 시 통과.

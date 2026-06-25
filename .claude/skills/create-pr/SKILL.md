@@ -109,9 +109,10 @@ description: |
 | 항목 | 확인 방법 | 실패 시 |
 |------|---------|--------|
 | 전체 테스트 통과 | Gradle 출력 | `/tdd-green-be {N}` 실행 요청 후 중단 |
-| 컴파일 오류 없음 | Gradle build 출력 | `/security-review-be {N}` 실행 요청 후 중단 |
 | AC 검증 완료 | `issue-{N}.md`의 `## AC 검증` 섹션 존재 여부 확인 | 없으면 `/ac-verifier-be {N}` 실행 요청 후 중단 |
-| 보안 검토 결과 기록됨 | `## 보안 검토` 섹션 존재 | `/security-review-be {N}` 실행 요청 후 중단 |
+| 리팩토링 결과 기록됨 | `## 리팩토링 결과` 섹션 존재 | `/tdd-refactor-be {N}` 실행 요청 후 중단 |
+| 컴파일 오류 없음 | Gradle build 출력 | `/security-review-be {N}` 실행 요청 후 중단 |
+| 보안 검토 결과 기록됨 | `## 보안 검토` 섹션 존재 확인. 섹션이 있으면 `즉시 수정 필요` 하위 섹션을 확인: ① 하위 섹션이 없는 경우(0건) → 통과, ② 하위 섹션이 있으나 `[ ]` 미처리 항목이 있는 경우 → 중단 | 섹션 자체가 없거나 `[ ]` 미처리 항목 존재 시 `/security-review-be {N}` 실행 요청 후 중단 |
 
 모든 항목 통과 시에만 단계 2로 진행한다.
 
@@ -131,6 +132,15 @@ git log --oneline -5
 |------|---------|---------|
 | **단일 커밋** (기본 권장) | 이슈 수가 적거나 기능이 하나의 흐름으로 연결될 때 | 단계 3에서 하나의 커밋 메시지 제안 |
 | **이슈별 커밋** | 이슈가 독립적이고 되돌릴 단위가 명확할 때 | 이슈별로 이미 커밋된 경우 단계 3 건너뜀 |
+
+**커밋 전략 결정 기준:**
+
+| 상황 | 권장 전략 |
+|------|---------|
+| 이슈가 하나의 기능 흐름 (예: 목록 + 상세 조회) | 단일 커밋 |
+| 이슈가 독립적 (예: 조회 + 삭제) | 이슈별 커밋 |
+| 이슈 중 Flyway 마이그레이션 포함 | Flyway 커밋 먼저 분리 후 구현 커밋 |
+| 이슈가 5개 이상 | 이슈별 커밋 필수 (revert 단위 명확화) |
 
 > 일반적으로 `/security-review-be` 완료 시점까지 커밋을 보류하고,
 > `/create-pr`에서 한 번에 커밋·푸시·PR 생성을 진행하는 것을 권장한다.
@@ -217,6 +227,7 @@ feat({feature-path}): {이슈 핵심 동작 한 줄 요약}
 
 - {AC 항목 중 핵심 내용 3개 이내로 요약}
 - 구현 범위: {영향 계층 — Controller / Service / Repository / Flyway 여부}
+- **DB 변경**: `{Flyway 파일명}` — {테이블/컬럼 변경 내용} (Flyway 없으면 이 줄 생략)
 - 테스트: Service 단위 {N}개, Controller 슬라이스 {N}개
 
 ## Test Plan
@@ -241,6 +252,7 @@ feat({feature-path}): {이슈 핵심 동작 한 줄 요약}
 - {핵심 AC 요약 1~2개}
 
 구현 범위: {전체 영향 계층 합산}
+**DB 변경**: {Flyway 파일 목록 — 없으면 이 줄 생략}
 테스트: Service 단위 {합산}개, Controller 슬라이스 {합산}개
 
 ## Test Plan
@@ -266,8 +278,9 @@ feat({feature-path}): {이슈 핵심 동작 한 줄 요약}
 승인 후 아래 명령어를 순서대로 제시한다.
 
 ```bash
-# 1. 원격 브랜치 push (처음 push인 경우)
-git push -u origin {브랜치명}
+# 1. 원격 브랜치 push
+git push -u origin {브랜치명}        # 처음 push인 경우
+git push origin {브랜치명}           # 이미 원격 브랜치가 있는 경우
 
 # 2. PR 생성
 gh pr create \
@@ -336,6 +349,6 @@ issue-{N}.md 파일이 없는 경우:
 ```
 ⚠️  issue-{N}.md 파일이 없습니다.
     /feature-planner-be → /test-scenarios-be {N} → /tdd-red-be {N} → /tdd-green-be {N}
-    → /tdd-refactor-be {N} → /ac-verifier-be {N} → /security-review-be {N}
+    → /ac-verifier-be {N} → /tdd-refactor-be {N} → /security-review-be {N}
     순서로 먼저 실행해주세요.
 ```

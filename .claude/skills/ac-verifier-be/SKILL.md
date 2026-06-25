@@ -118,7 +118,7 @@ feature-path와 이슈 번호를 입력해주세요.
 ## 단계 1: 전체 테스트 통과 확인
 
 ```bash
-./gradlew :api:{module-name}:test 2>&1 | tail -20
+./gradlew :api:{module-name}:test 2>&1 | tail -50
 ```
 
 **실패 테스트 존재 시** → 즉시 중단:
@@ -183,6 +183,17 @@ When GET /api/public/notice
 | ✅ 충족 | Given·When·Then 세 조건 모두 구현 코드에서 추적 가능 |
 | ⚠️ 부분 충족 | 구현은 있으나 경계 조건·예외 메시지가 AC와 다름 |
 | ❌ 미충족 | When 진입점 없음, 또는 Then 결과가 구현 코드에 없음 |
+
+### 부분 충족 처리 기준
+
+⚠️ 부분 충족 발견 시 아래 기준으로 처리 방식을 결정한다.
+
+| 부분 충족 유형 | 처리 방식 |
+|-------------|---------|
+| 경계값·예외 메시지가 AC와 다름 | /tdd-red-be → /tdd-green-be로 보완 후 재검증 |
+| HTTP 상태코드 불일치 (예: 200 vs 201) | **즉시 보완 필요** — API 계약 위반 |
+| 응답 DTO 필드명·구조 불일치 | **즉시 보완 필요** — API 계약 위반 |
+| 로깅·성능 관련 AC (예: "1초 이내 응답") | 별도 이슈로 분리, 현재 PR은 진행 가능 |
 
 ---
 
@@ -263,6 +274,7 @@ AC-4: Given pageSize=0, When GET /api/public/notice?pageSize=0, Then 400
 2. /tdd-red-be {N}   — 누락된 테스트 코드 작성
 3. /tdd-green-be {N} — 테스트 통과 구현 추가
 4. /ac-verifier-be {N} — 재검증
+5. /tdd-refactor-be {N} — AC 충족 확인 후 코드 구조 개선 (이후 정상 사이클 계속)
 
 [AC-3] 중복 체크 로직 추가
   → NoticeService.create()에 Repository.existsByTitle() 호출 후 IllegalStateException throw
