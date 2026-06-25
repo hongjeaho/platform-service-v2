@@ -317,6 +317,11 @@ EOF
   ✅ /security-review-be {N}— 보안 검토
   ✅ /create-pr-be             — PR 생성
 
+```
+
+> 맥락 보존: PR 본문에 모든 AC와 구현 상세가 포함되어 있으며,
+> Git 히스토리(`git log --all --full-history -- <path>`)로 언제든 검색 가능합니다.
+
 다음 이슈가 있으면 /test-scenarios-be {다음 이슈 번호} 로 시작하세요.
 ```
 

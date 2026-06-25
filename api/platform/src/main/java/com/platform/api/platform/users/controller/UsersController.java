@@ -1,5 +1,7 @@
 package com.platform.api.platform.users.controller;
 
+import com.platform.api.platform.users.dto.CheckDuplicateResponse;
+import com.platform.api.platform.users.dto.UserIdCheckRequest;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
 import com.platform.api.platform.users.dto.UsersSignupResponse;
 import com.platform.api.platform.users.service.UsersService;
@@ -35,5 +37,20 @@ public class UsersController {
         @RequestBody @Valid UsersSignupRequest request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of(usersService.signup(request)));
+    }
+
+    // ========== 이슈 #1: 아이디 중복 확인 API ==========
+
+    @Operation(summary = "아이디 중복 확인")
+    @ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "사용 가능"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "중복"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값 오류")
+    })
+    @PostMapping("/check-id")
+    public ResponseEntity<ApiResponse<CheckDuplicateResponse>> checkId(
+        @RequestBody @Valid UserIdCheckRequest request
+    ) {
+        return ResponseEntity.ok(ApiResponse.of(usersService.checkDuplicateUserId(request.getUserId())));
     }
 }

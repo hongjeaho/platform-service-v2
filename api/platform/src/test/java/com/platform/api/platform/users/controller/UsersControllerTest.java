@@ -1,6 +1,7 @@
 package com.platform.api.platform.users.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.platform.api.platform.users.dto.CheckDuplicateResponse;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
 import com.platform.api.platform.users.dto.UsersSignupResponse;
 import com.platform.api.platform.users.service.UsersService;
@@ -17,6 +18,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -149,5 +151,59 @@ class UsersControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(validRequest)))
             .andExpect(status().isConflict());
+    }
+
+    // ========== 이슈 #1: 아이디 중복 확인 API ==========
+
+    @Test
+    @DisplayName("사용 가능한 userId로 중복 확인 시 200과 available=true를 반환한다")
+    void checkId_return200WithAvailableTrue_whenUserIdIsAvailable() throws Exception {
+        // Given
+        CheckDuplicateResponse response = CheckDuplicateResponse.available();
+        when(usersService.checkDuplicateUserId(eq("newuser"))).thenReturn(response);
+
+        // When & Then
+        mockMvc.perform(post("/api/public/users/check-id")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userId\":\"newuser\"}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.success").value(true))
+            .andExpect(jsonPath("$.data.available").value(true))
+            .andExpect(jsonPath("$.data.message").value("사용 가능합니다."));
+    }
+
+    @Test
+    @DisplayName("중복된 userId로 중복 확인 시 409를 반환한다")
+    void checkId_return409_whenUserIdIsDuplicate() throws Exception {
+        // Given
+        when(usersService.checkDuplicateUserId(eq("existinguser")))
+            .thenThrow(new IllegalStateException("이미 사용 중인 아이디입니다."));
+
+        // When & Then
+        mockMvc.perform(post("/api/public/users/check-id")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userId\":\"existinguser\"}"))
+            .andExpect(status().isConflict());
+    }
+
+    @Test
+    @DisplayName("빈 userId로 중복 확인 시 400을 반환한다 (Bean Validation)")
+    void checkId_return400_whenUserIdIsEmpty() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/public/users/check-id")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userId\":\"\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("30자 초과 userId로 중복 확인 시 400을 반환한다 (Bean Validation)")
+    void checkId_return400_whenUserIdExceeds30Chars() throws Exception {
+        // When & Then
+        String longUserId = "a".repeat(31);
+        mockMvc.perform(post("/api/public/users/check-id")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userId\":\"" + longUserId + "\"}"))
+            .andExpect(status().isBadRequest());
     }
 }
