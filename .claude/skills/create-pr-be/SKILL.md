@@ -317,6 +317,23 @@ EOF
   ✅ /security-review-be {N}— 보안 검토
   ✅ /create-pr-be             — PR 생성
 
+🧹 TDD 문서 정리:
+PR 생성 후 docs/ 폴더는 더 이상 필요하지 않습니다.
+아래 명령어로 정리하세요:
+
+```bash
+# docs/ 폴더 제거 (git 상관없이 로컬 정리)
+rm -rf api/{module-name}/src/main/java/{pkg-root}/{feature-path}/docs/
+
+# 또는 git에서도 추적 제거 (원할 경우)
+git rm -r api/{module-name}/src/main/java/{pkg-root}/{feature-path}/docs/
+git commit -m "chore({feature-path}): TDD 문서 정리"
+git push origin {브랜치명}
+```
+
+> 맥락 보존: PR 본문에 모든 AC와 구현 상세가 포함되어 있으며,
+> Git 히스토리(`git log --all --full-history -- <path>`)로 언제든 검색 가능합니다.
+
 다음 이슈가 있으면 /test-scenarios-be {다음 이슈 번호} 로 시작하세요.
 ```
 
