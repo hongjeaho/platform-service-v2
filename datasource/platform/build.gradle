@@ -149,3 +149,10 @@ sourceSets {
 tasks.named('compileJava') {
     dependsOn tasks.named('generateJooq')
 }
+
+// JOOQ 자동 생성 클래스는 커버리지 측정 대상에서 제외
+jacocoTestReport {
+    classDirectories.setFrom(files(classDirectories.files.collect {
+        fileTree(dir: it, exclude: ['**/jooq/generated/**'])
+    }))
+}
