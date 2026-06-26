@@ -1,7 +1,7 @@
 ---
 name: tdd-red-be
 description: |
-  이슈 AC를 실패하는 백엔드 테스트(Service 단위 + Controller 슬라이스)로 변환하는 TDD Red 스킬.
+  test-scenarios-be 완료 후, 이슈 AC를 실패하는 백엔드 테스트(Service 단위 + Controller 슬라이스)로 변환하는 TDD Red 스킬.
   "백엔드 TDD Red"·"tdd-red-be"·"JUnit 실패 테스트 작성" 언급 시 이 스킬 사용.
 ---
 
@@ -140,7 +140,7 @@ Controller 테스트:
 파일이 없거나 두 섹션 중 하나라도 없으면:
 
 ```
-⚠️  issue-{N}.md에 {누락 섹션}이 없습니다.
+⛔ issue-{N}.md에 {누락 섹션}이 없습니다.
     /test-scenarios-be {N} 을 먼저 실행해 시그니처·시나리오를 확정해주세요.
 ```
 
@@ -506,6 +506,6 @@ public class NoticeListRepository {
 단, issue-{N}.md에 `## 시그니처` 또는 `## 테스트 시나리오` 섹션이 없으면:
 
 ```
-⚠️  issue-{N}.md에 {누락 섹션}이 없습니다.
+⛔ issue-{N}.md에 {누락 섹션}이 없습니다.
     /test-scenarios-be {N} → /tdd-red-be {N} 순서로 먼저 실행해주세요.
 ```

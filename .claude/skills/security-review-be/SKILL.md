@@ -1,7 +1,7 @@
 ---
 name: security-review-be
 description: |
-  커밋 전 Spring Boot 보안 취약점·패턴 위반·코드 품질 점검 스킬. 즉시 수정/권장/무시 3분류 보고.
+  tdd-refactor-be 완료 후, 커밋 전 Spring Boot 코드 전반(보안 취약점·패턴 위반·코드 품질)을 즉시 수정/권장/무시 3분류로 점검하는 스킬.
   "백엔드 보안 검토"·"보안 취약점"·"security-review-be" 언급 시 이 스킬 사용.
 ---
 
@@ -274,7 +274,7 @@ grep -rn "@GetMapping\|@PostMapping\|@PutMapping\|@DeleteMapping\|@PatchMapping"
 🔐 Security Review 결과 — issue-{N}
 
 ---
-⛔ 즉시 수정 필요 ({N}건)
+🚫 즉시 수정 필요 ({N}건)
 ---
 [try-catch] NoticeController.java:34
   — Controller에 try-catch 블록 존재. Service에서 throw → GlobalExceptionHandler로 처리할 것.

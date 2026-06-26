@@ -1,7 +1,7 @@
 ---
 name: tdd-green-be
 description: |
-  실패하는 백엔드 테스트를 통과시키는 최소 구현 코드를 작성하는 TDD Green 스킬. 테스트 파일 수정 없음.
+  tdd-red-be 완료 후, 실패하는 백엔드 테스트를 통과시키는 최소 구현 코드를 작성하는 TDD Green 스킬. 테스트 파일 수정 없음.
   "백엔드 TDD Green"·"tdd-green-be"·"테스트 통과 구현" 언급 시 이 스킬 사용.
 ---
 

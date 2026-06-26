@@ -1,7 +1,7 @@
 ---
 name: create-pr-be
 description: |
-  TDD 이슈 사이클 완료 후 git commit 안내 및 PR 제목·본문 자동 생성 스킬. git 명령 직접 실행 없음.
+  모든 이슈의 security-review-be 완료 후, git commit 안내 및 PR 제목·본문 자동 생성 스킬. git 명령 직접 실행 없음.
   "PR 생성"·"create-pr-be"·"커밋하고 PR" 언급 시 이 스킬 사용.
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: tdd-refactor-be
 description: |
-  테스트 통과 상태를 유지하며 백엔드 코드 구조를 개선하는 TDD Refactor 스킬. 새 기능 추가 없음.
+  ac-verifier-be 완료 후, 테스트 통과 상태를 유지하며 백엔드 코드 구조를 개선하는 TDD Refactor 스킬. 새 기능 추가 없음.
   "백엔드 리팩토링"·"tdd-refactor-be"·"Helper 추출" 언급 시 이 스킬 사용.
 ---
 

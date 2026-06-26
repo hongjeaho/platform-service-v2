@@ -1,7 +1,7 @@
 ---
 name: ac-verifier-be
 description: |
-  tdd-green-be 완료 후 AC 의도가 구현 코드에 반영되었는지 독립 검증하는 스킬. 구현 파일 수정 없음.
+  tdd-green-be 완료 후, AC 의도가 구현 코드에 반영되었는지 독립 검증하는 스킬. 구현 파일 수정 없음.
   "AC 검증"·"ac-verifier-be"·"Acceptance Criteria 독립 검증" 언급 시 이 스킬 사용.
 ---
 
