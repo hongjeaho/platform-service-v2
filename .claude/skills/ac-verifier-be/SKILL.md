@@ -1,15 +1,8 @@
 ---
 name: ac-verifier-be
 description: |
-  tdd-green-be 완료 후 이슈의 Acceptance Criteria 충족 여부를 독립 검증하는 스킬.
-  /ac-verifier-be {N} 명령어로 진입. /feature-planner-be 세션 컨텍스트가 있으면
-  feature-path, module-name, pkg-root를 자동 로드하고,
-  없으면 Git 브랜치명(feature/xxx)을 자동 파싱해 feature-path를 설정한다.
-  테스트 통과 여부가 아닌 AC의 의도가 구현 코드에 반영되었는지를 코드 레벨에서 직접 추적해 판단한다.
-  구현 파일은 절대 수정하지 않는다 — issue-{N}.md 최하단 검증 결과 기록만 예외.
-  사용자가 "AC 검증", "AC 충족 검증", "ac-verifier-be", "Acceptance Criteria 독립 검증",
-  "AC 독립 검증", "백엔드 AC 충족 확인" 등을 언급하면 반드시 이 스킬을 사용할 것.
-  /tdd-green-be 완료 직후 실행한다.
+  tdd-green-be 완료 후 AC 의도가 구현 코드에 반영되었는지 독립 검증하는 스킬. 구현 파일 수정 없음.
+  "AC 검증"·"ac-verifier-be"·"Acceptance Criteria 독립 검증" 언급 시 이 스킬 사용.
 ---
 
 # AC Verifier Workflow [백엔드 · Spring Boot]
@@ -36,47 +29,9 @@ description: |
 
 ## 컨텍스트 결정
 
-아래 순서로 `feature-path` / `module-name` / `pkg-root`를 결정한다.
-위 단계에서 결정되면 아래 단계는 실행하지 않는다.
-
-**1순위: /feature-planner-be 세션 컨텍스트**
-
-같은 세션에서 `/feature-planner-be`가 먼저 실행된 경우 `[CONTEXT]`를 그대로 사용한다.
-
-```
-[CONTEXT] feature-path: notice/list
-          module-name:  platform
-          api-module:   api/platform
-          ds-module:    datasource/platform
-          pkg-root:     com/platform/api/platform
-          docs-root:    api/platform/src/main/java/com/platform/api/platform/notice/list/docs/
-          branch:       feature/notice/list
-```
-
-**2순위: 직접 지정**
-
-첫 토큰에 슬래시(`/`)가 포함된 영문 경로 → `{feature-path}`로 판단.
-module-name·pkg-root는 `ls api/` + `find *Application.java`로 자동 탐색.
-
-**3순위: 현재 브랜치 자동 추론**
-
-```bash
-git branch --show-current
-```
-
-`main`·`master`·`develop`·`dev` 또는 `feature/` prefix 없는 브랜치:
-
-```
-⚠️  현재 브랜치: main (보호 브랜치)
-    feature 브랜치로 전환 후 다시 실행해주세요.
-```
-
-**4순위: 직접 입력 요청**
-
-```
-feature-path와 이슈 번호를 입력해주세요.
-예) /ac-verifier-be notice/list 1
-```
+아래 4순위로 결정한다:
+1순위 세션 [CONTEXT] 블록 → 2순위 첫 토큰 `/` 포함 경로 직접 지정 → 3순위 `git branch --show-current` (`feature/*` 파싱) → 4순위 직접 입력 요청.
+보호 브랜치(main/master/develop/dev) 감지 시 즉시 중단.
 
 ---
 
@@ -204,28 +159,28 @@ When GET /api/public/notice
 ```
 🔍 AC Verifier 결과 — issue-{N}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 ✅ 충족 ({N}건)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 AC-1: Given 공지 존재, When GET /api/public/notice, Then 200 + 목록
   → NoticeController.getList() @GetMapping → NoticeService.getList() → Repository.findAll() ✅
 
 AC-2: Given 없는 id, When GET /api/public/notice/99, Then 400
   → Service.getDetail() → IllegalArgumentException → GlobalExceptionHandler(400) ✅
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 ⚠️  부분 충족 ({N}건)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 AC-3: Given 중복 제목, When POST /api/notice, Then 409
   → Service에 중복 체크 로직 없음 — 테스트는 통과했으나 실제 중복 입력 시 DB 오류(503) 발생 가능
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 ❌ 미충족 ({N}건)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 AC-4: Given pageSize=0, When GET /api/public/notice?pageSize=0, Then 400
   → @Valid 없음, @Min(1) 없음 — pageSize=0 입력 시 빈 목록 반환
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 요약: ✅ {N}건 / ⚠️ {N}건 / ❌ {N}건
 ```
 

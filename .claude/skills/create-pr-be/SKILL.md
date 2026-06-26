@@ -1,16 +1,8 @@
 ---
 name: create-pr-be
 description: |
-  백엔드 TDD 이슈 사이클 완료 후 git commit → PR 생성까지 안내하는 스킬.
-  /create-pr-be 명령어로 진입. /feature-planner-be 세션 컨텍스트가 있으면
-  feature-path, module-name을 자동 로드하고, 없으면 Git 브랜치명을 자동 파싱한다.
-  issue-{N}.md와 git diff를 읽어 PR 제목·본문을 자동 생성하고,
-  git commit 명령어와 gh pr create 명령어를 제시한다.
-  사용자가 "PR 생성", "백엔드 PR", "create-pr-be", "Pull Request 생성",
-  "브랜치 merge 요청", "PR 만들기", "커밋하고 PR" 등을 언급하면 반드시 이 스킬을 사용할 것.
-  /security-review-be 완료 직후 실행한다.
-  Claude는 git add / git commit / git push / gh pr create를 직접 실행하지 않는다.
-  명령어를 제시하고 사용자가 직접 실행하도록 안내한다.
+  TDD 이슈 사이클 완료 후 git commit 안내 및 PR 제목·본문 자동 생성 스킬. git 명령 직접 실행 없음.
+  "PR 생성"·"create-pr-be"·"커밋하고 PR" 언급 시 이 스킬 사용.
 ---
 
 # Create PR Workflow [백엔드 · Spring Boot]
@@ -39,7 +31,9 @@ description: |
 
 ## 컨텍스트 결정
 
-`/tdd-red-be`와 동일한 4순위 결정 방식 사용.
+아래 4순위로 결정한다:
+1순위 세션 [CONTEXT] 블록 → 2순위 첫 토큰 `/` 포함 경로 직접 지정 → 3순위 `git branch --show-current` (`feature/*` 파싱) → 4순위 직접 입력 요청.
+보호 브랜치(main/master/develop/dev) 감지 시 즉시 중단.
 
 세션 컨텍스트 `[CONTEXT]`에서 `feature-path`, `module-name`, `api-module`, `ds-module`, `pkg-root`를 로드한다.
 
@@ -112,7 +106,7 @@ description: |
 | AC 검증 완료 | `issue-{N}.md`의 `## AC 검증` 섹션 존재 여부 확인 | 없으면 `/ac-verifier-be {N}` 실행 요청 후 중단 |
 | 리팩토링 결과 기록됨 | `## 리팩토링 결과` 섹션 존재 | `/tdd-refactor-be {N}` 실행 요청 후 중단 |
 | 컴파일 오류 없음 | Gradle build 출력 | `/security-review-be {N}` 실행 요청 후 중단 |
-| 보안 검토 결과 기록됨 | `## 보안 검토` 섹션 존재 확인. 섹션이 있으면 `즉시 수정 필요` 하위 섹션을 확인: ① 하위 섹션이 없는 경우(0건) → 통과, ② 하위 섹션이 있으나 `[ ]` 미처리 항목이 있는 경우 → 중단 | 섹션 자체가 없거나 `[ ]` 미처리 항목 존재 시 `/security-review-be {N}` 실행 요청 후 중단 |
+| 보안 검토 결과 기록됨 | `## 보안 검토` 섹션 존재 확인. ① 섹션 없으면 → 중단, ② 섹션 있고 내부에 `- [ ]` 항목이 하나라도 있으면 → 중단, ③ 섹션 있고 `- [ ]` 항목 없으면 → 통과 | 섹션 없거나 `[ ]` 항목 존재 시 `/security-review-be {N}` 실행 요청 후 중단 |
 
 모든 항목 통과 시에만 단계 2로 진행한다.
 

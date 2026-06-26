@@ -1,16 +1,8 @@
 ---
 name: tdd-refactor-be
 description: |
-  테스트 통과 상태를 유지하면서 백엔드 코드 구조를 개선하는 TDD Refactor 단계 스킬.
-  /tdd-refactor-be {이슈번호} 명령어로 진입. /feature-planner-be 세션 컨텍스트가 있으면
-  feature-path, module-name, pkg-root를 자동 로드하고,
-  없으면 Git 브랜치명(feature/xxx)을 자동 파싱해 feature-path를 설정한다.
-  사용자가 "백엔드 TDD Refactor", "백엔드 리팩토링", "Service 구조 개선",
-  "Helper 추출", "tdd-refactor-be", "Spring Boot Refactor",
-  "테스트 유지 리팩토링", "백엔드 코드 개선" 등을 언급하면 반드시 이 스킬을 사용할 것.
-  /ac-verifier-be 완료 직후 실행한다.
-  테스트 파일(src/test/)은 절대 수정하지 않으며, 구현 코드(src/main/)만 리팩토링한다.
-  새 기능 추가 금지 — 동작을 바꾸지 않고 구조만 개선한다.
+  테스트 통과 상태를 유지하며 백엔드 코드 구조를 개선하는 TDD Refactor 스킬. 새 기능 추가 없음.
+  "백엔드 리팩토링"·"tdd-refactor-be"·"Helper 추출" 언급 시 이 스킬 사용.
 ---
 
 # TDD Refactor Workflow [백엔드 · Spring Boot]
@@ -31,19 +23,9 @@ description: |
 
 ## 컨텍스트 결정
 
-`/tdd-red-be`와 동일한 4순위 결정 방식 사용.
-
-세션 컨텍스트 `[CONTEXT]`에서 `feature-path`, `module-name`, `api-module`, `ds-module`, `pkg-root`, `docs-root`를 로드한다.
-
-```
-[CONTEXT] feature-path: notice/list
-          module-name:  platform
-          api-module:   api/platform
-          ds-module:    datasource/platform
-          pkg-root:     com/platform/api/platform
-          docs-root:    api/platform/src/main/java/com/platform/api/platform/notice/list/docs/
-          branch:       feature/notice/list
-```
+아래 4순위로 결정한다:
+1순위 세션 [CONTEXT] 블록 → 2순위 첫 토큰 `/` 포함 경로 직접 지정 → 3순위 `git branch --show-current` (`feature/*` 파싱) → 4순위 직접 입력 요청.
+보호 브랜치(main/master/develop/dev) 감지 시 즉시 중단.
 
 ---
 
@@ -241,7 +223,7 @@ git diff 결과와 교집합을 추출한다.
    ./gradlew :api:{module-name}:test 2>&1 | tail -50
    ```
 3. **전체 통과** → 다음 항목으로 이동
-4. **실패 발생** → `git restore {변경된 파일 경로}`로 원복 → 다른 방식으로 1회 재시도
+4. **실패 발생** → Edit 도구로 변경한 내용을 직접 원복 → 다른 방식으로 1회 재시도
 5. **재시도도 실패** → 건너뜀 + 사용자 보고:
    ```
    ⚠️ 건너뜀: {파일명}
@@ -325,10 +307,10 @@ public class NoticeListService {
 
 ```
 ➡️  다음 단계: /security-review-be {N}  (보안 취약점·패턴 위반·코드 품질 점검)
-    이후: git commit → /create-pr
+    이후: git commit → /create-pr-be
     전체 백엔드 이슈 사이클:
       test-scenarios-be → tdd-red-be → tdd-green-be → ac-verifier-be
-      → tdd-refactor-be → security-review-be → create-pr
+      → tdd-refactor-be → security-review-be → create-pr-be
 ```
 
 ---

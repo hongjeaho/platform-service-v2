@@ -1,15 +1,8 @@
 ---
 name: tdd-green-be
 description: |
-  실패하는 백엔드 테스트를 통과시키는 최소한의 구현 코드를 작성하는 TDD Green 단계 스킬.
-  /tdd-green-be {이슈번호} 명령어로 진입. /feature-planner-be 세션 컨텍스트가 있으면
-  feature-path, module-name, pkg-root를 자동 로드하고,
-  없으면 Git 브랜치명(feature/xxx)을 자동 파싱해 feature-path를 설정한다.
-  사용자가 "백엔드 TDD Green", "백엔드 구현 코드 작성", "테스트 통과 구현",
-  "green 단계 구현", "tdd-green-be", "Service 구현", "Controller 구현",
-  "Repository 구현", "Spring Boot Green" 등을 언급하면 반드시 이 스킬을 사용할 것.
-  /tdd-red-be 스킬이 테스트 코드 작성을 완료한 직후 실행한다.
-  테스트 파일(src/test/)은 절대 수정하지 않으며, 구현 코드(src/main/)만 작성한다.
+  실패하는 백엔드 테스트를 통과시키는 최소 구현 코드를 작성하는 TDD Green 스킬. 테스트 파일 수정 없음.
+  "백엔드 TDD Green"·"tdd-green-be"·"테스트 통과 구현" 언급 시 이 스킬 사용.
 ---
 
 # TDD Green Workflow [백엔드 · Spring Boot]
@@ -30,7 +23,9 @@ description: |
 
 ## 컨텍스트 결정
 
-`/tdd-red-be`와 동일한 4순위 결정 방식 사용.
+아래 4순위로 결정한다:
+1순위 세션 [CONTEXT] 블록 → 2순위 첫 토큰 `/` 포함 경로 직접 지정 → 3순위 `git branch --show-current` (`feature/*` 파싱) → 4순위 직접 입력 요청.
+보호 브랜치(main/master/develop/dev) 감지 시 즉시 중단.
 세션 컨텍스트 `[CONTEXT]`에서 `feature-path`, `module-name`, `api-module`, `ds-module`, `pkg-root`, `docs-root`를 로드한다.
 
 ```
@@ -274,16 +269,6 @@ public class {Domain}Controller {
 ### 최소 구현 원칙
 
 ```java
-// ❌ 과도한 구현 (Green 단계에서 금지)
-public List<NoticeResponse> getList(int page, int pageSize) {
-    // 정렬, 필터, 캐시, 이벤트 발행까지 한 번에
-    return cacheManager.get(...).orElseGet(() -> {
-        List<NoticeEntity> list = repository.findAll(...);
-        eventPublisher.publish(...);
-        return list.stream().sorted(...).map(this::toResponse).toList();
-    });
-}
-
 // ✅ 테스트가 요구하는 최소 구현
 public List<NoticeResponse> getList(int page, int pageSize) {
     return repository.findAll(page, pageSize).stream()
@@ -302,24 +287,6 @@ public List<NoticeResponse> getList(...) { ... }
 // 명령 메서드: 기본 (readOnly=false)
 @PlatformTransactional
 public NoticeResponse create(...) { ... }
-```
-
----
-
-### (선택) Repository 통합 테스트
-
-JOOQ 쿼리 정확성(JOIN 누락, 페이징 오류, 오타 등)이 중요한 경우에만 작성한다.
-테이블은 이미 존재하므로 Flyway 없이 바로 실행 가능하다.
-
-```java
-// Testcontainers + @SpringBootTest로 실제 DB에서 검증 (선택 사항)
-@SpringBootTest
-@Testcontainers
-@Transactional  // Spring @Transactional (구현 코드의 @PlatformTransactional 아님) — 테스트 후 자동 롤백으로 테스트 간 데이터 격리 보장
-class NoticeListRepositoryIntegrationTest {
-    // 기존 테이블 대상: Flyway가 이미 적용된 상태이므로 스키마 초기화 불필요
-    // 신규 테이블 이슈: 단계 3(Flyway + JOOQ 재생성) 완료 후에만 실행 가능
-}
 ```
 
 ---

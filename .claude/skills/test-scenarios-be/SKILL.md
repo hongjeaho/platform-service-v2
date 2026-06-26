@@ -1,14 +1,8 @@
 ---
 name: test-scenarios-be
 description: |
-  이슈 단위로 Java 메서드 시그니처를 확정하고 백엔드 테스트 시나리오를 도출하는 스킬.
-  /test-scenarios-be {N} 명령어로 진입. /feature-planner-be 세션 컨텍스트가 있으면
-  feature-path, module-name, pkg-root를 자동 로드하고,
-  없으면 Git 브랜치명(feature/xxx)을 자동 파싱해 feature-path를 설정한다.
-  사용자가 "백엔드 테스트 시나리오", "Java 시그니처 도출", "Service 시그니처",
-  "Controller 시그니처", "AC 커버리지 백엔드", "TDD 준비 백엔드",
-  "test-scenarios-be", "이슈 시나리오 백엔드" 등을 언급하면 반드시 이 스킬을 사용할 것.
-  /feature-planner-be 의 issues.md 확정 직후, 각 이슈를 TDD로 구현하기 전에 실행한다.
+  이슈 단위로 Java 메서드 시그니처 확정 및 백엔드 테스트 시나리오 도출 스킬. GATE × 2 포함.
+  "백엔드 테스트 시나리오"·"test-scenarios-be"·"Java 시그니처 도출" 언급 시 이 스킬 사용.
 ---
 
 # Test Scenarios Workflow [백엔드 · Spring Boot]
@@ -30,55 +24,9 @@ description: |
 
 ## 컨텍스트 결정
 
-아래 순서로 `feature-path` / `module-name` / `pkg-root`를 결정한다.
-위 단계에서 결정되면 아래 단계는 실행하지 않는다.
-
-**1순위: /feature-planner-be 세션 컨텍스트**
-
-같은 세션에서 `/feature-planner-be`가 먼저 실행된 경우 `[CONTEXT]`를 그대로 사용한다.
-git 명령을 실행하거나 사용자에게 경로를 묻지 않는다.
-
-```
-[CONTEXT] feature-path: notice/list
-          module-name:  platform
-          api-module:   api/platform
-          ds-module:    datasource/platform
-          pkg-root:     com/platform/api/platform
-          docs-root:    api/platform/src/main/java/com/platform/api/platform/notice/list/docs/
-          branch:       feature/notice/list
-```
-
-**2순위: 직접 지정**
-
-첫 토큰에 슬래시(`/`)가 포함된 영문 경로 → `{feature-path}`로 판단.
-module-name·pkg-root는 `ls api/` + `find *Application.java`로 자동 탐색.
-
-```
-/test-scenarios-be notice/list 1   → feature-path: notice/list, N: 1
-```
-
-**3순위: 현재 브랜치 자동 추론**
-
-```bash
-git branch --show-current
-```
-
-`main`·`master`·`develop`·`dev` 또는 `feature/` prefix 없는 브랜치:
-
-```
-⚠️  현재 브랜치: main (보호 브랜치)
-    시나리오 작업은 feature 브랜치에서 진행해야 합니다.
-    feature 브랜치로 전환 후 다시 실행해주세요.
-```
-
-`feature/*` 브랜치라면 `feature/` prefix를 제거해 feature-path로 사용.
-
-**4순위: 직접 입력 요청**
-
-```
-feature-path를 입력해주세요.
-예) /test-scenarios-be notice/list 1
-```
+아래 4순위로 결정한다:
+1순위 세션 [CONTEXT] 블록 → 2순위 첫 토큰 `/` 포함 경로 직접 지정 → 3순위 `git branch --show-current` (`feature/*` 파싱) → 4순위 직접 입력 요청.
+보호 브랜치(main/master/develop/dev) 감지 시 즉시 중단.
 
 ---
 

@@ -1,16 +1,8 @@
 ---
 name: tdd-red-be
 description: |
-  이슈 AC(Given-When-Then)를 실패하는 백엔드 테스트 코드로 변환하는 TDD Red 단계 스킬.
-  /tdd-red-be {이슈번호} 명령어로 진입. /feature-planner-be 세션 컨텍스트가 있으면
-  feature-path, module-name, pkg-root를 자동 로드하고,
-  없으면 Git 브랜치명(feature/xxx)을 자동 파싱해 feature-path를 설정한다.
-  사용자가 "백엔드 TDD Red", "백엔드 테스트 코드 작성", "실패하는 Service 테스트",
-  "실패하는 Controller 테스트", "tdd-red-be", "Spring Boot TDD Red",
-  "백엔드 red 단계", "JUnit 실패 테스트 작성" 등을 언급하면 반드시 이 스킬을 사용할 것.
-  /test-scenarios-be 스킬이 issue-{N}.md 시그니처·시나리오 작성을 완료한 직후 실행하며,
-  구현 코드 작성 전 단계다.
-  테스트 파일만 생성·수정하고 main/의 구현 코드는 절대 손대지 않는다.
+  이슈 AC를 실패하는 백엔드 테스트(Service 단위 + Controller 슬라이스)로 변환하는 TDD Red 스킬.
+  "백엔드 TDD Red"·"tdd-red-be"·"JUnit 실패 테스트 작성" 언급 시 이 스킬 사용.
 ---
 
 # TDD Red Workflow [백엔드 · Spring Boot]
@@ -197,13 +189,6 @@ class {Domain}ServiceTest {
     create_throwWhenDuplicateTitle
 ```
 
-| 시나리오 (한국어) | 메서드명 (영어) |
-|---|---|
-| 공지가 없을 때 빈 목록 반환 | `getList_returnEmptyWhenNoticeNotExists` |
-| 중복 제목으로 409 반환 | `create_throwConflictWhenDuplicateTitle` |
-| 존재하지 않는 ID로 400 반환 | `getDetail_throwWhenNoticeNotFound` |
-| 페이지 크기 초과 시 400 반환 | `getList_throwWhenPageSizeExceedsLimit` |
-
 ### 예외 검증
 
 ```java
@@ -325,15 +310,14 @@ void create_returns201_whenValidRequest() throws Exception {
 
 ### 인증 처리
 
-`@WebMvcTest`는 Spring Security를 자동으로 포함하므로 SecurityConfig 없이도
-`anyRequest().authenticated()` 기본값이 적용되어 공개 엔드포인트도 401을 반환합니다.
-따라서 **방법 A를 공개·JWT 엔드포인트 모두의 기본값으로 사용**합니다.
+`@WebMvcTest`는 `anyRequest().authenticated()` 기본값이 적용되어 공개 엔드포인트도 401 반환.
+**방법 A를 공개·JWT 엔드포인트 모두의 기본값으로 사용**한다.
 
-**방법 A (기본값 — 공개·JWT 엔드포인트 모두 적용)**
+**방법 A (기본값)**
 
 ```java
 @WebMvcTest({Domain}Controller.class)
-@AutoConfigureMockMvc(addFilters = false)  // 시큐리티 필터 체인 전체 비활성화
+@AutoConfigureMockMvc(addFilters = false)  // 필터 체인 전체 비활성화
 class {Domain}ControllerTest {
 
     @Autowired private MockMvc mockMvc;
@@ -345,58 +329,35 @@ class {Domain}ControllerTest {
 }
 ```
 
-> 방법 A는 인증 자체를 테스트하지 않고 Controller 로직에만 집중합니다.
-> Controller 슬라이스 테스트의 목적(HTTP 상태코드·응답 JSON 검증)에 가장 적합합니다.
->
-> **JWT 인증 필요 엔드포인트**: 방법 A로 기능 로직을 검증하되, 방법 B로 401 케이스 1개 이상 추가 권장.
+> JWT 인증 필요 엔드포인트: 방법 A로 기능 로직 검증 + 방법 B로 401 케이스 1개 이상 추가 권장.
 
-**방법 B (고급 — 인증·인가 동작 자체를 검증해야 할 때만)**
+**방법 B (고급 — 미인증 401·권한 없음 403 동작 자체 검증 시만)**
 
-보안 동작(미인증 → 401, 권한 없음 → 403)을 명시적으로 테스트해야 하는 경우에만 사용합니다.
-`SecurityConfig` 생성자 의존 빈을 모두 Mock으로 제공해야 합니다.
+> ⛔ 방법 B 선택 시 `@MockBean ObjectMapper objectMapper`가 등록되어
+>    테스트 클래스 전체에서 `objectMapper.writeValueAsString() → null` 반환.
+>    이슈와 무관한 기존 테스트까지 깨질 수 있으므로 **미인증 401·403 검증이 반드시 필요한 경우에만 사용**.
+>    대부분의 경우 방법 A(`addFilters = false`)로 충분하다.
 
 ```java
 @WebMvcTest({Domain}Controller.class)
 @Import(SecurityConfig.class)
 class {Domain}ControllerTest {
 
-    // SecurityConfig 생성자 의존 빈 (변경 시 SecurityConfig.java 확인)
+    // SecurityConfig 의존 빈 (변경 시 SecurityConfig.java 확인)
     @MockBean UserDetailsService userDetailsService;
     @MockBean JWTCheckFilter jwtCheckFilter;
     @MockBean @Qualifier("platformHeaderFilter") OncePerRequestFilter platformHeaderFilter;
-    @MockBean ObjectMapper objectMapper;
+    @MockBean ObjectMapper objectMapper;  // writeValueAsString() → null. JSON 본문 수동 작성 필요.
 
     @Autowired private MockMvc mockMvc;
     @MockBean private {Domain}Service {domain}Service;
 
-    @Test
-    @WithMockUser          // 인증된 사용자로 요청
-    void ...
-
-    @Test
-    void unauthenticated_returns401() throws Exception {
-        // @WithMockUser 없이 호출 → 401 검증
+    @Test @WithMockUser void ... // 인증된 사용자
+    @Test void unauthenticated_returns401() throws Exception {
         mockMvc.perform(get("/api/...")).andExpect(status().isUnauthorized());
     }
 }
 ```
-
-> 방법 B는 의존 빈 목록이 `SecurityConfig.java` 변경 시 stale해질 수 있습니다.
-> `api/{module-name}/src/main/java/{pkg-root}/config/SecurityConfig.java`를 직접 확인하세요.
-
-> **⚠️ 방법 B ObjectMapper 제약**: `@MockBean ObjectMapper objectMapper`로 등록되므로
-> 테스트 본문에서 `objectMapper.writeValueAsString(request)` 호출 시 `null`을 반환한다.
-> 방법 B에서는 JSON 본문을 수동 문자열로 작성할 것.
->
-> ```java
-> // 방법 B — JSON 수동 작성
-> mockMvc.perform(post("/api/notice")
->         .contentType(MediaType.APPLICATION_JSON)
->         .content("{\"title\":\"제목\",\"content\":\"내용\"}"))
->     .andExpect(status().isCreated());
->
-> // objectMapper.writeValueAsString(request) ← 방법 A에서만 사용 가능
-> ```
 
 ### 응답 형식 — ApiResponse<T>
 

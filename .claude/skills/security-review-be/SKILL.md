@@ -1,16 +1,8 @@
 ---
 name: security-review-be
 description: |
-  커밋 전 Spring Boot 구현 코드의 보안 취약점·패턴 위반·코드 품질을 점검하는 스킬.
-  /security-review-be {N} 명령어로 진입. /feature-planner-be 세션 컨텍스트가 있으면
-  feature-path, module-name, pkg-root를 자동 로드하고,
-  없으면 Git 브랜치명(feature/xxx)을 자동 파싱해 feature-path를 설정한다.
-  발견된 이슈를 세 분류(즉시 수정 필요 / 권장 수정 / 무시 가능)로 나눠 보고하고,
-  승인 후 "즉시 수정 필요" 항목만 처리한다.
-  사용자가 "백엔드 보안 검토", "Spring Security 점검", "보안 취약점",
-  "security-review-be", "하드코딩 시크릿", "백엔드 커밋 전 검사",
-  "Controller 패턴 검사", "SQL Injection 점검" 등을 언급하면 반드시 이 스킬을 사용할 것.
-  /tdd-refactor-be 완료 직후, git commit 전에 실행한다.
+  커밋 전 Spring Boot 보안 취약점·패턴 위반·코드 품질 점검 스킬. 즉시 수정/권장/무시 3분류 보고.
+  "백엔드 보안 검토"·"보안 취약점"·"security-review-be" 언급 시 이 스킬 사용.
 ---
 
 # Security Review Workflow [백엔드 · Spring Boot]
@@ -31,7 +23,9 @@ description: |
 
 ## 컨텍스트 결정
 
-`/tdd-red-be`와 동일한 4순위 결정 방식 사용.
+아래 4순위로 결정한다:
+1순위 세션 [CONTEXT] 블록 → 2순위 첫 토큰 `/` 포함 경로 직접 지정 → 3순위 `git branch --show-current` (`feature/*` 파싱) → 4순위 직접 입력 요청.
+보호 브랜치(main/master/develop/dev) 감지 시 즉시 중단.
 
 ---
 
@@ -279,9 +273,9 @@ grep -rn "@GetMapping\|@PostMapping\|@PutMapping\|@DeleteMapping\|@PatchMapping"
 ```
 🔐 Security Review 결과 — issue-{N}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 ⛔ 즉시 수정 필요 ({N}건)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 [try-catch] NoticeController.java:34
   — Controller에 try-catch 블록 존재. Service에서 throw → GlobalExceptionHandler로 처리할 것.
 
@@ -291,32 +285,36 @@ grep -rn "@GetMapping\|@PostMapping\|@PutMapping\|@DeleteMapping\|@PatchMapping"
 [secret] datasource/platform/flyway/V20260101__init.sql:5
   — password: 'plaintext123' 하드코딩.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 ⚠️  권장 수정 ({N}건)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 [exception] NoticeService.java:55
   — throw new RuntimeException(...) → IllegalArgumentException 또는 IllegalStateException으로 교체 권장.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 ✅ 무시 가능 ({N}건)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 [import] NoticeService.java:5 — 미사용 import java.util.Map
 
-"즉시 수정 필요" 항목을 처리할까요?
-(전체 처리 / 항목별 선택 — 예: "1, 2번만" / 취소)
+수정 항목을 처리할까요?
+(즉시 수정만 / 즉시 수정 + 권장 수정 전체 / 즉시 수정 + 권장 수정 일부 선택 — 예: "즉시 전체, 권장 1번" / 취소)
 ```
 
 **즉시 수정 필요 항목이 없는 경우:**
 
 ```
-✅ 즉시 수정 필요 항목 없음 — 단계 7 재확인으로 진행합니다.
+✅ 즉시 수정 필요 항목 없음
+
+권장 수정 {N}건을 함께 처리할까요?
+(전체 처리 / 항목별 선택 — 예: "1번만" / 생략)
 ```
 
 ---
 
-## 단계 6: "즉시 수정 필요" 항목 처리
+## 단계 6: 수정 항목 처리
 
-개발자 승인 확인 후 승인된 항목을 하나씩 처리한다.
+개발자 승인 확인 후 승인된 항목을 순서대로 처리한다.
+"즉시 수정 필요" → "권장 수정" 순서로 처리하며, 각 처리 후 전체 테스트를 재실행한다.
 
 ### 수정 원칙
 
@@ -330,20 +328,24 @@ grep -rn "@GetMapping\|@PostMapping\|@PutMapping\|@DeleteMapping\|@PatchMapping"
 ### 항목 진행 중 상태 출력
 
 ```
-🔧 [1/3] Controller try-catch 제거 — NoticeController.java:34
+🔧 [즉시-1/3] Controller try-catch 제거 — NoticeController.java:34
    → try-catch 블록 제거, 예외를 Service에서 throw하도록 이동
    → ./gradlew :api:platform:test ... ✅ 전체 통과
 
-🔧 [2/3] @Valid 추가 — NoticeController.java:28
+🔧 [즉시-2/3] @Valid 추가 — NoticeController.java:28
    → @RequestBody 앞에 @Valid 추가
    → ./gradlew :api:platform:test ... ✅ 전체 통과
 
-🔧 [3/3] 하드코딩 패스워드 제거 — flyway/V20260101__init.sql:5
+🔧 [즉시-3/3] 하드코딩 패스워드 제거 — flyway/V20260101__init.sql:5
    → 처리 옵션 (아래 중 하나 선택):
       A. Flyway placeholder 활용: SQL에서 ${password}로 교체 후
          application.yml에 spring.flyway.placeholders.password: ${DB_PASSWORD} 추가
       B. 초기 데이터 SQL에서 민감 값 제거 — 앱 레이어(Service)에서 처리하도록 이동 (권장)
    → ./gradlew :api:platform:build -x test ... ✅ 컴파일 통과
+
+🔧 [권장-1/1] RuntimeException 교체 — NoticeService.java:55
+   → throw new RuntimeException → IllegalArgumentException으로 교체
+   → ./gradlew :api:platform:test ... ✅ 전체 통과
 ```
 
 ---
@@ -377,7 +379,8 @@ grep -rn "@GetMapping\|@PostMapping\|@PutMapping\|@DeleteMapping\|@PatchMapping"
 - [x] 하드코딩 패스워드 제거 — flyway SQL
 
 ### 권장 수정
-- [ ] RuntimeException → IllegalArgumentException 교체 — NoticeService.java (개발자 판단)
+- [x] RuntimeException → IllegalArgumentException 교체 — NoticeService.java  ← 처리한 경우
+- [-] @PageableDefault 누락 — NoticeController.java (생략)                    ← 생략한 경우
 
 ### 무시 가능
 - 미사용 import — 컴파일에 영향 없음
@@ -387,6 +390,9 @@ grep -rn "@GetMapping\|@PostMapping\|@PutMapping\|@DeleteMapping\|@PatchMapping"
 - [x] ./gradlew test: 전체 통과
 ```
 
+> **기록 규칙**: 권장 수정 항목은 반드시 `[x]`(처리 완료) 또는 `[-]`(생략 결정) 중 하나로 기록한다.
+> `- [ ]`(미결정)는 남기지 않는다 — `/create-pr-be` 사전 체크가 `- [ ]` 존재 시 차단한다.
+
 ### 완료 출력
 
 ```
@@ -394,13 +400,13 @@ grep -rn "@GetMapping\|@PostMapping\|@PutMapping\|@DeleteMapping\|@PatchMapping"
 
 📋 처리 완료:
   ✅ 즉시 수정 필요 {N}건 처리 완료
-  ⚠️  권장 수정 {N}건 — issue-{N}.md에 기록됨 (개발자 판단 처리)
+  ✅ 권장 수정 {N}건 처리 완료 / {N}건 생략
 
 🧪 최종 테스트: {통과 수}/{전체 수} 통과
 📝 보안 검토 결과가 issue-{N}.md 하단에 기록되었습니다.
 
 ➡️  다음 이슈가 남아 있으면: /test-scenarios-be {N+1}  (다음 이슈 TDD 사이클 시작)
-    모든 이슈 완료 후 마지막에: git commit → /create-pr
+    모든 이슈 완료 후 마지막에: git commit → /create-pr-be
 ```
 
 ---
@@ -419,7 +425,8 @@ grep -rn "@GetMapping\|@PostMapping\|@PutMapping\|@DeleteMapping\|@PatchMapping"
 ## 승인 게이트
 
 단계 5에서 분류 결과를 보고한 뒤 반드시 개발자 승인을 기다린다.
-즉시 수정 필요 항목이 없으면 GATE 없이 단계 7로 자동 진행한다.
+즉시 수정 필요 항목이 없으면 권장 수정 처리 여부만 확인 후 단계 7로 진행한다.
+권장 수정은 처리(`[x]`) 또는 생략(`[-]`) 중 하나를 반드시 선택한다 — `- [ ]` 미결 상태로 기록하지 않는다.
 
 issue-{N}.md 파일이 없는 경우:
 ```
