@@ -160,7 +160,6 @@ Skill(skill="create-pr-be", args="{N}")
 ```
 
 - 커밋 메시지 승인 [GATE], PR 제목·본문 승인 [GATE] — 사용자가 직접 응답.
-- PR 본문에 `Closes #{N}` 포함 여부는 create-pr-be 스킬이 보장한다.
 - ⛔ 감지 시 → 중단 출력 후 종료.
 
 ---

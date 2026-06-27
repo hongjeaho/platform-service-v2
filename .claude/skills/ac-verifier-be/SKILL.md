@@ -206,7 +206,7 @@ AC-4: Given pageSize=0, When GET /api/public/notice?pageSize=0, Then 400
 
 **미충족·부분 충족 항목이 있을 때:**
 
-`issue-{N}.md` **최하단**에 아래 섹션을 추가한다.
+`issue-{N}.md` **최하단**에 아래 섹션을 추가한 뒤 **중단**한다.
 
 ```markdown
 ---
@@ -217,25 +217,25 @@ AC-4: Given pageSize=0, When GET /api/public/notice?pageSize=0, Then 400
 결과: ⚠️ 미충족/부분 충족 항목 있음 (✅ {N}건 / ⚠️ {N}건 / ❌ {N}건)
 ```
 
-그 다음 수정 방향을 안내한다.
+그 다음 아래 GATE 메시지를 출력하고 중단한다. `/tdd-refactor-be` 다음 단계를 안내하지 않는다.
 
 ```
-📋 수정 방향
+[GATE] AC 미충족 — tdd-refactor-be로 진행할 수 없습니다.
+       ⚠️/❌ 항목을 아래 순서로 처리한 뒤 /ac-verifier-be {N}을 다시 실행해주세요.
+       누락된 테스트를 먼저 추가한 뒤 구현을 작성해야 TDD 원칙이 유지됩니다.
 
-⚠️/❌ 항목은 아래 순서로 처리하세요.
-누락된 테스트를 먼저 추가한 뒤 구현을 작성해야 TDD 원칙이 유지됩니다.
+       1. issue-{N}.md의 ## 테스트 시나리오에 누락 시나리오를 수동 추가  ← 개발자가 직접 편집
+       2. /tdd-red-be {N}   — 누락된 테스트 코드 작성
+       3. /tdd-green-be {N} — 테스트 통과 구현 추가
+       4. /ac-verifier-be {N} — 재검증 후 모든 AC ✅ 확인
 
-1. issue-{N}.md의 ## 테스트 시나리오에 누락 시나리오를 수동 추가  ← 개발자가 직접 편집
-2. /tdd-red-be {N}   — 누락된 테스트 코드 작성
-3. /tdd-green-be {N} — 테스트 통과 구현 추가
-4. /ac-verifier-be {N} — 재검증
-5. /tdd-refactor-be {N} — AC 충족 확인 후 코드 구조 개선 (이후 정상 사이클 계속)
+       [AC-3] 중복 체크 로직 추가
+         → NoticeService.create()에 Repository.existsByTitle() 호출 후 IllegalStateException throw
 
-[AC-3] 중복 체크 로직 추가
-  → NoticeService.create()에 Repository.existsByTitle() 호출 후 IllegalStateException throw
+       [AC-4] @Min(1) 제약 추가
+         → NoticeListRequest.pageSize 필드에 @Min(1) 추가
 
-[AC-4] @Min(1) 제약 추가
-  → NoticeListRequest.pageSize 필드에 @Min(1) 추가
+       ⛔ 모든 AC가 ✅가 될 때까지 tdd-refactor-be를 실행하지 마세요.
 ```
 
 ---
