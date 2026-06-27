@@ -1,6 +1,7 @@
 package com.platform.api.platform.users.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.platform.api.platform.users.dto.ChangePasswordResponse;
 import com.platform.api.platform.users.dto.CheckDuplicateResponse;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
 import com.platform.api.platform.users.dto.UsersSignupResponse;
@@ -268,6 +269,127 @@ class UsersControllerTest {
         mockMvc.perform(post("/api/public/users/check-email")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userEmail\":\"" + longEmail + "\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    // ========== 이슈 #3: 비밀번호 변경 API (로그인 전) ==========
+
+    @Test
+    @DisplayName("유효한 요청 시 200 OK와 success=true를 반환한다")
+    void changePasswordBeforeLogin_return200WithSuccessTrue_whenValidRequest() throws Exception {
+        // Given
+        ChangePasswordResponse response = ChangePasswordResponse.success();
+        when(usersService.changePasswordBeforeLogin(any(), any(), any())).thenReturn(response);
+
+        // When & Then
+        mockMvc.perform(post("/api/public/users/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"test@example.com\",\"currentPassword\":\"current123\",\"newPassword\":\"new12345\"}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.success").value(true))
+            .andExpect(jsonPath("$.data.success").value(true))
+            .andExpect(jsonPath("$.data.message").value("비밀번호가 변경되었습니다."));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 userEmail로 요청 시 400 Bad Request를 반환한다")
+    void changePasswordBeforeLogin_return400_whenUserEmailNotFound() throws Exception {
+        // Given
+        when(usersService.changePasswordBeforeLogin(any(), any(), any()))
+            .thenThrow(new IllegalArgumentException("해당 이메일로 등록된 사용자가 없습니다."));
+
+        // When & Then
+        mockMvc.perform(post("/api/public/users/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"nonexistent@example.com\",\"currentPassword\":\"current123\",\"newPassword\":\"new12345\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("올바르지 않은 currentPassword로 요청 시 400 Bad Request를 반환한다")
+    void changePasswordBeforeLogin_return400_whenCurrentPasswordIsIncorrect() throws Exception {
+        // Given
+        when(usersService.changePasswordBeforeLogin(any(), any(), any()))
+            .thenThrow(new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
+
+        // When & Then
+        mockMvc.perform(post("/api/public/users/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"test@example.com\",\"currentPassword\":\"wrongPassword\",\"newPassword\":\"new12345\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("newPassword가 currentPassword와 동일하면 409 Conflict를 반환한다")
+    void changePasswordBeforeLogin_return409_whenNewPasswordEqualsCurrentPassword() throws Exception {
+        // Given
+        when(usersService.changePasswordBeforeLogin(any(), any(), any()))
+            .thenThrow(new IllegalStateException("현재 비밀번호와 동일합니다."));
+
+        // When & Then
+        mockMvc.perform(post("/api/public/users/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"test@example.com\",\"currentPassword\":\"current123\",\"newPassword\":\"current123\"}"))
+            .andExpect(status().isConflict());
+    }
+
+    @Test
+    @DisplayName("8자 미만 newPassword로 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
+    void changePasswordBeforeLogin_return400_whenNewPasswordLessThan8Chars() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/public/users/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"test@example.com\",\"currentPassword\":\"current123\",\"newPassword\":\"new123\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("12자 초과 newPassword로 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
+    void changePasswordBeforeLogin_return400_whenNewPasswordExceeds12Chars() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/public/users/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"test@example.com\",\"currentPassword\":\"current123\",\"newPassword\":\"new123456789012\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("빈 userEmail로 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
+    void changePasswordBeforeLogin_return400_whenUserEmailIsEmpty() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/public/users/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"\",\"currentPassword\":\"current123\",\"newPassword\":\"new12345\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("빈 currentPassword로 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
+    void changePasswordBeforeLogin_return400_whenCurrentPasswordIsEmpty() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/public/users/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"test@example.com\",\"currentPassword\":\"\",\"newPassword\":\"new12345\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("빈 newPassword로 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
+    void changePasswordBeforeLogin_return400_whenNewPasswordIsEmpty() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/public/users/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"test@example.com\",\"currentPassword\":\"current123\",\"newPassword\":\"\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("올바르지 않은 이메일 형식으로 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
+    void changePasswordBeforeLogin_return400_whenEmailFormatIsInvalid() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/public/users/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"not-an-email\",\"currentPassword\":\"current123\",\"newPassword\":\"new12345\"}"))
             .andExpect(status().isBadRequest());
     }
 }

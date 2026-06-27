@@ -59,4 +59,22 @@ public class UsersRepository {
             .set(USER_ROLES.CREATED_BY, createdBy)
             .execute();
     }
+
+    // ========== 이슈 #3: 비밀번호 변경 API (로그인 전) ==========
+
+    public UsersEntity findByUserEmail(String userEmail) {
+        return dslContext.selectFrom(USERS)
+            .where(USERS.USER_EMAIL.eq(userEmail))
+            .fetchOneInto(UsersEntity.class);
+    }
+
+    public void updatePassword(Long seq, String newPassword, Long updatedBy) {
+        dslContext.update(USERS)
+            .set(USERS.USER_PASSWORD, newPassword)
+            .set(USERS.PASSWORD_CHANGED_TIME, java.time.LocalDateTime.now())
+            .set(USERS.UPDATED_BY, updatedBy)
+            .set(USERS.UPDATED_TIME, java.time.LocalDateTime.now())
+            .where(USERS.SEQ.eq(seq))
+            .execute();
+    }
 }
