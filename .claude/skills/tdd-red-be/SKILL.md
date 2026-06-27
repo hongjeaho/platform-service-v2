@@ -223,10 +223,11 @@ assertThat(service.create(request).getTitle()).isEqualTo("제목");
 > ※ `{feature-path-dot}` = feature-path의 `/`를 `.`으로 치환 (예: `notice/list` → `notice.list`)
 
 ```bash
-./gradlew :api:{module-name}:test --tests "{pkg-root-dot}.{feature-path-dot}.service.*ServiceTest"
+./gradlew :api:{module-name}:test --tests "{pkg-root-dot}.{feature-path-dot}.service.*ServiceTest" \
+  2>&1 | grep -E "FAILED|Exception|Caused by|assertion|tests.*completed|BUILD" | tail -25
 ```
 
-예) `./gradlew :api:platform:test --tests "com.platform.api.platform.notice.list.service.*ServiceTest"`
+예) `./gradlew :api:platform:test --tests "com.platform.api.platform.notice.list.service.*ServiceTest" 2>&1 | grep -E "FAILED|Exception|Caused by|assertion|tests.*completed|BUILD" | tail -25`
 
 ---
 
@@ -374,7 +375,8 @@ class {Domain}ControllerTest {
 > ※ pkg-root-dot, feature-path-dot 변환 규칙은 Service 테스트 실행 섹션 참고.
 
 ```bash
-./gradlew :api:{module-name}:test --tests "{pkg-root-dot}.{feature-path-dot}.controller.*ControllerTest"
+./gradlew :api:{module-name}:test --tests "{pkg-root-dot}.{feature-path-dot}.controller.*ControllerTest" \
+  2>&1 | grep -E "FAILED|Exception|Caused by|assertion|tests.*completed|BUILD" | tail -25
 ```
 
 ---

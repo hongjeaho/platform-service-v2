@@ -155,7 +155,8 @@ public class NoticeRepository {
 ## 단계 1: 실패 테스트 목록 확인
 
 ```bash
-./gradlew :api:{module-name}:test 2>&1 | tail -50
+./gradlew :api:{module-name}:test 2>&1 \
+  | grep -E "FAILED|tests.*completed|BUILD (SUCCESSFUL|FAILED)" | tail -20
 ```
 
 출력에서 `FAILED` 또는 `X tests completed, Y failed` 항목을 수집해 실패 테스트 목록을 만든다.
@@ -296,7 +297,8 @@ public NoticeResponse create(...) { ... }
 ### 5-1. 대상 테스트 실행
 
 ```bash
-./gradlew :api:{module-name}:test --tests "{pkg}.{Domain}ServiceTest"
+./gradlew :api:{module-name}:test --tests "{pkg}.{Domain}ServiceTest" \
+  2>&1 | grep -E "FAILED|Exception|Caused by|expected|but was|tests.*completed|BUILD" | tail -25
 ```
 
 **통과** → 5-2로 이동.
@@ -317,7 +319,8 @@ public NoticeResponse create(...) { ... }
 ### 5-2. 전체 회귀 확인
 
 ```bash
-./gradlew :api:{module-name}:test 2>&1 | tail -50
+./gradlew :api:{module-name}:test 2>&1 \
+  | grep -E "tests.*completed|BUILD (SUCCESSFUL|FAILED)|FAILED" | tail -10
 ```
 
 **전체 통과** → 단계 6으로 이동.

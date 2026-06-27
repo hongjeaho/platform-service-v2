@@ -73,7 +73,8 @@ description: |
 ## 단계 1: 전체 테스트 통과 확인
 
 ```bash
-./gradlew :api:{module-name}:test 2>&1 | tail -50
+./gradlew :api:{module-name}:test 2>&1 \
+  | grep -E "tests.*completed|BUILD (SUCCESSFUL|FAILED)|FAILED" | tail -10
 ```
 
 **실패 테스트 존재 시** → 즉시 중단:
@@ -220,22 +221,22 @@ AC-4: Given pageSize=0, When GET /api/public/notice?pageSize=0, Then 400
 그 다음 아래 GATE 메시지를 출력하고 중단한다. `/tdd-refactor-be` 다음 단계를 안내하지 않는다.
 
 ```
-[GATE] AC 미충족 — tdd-refactor-be로 진행할 수 없습니다.
-       ⚠️/❌ 항목을 아래 순서로 처리한 뒤 /ac-verifier-be {N}을 다시 실행해주세요.
-       누락된 테스트를 먼저 추가한 뒤 구현을 작성해야 TDD 원칙이 유지됩니다.
+⛔ AC 미충족 — tdd-refactor-be로 진행할 수 없습니다.
+   ⚠️/❌ 항목을 아래 순서로 처리한 뒤 /ac-verifier-be {N}을 다시 실행해주세요.
+   누락된 테스트를 먼저 추가한 뒤 구현을 작성해야 TDD 원칙이 유지됩니다.
 
-       1. issue-{N}.md의 ## 테스트 시나리오에 누락 시나리오를 수동 추가  ← 개발자가 직접 편집
-       2. /tdd-red-be {N}   — 누락된 테스트 코드 작성
-       3. /tdd-green-be {N} — 테스트 통과 구현 추가
-       4. /ac-verifier-be {N} — 재검증 후 모든 AC ✅ 확인
+   1. issue-{N}.md의 ## 테스트 시나리오에 누락 시나리오를 수동 추가  ← 개발자가 직접 편집
+   2. /tdd-red-be {N}   — 누락된 테스트 코드 작성
+   3. /tdd-green-be {N} — 테스트 통과 구현 추가
+   4. /ac-verifier-be {N} — 재검증 후 모든 AC ✅ 확인
 
-       [AC-3] 중복 체크 로직 추가
-         → NoticeService.create()에 Repository.existsByTitle() 호출 후 IllegalStateException throw
+   [AC-3] 중복 체크 로직 추가
+     → NoticeService.create()에 Repository.existsByTitle() 호출 후 IllegalStateException throw
 
-       [AC-4] @Min(1) 제약 추가
-         → NoticeListRequest.pageSize 필드에 @Min(1) 추가
+   [AC-4] @Min(1) 제약 추가
+     → NoticeListRequest.pageSize 필드에 @Min(1) 추가
 
-       ⛔ 모든 AC가 ✅가 될 때까지 tdd-refactor-be를 실행하지 마세요.
+   모든 AC가 ✅가 될 때까지 tdd-refactor-be를 실행하지 마세요.
 ```
 
 ---

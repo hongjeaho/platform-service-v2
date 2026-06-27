@@ -28,9 +28,33 @@ description: |
 
 ---
 
-## 시작 배너
+## 시작 배너 및 [CONTEXT] 선언
 
-이슈 번호를 파싱한 뒤 아래 형식으로 출력한다.
+이슈 번호를 파싱한 뒤 아래 절차를 순서대로 실행한다.
+
+### 1단계: 컨텍스트 결정
+
+아래 순서로 결정한다. 위 단계에서 결정되면 아래는 실행하지 않는다.
+
+1. 세션 내 기존 `[CONTEXT]` 블록 → 그대로 재사용
+2. 현재 브랜치 자동 추론: `git branch --show-current` (`feature/*` prefix 제거 → feature-path)
+3. `ls api/` + `find api -name "*Application.java" | head -1` → module-name·pkg-root 확정
+4. 보호 브랜치(main/master/develop/dev) 감지 시 즉시 중단
+
+컨텍스트가 확정되면 **[CONTEXT] 블록을 출력**한다. 이후 모든 서브 스킬은 이 블록을 1순위로 참조하여 git/파일 재탐색을 건너뛴다.
+
+```
+[CONTEXT] feature-path: {feature-path}
+          module-name:  {module-name}
+          api-module:   api/{module-name}
+          ds-module:    datasource/{module-name}
+          pkg-root:     {pkg-root}
+          docs-root:    api/{module-name}/src/main/java/{pkg-root}/{feature-path}/docs/
+          branch:       {current-branch}
+          issue:        {N}
+```
+
+### 2단계: 시작 배너 출력
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -66,9 +90,24 @@ description: |
 
 ### 단계 완료 배너
 
+서브 스킬 완료 직후, 핵심 결과를 1줄로 요약해 아래 형식으로 출력한다.
+
 ```
 ━━━ 단계 X/7 완료 ▶ 단계 X+1/7 시작 ━━━
+📌 결과: {핵심 1줄 요약}
 ```
+
+**단계별 요약 형식 예시:**
+
+| 단계 | 요약 예시 |
+|------|---------|
+| 1 test-scenarios-be | `시그니처 확정 + 시나리오 8건 (Service 5 / Controller 3)` |
+| 2 tdd-red-be | `테스트 8건 작성, 전체 정상 실패 (assertion fail)` |
+| 3 tdd-green-be | `AC 4/4 통과, 구현 파일 3건 생성` |
+| 4 ac-verifier-be | `AC 4건 모두 ✅ 충족` |
+| 5 tdd-refactor-be | `리팩토링 3건 적용, 테스트 이상 없음` |
+| 6 security-review-be | `즉시 수정 0건 / 권장 2건 / 무시 1건` |
+| 7 create-pr-be | `커밋·PR 생성 완료` |
 
 ### 중단 출력 형식
 
@@ -125,7 +164,7 @@ Skill(skill="tdd-green-be", args="{N}")
 Skill(skill="ac-verifier-be", args="{N}")
 ```
 
-- 게이트 없음. 갭(⚠️ 부분 충족 / ❌ 미충족)이 있으면 보고 후 계속 진행.
+- 게이트 없음. ⚠️/❌ 항목이 있으면 ⛔ 출력 → 사이클 중단.
 - ⛔ 감지 시 → 중단 출력 후 종료.
 
 ---
