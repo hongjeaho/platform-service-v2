@@ -1,17 +1,14 @@
 ---
 name: create-pr-be
 description: |
-  모든 이슈의 security-review-be 완료 후, git commit 안내 및 PR 제목·본문 자동 생성 스킬. git 명령 직접 실행 없음.
+  모든 이슈의 security-review-be 완료 후, 승인 게이트 통과 시 git commit / push / gh pr create 직접 실행하는 스킬.
   "PR 생성"·"create-pr-be"·"커밋하고 PR" 언급 시 이 스킬 사용.
 ---
 
 # Create PR Workflow [백엔드 · Spring Boot]
 
-`/security-review-be` 완료 후 **git commit → PR 생성**까지 안내하는 파이프라인.
+`/security-review-be` 완료 후 **git commit → PR 생성**까지 직접 실행하는 파이프라인.
 `issue-{N}.md`와 `prd.md`, `git diff`를 읽어 PR 제목·본문을 자동 생성한다.
-
-> **원칙**: Claude는 git 명령과 gh pr create를 직접 실행하지 않는다.
-> 명령어만 제시하고 사용자가 직접 실행한다.
 
 ---
 
@@ -70,7 +67,7 @@ description: |
     ↓ 단계 2: git 상태 확인
     ↓ 단계 3: 커밋 메시지 제안 [GATE]
     ↓ 단계 4: PR 제목·본문 생성 [GATE]
-    ↓ 단계 5: push + gh pr create 명령어 제시
+    ↓ 단계 5: push + gh pr create 직접 실행
     ↓ 단계 6: 완료 출력
 ```
 
@@ -145,17 +142,16 @@ git log --oneline -5
 | 이슈별로 이미 커밋된 경우 | 단계 3을 건너뛰고 단계 4(PR 생성)로 바로 진행 |
 | 일부만 커밋된 경우 | 미커밋 파일을 사용자에게 표시하고 커밋 전략 질문 (단일 합산 or 별도 커밋) |
 
-스테이징되지 않은 변경 파일이 있으면 아래를 출력한다.
+스테이징되지 않은 변경 파일이 있으면 아래를 출력하고, Claude가 `git add` 직접 실행한다.
 
 ```
 📋 스테이징되지 않은 파일:
   {파일 목록}
 
-아래 명령어로 스테이징 후 "완료"라고 말씀해주세요.
-git add {관련 파일들}
+→ git add {관련 파일들} 실행 중...
 ```
 
-사용자가 "완료"라고 응답하면 단계 3으로 진행.
+실행 결과를 확인한 후 단계 3으로 진행.
 
 ---
 
@@ -187,16 +183,19 @@ scope: 변경 모듈 또는 기능 영역
   {type}({feature-path}): {이슈 핵심 동작 한 줄 요약}
 
 수정이 필요하면 말씀해주세요.
-승인(yes / ok / 확인)하면 커밋 명령어를 제시합니다.
+승인(yes / ok / 확인)하면 커밋을 직접 실행합니다.
 ```
 
-승인 후:
+승인 후 Claude가 직접 실행:
 
 ```bash
-git commit -m "feat({feature-path}): {요약}"
+git commit -m "$(cat <<'EOF'
+{type}({feature-path}): {이슈 핵심 동작 한 줄 요약}
+EOF
+)"
 ```
 
-위 명령어를 실행하신 후 "완료"라고 말씀해주세요.
+실행 결과를 확인한 후 단계 4로 진행.
 
 ---
 
@@ -262,20 +261,24 @@ feat({feature-path}): {이슈 핵심 동작 한 줄 요약}
 ```
 [GATE] 위 PR 제목·본문을 검토해주세요.
        수정이 필요하면 말씀해주세요.
-       승인(yes / ok / 확인)하면 push + PR 생성 명령어를 제시합니다.
+       승인(yes / ok / 확인)하면 push + PR 생성을 직접 실행합니다.
 ```
 
 ---
 
-## 단계 5: push + gh pr create 명령어 제시
+## 단계 5: push + gh pr create 직접 실행
 
-승인 후 아래 명령어를 순서대로 제시한다.
+승인 후 Claude가 아래 순서로 직접 실행한다.
 
 ```bash
 # 1. 원격 브랜치 push
 git push -u origin {브랜치명}        # 처음 push인 경우
 git push origin {브랜치명}           # 이미 원격 브랜치가 있는 경우
+```
 
+push 성공 확인 후:
+
+```bash
 # 2. PR 생성
 gh pr create \
   --title "{PR 제목}" \
@@ -291,7 +294,7 @@ EOF
 )"
 ```
 
-위 명령어를 실행하신 후 PR URL을 알려주세요. 또는 "완료"라고 말씀해주세요.
+PR 생성 성공 시 `gh pr create` stdout에서 PR URL을 그대로 단계 6에서 출력한다.
 
 ---
 
@@ -300,7 +303,7 @@ EOF
 ```
 ✅ Create PR 완료 — issue-{N} (또는 issue-{N1}, {N2}, ...)
 
-🔀 PR: {사용자가 공유한 URL 또는 gh pr view --json url -q .url 결과}
+🔀 PR: {gh pr create stdout URL}
 
 📋 완료된 이슈 사이클:
   ✅ /test-scenarios-be {N} — 시그니처·시나리오 확정
@@ -325,8 +328,9 @@ EOF
 
 | 항목 | 규칙 |
 |------|------|
-| git add / commit / push | 직접 실행 금지 — 명령어만 제시 |
-| gh pr create | 직접 실행 금지 — 명령어만 제시 |
+| git add | 미스테이징 파일 존재 시 단계 2에서 직접 실행 |
+| git commit | 단계 3 GATE 승인 후 직접 실행 |
+| git push / gh pr create | 단계 4 GATE 승인 후 직접 실행 |
 | force push | 금지 |
 | 커밋 메시지 | CLAUDE.md 커밋 컨벤션 준수 (`type(scope): 한글 요약`) |
 | PR 생성 전 | 체크리스트 4개 항목 모두 통과해야 진행 |
