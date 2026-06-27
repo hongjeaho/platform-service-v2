@@ -1,5 +1,7 @@
 package com.platform.api.platform.users.controller;
 
+import com.platform.api.platform.users.dto.ChangePasswordBeforeLoginRequest;
+import com.platform.api.platform.users.dto.ChangePasswordResponse;
 import com.platform.api.platform.users.dto.CheckDuplicateResponse;
 import com.platform.api.platform.users.dto.UserEmailCheckRequest;
 import com.platform.api.platform.users.dto.UserIdCheckRequest;
@@ -68,5 +70,26 @@ public class UsersController {
         @RequestBody @Valid UserEmailCheckRequest request
     ) {
         return ResponseEntity.ok(ApiResponse.of(usersService.checkDuplicateUserEmail(request.getUserEmail())));
+    }
+
+    // ========== 이슈 #3: 비밀번호 변경 API (로그인 전) ==========
+
+    @Operation(summary = "비밀번호 변경 (로그인 전)")
+    @ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "변경 성공"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값 오류 / 사용자 없음 / 비밀번호 불일치"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "현재 비밀번호와 동일")
+    })
+    @PostMapping("/change-password")
+    public ResponseEntity<ApiResponse<ChangePasswordResponse>> changePasswordBeforeLogin(
+        @RequestBody @Valid ChangePasswordBeforeLoginRequest request
+    ) {
+        return ResponseEntity.ok(ApiResponse.of(
+            usersService.changePasswordBeforeLogin(
+                request.getUserEmail(),
+                request.getCurrentPassword(),
+                request.getNewPassword()
+            )
+        ));
     }
 }
