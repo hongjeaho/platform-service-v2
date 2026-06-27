@@ -171,4 +171,35 @@ class UsersServiceTest {
             .isInstanceOf(IllegalStateException.class)
             .hasMessageContaining("이미 사용 중인 아이디입니다.");
     }
+
+    // ========== 이슈 #2: 이메일 중복 확인 API ==========
+
+    @Test
+    @DisplayName("존재하지 않는 userEmail로 중복 확인 시 사용 가능 응답을 반환한다")
+    void checkDuplicateUserEmail_returnAvailableTrue_whenEmailNotExists() {
+        // Given
+        String userEmail = "newuser@example.com";
+        when(usersRepository.existsByEmail(userEmail)).thenReturn(false);
+
+        // When
+        CheckDuplicateResponse response = usersService.checkDuplicateUserEmail(userEmail);
+
+        // Then
+        assertThat(response).isNotNull();
+        assertThat(response.isAvailable()).isTrue();
+        assertThat(response.getMessage()).isEqualTo("사용 가능합니다.");
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 userEmail로 중복 확인 시 IllegalStateException을 던진다")
+    void checkDuplicateUserEmail_throwIllegalStateException_whenEmailAlreadyExists() {
+        // Given
+        String userEmail = "existing@example.com";
+        when(usersRepository.existsByEmail(userEmail)).thenReturn(true);
+
+        // When & Then
+        assertThatThrownBy(() -> usersService.checkDuplicateUserEmail(userEmail))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining("이미 사용 중인 이메일입니다.");
+    }
 }

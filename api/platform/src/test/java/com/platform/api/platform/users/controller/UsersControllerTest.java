@@ -206,4 +206,68 @@ class UsersControllerTest {
                 .content("{\"userId\":\"" + longUserId + "\"}"))
             .andExpect(status().isBadRequest());
     }
+
+    // ========== 이슈 #2: 이메일 중복 확인 API ==========
+
+    @Test
+    @DisplayName("사용 가능한 userEmail로 중복 확인 시 200과 available=true를 반환한다")
+    void checkEmail_return200WithAvailableTrue_whenEmailIsAvailable() throws Exception {
+        // Given
+        CheckDuplicateResponse response = CheckDuplicateResponse.available();
+        when(usersService.checkDuplicateUserEmail(eq("newuser@example.com"))).thenReturn(response);
+
+        // When & Then
+        mockMvc.perform(post("/api/public/users/check-email")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"newuser@example.com\"}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.success").value(true))
+            .andExpect(jsonPath("$.data.available").value(true))
+            .andExpect(jsonPath("$.data.message").value("사용 가능합니다."));
+    }
+
+    @Test
+    @DisplayName("중복된 userEmail로 중복 확인 시 409를 반환한다")
+    void checkEmail_return409_whenEmailIsDuplicate() throws Exception {
+        // Given
+        when(usersService.checkDuplicateUserEmail(eq("existing@example.com")))
+            .thenThrow(new IllegalStateException("이미 사용 중인 이메일입니다."));
+
+        // When & Then
+        mockMvc.perform(post("/api/public/users/check-email")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"existing@example.com\"}"))
+            .andExpect(status().isConflict());
+    }
+
+    @Test
+    @DisplayName("빈 userEmail로 중복 확인 시 400을 반환한다 (Bean Validation)")
+    void checkEmail_return400_whenEmailIsBlank() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/public/users/check-email")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("올바르지 않은 이메일 형식으로 중복 확인 시 400을 반환한다 (Bean Validation)")
+    void checkEmail_return400_whenEmailIsInvalid() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/public/users/check-email")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"not-an-email\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("100자 초과 userEmail로 중복 확인 시 400을 반환한다 (Bean Validation)")
+    void checkEmail_return400_whenEmailExceeds100Chars() throws Exception {
+        // When & Then
+        String longEmail = "a".repeat(90) + "@example.com"; // 101자
+        mockMvc.perform(post("/api/public/users/check-email")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"" + longEmail + "\"}"))
+            .andExpect(status().isBadRequest());
+    }
 }

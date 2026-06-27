@@ -57,4 +57,14 @@ public class UsersService {
         }
         return CheckDuplicateResponse.available();
     }
+
+    // ========== 이슈 #2: 이메일 중복 확인 API ==========
+
+    @PlatformTransactional(readOnly = true)
+    public CheckDuplicateResponse checkDuplicateUserEmail(String userEmail) {
+        if (usersRepository.existsByEmail(userEmail)) {
+            throw new IllegalStateException("이미 사용 중인 이메일입니다.");
+        }
+        return CheckDuplicateResponse.available();
+    }
 }
