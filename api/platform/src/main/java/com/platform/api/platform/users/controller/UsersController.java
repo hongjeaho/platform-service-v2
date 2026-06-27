@@ -1,6 +1,7 @@
 package com.platform.api.platform.users.controller;
 
 import com.platform.api.platform.users.dto.CheckDuplicateResponse;
+import com.platform.api.platform.users.dto.UserEmailCheckRequest;
 import com.platform.api.platform.users.dto.UserIdCheckRequest;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
 import com.platform.api.platform.users.dto.UsersSignupResponse;
@@ -52,5 +53,20 @@ public class UsersController {
         @RequestBody @Valid UserIdCheckRequest request
     ) {
         return ResponseEntity.ok(ApiResponse.of(usersService.checkDuplicateUserId(request.getUserId())));
+    }
+
+    // ========== 이슈 #2: 이메일 중복 확인 API ==========
+
+    @Operation(summary = "이메일 중복 확인")
+    @ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "사용 가능"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "중복"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값 오류")
+    })
+    @PostMapping("/check-email")
+    public ResponseEntity<ApiResponse<CheckDuplicateResponse>> checkEmail(
+        @RequestBody @Valid UserEmailCheckRequest request
+    ) {
+        return ResponseEntity.ok(ApiResponse.of(usersService.checkDuplicateUserEmail(request.getUserEmail())));
     }
 }
