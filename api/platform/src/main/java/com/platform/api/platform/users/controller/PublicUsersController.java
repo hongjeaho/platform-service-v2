@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/public/users")
-public class UsersController {
+public class PublicUsersController {
 
     private final UsersService usersService;
 

@@ -186,12 +186,12 @@ public class ChangePasswordResponse {
 ### 안 A: 단순 CRUD (기존 패턴 적용) 선택
 
 **Context**
-회원가입 전 중복 확인과 로그인 전/후 비밀번호 변경 기능을 구현해야 합니다. 기존 `UsersController`, `UsersService`가 회원가입 API로 이미 구현되어 있으며, `UsersRepository`에 중복 확인 메서드(`existsByUserId`, `existsByEmail`)가 존재합니다. 비즈니스 로직이 단순하여 Service 단독 처리 가능성이 높습니다.
+회원가입 전 중복 확인과 로그인 전/후 비밀번호 변경 기능을 구현해야 합니다. 기존 `PublicUsersController`, `UsersService`가 회원가입 API로 이미 구현되어 있으며, `UsersRepository`에 중복 확인 메서드(`existsByUserId`, `existsByEmail`)가 존재합니다. 비즈니스 로직이 단순하여 Service 단독 처리 가능성이 높습니다.
 
 **Decision**
 기존 백엔드 패턴(Controller → Service → JOOQ Repository)을 그대로 적용하여 구현합니다.
 
-- Controller: 기존 `UsersController`에 엔드포인트 추가
+- Controller: 기존 `PublicUsersController`에 엔드포인트 추가
 - Service: 기존 `UsersService`에 메서드 추가 (Helper 없음)
 - Repository: 기존 `UsersRepository`에 메서드 추가 (`findByUserEmail`, `updatePassword`)
 - 트랜잭션: `@PlatformTransactional` 적용
