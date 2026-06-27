@@ -51,6 +51,19 @@ HTTP Request
 → MySQL (HikariCP)
 ```
 
+### Controller 네이밍 규칙
+
+인증 수준에 따라 Controller 명명과 경로를 일관되게 적용한다.
+
+| 접근 권한 | 경로 패턴 | Controller 명 | 예시 |
+|----------|-----------|---------------|------|
+| 인증 불필요 | `/api/public/{domain}/**` | `Public{Domain}Controller` | `PublicAuthController`, `PublicUsersController` |
+| JWT 인증 필요 | `/api/{domain}/**` | `{Domain}Controller` | `NoticeListController` |
+| ADMIN 전용 | `/api/admin/{domain}/**` | `Admin{Domain}Controller` | `AdminUsersController` |
+
+- `SecurityConfig.java`의 `requestMatchers` 패턴과 일치해야 함
+- 명명 규칙에 따라 테스트 클래스도 `Public{Domain}ControllerTest`, `{Domain}ControllerTest`, `Admin{Domain}ControllerTest`로 작성
+
 ## Git Convention
 
 ```

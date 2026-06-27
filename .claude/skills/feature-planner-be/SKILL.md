@@ -370,10 +370,18 @@ spec.md에 이미 명확히 답변된 영역은 건너뛴다.
 
 [보안/인증]
 9. 이 API 엔드포인트의 접근 권한은?
-   - 인증 불필요 → `/api/public/{domain}/**` 경로 사용
-   - JWT 인증 필요 → `/api/{domain}/**` 경로, `UserAccountHolder.getSeqNo()`로 현재 사용자 조회
-   - 역할 기반 제한 → `@PreAuthorize("hasAuthority('ADMIN')")` 적용
+   - 인증 불필요 → `/api/public/{domain}/**` 경로 사용, **`Public{Domain}Controller`** 명명
+   - JWT 인증 필요 → `/api/{domain}/**` 경로, `UserAccountHolder.getSeqNo()`로 현재 사용자 조회, **`{Domain}Controller`** 명명
+   - 역할 기반 제한 → `@PreAuthorize("hasAuthority('ADMIN')")` 적용, **`Admin{Domain}Controller`** 명명
    참고: `SecurityConfig.java`의 `requestMatchers` 패턴
+
+### Controller 네이밍 규칙
+
+| 접근 권한 | 경로 | Controller 명 | 예시 |
+|----------|------|---------------|------|
+| 인증 불필요 | `/api/public/{domain}/**` | `Public{Domain}Controller` | `PublicAuthController`, `PublicUsersController` |
+| JWT 인증 필요 | `/api/{domain}/**` | `{Domain}Controller` | `NoticeListController` |
+| ADMIN 전용 | `/api/admin/{domain}/**` | `Admin{Domain}Controller` | `AdminUsersController` |
 
 [미래]
 10. 향후 확장 가능성 — 이 결정이 다음 feature에 영향을 주는가?
