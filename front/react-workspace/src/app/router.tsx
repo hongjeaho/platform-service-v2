@@ -3,14 +3,6 @@ import { createBrowserRouter, useRouteError } from 'react-router'
 import { Layout } from '../components/layout/Layout'
 // import { ProtectedRoute } from '../features/auth/components/ProtectedRoute'
 
-function PageLoader() {
-  return (
-    <div className='flex items-center justify-center min-h-screen'>
-      <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary' />
-    </div>
-  )
-}
-
 function RouterErrorPage() {
   const error = useRouteError()
   const message = error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.'
@@ -37,21 +29,6 @@ export const router = createBrowserRouter([
     Component: Layout,
     errorElement: <RouterErrorPage />,
     children: [
-      {
-        path: '/',
-        index: true,
-        HydrateFallback: PageLoader,
-        lazy: {
-          Component: async () => (await import('../features/board/pages/BoardListPage')).Component,
-        },
-      },
-      {
-        path: 'board',
-        HydrateFallback: PageLoader,
-        lazy: {
-          Component: async () => (await import('../features/board/pages/BoardListPage')).Component,
-        },
-      },
       {
         path: '*',
         Component: NotFoundPage,

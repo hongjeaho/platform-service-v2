@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router'
+import { Outlet } from 'react-router'
 
 export function Layout() {
   return (
@@ -10,20 +10,7 @@ export function Layout() {
               <div className='flex-shrink-0 flex items-center'>
                 <h1 className='text-xl font-bold text-primary'>React Workspace</h1>
               </div>
-              <div className='hidden sm:ml-6 sm:flex sm:space-x-8'>
-                <NavLink
-                  to='/board'
-                  className={({ isActive }) =>
-                    `inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                      isActive
-                        ? 'border-primary text-foreground'
-                        : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'
-                    }`
-                  }
-                >
-                  게시판
-                </NavLink>
-              </div>
+              <div className='hidden sm:ml-6 sm:flex sm:space-x-8' />
             </div>
           </div>
         </div>
