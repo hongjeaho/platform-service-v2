@@ -320,4 +320,159 @@ class UsersServiceTest {
         // Then
         verify(usersRepository).updatePassword(eq(1L), any(), eq(0L));
     }
+
+    // ========== 이슈 #4: 비밀번호 변경 API (로그인 후) ==========
+
+    @Test
+    @DisplayName("유효한 userSeq, 올바른 currentPassword, 유효한 newPassword로 비밀번호 변경 시 success response를 반환한다")
+    void changePassword_returnSuccessResponse_whenValidInputs() {
+        // Given
+        Long userSeq = 1L;
+        String currentPassword = "current123";
+        String newPassword = "new12345";
+
+        UsersEntity existingUser = new UsersEntity();
+        existingUser.setSeq(userSeq);
+        existingUser.setUserPassword("$2a$10$encodedCurrent123");
+
+        when(usersRepository.findBySeq(userSeq)).thenReturn(existingUser);
+        when(passwordEncoder.matches(currentPassword, existingUser.getUserPassword())).thenReturn(true);
+        when(passwordEncoder.encode(newPassword)).thenReturn("$2a$10$encodedNew12345");
+
+        // When
+        ChangePasswordResponse result = usersService.changePassword(userSeq, currentPassword, newPassword);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.isSuccess()).isTrue();
+    }
+
+    @Test
+    @DisplayName("newPassword가 8자일 때 비밀번호 변경이 성공한다")
+    void changePassword_returnSuccessResponse_whenNewPasswordIsExactly8Characters() {
+        // Given
+        Long userSeq = 1L;
+        String currentPassword = "current123";
+        String newPassword = "new1234"; // exactly 8 characters
+
+        UsersEntity existingUser = new UsersEntity();
+        existingUser.setSeq(userSeq);
+        existingUser.setUserPassword("$2a$10$encodedCurrent123");
+
+        when(usersRepository.findBySeq(userSeq)).thenReturn(existingUser);
+        when(passwordEncoder.matches(currentPassword, existingUser.getUserPassword())).thenReturn(true);
+        when(passwordEncoder.encode(newPassword)).thenReturn("$2a$10$encodedNew1234");
+
+        // When
+        ChangePasswordResponse result = usersService.changePassword(userSeq, currentPassword, newPassword);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.isSuccess()).isTrue();
+    }
+
+    @Test
+    @DisplayName("newPassword가 12자일 때 비밀번호 변경이 성공한다")
+    void changePassword_returnSuccessResponse_whenNewPasswordIsExactly12Characters() {
+        // Given
+        Long userSeq = 1L;
+        String currentPassword = "current123";
+        String newPassword = "new12345678"; // exactly 12 characters
+
+        UsersEntity existingUser = new UsersEntity();
+        existingUser.setSeq(userSeq);
+        existingUser.setUserPassword("$2a$10$encodedCurrent123");
+
+        when(usersRepository.findBySeq(userSeq)).thenReturn(existingUser);
+        when(passwordEncoder.matches(currentPassword, existingUser.getUserPassword())).thenReturn(true);
+        when(passwordEncoder.encode(newPassword)).thenReturn("$2a$10$encodedNew12345678");
+
+        // When
+        ChangePasswordResponse result = usersService.changePassword(userSeq, currentPassword, newPassword);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.isSuccess()).isTrue();
+    }
+
+    @Test
+    @DisplayName("userSeq가 존재하지 않을 때 IllegalArgumentException을 던진다")
+    void changePassword_throwIllegalArgumentException_whenUserSeqDoesNotExist() {
+        // Given
+        Long userSeq = 999L;
+        String currentPassword = "current123";
+        String newPassword = "new12345";
+
+        when(usersRepository.findBySeq(userSeq)).thenReturn(null);
+
+        // When & Then
+        assertThatThrownBy(() -> usersService.changePassword(userSeq, currentPassword, newPassword))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("해당 이메일로 등록된 사용자가 없습니다.");
+    }
+
+    @Test
+    @DisplayName("currentPassword가 일치하지 않을 때 IllegalArgumentException을 던진다")
+    void changePassword_throwIllegalArgumentException_whenCurrentPasswordDoesNotMatch() {
+        // Given
+        Long userSeq = 1L;
+        String currentPassword = "wrongPassword";
+        String newPassword = "new12345";
+
+        UsersEntity existingUser = new UsersEntity();
+        existingUser.setSeq(userSeq);
+        existingUser.setUserPassword("$2a$10$encodedCurrent123");
+
+        when(usersRepository.findBySeq(userSeq)).thenReturn(existingUser);
+        when(passwordEncoder.matches(currentPassword, existingUser.getUserPassword())).thenReturn(false);
+
+        // When & Then
+        assertThatThrownBy(() -> usersService.changePassword(userSeq, currentPassword, newPassword))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("현재 비밀번호가 일치하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("newPassword가 currentPassword와 동일할 때 IllegalStateException을 던진다")
+    void changePassword_throwIllegalStateException_whenNewPasswordEqualsCurrentPassword() {
+        // Given
+        Long userSeq = 1L;
+        String currentPassword = "current123";
+        String newPassword = "current123"; // same as current
+
+        UsersEntity existingUser = new UsersEntity();
+        existingUser.setSeq(userSeq);
+        existingUser.setUserPassword("$2a$10$encodedCurrent123");
+
+        when(usersRepository.findBySeq(userSeq)).thenReturn(existingUser);
+        when(passwordEncoder.matches(currentPassword, existingUser.getUserPassword())).thenReturn(true);
+
+        // When & Then
+        assertThatThrownBy(() -> usersService.changePassword(userSeq, currentPassword, newPassword))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining("현재 비밀번호와 동일합니다.");
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 성공 시 updatePassword가 호출된다")
+    void changePassword_callUpdatePassword_whenPasswordChangeSucceeds() {
+        // Given
+        Long userSeq = 1L;
+        String currentPassword = "current123";
+        String newPassword = "new12345";
+
+        UsersEntity existingUser = new UsersEntity();
+        existingUser.setSeq(userSeq);
+        existingUser.setUserPassword("$2a$10$encodedCurrent123");
+
+        when(usersRepository.findBySeq(userSeq)).thenReturn(existingUser);
+        when(passwordEncoder.matches(currentPassword, existingUser.getUserPassword())).thenReturn(true);
+        when(passwordEncoder.encode(newPassword)).thenReturn("$2a$10$encodedNew12345");
+
+        // When
+        usersService.changePassword(userSeq, currentPassword, newPassword);
+
+        // Then
+        verify(usersRepository).updatePassword(eq(userSeq), any(), any());
+    }
 }
