@@ -72,6 +72,18 @@ subprojects {
             html.required = true
             csv.required = false
         }
+
+        // config 패키지, DTO, 메인 클래스 제외
+        afterEvaluate {
+            classDirectories.setFrom(files(classDirectories.files.collect {
+                fileTree(dir: it, exclude: [
+                    '**/config/**',
+                    '**/dto/**',
+                    '**/*Application.class',
+                    '**/type/**'  // Enum 전용 패키지
+                ])
+            }))
+        }
     }
 }
 
@@ -117,7 +129,14 @@ task jacocoMergedReport(type: JacocoReport, group: 'verification',
         files(coverageProjects.collect { it.sourceSets.main.allSource.srcDirs })
     )
     classDirectories.setFrom(
-        files(coverageProjects.collect { it.sourceSets.main.output })
+        files(coverageProjects.collect { it.sourceSets.main.output }).collect {
+            fileTree(dir: it, exclude: [
+                '**/config/**',
+                '**/dto/**',
+                '**/*Application.class',
+                '**/type/**'
+            ])
+        }
     )
     executionData.setFrom(
         files(coverageProjects.collect { "${it.buildDir}/jacoco/test.exec" })

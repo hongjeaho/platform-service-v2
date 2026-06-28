@@ -138,8 +138,13 @@ description: |
 #### Controller 엔드포인트 시그니처
 
 ```java
-// {Domain}Controller: {HTTP메서드} {URI}
-// 접근 권한: 인증 불필요 (/api/public/**) | JWT 필요 | ADMIN 전용 (@PreAuthorize)
+// {Controller명}: {HTTP메서드} {URI}
+// 접근 권한: [인증 불필요 (/api/public/** → Public*Controller)] | [JWT 필요 (/api/** → *Controller)] | [ADMIN 전용 (@PreAuthorize)]
+//
+// Controller 네이밍 규칙:
+// - 인증 불필요: Public{Domain}Controller (예: PublicAuthController)
+// - JWT 필요: {Domain}Controller (예: NoticeListController)
+// - ADMIN 전용: Admin{Domain}Controller (예: AdminUsersController)
 
 // ── 읽기 엔드포인트 (GET, DELETE)
 @GetMapping("{uri}")

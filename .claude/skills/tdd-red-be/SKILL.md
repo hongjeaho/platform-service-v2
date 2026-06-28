@@ -235,16 +235,27 @@ assertThat(service.create(request).getTitle()).isEqualTo("제목");
 
 ### 어노테이션 구성
 
+> **Controller 네이밍 규칙에 따른 테스트 패턴:**
+> - 인증 불필요: `Public{Domain}Controller` → `Public{Domain}ControllerTest`
+> - JWT 필요: `{Domain}Controller` → `{Domain}ControllerTest`
+> - ADMIN 전용: `Admin{Domain}Controller` → `Admin{Domain}ControllerTest`
+
+**Public{Domain}Controller** (인증 불필요 — `/api/public/**`):
+
 ```java
-@WebMvcTest({Domain}Controller.class)
-@AutoConfigureMockMvc(addFilters = false)  // 기본값 — 공개·JWT 엔드포인트 모두
-class {Domain}ControllerTest {
+@WebMvcTest(Public{Domain}Controller.class)
+@AutoConfigureMockMvc(addFilters = false)  // 필터 체인 비활성화
+class Public{Domain}ControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private {Domain}Service {domain}Service;
+
+    // SecurityConfig 의존성 방지를 위한 추가 MockBean
+    @MockBean private JWTCheckFilter jwtCheckFilter;
+    @MockBean @Qualifier("platformHeaderFilter") OncePerRequestFilter platformHeaderFilter;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -254,6 +265,39 @@ class {Domain}ControllerTest {
     void {methodName}_{scenario}() throws Exception {
         // Given
         // When & Then
+    }
+}
+```
+
+**{Domain}Controller** (JWT 인증 필요 — `/api/**`):
+
+```java
+@WebMvcTest({Domain}Controller.class)
+@Import(SecurityConfig.class)  // JWT 필터 활성화
+class {Domain}ControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private {Domain}Service {domain}Service;
+
+    // SecurityConfig 의존 빈
+    @MockBean private UserDetailsService userDetailsService;
+    @MockBean private JWTCheckFilter jwtCheckFilter;
+    @MockBean @Qualifier("platformHeaderFilter") OncePerRequestFilter platformHeaderFilter;
+    @MockBean private ObjectMapper objectMapper;  // writeValueAsString() → null. JSON 본문 수동 작성 필요
+
+    @Test
+    @DisplayName("{조건} 시 {기대 응답 상태코드}를 반환한다")
+    void {methodName}_{scenario}() throws Exception {
+        // Given
+        // When & Then
+    }
+
+    @Test
+    void unauthenticated_returns401() throws Exception {
+        mockMvc.perform(get("/api/...")).andExpect(status().isUnauthorized());
     }
 }
 ```
