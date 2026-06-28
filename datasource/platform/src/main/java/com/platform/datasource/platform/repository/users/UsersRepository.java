@@ -77,4 +77,12 @@ public class UsersRepository {
             .where(USERS.SEQ.eq(seq))
             .execute();
     }
+
+    // ========== 이슈 #4: 비밀번호 변경 API (로그인 후) ==========
+
+    public UsersEntity findBySeq(Long seq) {
+        return dslContext.selectFrom(USERS)
+            .where(USERS.SEQ.eq(seq))
+            .fetchOneInto(UsersEntity.class);
+    }
 }
