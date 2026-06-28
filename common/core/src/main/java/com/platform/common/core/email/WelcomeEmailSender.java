@@ -58,7 +58,7 @@ public class WelcomeEmailSender implements EmailSender {
 
             Context context = new Context();
             context.setVariable("userName", userName);
-            String html = templateEngine.process("email/welcome", context);
+            String html = templateEngine.process("welcome", context);
             helper.setText(html, true);
 
             mailSender.send(message);

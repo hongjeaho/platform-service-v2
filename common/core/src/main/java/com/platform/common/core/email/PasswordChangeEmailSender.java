@@ -56,7 +56,7 @@ public class PasswordChangeEmailSender implements EmailSender {
 
             Context context = new Context();
             context.setVariable("otpCode", otpCode);
-            String html = templateEngine.process("email/password-change-verification", context);
+            String html = templateEngine.process("password-change-verification", context);
             helper.setText(html, true);
 
             mailSender.send(message);
