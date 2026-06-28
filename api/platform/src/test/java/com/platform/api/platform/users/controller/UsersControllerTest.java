@@ -73,7 +73,7 @@ class UsersControllerTest {
     @DisplayName("유효한 요청 시 200 OK와 success=true를 반환한다")
     void changePassword_return200WithSuccessTrue_whenValidRequest() throws Exception {
         // Given
-        ChangePasswordResponse response = ChangePasswordResponse.success();
+        ChangePasswordResponse response = ChangePasswordResponse.ofSuccess();
         when(usersService.changePassword(any(), any(), any())).thenReturn(response);
 
         // When & Then

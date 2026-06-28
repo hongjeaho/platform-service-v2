@@ -54,7 +54,7 @@ public class PublicUsersController {
     public ResponseEntity<ApiResponse<CheckDuplicateResponse>> checkId(
         @RequestBody @Valid UserIdCheckRequest request
     ) {
-        return ResponseEntity.ok(ApiResponse.of(usersService.checkDuplicateUserId(request.getUserId())));
+        return ResponseEntity.ok(ApiResponse.of(usersService.checkDuplicateUserId(request.userId())));
     }
 
     // ========== 이슈 #2: 이메일 중복 확인 API ==========
@@ -69,7 +69,7 @@ public class PublicUsersController {
     public ResponseEntity<ApiResponse<CheckDuplicateResponse>> checkEmail(
         @RequestBody @Valid UserEmailCheckRequest request
     ) {
-        return ResponseEntity.ok(ApiResponse.of(usersService.checkDuplicateUserEmail(request.getUserEmail())));
+        return ResponseEntity.ok(ApiResponse.of(usersService.checkDuplicateUserEmail(request.userEmail())));
     }
 
     // ========== 이슈 #3: 비밀번호 변경 API (로그인 전) ==========
@@ -86,9 +86,9 @@ public class PublicUsersController {
     ) {
         return ResponseEntity.ok(ApiResponse.of(
             usersService.changePasswordBeforeLogin(
-                request.getUserEmail(),
-                request.getCurrentPassword(),
-                request.getNewPassword()
+                request.userEmail(),
+                request.currentPassword(),
+                request.newPassword()
             )
         ));
     }

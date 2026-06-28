@@ -353,8 +353,14 @@ public class {Domain}Repository {
 | 상황 | 타입 | 이유 |
 |---|---|---|
 | `@Auditing` 대상 Request DTO | `class extends AbstractResponse` | `AuditingHandlerMethodArgumentResolver`가 setter로 audit 주입 — `record` 불가 |
-| 일반 API Request/Response DTO | `class` | 프로젝트 일관성 |
-| 내부 값 객체 (Service→Controller 전달용) | `record` | 불변, 간결, 상속 불필요 (`LoginResponse` 패턴) |
+| 일반 API Request/Response DTO | `record` | Spring Boot 3.x 모범 사례 — 불변, 간결, Lombok 불필요 |
 
 > `@Auditing`을 `record`에 사용하면 런타임 오류 발생 (setter 없음, `AbstractResponse` 상속 불가).
+>
+> record 사용 시 주의 사항:
+> - record component와 동일한 이름의 static 팩토리 메서드는 컴파일 오류 발생 → `ofXxx()` 형식으로 명명
+>   - ✅ `static ChangePasswordResponse ofSuccess()` (component 이름: `success`)
+>   - ❌ `static ChangePasswordResponse success()` — accessor 반환 타입 충돌
+> - record accessor는 `getXxx()` 없이 `xxx()` 형식 — 호출부 전체 수정 필요
+> - boolean component accessor: `isXxx()` 아닌 `xxx()` 형식
 

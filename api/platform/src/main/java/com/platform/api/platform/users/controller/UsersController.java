@@ -39,8 +39,8 @@ public class UsersController {
         return ResponseEntity.ok(ApiResponse.of(
             usersService.changePassword(
                 userSeq,
-                request.getCurrentPassword(),
-                request.getNewPassword()
+                request.currentPassword(),
+                request.newPassword()
             )
         ));
     }

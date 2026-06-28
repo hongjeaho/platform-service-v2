@@ -21,18 +21,18 @@ public class UsersService {
 
     @PlatformTransactional
     public UsersSignupResponse signup(UsersSignupRequest request) {
-        if (usersRepository.existsByUserId(request.getUserId())) {
+        if (usersRepository.existsByUserId(request.userId())) {
             throw new IllegalStateException("이미 사용 중인 아이디입니다.");
         }
-        if (usersRepository.existsByEmail(request.getUserEmail())) {
+        if (usersRepository.existsByEmail(request.userEmail())) {
             throw new IllegalStateException("이미 사용 중인 이메일입니다.");
         }
 
         UsersEntity user = new UsersEntity();
-        user.setUserId(request.getUserId());
-        user.setUserName(request.getUserName());
-        user.setUserEmail(request.getUserEmail());
-        user.setUserPassword(passwordEncoder.encode(request.getPassword()));
+        user.setUserId(request.userId());
+        user.setUserName(request.userName());
+        user.setUserEmail(request.userEmail());
+        user.setUserPassword(passwordEncoder.encode(request.password()));
         user.setCreatedBy(0L);
 
         Long userSeq = usersRepository.insertUser(user);
@@ -43,11 +43,7 @@ public class UsersService {
     }
 
     private UsersSignupResponse toResponse(Long seq, UsersSignupRequest request) {
-        UsersSignupResponse response = new UsersSignupResponse();
-        response.setSeq(seq);
-        response.setUserId(request.getUserId());
-        response.setUserName(request.getUserName());
-        return response;
+        return new UsersSignupResponse(seq, request.userId(), request.userName());
     }
 
     // ========== 이슈 #1: 아이디 중복 확인 API ==========
@@ -57,7 +53,7 @@ public class UsersService {
         if (usersRepository.existsByUserId(userId)) {
             throw new IllegalStateException("이미 사용 중인 아이디입니다.");
         }
-        return CheckDuplicateResponse.available();
+        return CheckDuplicateResponse.ofAvailable();
     }
 
     // ========== 이슈 #2: 이메일 중복 확인 API ==========
@@ -67,7 +63,7 @@ public class UsersService {
         if (usersRepository.existsByEmail(userEmail)) {
             throw new IllegalStateException("이미 사용 중인 이메일입니다.");
         }
-        return CheckDuplicateResponse.available();
+        return CheckDuplicateResponse.ofAvailable();
     }
 
     // ========== 이슈 #3: 비밀번호 변경 API (로그인 전) ==========
@@ -91,7 +87,7 @@ public class UsersService {
         String encodedNewPassword = passwordEncoder.encode(newPassword);
         usersRepository.updatePassword(user.getSeq(), encodedNewPassword, 0L);
 
-        return ChangePasswordResponse.success();
+        return ChangePasswordResponse.ofSuccess();
     }
 
     // ========== 이슈 #4: 비밀번호 변경 API (로그인 후) ==========
@@ -115,7 +111,7 @@ public class UsersService {
         String encodedNewPassword = passwordEncoder.encode(newPassword);
         usersRepository.updatePassword(seq, encodedNewPassword, seq);
 
-        return ChangePasswordResponse.success();
+        return ChangePasswordResponse.ofSuccess();
     }
 
     // ========== Private 메서드: 비밀번호 변경 검증 (중복 제거) ==========
