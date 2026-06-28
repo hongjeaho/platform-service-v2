@@ -404,7 +404,7 @@ class {Domain}ControllerTest {
 }
 ```
 
-### 응답 형식 — ApiResponse<T>
+### 응답 형식 — ApiResult<T>
 
 모든 성공 응답은 `{"success":true,"data":...,"meta":...}` 구조이므로 jsonPath를 아래처럼 작성한다.
 
@@ -467,11 +467,11 @@ public class NoticeListController {
 
     @Operation(summary = "공지 목록 조회")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<NoticeListResponse>>> getList(
+    public ResponseEntity<ApiResult<List<NoticeListResponse>>> getList(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "20") int pageSize
     ) {
-        return ResponseEntity.ok(ApiResponse.of(noticeListService.getList(page, pageSize)));
+        return ResponseEntity.ok(ApiResult.of(noticeListService.getList(page, pageSize)));
     }
 }
 ```

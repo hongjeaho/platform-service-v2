@@ -3,8 +3,10 @@ package com.platform.api.platform.auth.controller;
 import com.platform.api.platform.auth.service.AuthService;
 import com.platform.common.core.auth.AuthRequest;
 import com.platform.common.core.auth.AuthUser;
-import com.platform.common.web.response.ApiResponse;
+import com.platform.common.web.response.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,11 +38,16 @@ public class PublicAuthController {
      * @return 인증된 사용자 정보 — {@code Authorization} 헤더에 JWT 포함
      */
     @Operation(summary = "로그인 처리", description = "로그인 처리 후 인증된 정보를 내려준다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "로그인 성공"),
+        @ApiResponse(responseCode = "400", description = "입력값 오류"),
+        @ApiResponse(responseCode = "401", description = "아이디 또는 비밀번호 불일치")
+    })
     @PostMapping
-    public ResponseEntity<ApiResponse<AuthUser>> login(@RequestBody @Valid AuthRequest authRequest) {
+    public ResponseEntity<ApiResult<AuthUser>> login(@RequestBody @Valid AuthRequest authRequest) {
         final var loginResponse = authService.login(authRequest);
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, loginResponse.token())
-                .body(ApiResponse.of(loginResponse.user()));
+                .body(ApiResult.of(loginResponse.user()));
     }
 }

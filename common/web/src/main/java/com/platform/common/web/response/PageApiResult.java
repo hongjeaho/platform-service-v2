@@ -13,12 +13,12 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "PageApiResponse", title = "페이지 성공 응답")
-public class PageApiResponse<T> {
+@Schema(name = "PageApiResult", title = "페이지 성공 응답")
+public class PageApiResult<T> {
 
-  @Schema(description = "응답 데이터")
-  private List<T> data;
+    @Schema(description = "응답 데이터")
+    private List<T> data;
 
-  @Schema(description = "페이지 정보")
-  private PageMeta meta;
+    @Schema(description = "페이지 정보")
+    private PageMeta meta;
 }

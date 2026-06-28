@@ -247,11 +247,11 @@ public class {Domain}Controller {
     // 메서드 레벨 — @Operation
     @Operation(summary = "{엔드포인트 한 줄 설명}")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<{Domain}Response>>> getList(...) { ... }
+    public ResponseEntity<ApiResult<List<{Domain}Response>>> getList(...) { ... }
 
     @Operation(summary = "{엔드포인트 한 줄 설명}")
     @PostMapping
-    public ResponseEntity<ApiResponse<{Domain}Response>> create(...) { ... }
+    public ResponseEntity<ApiResult<{Domain}Response>> create(...) { ... }
 }
 ```
 

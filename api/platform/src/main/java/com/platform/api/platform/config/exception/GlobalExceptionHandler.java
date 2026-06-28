@@ -1,7 +1,7 @@
 package com.platform.api.platform.config.exception;
 
 import com.platform.common.web.error.type.ErrorCode;
-import com.platform.common.web.error.ErrorResponse;
+import com.platform.common.web.error.ErrorResult;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
      * @Valid 또는 @Validated 어노테이션으로 검증 실패 시 발생
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResult> handleValidationException(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
         });
 
         log.warn("Validation failed: {}", errors);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.of(ErrorCode.VALIDATION_FAILED, "입력 값 검증에 실패했습니다.", errors));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResult.of(ErrorCode.VALIDATION_FAILED, "입력 값 검증에 실패했습니다.", errors));
     }
 
     /**
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
      * 메서드 파라미터 레벨의 @Valid 검증 실패 시 발생
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
+    public ResponseEntity<ErrorResult> handleConstraintViolationException(ConstraintViolationException ex) {
         Map<String, String> errors = new HashMap<>();
         for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
             String propertyPath = violation.getPropertyPath().toString();
@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
         }
 
         log.warn("Constraint violation: {}", errors);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.of(ErrorCode.VALIDATION_FAILED, "제약 조건 검증에 실패했습니다.", errors));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResult.of(ErrorCode.VALIDATION_FAILED, "제약 조건 검증에 실패했습니다.", errors));
     }
 
     /**
@@ -71,11 +71,11 @@ public class GlobalExceptionHandler {
      * 요청 파라미터의 타입이 올바르지 않을 때 발생
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponse> handleTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+    public ResponseEntity<ErrorResult> handleTypeMismatchException(MethodArgumentTypeMismatchException ex) {
         String error = String.format("파라미터 '%s'의 값 '%s'을(를) %s 타입으로 변환할 수 없습니다.", ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
 
         log.warn("Type mismatch: {}", error);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.of(ErrorCode.VALIDATION_FAILED, error));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResult.of(ErrorCode.VALIDATION_FAILED, error));
     }
 
     /**
@@ -84,9 +84,9 @@ public class GlobalExceptionHandler {
      * 데이터베이스 연결 또는 쿼리 실행 중 오류 발생 시
      */
     @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<ErrorResponse> handleDatabaseException(DataAccessException ex) {
+    public ResponseEntity<ErrorResult> handleDatabaseException(DataAccessException ex) {
         log.error("Database error occurred", ex);
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(ErrorResponse.of(ErrorCode.DATABASE_ERROR, "데이터베이스 작업 중 오류가 발생했습니다."));
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(ErrorResult.of(ErrorCode.DATABASE_ERROR, "데이터베이스 작업 중 오류가 발생했습니다."));
     }
 
     /**
@@ -95,9 +95,9 @@ public class GlobalExceptionHandler {
      * 잘못된 인자가 전달되었을 때 발생
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+    public ResponseEntity<ErrorResult> handleIllegalArgumentException(IllegalArgumentException ex) {
         log.warn("Illegal argument: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.of(ErrorCode.VALIDATION_FAILED, ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResult.of(ErrorCode.VALIDATION_FAILED, ex.getMessage()));
     }
 
     /**
@@ -106,9 +106,9 @@ public class GlobalExceptionHandler {
      * 비즈니스 로직 상 잘못된 상태일 때 발생
      */
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalStateException(IllegalStateException ex) {
+    public ResponseEntity<ErrorResult> handleIllegalStateException(IllegalStateException ex) {
         log.warn("Illegal state: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorResponse.of(ErrorCode.BUSINESS_ERROR, ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorResult.of(ErrorCode.BUSINESS_ERROR, ex.getMessage()));
     }
 
     /**
@@ -117,9 +117,9 @@ public class GlobalExceptionHandler {
      * 처리되지 않은 모든 예외를 캐치하여 일관된 에러 응답 반환
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
+    public ResponseEntity<ErrorResult> handleException(Exception ex) {
         log.error("Unhandled exception occurred", ex);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다."));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResult.of(ErrorCode.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다."));
     }
 
 }

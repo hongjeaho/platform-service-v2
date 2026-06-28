@@ -8,8 +8,9 @@ import com.platform.api.platform.users.dto.UserIdCheckRequest;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
 import com.platform.api.platform.users.dto.UsersSignupResponse;
 import com.platform.api.platform.users.service.UsersService;
-import com.platform.common.web.response.ApiResponse;
+import com.platform.common.web.response.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,60 +32,54 @@ public class PublicUsersController {
 
     @Operation(summary = "회원 등록")
     @ApiResponses({
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "등록 성공"),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값 오류"),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "중복 아이디 또는 이메일")
+        @ApiResponse(responseCode = "201", description = "등록 성공"),
+        @ApiResponse(responseCode = "400", description = "입력값 오류"),
+        @ApiResponse(responseCode = "409", description = "중복 아이디 또는 이메일")
     })
     @PostMapping
-    public ResponseEntity<ApiResponse<UsersSignupResponse>> signup(
+    public ResponseEntity<ApiResult<UsersSignupResponse>> signup(
         @RequestBody @Valid UsersSignupRequest request
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of(usersService.signup(request)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResult.of(usersService.signup(request)));
     }
-
-    // ========== 이슈 #1: 아이디 중복 확인 API ==========
 
     @Operation(summary = "아이디 중복 확인")
     @ApiResponses({
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "사용 가능"),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "중복"),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값 오류")
+        @ApiResponse(responseCode = "200", description = "사용 가능"),
+        @ApiResponse(responseCode = "409", description = "중복"),
+        @ApiResponse(responseCode = "400", description = "입력값 오류")
     })
     @PostMapping("/check-id")
-    public ResponseEntity<ApiResponse<CheckDuplicateResponse>> checkId(
+    public ResponseEntity<ApiResult<CheckDuplicateResponse>> checkId(
         @RequestBody @Valid UserIdCheckRequest request
     ) {
-        return ResponseEntity.ok(ApiResponse.of(usersService.checkDuplicateUserId(request.userId())));
+        return ResponseEntity.ok(ApiResult.of(usersService.checkDuplicateUserId(request.userId())));
     }
-
-    // ========== 이슈 #2: 이메일 중복 확인 API ==========
 
     @Operation(summary = "이메일 중복 확인")
     @ApiResponses({
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "사용 가능"),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "중복"),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값 오류")
+        @ApiResponse(responseCode = "200", description = "사용 가능"),
+        @ApiResponse(responseCode = "409", description = "중복"),
+        @ApiResponse(responseCode = "400", description = "입력값 오류")
     })
     @PostMapping("/check-email")
-    public ResponseEntity<ApiResponse<CheckDuplicateResponse>> checkEmail(
+    public ResponseEntity<ApiResult<CheckDuplicateResponse>> checkEmail(
         @RequestBody @Valid UserEmailCheckRequest request
     ) {
-        return ResponseEntity.ok(ApiResponse.of(usersService.checkDuplicateUserEmail(request.userEmail())));
+        return ResponseEntity.ok(ApiResult.of(usersService.checkDuplicateUserEmail(request.userEmail())));
     }
-
-    // ========== 이슈 #3: 비밀번호 변경 API (로그인 전) ==========
 
     @Operation(summary = "비밀번호 변경 (로그인 전)")
     @ApiResponses({
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "변경 성공"),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값 오류 / 사용자 없음 / 비밀번호 불일치"),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "현재 비밀번호와 동일")
+        @ApiResponse(responseCode = "200", description = "변경 성공"),
+        @ApiResponse(responseCode = "400", description = "입력값 오류 / 사용자 없음 / 비밀번호 불일치"),
+        @ApiResponse(responseCode = "409", description = "현재 비밀번호와 동일")
     })
     @PostMapping("/change-password")
-    public ResponseEntity<ApiResponse<ChangePasswordResponse>> changePasswordBeforeLogin(
+    public ResponseEntity<ApiResult<ChangePasswordResponse>> changePasswordBeforeLogin(
         @RequestBody @Valid ChangePasswordBeforeLoginRequest request
     ) {
-        return ResponseEntity.ok(ApiResponse.of(
+        return ResponseEntity.ok(ApiResult.of(
             usersService.changePasswordBeforeLogin(
                 request.userEmail(),
                 request.currentPassword(),

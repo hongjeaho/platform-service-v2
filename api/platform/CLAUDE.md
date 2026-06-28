@@ -131,21 +131,21 @@ service/
 
 ### 응답 형식
 
-모든 API 응답은 `ApiResponse<T>` (`common/web`)로 통일합니다:
+모든 API 응답은 `ApiResult<T>` (`common/web`)로 통일합니다:
 
 ```
 // 단건 응답
-return ResponseEntity.ok(ApiResponse.of(data));
+return ResponseEntity.ok(ApiResult.of(data));
 
 // 페이징 응답
-return ResponseEntity.ok(ApiResponse.of(list, pagingInfo));
+return ResponseEntity.ok(ApiResult.of(list, pagingInfo));
 
 // 생성 응답
-return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of(data));
+return ResponseEntity.status(HttpStatus.CREATED).body(ApiResult.of(data));
 ```
 
-에러 응답은 `GlobalExceptionHandler`가 자동으로 `ErrorResponse`로 변환합니다.
-Controller에서 직접 `ErrorResponse`를 반환하거나 try-catch를 작성하지 마세요.
+에러 응답은 `GlobalExceptionHandler`가 자동으로 `ErrorResult`로 변환합니다.
+Controller에서 직접 `ErrorResult`를 반환하거나 try-catch를 작성하지 마세요.
 
 ### 예외 처리 전략
 
@@ -257,9 +257,9 @@ public void updateTemplate(Long id, ...) { ... }
 
 // 엔드포인트
 @Operation(summary = "사건 상세 조회")
-@ApiResponses({
-    @ApiResponse(responseCode = "200", description = "조회 성공"),
-    @ApiResponse(responseCode = "404", description = "사건 없음")
+@ApiResults({
+    @ApiResult(responseCode = "200", description = "조회 성공"),
+    @ApiResult(responseCode = "404", description = "사건 없음")
 })
 
 // DTO 필드
@@ -323,7 +323,7 @@ public class {Domain}Repository {
 | 모듈 | 주요 제공 요소 | 사용 계층 |
 |---|---|---|
 | `common/core` | `AuthUser`, `UserAccountHolder`, `AbstractResponse`, `AbstractPagingResponse`, 공통 Enum/Type | Service, DTO |
-| `common/web` | `ApiResponse`, `ErrorResponse`, `@Auditing`, `JWTCheckFilter`, `SwaggerConfig` | Controller, Config |
+| `common/web` | `ApiResult`, `ErrorResult`, `@Auditing`, `JWTCheckFilter`, `SwaggerConfig` | Controller, Config |
 | `common/jooq` | `CustomGeneratorStrategy` (테이블→`J{Name}`, POJO→`{Name}Entity`) | 코드 생성 전용 |
 | `datasource/platform` | JOOQ DSL, Repository, Mapper, `@PlatformTransactional` | Service에서 주입 |
 

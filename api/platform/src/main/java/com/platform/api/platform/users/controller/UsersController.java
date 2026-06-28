@@ -4,8 +4,9 @@ import com.platform.api.platform.users.dto.ChangePasswordRequest;
 import com.platform.api.platform.users.dto.ChangePasswordResponse;
 import com.platform.api.platform.users.service.UsersService;
 import com.platform.common.core.auth.context.UserAccountHolder;
-import com.platform.common.web.response.ApiResponse;
+import com.platform.common.web.response.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -26,17 +27,17 @@ public class UsersController {
 
     @Operation(summary = "비밀번호 변경 (로그인 후)")
     @ApiResponses({
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "변경 성공"),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값 오류 / 비밀번호 불일치"),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "JWT 인증 실패 (SecurityConfig 자동 처리)"),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "현재 비밀번호와 동일")
+        @ApiResponse(responseCode = "200", description = "변경 성공"),
+        @ApiResponse(responseCode = "400", description = "입력값 오류 / 비밀번호 불일치"),
+        @ApiResponse(responseCode = "401", description = "JWT 인증 실패 (SecurityConfig 자동 처리)"),
+        @ApiResponse(responseCode = "409", description = "현재 비밀번호와 동일")
     })
     @PostMapping("/change-password")
-    public ResponseEntity<ApiResponse<ChangePasswordResponse>> changePassword(
+    public ResponseEntity<ApiResult<ChangePasswordResponse>> changePassword(
         @RequestBody @Valid ChangePasswordRequest request
     ) {
         Long userSeq = UserAccountHolder.getSeqNo();
-        return ResponseEntity.ok(ApiResponse.of(
+        return ResponseEntity.ok(ApiResult.of(
             usersService.changePassword(
                 userSeq,
                 request.currentPassword(),

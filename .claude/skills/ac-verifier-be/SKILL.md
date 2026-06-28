@@ -129,7 +129,7 @@ When GET /api/public/notice
 | 상태코드 204 | `ResponseEntity.noContent().build()` |
 | 상태코드 400 | `IllegalArgumentException` throw → GlobalExceptionHandler |
 | 상태코드 409 | `IllegalStateException` throw → GlobalExceptionHandler |
-| 응답 바디 필드 | DTO 필드명과 `ApiResponse<T>` 구조 |
+| 응답 바디 필드 | DTO 필드명과 `ApiResult<T>` 구조 |
 | 예외 메시지 | throw 시 메시지 문자열 |
 
 ### 충족 판정 기준

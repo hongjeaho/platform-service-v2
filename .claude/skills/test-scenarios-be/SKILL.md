@@ -148,7 +148,7 @@ description: |
 
 // ── 읽기 엔드포인트 (GET, DELETE)
 @GetMapping("{uri}")
-public ResponseEntity<ApiResponse<{ResponseType}>> {methodName}(
+public ResponseEntity<ApiResult<{ResponseType}>> {methodName}(
     @{파라미터어노테이션} {ParamType} {paramName}
 );
 
@@ -156,14 +156,14 @@ public ResponseEntity<ApiResponse<{ResponseType}>> {methodName}(
 //    @Auditing: 커스텀 애노테이션. JWT에서 현재 로그인 사용자를 읽어 createdBy/updatedBy를 자동 주입하는 HandlerMethodArgumentResolver.
 //    이중 파라미터 패턴 사용 — @RequestBody로 받은 req를 audited에 복사한 뒤 감사 필드를 채운다.
 @PostMapping("{uri}")
-public ResponseEntity<ApiResponse<{ResponseType}>> {methodName}(
+public ResponseEntity<ApiResult<{ResponseType}>> {methodName}(
     @RequestBody @Valid {Domain}CreateRequest req,
     @Auditing {Domain}CreateRequest audited   // createdBy, createdTime, updatedBy, updatedTime 자동 세팅
 );
 
 // ── 쓰기 엔드포인트 — Auditing 불필요한 경우 (단순 쓰기, 공개 API 등)
 @PostMapping("{uri}")
-public ResponseEntity<ApiResponse<{ResponseType}>> {methodName}(
+public ResponseEntity<ApiResult<{ResponseType}>> {methodName}(
     @RequestBody @Valid {Domain}CreateRequest req
 );
 ```
