@@ -258,6 +258,13 @@ public class {Domain}Controller {
 > **스켈레톤에서 완성으로 전환할 때**: 빈 바디만 있던 스켈레톤에 구현을 채우면서
 > @Tag / @Operation을 함께 추가한다. 누락 시 `security-review-be`에서 지적된다.
 
+### JavaDoc 규칙
+
+- **Controller**: `@Tag`·`@Operation`이 대체 — JavaDoc 작성하지 않는다.
+- **Service**: 클래스 레벨 + 모든 public 메서드에 JavaDoc 필수. `@param`·`@return` 작성, `@throws`는 실제로 던질 때만, `void`면 `@return` 생략.
+- **Repository**: 클래스 레벨 JavaDoc 필수. 메서드는 복잡한 조인·복합 조건·집계 쿼리에만 작성 — `findAll`, `save`, `findById` 등 단순 CRUD는 생략.
+- **DTO**: JavaDoc 작성하지 않는다. API-facing은 `@Schema`가, 내부 `record`는 생성자 `@param`이 대체한다.
+
 ### DTO 변환 메서드(`toResponse`) 위치 결정
 
 | 상황 | 위치 |

@@ -270,6 +270,54 @@ private Long caseSeq;
 공개 경로: `/api/public/**` (인증 불필요), 나머지는 JWT 필요.
 Swagger UI: `/public/swagger-ui/index.html`
 
+### JavaDoc 컨벤션
+
+| 계층 | 클래스 JavaDoc | 메서드 JavaDoc |
+|---|---|---|
+| Controller | 작성 안 함 | 작성 안 함 (`@Tag`·`@Operation`이 API 문서 역할) |
+| Service | 필수 | public 메서드 전체 필수 |
+| Helper (`@Component`) | 필수 (1줄) | public 메서드 필수 |
+| Repository | 필수 (1줄) | 복잡 쿼리만 — 단순 CRUD(`findAll`, `save` 등) 생략 |
+| API-facing DTO (`@Schema` 적용, 항상 `class`) | 작성 안 함 | 작성 안 함 |
+| 내부 값 객체 (`record`, Service 내부 전달용) | 필수 | record 생성자 `@param` 작성 |
+| Config 클래스 | 필수 | `@Bean` 메서드 필수 |
+
+Service 템플릿:
+
+```java
+/**
+ * {도메인명} 비즈니스 로직 서비스.
+ *
+ * <p>{주요 기능 한 줄 요약}.
+ */
+@Service
+public class {Domain}Service {
+
+    /**
+     * {동사형 한 줄 설명}.
+     *
+     * @param {param}  {설명}
+     * @return {반환값 설명}
+     * @throws IllegalArgumentException {발생 조건 — HTTP 400}
+     * @throws IllegalStateException    {발생 조건 — HTTP 409}
+     */
+    public {ReturnType} {method}(...) { ... }
+}
+```
+
+Repository 클래스 템플릿:
+
+```java
+/**
+ * {도메인/테이블명} 데이터 접근 레포지토리.
+ */
+@Repository
+public class {Domain}Repository {
+    // 단순 CRUD(findAll, save, findById, delete, update, countAll): JavaDoc 생략
+    // 복잡한 조인·검색·집계 쿼리: @param/@return 작성
+}
+```
+
 ### 공통 모듈 활용
 
 | 모듈 | 주요 제공 요소 | 사용 계층 |
@@ -299,4 +347,14 @@ Swagger UI: `/public/swagger-ui/index.html`
 | Response DTO | `{Domain}Response` 또는 기능 명시 | `CaseDetailResponse` |
 | 도메인 Enum | `{Domain}StatusType` | `CaseStatusType`, `ReceiptStatusType` |
 | 캐시 상수 | `{DOMAIN}_CACHE_NAME` | `CASE_TEMPLATE_CACHE_NAME` |
+
+### DTO 타입 선택 규칙
+
+| 상황 | 타입 | 이유 |
+|---|---|---|
+| `@Auditing` 대상 Request DTO | `class extends AbstractResponse` | `AuditingHandlerMethodArgumentResolver`가 setter로 audit 주입 — `record` 불가 |
+| 일반 API Request/Response DTO | `class` | 프로젝트 일관성 |
+| 내부 값 객체 (Service→Controller 전달용) | `record` | 불변, 간결, 상속 불필요 (`LoginResponse` 패턴) |
+
+> `@Auditing`을 `record`에 사용하면 런타임 오류 발생 (setter 없음, `AbstractResponse` 상속 불가).
 
