@@ -1,0 +1,4 @@
+platform:
+  email:
+    from: ${PLATFORM_EMAIL_FROM:noreply@platform.com}
+    from-name: ${PLATFORM_EMAIL_FROM_NAME:Platform}
