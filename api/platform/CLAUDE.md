@@ -131,21 +131,21 @@ service/
 
 ### 응답 형식
 
-모든 API 응답은 `ApiResponse<T>` (`common/web`)로 통일합니다:
+모든 API 응답은 `ApiResult<T>` (`common/web`)로 통일합니다:
 
 ```
 // 단건 응답
-return ResponseEntity.ok(ApiResponse.of(data));
+return ResponseEntity.ok(ApiResult.of(data));
 
 // 페이징 응답
-return ResponseEntity.ok(ApiResponse.of(list, pagingInfo));
+return ResponseEntity.ok(ApiResult.of(list, pagingInfo));
 
 // 생성 응답
-return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of(data));
+return ResponseEntity.status(HttpStatus.CREATED).body(ApiResult.of(data));
 ```
 
-에러 응답은 `GlobalExceptionHandler`가 자동으로 `ErrorResponse`로 변환합니다.
-Controller에서 직접 `ErrorResponse`를 반환하거나 try-catch를 작성하지 마세요.
+에러 응답은 `GlobalExceptionHandler`가 자동으로 `ErrorResult`로 변환합니다.
+Controller에서 직접 `ErrorResult`를 반환하거나 try-catch를 작성하지 마세요.
 
 ### 예외 처리 전략
 
@@ -257,9 +257,9 @@ public void updateTemplate(Long id, ...) { ... }
 
 // 엔드포인트
 @Operation(summary = "사건 상세 조회")
-@ApiResponses({
-    @ApiResponse(responseCode = "200", description = "조회 성공"),
-    @ApiResponse(responseCode = "404", description = "사건 없음")
+@ApiResults({
+    @ApiResult(responseCode = "200", description = "조회 성공"),
+    @ApiResult(responseCode = "404", description = "사건 없음")
 })
 
 // DTO 필드
@@ -270,12 +270,60 @@ private Long caseSeq;
 공개 경로: `/api/public/**` (인증 불필요), 나머지는 JWT 필요.
 Swagger UI: `/public/swagger-ui/index.html`
 
+### JavaDoc 컨벤션
+
+| 계층 | 클래스 JavaDoc | 메서드 JavaDoc |
+|---|---|---|
+| Controller | 작성 안 함 | 작성 안 함 (`@Tag`·`@Operation`이 API 문서 역할) |
+| Service | 필수 | public 메서드 전체 필수 |
+| Helper (`@Component`) | 필수 (1줄) | public 메서드 필수 |
+| Repository | 필수 (1줄) | 복잡 쿼리만 — 단순 CRUD(`findAll`, `save` 등) 생략 |
+| API-facing DTO (`@Schema` 적용, 항상 `class`) | 작성 안 함 | 작성 안 함 |
+| 내부 값 객체 (`record`, Service 내부 전달용) | 필수 | record 생성자 `@param` 작성 |
+| Config 클래스 | 필수 | `@Bean` 메서드 필수 |
+
+Service 템플릿:
+
+```java
+/**
+ * {도메인명} 비즈니스 로직 서비스.
+ *
+ * <p>{주요 기능 한 줄 요약}.
+ */
+@Service
+public class {Domain}Service {
+
+    /**
+     * {동사형 한 줄 설명}.
+     *
+     * @param {param}  {설명}
+     * @return {반환값 설명}
+     * @throws IllegalArgumentException {발생 조건 — HTTP 400}
+     * @throws IllegalStateException    {발생 조건 — HTTP 409}
+     */
+    public {ReturnType} {method}(...) { ... }
+}
+```
+
+Repository 클래스 템플릿:
+
+```java
+/**
+ * {도메인/테이블명} 데이터 접근 레포지토리.
+ */
+@Repository
+public class {Domain}Repository {
+    // 단순 CRUD(findAll, save, findById, delete, update, countAll): JavaDoc 생략
+    // 복잡한 조인·검색·집계 쿼리: @param/@return 작성
+}
+```
+
 ### 공통 모듈 활용
 
 | 모듈 | 주요 제공 요소 | 사용 계층 |
 |---|---|---|
 | `common/core` | `AuthUser`, `UserAccountHolder`, `AbstractResponse`, `AbstractPagingResponse`, 공통 Enum/Type | Service, DTO |
-| `common/web` | `ApiResponse`, `ErrorResponse`, `@Auditing`, `JWTCheckFilter`, `SwaggerConfig` | Controller, Config |
+| `common/web` | `ApiResult`, `ErrorResult`, `@Auditing`, `JWTCheckFilter`, `SwaggerConfig` | Controller, Config |
 | `common/jooq` | `CustomGeneratorStrategy` (테이블→`J{Name}`, POJO→`{Name}Entity`) | 코드 생성 전용 |
 | `datasource/platform` | JOOQ DSL, Repository, Mapper, `@PlatformTransactional` | Service에서 주입 |
 
@@ -299,4 +347,20 @@ Swagger UI: `/public/swagger-ui/index.html`
 | Response DTO | `{Domain}Response` 또는 기능 명시 | `CaseDetailResponse` |
 | 도메인 Enum | `{Domain}StatusType` | `CaseStatusType`, `ReceiptStatusType` |
 | 캐시 상수 | `{DOMAIN}_CACHE_NAME` | `CASE_TEMPLATE_CACHE_NAME` |
+
+### DTO 타입 선택 규칙
+
+| 상황 | 타입 | 이유 |
+|---|---|---|
+| `@Auditing` 대상 Request DTO | `class extends AbstractResponse` | `AuditingHandlerMethodArgumentResolver`가 setter로 audit 주입 — `record` 불가 |
+| 일반 API Request/Response DTO | `record` | Spring Boot 3.x 모범 사례 — 불변, 간결, Lombok 불필요 |
+
+> `@Auditing`을 `record`에 사용하면 런타임 오류 발생 (setter 없음, `AbstractResponse` 상속 불가).
+>
+> record 사용 시 주의 사항:
+> - record component와 동일한 이름의 static 팩토리 메서드는 컴파일 오류 발생 → `ofXxx()` 형식으로 명명
+>   - ✅ `static ChangePasswordResponse ofSuccess()` (component 이름: `success`)
+>   - ❌ `static ChangePasswordResponse success()` — accessor 반환 타입 충돌
+> - record accessor는 `getXxx()` 없이 `xxx()` 형식 — 호출부 전체 수정 필요
+> - boolean component accessor: `isXxx()` 아닌 `xxx()` 형식
 

@@ -3,7 +3,7 @@ package com.platform.api.platform.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.platform.common.web.config.filter.JWTCheckFilter;
 import com.platform.common.web.error.type.ErrorCode;
-import com.platform.common.web.error.ErrorResponse;
+import com.platform.common.web.error.ErrorResult;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -125,7 +125,7 @@ public class SecurityConfig {
       response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       response.setCharacterEncoding("UTF-8");
       objectMapper.writeValue(response.getWriter(),
-          ErrorResponse.of(ErrorCode.AUTH_REQUIRED, "인증이 필요합니다."));
+          ErrorResult.of(ErrorCode.AUTH_REQUIRED, "인증이 필요합니다."));
     };
   }
 
@@ -136,7 +136,7 @@ public class SecurityConfig {
       response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       response.setCharacterEncoding("UTF-8");
       objectMapper.writeValue(response.getWriter(),
-          ErrorResponse.of(ErrorCode.FORBIDDEN, "접근이 거부되었습니다."));
+          ErrorResult.of(ErrorCode.FORBIDDEN, "접근이 거부되었습니다."));
     };
   }
 

@@ -45,11 +45,7 @@ class UsersServiceTest {
 
     @BeforeEach
     void setUp() {
-        request = new UsersSignupRequest();
-        request.setUserId("testuser");
-        request.setUserName("홍길동");
-        request.setPassword("password123");
-        request.setUserEmail("test@example.com");
+        request = new UsersSignupRequest("testuser", "홍길동", "password123", "test@example.com");
     }
 
     @Test
@@ -67,9 +63,9 @@ class UsersServiceTest {
 
         // Then
         assertThat(result).isNotNull();
-        assertThat(result.getSeq()).isEqualTo(1L);
-        assertThat(result.getUserId()).isEqualTo("testuser");
-        assertThat(result.getUserName()).isEqualTo("홍길동");
+        assertThat(result.seq()).isEqualTo(1L);
+        assertThat(result.userId()).isEqualTo("testuser");
+        assertThat(result.userName()).isEqualTo("홍길동");
     }
 
     @Test
@@ -162,8 +158,8 @@ class UsersServiceTest {
 
         // Then
         assertThat(response).isNotNull();
-        assertThat(response.isAvailable()).isTrue();
-        assertThat(response.getMessage()).isEqualTo("사용 가능합니다.");
+        assertThat(response.available()).isTrue();
+        assertThat(response.message()).isEqualTo("사용 가능합니다.");
     }
 
     @Test
@@ -193,8 +189,8 @@ class UsersServiceTest {
 
         // Then
         assertThat(response).isNotNull();
-        assertThat(response.isAvailable()).isTrue();
-        assertThat(response.getMessage()).isEqualTo("사용 가능합니다.");
+        assertThat(response.available()).isTrue();
+        assertThat(response.message()).isEqualTo("사용 가능합니다.");
     }
 
     @Test
@@ -233,7 +229,7 @@ class UsersServiceTest {
 
         // Then
         assertThat(result).isNotNull();
-        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.success()).isTrue();
     }
 
     @Test
@@ -344,7 +340,7 @@ class UsersServiceTest {
 
         // Then
         assertThat(result).isNotNull();
-        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.success()).isTrue();
     }
 
     @Test
@@ -368,7 +364,7 @@ class UsersServiceTest {
 
         // Then
         assertThat(result).isNotNull();
-        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.success()).isTrue();
     }
 
     @Test
@@ -392,7 +388,7 @@ class UsersServiceTest {
 
         // Then
         assertThat(result).isNotNull();
-        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.success()).isTrue();
     }
 
     @Test

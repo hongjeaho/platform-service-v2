@@ -49,16 +49,9 @@ class PublicUsersControllerTest {
 
     @BeforeEach
     void setUp() {
-        validRequest = new UsersSignupRequest();
-        validRequest.setUserId("testuser");
-        validRequest.setUserName("홍길동");
-        validRequest.setPassword("password123");
-        validRequest.setUserEmail("test@example.com");
+        validRequest = new UsersSignupRequest("testuser", "홍길동", "password123", "test@example.com");
 
-        signupResponse = new UsersSignupResponse();
-        signupResponse.setSeq(1L);
-        signupResponse.setUserId("testuser");
-        signupResponse.setUserName("홍길동");
+        signupResponse = new UsersSignupResponse(1L, "testuser", "홍길동");
     }
 
     @Test
@@ -160,7 +153,7 @@ class PublicUsersControllerTest {
     @DisplayName("사용 가능한 userId로 중복 확인 시 200과 available=true를 반환한다")
     void checkId_return200WithAvailableTrue_whenUserIdIsAvailable() throws Exception {
         // Given
-        CheckDuplicateResponse response = CheckDuplicateResponse.available();
+        CheckDuplicateResponse response = CheckDuplicateResponse.ofAvailable();
         when(usersService.checkDuplicateUserId(eq("newuser"))).thenReturn(response);
 
         // When & Then
@@ -214,7 +207,7 @@ class PublicUsersControllerTest {
     @DisplayName("사용 가능한 userEmail로 중복 확인 시 200과 available=true를 반환한다")
     void checkEmail_return200WithAvailableTrue_whenEmailIsAvailable() throws Exception {
         // Given
-        CheckDuplicateResponse response = CheckDuplicateResponse.available();
+        CheckDuplicateResponse response = CheckDuplicateResponse.ofAvailable();
         when(usersService.checkDuplicateUserEmail(eq("newuser@example.com"))).thenReturn(response);
 
         // When & Then
@@ -278,7 +271,7 @@ class PublicUsersControllerTest {
     @DisplayName("유효한 요청 시 200 OK와 success=true를 반환한다")
     void changePasswordBeforeLogin_return200WithSuccessTrue_whenValidRequest() throws Exception {
         // Given
-        ChangePasswordResponse response = ChangePasswordResponse.success();
+        ChangePasswordResponse response = ChangePasswordResponse.ofSuccess();
         when(usersService.changePasswordBeforeLogin(any(), any(), any())).thenReturn(response);
 
         // When & Then

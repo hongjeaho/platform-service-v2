@@ -1,0 +1,24 @@
+package com.platform.common.web.response;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Schema(name = "PageApiResult", title = "페이지 성공 응답")
+public class PageApiResult<T> {
+
+    @Schema(description = "응답 데이터")
+    private List<T> data;
+
+    @Schema(description = "페이지 정보")
+    private PageMeta meta;
+}
