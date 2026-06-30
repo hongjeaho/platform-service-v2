@@ -3,8 +3,7 @@ name: e2e-test
 description: |
   PRD 사용자 스토리를 Playwright E2E 테스트로 변환하는 스킬.
   /e2e-test {N} 또는 /e2e-test {feature-path} {N} 명령어로 진입.
-  /feature-planner 세션 컨텍스트가 있으면 feature-path를 자동 로드하고,
-  없으면 Git 브랜치명(feature/xxx)을 자동 파싱해 feature-path를 설정한다.
+  Git 브랜치명(feature/xxx)을 자동 파싱해 feature-path를 설정한다.
   사용자가 "E2E 테스트", "Playwright 테스트", "e2e", "통합 테스트 작성",
   "사용자 시나리오 테스트", "브라우저 테스트", "e2e-test" 등을 언급하면 반드시 이 스킬을 사용할 것.
   TDD 이슈 사이클의 /tdd-refactor 완료 이후 단계에서 실행한다.
@@ -21,7 +20,7 @@ description: |
 ## 입력 형식
 
 ```
-/e2e-test {N}                       ← 컨텍스트 또는 브랜치 추론 + 이슈 번호
+/e2e-test {N}                       ← 브랜치 추론 + 이슈 번호
 /e2e-test {feature-path} {N}       ← 경로 직접 지정 + 이슈 번호
 ```
 
@@ -29,17 +28,9 @@ description: |
 
 ## feature-path 결정
 
-아래 순서로 `feature-path`를 결정한다. 위 단계에서 결정되면 아래 단계는 실행하지 않는다.
+아래 순서로 `feature-path`를 결정합니다. 위 단계에서 결정되면 아래는 실행하지 않습니다.
 
-**1순위: /feature-planner 세션 컨텍스트**
-
-같은 세션에서 `/feature-planner`가 먼저 실행된 경우 `[CONTEXT]`의 `feature-path`를 그대로 사용한다.
-
-```
-[CONTEXT] feature-path: notice/list   ← 이 값을 자동 사용
-```
-
-**2순위: 직접 지정**
+**1순위: 직접 지정**
 
 첫 토큰에 슬래시(`/`)가 포함된 영문 경로 → `{feature-path}`로 판단.
 
@@ -47,11 +38,60 @@ description: |
 /e2e-test notice/list 1   → feature-path: notice/list, N: 1
 ```
 
-**3순위: 현재 브랜치 자동 추론**
+**2순위: 현재 브랜치 자동 추론**
 
-위 두 경우에 해당하지 않으면 `git branch --show-current`를 실행해 브랜치에서 추론한다.
+위 경우에 해당하지 않으면 `git branch --show-current`를 실행해 브랜치에서 추론합니다.
 
-브랜치명이 `main`, `master`, `develop`, `dev`이거나 `feature/` prefix가 없는 경우:
+**파싱 규칙:**
+`feature/` prefix 제거 후, 마지막 세그먼트를 제외하고 **후보 feature-path**를 추출합니다.
+
+| 브랜치명 | 후보 feature-path | 파싱 규칙 |
+|---------|-----------------|-----------|
+| `feature/tag/add-tag` | `tag` | prefix 제거 + 마지막 세그먼트 제거 |
+| `feature/users/test` | `users` | prefix 제거 + 마지막 세그먼트 제거 |
+| `feature/notice/list` | `notice` | prefix 제거 + 마지막 세그먼트 제거 |
+| `feature/users/list/users-list` | `users/list` | prefix 제거 + 마지막 세그먼트 제거 |
+
+> **마지막 세그먼트 제거 규칙:**
+> - 브랜치명이 3개 이상 세그먼트면 마지막을 제거합니다.
+> - 이는 기능의 하위 태스크(create-document, fix-bug 등)를 제거하고 상위 기능 경로를 추출하기 위함입니다.
+
+**파일시스템 검증:**
+
+후보 feature-path가 추출되면 실제 디렉토리가 존재하는지 검증합니다.
+
+```bash
+# docs 폴더 존재 확인
+find src/features/{후보}/docs/ -type d 2>/dev/null
+
+# 존재하지 않으면 현재 도메인 목록 확인
+ls src/features/
+```
+
+| 검증 결과 | 처리 |
+|----------|------|
+| docs 폴더 존재 | ✅ feature-path 확정, 진행 |
+| docs 폴더 없음 | ⚠️ 사용자 입력 요청 (아래 메시지) |
+
+**⚠️ 경로를 찾을 수 없는 경우:**
+
+파일시스템 검증 실패 시 `ls src/features/`로 존재하는 도메인을 나열한 뒤, 사용자에게 후보를 보여주고 직접 입력을 요청합니다.
+
+```
+⚠️ 경로를 찾을 수 없습니다.
+   브랜치: feature/users/email/create-document
+   추론된 feature-path: users/email
+
+   현재 존재하는 도메인 (src/features/ 아래):
+   - users    → src/features/users/
+
+   feature-path를 직접 입력해주세요.
+   예) users
+```
+
+**3순위: 보호 브랜치 감지**
+
+브랜치명이 `main`, `master`, `develop`, `dev` 이거나 `feature/` prefix가 없는 경우 **즉시 중단**합니다.
 
 ```
 ⚠️  현재 브랜치: main (보호 브랜치)
@@ -59,16 +99,9 @@ description: |
     feature 브랜치로 전환 후 다시 실행해주세요.
 ```
 
-`feature/*` 브랜치라면 prefix를 제거해 feature-path로 변환한다.
-
-| 브랜치명 | feature-path |
-|---------|-------------|
-| `feature/tag` | `tag` |
-| `feature/notice/list` | `notice/list` |
-
 **4순위: 직접 입력 요청**
 
-위 세 가지 모두 실패할 경우:
+위 모든 경우에 해당하지 않으면 사용자에게 직접 입력을 요청합니다.
 
 ```
 feature-path를 입력해주세요.
@@ -116,7 +149,7 @@ feature-path: tag, N: 2
 
 ```
 /e2e-test [{feature-path}] {N}
-    ↓ feature-path 결정 (컨텍스트 → 직접 지정 → 브랜치 추론 → 직접 입력)
+    ↓ feature-path 결정 (직접 지정 → 브랜치 추론 → 보호 브랜치 감지 → 직접 입력)
     ↓ 단계 1: PRD + 이슈 파일 읽기 — 사용자 스토리·AC 추출
     ↓ 단계 2: 기존 단위 테스트 스캔 — 이미 검증된 항목 목록화
     ↓ 단계 3: E2E 시나리오 도출 — 브라우저 흐름만 선별
