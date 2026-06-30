@@ -64,6 +64,9 @@ description: |
 ```bash
 # docs 폴더 존재 확인
 find src/features/{후보}/docs/ -type d 2>/dev/null
+
+# 존재하지 않으면 현재 도메인 목록 확인
+ls src/features/
 ```
 
 | 검증 결과 | 처리 |

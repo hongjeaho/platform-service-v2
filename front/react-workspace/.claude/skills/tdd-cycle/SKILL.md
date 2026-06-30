@@ -58,6 +58,7 @@ description: |
 | `feature/users/test` | `users` | prefix 제거 + 마지막 세그먼트 제거 |
 | `feature/notice/list` | `notice` | prefix 제거 + 마지막 세그먼트 제거 |
 | `feature/users/list/users-list` | `users/list` | prefix 제거 + 마지막 세그먼트 제거 |
+| `feature/users/email/create-document` | `users/email` | prefix 제거 + 마지막 세그먼트 제거 |
 
 > **마지막 세그먼트 제거 규칙:**
 > - 브랜치명이 3개 이상 세그먼트면 마지막을 제거합니다.

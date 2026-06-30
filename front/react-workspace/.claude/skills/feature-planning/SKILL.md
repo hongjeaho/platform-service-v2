@@ -592,13 +592,13 @@ PRD를 실행 가능한 작업 단위로 변환한다.
 
 ### 핸드오프
 
-task.md 확정 후 `/test-scenarios` 스킬로 이관한다.
-각 이슈의 AC(Given-When-Then)가 `/test-scenarios`에서 `issue-{N}.md` 생성의 입력이 된다.
+task.md가 확정되면 기획은 완료된다. 이후 TDD 사이클은 **새 세션에서** 실행한다.
 
-> feature-path는 컨텍스트로 저장되지 않는다. `/test-scenarios` 이후 각 스킬은 현재 브랜치에서 독립적으로 추론한다.
+> feature-path는 컨텍스트로 저장되지 않는다. 각 스킬은 현재 브랜치에서 독립적으로 추론한다.
 
 ```
-다음 단계: /test-scenarios {N}
+기획 완료. 새 세션에서 이슈 번호를 지정해 실행하세요:
+/tdd-cycle {N}   ← 이슈 1개를 처음(test-scenarios)부터 끝(git commit)까지 한 번에
 ```
 
 ---

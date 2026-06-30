@@ -183,7 +183,7 @@ const userKeys = {
     ↓ 단계 1: 요구사항 인터뷰 → spec-fixed.md [GATE]
     ↓ 단계 2: PRD 뼈대 → 아키텍처 3안 선택 [GATE] → ADR → Out of Scope [GATE]
     ↓ 단계 3: 이슈 분해 → issues.md [GATE]
-    ↓ /test-scenarios 핸드오프 (feature-path 자동 전달)
+    ↓ 기획 완료 → 새 세션에서 /tdd-cycle {N} 실행
 ```
 
 **산출물 경로**: `/src/features/{feature-path}/docs/`
