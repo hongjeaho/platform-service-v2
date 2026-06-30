@@ -23,7 +23,7 @@ description: |
 ### 입력 형식
 
 ```
-/feature-planner                          ← 현재 브램치에서 자동 추론
+/feature-planner                          ← 현재 브랜치에서 자동 추론
 /feature-planner {기능 설명}              ← 현재 브랜치 + 설명 추가
 /feature-planner {feature-path}           ← 경로 직접 지정
 /feature-planner {feature-path} {설명}   ← 경로 + 설명
@@ -134,7 +134,7 @@ find src/features/{후보}/docs/ -type d 2>/dev/null
    ```
 
 3. **사용자가 "완료" 응답 시**
-   - `feature-path`를 브랜치명에서 추론해 컨텍스트에 저장
+   - `feature-path`를 브랜치명에서 추론
    - 경로 확인 메시지 출력 후 spec.md 처리로 진행
 
 **Step 3: 브랜치 → feature-path 변환 규칙**
@@ -161,15 +161,11 @@ find src/features/{후보}/docs/ -type d 2>/dev/null
 **Step 4: 추론 결과 사용자에게 확인**
 ```
 🌿 현재 브랜치: feature/notice/list
-📁 추론된 경로: notice/list
-   → 문서 경로: /src/features/notice/list/docs/
+📁 추론된 경로: notice
+   → 문서 경로: /src/features/notice/docs/
 
 경로가 맞으면 계속 진행합니다. 다르면 말씀해주세요.
 ```
-
----
-
-## 경로 네이밍 규칙 (직접 지정 시)
 
 ---
 
