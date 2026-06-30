@@ -53,6 +53,17 @@ git rev-parse --abbrev-ref origin/HEAD 2>/dev/null | sed 's|origin/||'
 git show-ref --verify --quiet refs/heads/main && echo main || echo master
 ```
 
+탐지 실패 시 (결과가 비어있거나 브랜치가 실제로 존재하지 않는 경우):
+
+```
+⚠️  기본 브랜치를 자동으로 탐지하지 못했습니다.
+
+    아래 명령으로 확인 후 직접 알려주세요:
+    git branch -a | grep -E "main|master"
+    # 또는
+    git remote set-head origin -a && git rev-parse --abbrev-ref origin/HEAD
+```
+
 ---
 
 ## 파일 경로 규칙
@@ -405,8 +416,10 @@ grep -rn "@GetMapping\|@PostMapping\|@PutMapping\|@DeleteMapping\|@PatchMapping"
 🧪 최종 테스트: {통과 수}/{전체 수} 통과
 📝 보안 검토 결과가 issue-{N}.md 하단에 기록되었습니다.
 
-➡️  다음 이슈가 남아 있으면: /test-scenarios-be {N+1}  (다음 이슈 TDD 사이클 시작)
-    모든 이슈 완료 후 마지막에: git commit → /create-pr-be
+➡️  단독 실행 시 다음 단계:
+    - 다음 이슈가 남아 있으면: /tdd-cycle-be {N+1}
+    - 모든 이슈 완료 후: /create-pr-be
+    tdd-cycle-be 안에서 실행된 경우 단계 7(git commit)이 자동으로 이어집니다.
 ```
 
 ---

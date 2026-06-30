@@ -53,16 +53,6 @@ description: |
    /test-scenarios-be로 먼저 테스트 시나리오를 생성해주세요.
 ```
 
-```
-[CONTEXT] feature-path: notice/list
-          module-name:  platform
-          api-module:   api/platform
-          ds-module:    datasource/platform
-          pkg-root:     com/platform/api/platform
-          docs-root:    api/platform/src/main/java/com/platform/api/platform/notice/list/docs/
-          branch:       feature/notice/list/목록-조회
-```
-
 ---
 
 ## 진입 안내
