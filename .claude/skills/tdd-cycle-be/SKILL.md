@@ -115,7 +115,7 @@ description: |
 | 4 ac-verifier-be | `AC 4건 모두 ✅ 충족` |
 | 5 tdd-refactor-be | `리팩토링 3건 적용, 테스트 이상 없음` |
 | 6 security-review-be | `즉시 수정 0건 / 권장 2건 / 무시 1건` |
-| 7 git commit | `커밋 완료: feat: 이메일 인증 코드 전송 (#1)` |
+| 7 git commit | `커밋 완료: feat(users): 이메일 인증 코드 전송 (#1)` |
 
 ### 중단 출력 형식
 
@@ -189,7 +189,7 @@ Skill(skill="tdd-refactor-be", args="{N}")
 
 ---
 
-### 단계 6/6 — security-review-be
+### 단계 6/7 — security-review-be
 
 ```
 Skill(skill="security-review-be", args="{N}")
@@ -212,18 +212,31 @@ git status
 # 형식: {type}: {이슈 제목} (#{N})
 # 예: feat(users): 이메일 인증 API 구현 (#1)
 
-# 3. git commit 실행
-git add .
+# 3. 스테이징 — 모듈 경계 내 파일만 명시적으로 추가
+git add -- api/{module-name}/ datasource/{module-name}/
+git status --short   # 스테이징 목록 확인 출력
+
+# 4. git commit 실행
 git commit -m "{커밋 메시지}"
 ```
+
+스테이징 목록을 사용자에게 보여주고, 예상치 못한 파일이 있으면 확인을 받은 후 커밋한다.
 
 **커밋 메시지 생성 규칙:**
 
 1. `issue-{N}.md`의 제목에서 이슈 제목 추출
-2. Git 컨벤션 형식: `{type}: {제목} (#{N})`
-   - type: `feat` | `fix` | `refactor` | `chore`
+2. Git 컨벤션 형식: `{type}({feature-path}): {제목} (#{N})`
+   - type 선택 기준:
+     | 이슈 성격 | type |
+     |---------|------|
+     | 신규 API·기능 추가 | `feat` |
+     | 잘못된 동작 수정 | `fix` |
+     | 기능 변경 없는 구조 개선 | `refactor` |
+     | 설정·문서·빌드 변경 | `chore` |
+   - scope: feature-path (`/`를 `-`로 변환, 예: `users/email` → `users-email`)
    - 제목: 한글 요약 (50자 이내)
-   - 예: `feat: 이메일 인증 코드 전송 (#1)`
+   - 예: `feat(users): 이메일 인증 코드 전송 (#1)`
+   - 예: `feat(users-email): 인증 코드 검증 API 추가 (#2)`
 
 **완료 배너:**
 
