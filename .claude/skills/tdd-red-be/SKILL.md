@@ -26,23 +26,9 @@ description: |
 
 ### feature-path / module-name / pkg-root 결정
 
-아래 4순위로 결정한다. 위 단계에서 결정되면 아래는 실행하지 않는다.
+아래 3순위로 결정한다. 위 단계에서 결정되면 아래는 실행하지 않는다.
 
-**1순위: /feature-planner-be 세션 컨텍스트**
-
-같은 세션에서 `/feature-planner-be`가 먼저 실행된 경우 `[CONTEXT]`를 그대로 사용한다.
-
-```
-[CONTEXT] feature-path: notice/list
-          module-name:  platform
-          api-module:   api/platform
-          ds-module:    datasource/platform
-          pkg-root:     com/platform/api/platform
-          docs-root:    api/platform/src/main/java/com/platform/api/platform/notice/list/docs/
-          branch:       feature/notice/list
-```
-
-**2순위: 브랜치 확인 + docs 검증**
+**1순위: 브랜치 확인 + docs 검증**
 
 ```bash
 # 브랜치 확인
@@ -65,17 +51,17 @@ find api/ -type d -path "*/{feature-path}/docs" 2>/dev/null
    TDD 작업은 feature 브랜치에서만 진행할 수 있습니다.
 
    브랜치 생성 명령어:
-   git checkout -b feature/notice/list
+   git checkout -b feature/notice/list/목록-조회
 
    또는 직접 feature-path를 지정하세요:
    /tdd-red-be notice/list 1
 ```
 
-**3순위: docs 폴더 탐색 (fallback)**
+**2순위: docs 폴더 탐색 (fallback)**
 
-2순위 실패 시 최근 수정된 docs 폴더 탐색.
+1순위 실패 시 최근 수정된 docs 폴더 탐색.
 
-**4순위: 직접 입력 요청**
+**3순위: 직접 입력 요청**
 
 ```
 feature-path를 입력해주세요.
@@ -89,7 +75,7 @@ feature-path를 입력해주세요.
 컨텍스트가 확정되면 아래 형식으로 출력한다.
 
 ```
-🌿 브랜치: feature/notice/list        ← 브랜치 추론 시에만 표시
+🌿 브랜치: feature/notice/list/목록-조회        ← 브랜치 추론 시에만 표시
 📦 모듈:   api/platform + datasource/platform
 📁 feature-path: notice/list
 📄 읽기: api/platform/src/main/java/com/platform/api/platform/notice/list/docs/issue-1.md
@@ -125,7 +111,7 @@ Controller 테스트:
 
 ```
 /tdd-red-be [{feature-path}] {N}
-    ↓ 컨텍스트 결정 (세션 → 직접 지정 → 브랜치 추론 → 직접 입력)
+    ↓ 컨텍스트 결정 (직접 지정 → 브랜치 추론 → 직접 입력)
     ↓ 단계 1: issue-{N}.md 파싱 — 시그니처·시나리오 추출
     ↓ 단계 2: Service 단위 테스트 작성 → 즉시 실행
     │   ├─ 정상 실패 → 단계 3으로

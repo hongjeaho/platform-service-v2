@@ -24,16 +24,12 @@ description: |
 
 ## 컨텍스트 결정 (브랜치 중심 Single Source of Truth)
 
-아래 4순위로 결정한다:
-1순위 세션 [CONTEXT] 블록 → 2순위 브랜치 확인 + docs 검증 → 3순위 docs 폴더 탐색 → 4순위 직접 입력 요청.
+아래 3순위로 결정한다:
+1순위 브랜치 확인 + docs 검증 → 2순위 docs 폴더 탐색 → 3순위 직접 입력 요청.
 
 ### 상세 동작
 
-**1순위: 세션 [CONTEXT] 블록**
-
-`feature-planner-be` 실행 후 남은 컨텍스트가 있으면 그대로 사용.
-
-**2순위: 브랜치 확인 + docs 검증**
+**1순위: 브랜치 확인 + docs 검증**
 
 ```bash
 # 브랜치 확인
@@ -49,11 +45,11 @@ git branch --show-current  # 예: feature/notice/list
 find api/ -type d -path "*/{feature-path}/docs" 2>/dev/null
 ```
 
-**3순위: docs 폴더 탐색 (fallback)**
+**2순위: docs 폴더 탐색 (fallback)**
 
-2순위 실패 시 최근 수정된 docs 폴더 탐색.
+1순위 실패 시 최근 수정된 docs 폴더 탐색.
 
-**4순위: 직접 입력 요청**
+**3순위: 직접 입력 요청**
 
 위 모두 실패 시 사용자에게 직접 입력 요청.
 
@@ -66,7 +62,7 @@ find api/ -type d -path "*/{feature-path}/docs" 2>/dev/null
    TDD 작업은 feature 브랜치에서만 진행할 수 있습니다.
 
    브랜치 생성 명령어:
-   git checkout -b feature/notice/list
+   git checkout -b feature/notice/list/목록-조회
 
    또는 직접 feature-path를 지정하세요:
    /test-scenarios-be notice/list 1
@@ -77,7 +73,7 @@ find api/ -type d -path "*/{feature-path}/docs" 2>/dev/null
 ```
 ⚠️ docs 폴더를 찾을 수 없습니다
 
-   브랜치: feature/notice/list
+   브랜치: feature/notice/list/목록-조회
    추론된 경로: notice/list
 
    /feature-planner-be로 먼저 기획 문서를 생성해주세요.
@@ -90,7 +86,7 @@ find api/ -type d -path "*/{feature-path}/docs" 2>/dev/null
 컨텍스트가 확정되면 아래 형식으로 출력한다.
 
 ```
-🌿 브랜치: feature/notice/list        ← 브랜치 추론 시에만 표시
+🌿 브랜치: feature/notice/list/목록-조회        ← 브랜치 추론 시에만 표시
 📦 모듈:   api/platform + datasource/platform
 📁 feature-path: notice/list
 📋 이슈: api/platform/src/main/java/com/platform/api/platform/notice/list/docs/issues.md — Issue {N}
@@ -98,16 +94,6 @@ find api/ -type d -path "*/{feature-path}/docs" 2>/dev/null
 ✏️  기록: ...notice/list/docs/issue-{N}.md
 
 변경이 필요하면 말씀해주세요. 없으면 바로 분석을 시작합니다.
-```
-
-컨텍스트에서 자동 로드한 경우 브랜치 줄을 생략한다.
-
-```
-📦 모듈:   api/platform + datasource/platform  (feature-planner-be 컨텍스트에서 로드)
-📁 feature-path: notice/list
-📋 이슈: ...issues.md — Issue {N}
-📄 참조: ...prd.md
-✏️  기록: ...issue-{N}.md
 ```
 
 ### 이슈 번호가 없는 경우
@@ -134,7 +120,7 @@ find api/ -type d -path "*/{feature-path}/docs" 2>/dev/null
 
 ```
 /test-scenarios-be [{feature-path}] [{N}]
-    ↓ 컨텍스트 결정 (세션 → 직접 지정 → 브랜치 추론 → 직접 입력)
+    ↓ 컨텍스트 결정 (직접 지정 → 브랜치 추론 → 직접 입력)
     ↓ 이슈 번호 확인 (없으면 질문)
     ↓ 진입 안내 출력
     ↓ 진입: 파일 확인 (issues.md Issue N + prd.md)

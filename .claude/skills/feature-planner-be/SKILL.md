@@ -786,8 +786,6 @@ issues.md 확정 후 이슈 단위로 TDD 사이클을 실행한다.
 /create-pr-be            → git commit 안내 + PR 제목·본문 생성
 ```
 
-각 단계는 `feature-planner-be` 세션 컨텍스트(`feature-path`, `module-name`, `pkg-root`)를 자동 전달받는다.
-
 **Orval 알림:**
 API 명세(`prd.md`의 API 명세 섹션)가 변경된 경우,
 프론트엔드에서 TypeScript 타입을 재생성해야 한다:

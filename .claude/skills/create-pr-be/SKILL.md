@@ -34,18 +34,16 @@ description: |
 
 ## 컨텍스트 결정 (브랜치 중심 Single Source of Truth)
 
-아래 4순위로 결정한다:
-1순위 세션 [CONTEXT] 블록 → 2순위 브랜치 확인 + docs 검증 → 3순위 docs 폴더 탐색 → 4순위 직접 입력 요청.
+아래 3순위로 결정한다:
+1순위 브랜치 확인 + docs 검증 → 2순위 docs 폴더 탐색 → 3순위 직접 입력 요청.
 보호 브랜치(main/master/develop/dev) 감지 시 즉시 중단.
-
-세션 컨텍스트 `[CONTEXT]`에서 `feature-path`, `module-name`, `api-module`, `ds-module`, `pkg-root`를 로드한다.
 
 ---
 
 ## 진입 안내
 
 ```
-🌿 브랜치: feature/notice/list        ← 브랜치 추론 시에만 표시
+🌿 브랜치: feature/notice/list/목록-조회        ← 브랜치 추론 시에만 표시
 📦 모듈:   api/platform + datasource/platform
 📁 feature-path: notice/list
 📄 이슈: ...notice/list/docs/issue-1.md
