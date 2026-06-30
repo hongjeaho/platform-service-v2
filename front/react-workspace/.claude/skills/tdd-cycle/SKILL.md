@@ -70,6 +70,9 @@ description: |
 ```bash
 # docs 폴더 존재 확인
 find src/features/{후보}/docs/ -type d 2>/dev/null
+
+# 존재하지 않으면 현재 도메인 목록 확인
+ls src/features/
 ```
 
 | 검증 결과 | 처리 |
@@ -79,7 +82,7 @@ find src/features/{후보}/docs/ -type d 2>/dev/null
 
 **⚠️ 경로를 찾을 수 없는 경우:**
 
-파일시스템 검증 실패 시 사용자에게 후보를 보여주고 직접 입력을 요청합니다.
+파일시스템 검증 실패 시 `ls src/features/`로 존재하는 도메인을 나열한 뒤, 사용자에게 후보를 보여주고 직접 입력을 요청합니다.
 
 ```
 ⚠️ 경로를 찾을 수 없습니다.
