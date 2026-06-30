@@ -772,18 +772,21 @@ Flyway 마이그레이션과 JOOQ 재생성이 필요한 이슈는 반드시 첫
 
 ### 핸드오프
 
-issues.md 확정 후 이슈 단위로 TDD 사이클을 실행한다.
+issues.md 확정 후 **새 세션을 시작하고** 이슈 단위로 TDD 사이클을 실행한다.
 
-**이슈별 TDD 사이클:**
+> 새 세션에서 시작하는 이유: 기획 세션의 컨텍스트가 TDD 실행 시 불필요한 노이즈로 작용할 수 있음.
+> `tdd-cycle-be`는 브랜치에서 독립적으로 경로를 재추론하므로 컨텍스트 전달이 불필요하다.
+
+**새 세션에서 이슈별 TDD 사이클:**
 
 ```
-/test-scenarios-be {N}   → Java 시그니처 확정 + 테스트 시나리오 도출 [GATE × 2]
-/tdd-red-be {N}          → 시나리오 → 실패하는 JUnit 테스트 작성
-/tdd-green-be {N}        → 테스트 통과 최소 구현 (Repository → Service → Controller)
-/ac-verifier-be {N}      → AC 충족 독립 검증 — 테스트 통과 ≠ AC 충족 [GATE]
-/tdd-refactor-be {N}     → 구조 개선 (Helper 추출, 컨벤션 일관성) [GATE]
-/security-review-be {N}  → 보안 취약점·패턴 위반·코드 품질 점검 [GATE]
-/create-pr-be            → git commit 안내 + PR 제목·본문 생성
+/tdd-cycle-be {N}   ← 이슈 번호 하나로 6단계 자동 실행 (test-scenarios → security-review → git commit)
+```
+
+모든 이슈 완료 후:
+
+```
+/create-pr-be       ← push + PR 제목·본문 생성
 ```
 
 **Orval 알림:**
