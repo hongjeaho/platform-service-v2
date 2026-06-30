@@ -49,7 +49,56 @@ description: |
 2. `ls api/` + `find api -name "*Application.java" | head -1` → module-name·pkg-root 확정
 3. 보호 브랜치(main/master/develop/dev) 감지 시 즉시 중단
 
-컨텍스트가 확정되면 **[CONTEXT] 블록을 출력**한다. 이후 서브 스킬은 `args="{feature-path} {N}"` 형태로 호출하여 브랜치 재추론을 생략한다.
+### 1.5단계: 파일시스템 검증 + 사용자 확인
+
+컨텍스트 추론 직후, 사이클 시작 전에 반드시 실행한다.
+
+```bash
+# docs 폴더 존재 확인
+find api/{module-name}/src/main/java/{pkg-root}/{feature-path}/docs -maxdepth 0 -type d 2>/dev/null
+```
+
+**docs 폴더가 존재하는 경우** → 아래 확인 메시지 출력 후 사용자 응답 대기:
+
+```
+🌿 브랜치: {current-branch}
+📦 모듈:   api/{module-name} + datasource/{module-name}
+📁 feature-path: {feature-path}
+   docs 경로: api/{module-name}/src/main/java/{pkg-root}/{feature-path}/docs/
+
+위 경로로 이슈 #{N} TDD 사이클을 시작합니다. 다르면 말씀해주세요.
+```
+
+사용자가 수정 없이 진행 확인(yes / ok / 확인 / 좋아 또는 그냥 enter)하면 [CONTEXT] 블록 출력 후 사이클 시작.
+사용자가 feature-path를 직접 입력하면 해당 값으로 재검증 후 진행.
+
+**docs 폴더가 없는 경우** → 현재 존재하는 docs 목록을 탐색해 출력:
+
+```bash
+# 현재 존재하는 docs 폴더 목록
+find api/{module-name}/src/main/java/{pkg-root} -type d -name "docs" 2>/dev/null
+```
+
+```
+⚠️ docs 폴더를 찾을 수 없습니다.
+
+   브랜치:              {current-branch}
+   추론된 feature-path: {feature-path}
+   확인한 경로:         api/{module-name}/src/main/java/{pkg-root}/{feature-path}/docs/
+
+   현재 존재하는 docs:
+   - {existing-path-1}   → feature/{existing-feature-path-1}/
+   - {existing-path-2}   → feature/{existing-feature-path-2}/
+
+   feature-path를 직접 입력해주세요.
+   예) users
+       users/email
+```
+
+사용자가 feature-path를 입력하면 해당 경로로 재검증 후 진행.
+docs가 하나도 없으면 `/feature-planner-be`로 먼저 기획을 완료하도록 안내 후 ⛔ 중단.
+
+컨텍스트가 최종 확정되면 **[CONTEXT] 블록을 출력**한다. 이후 서브 스킬은 `args="{feature-path} {N}"` 형태로 호출하여 브랜치 재추론을 생략한다.
 
 ```
 [CONTEXT] feature-path: {feature-path}
