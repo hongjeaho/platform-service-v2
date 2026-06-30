@@ -15,21 +15,27 @@ description: |
 ## 입력 형식
 
 ```
-/create-pr-be                              ← 컨텍스트 또는 브랜치 추론 (이슈 번호 질문)
+/create-pr-be                              ← 이슈 번호 생략 시 issues.md에서 자동 감지 (권장)
 /create-pr-be {N}                          ← 단일 이슈 지정
 /create-pr-be {N1},{N2},...                ← 다중 이슈 (예: /create-pr-be 1,2,3)
 /create-pr-be {feature-path} {N}          ← 경로 직접 지정 + 단일 이슈
 /create-pr-be {feature-path} {N1},{N2}   ← 경로 직접 지정 + 다중 이슈
 ```
 
+**이슈 번호 생략 시 자동 감지 로직:**
+1. 브랜치에서 feature-path 추론
+2. `docs/issues.md` 읽기
+3. 이슈 번호 목록 추출: `## Issue 1`, `## Issue 2`, ...
+4. 해당 `issue-{N}.md` 파일들 모두 읽어서 PR 생성
+
 다중 이슈를 지정하면 `issue-1.md`, `issue-2.md` ... 를 모두 읽어 PR 본문을 통합 작성한다.
 
 ---
 
-## 컨텍스트 결정
+## 컨텍스트 결정 (브랜치 중심 Single Source of Truth)
 
 아래 4순위로 결정한다:
-1순위 세션 [CONTEXT] 블록 → 2순위 첫 토큰 `/` 포함 경로 직접 지정 → 3순위 `git branch --show-current` (`feature/*` 파싱) → 4순위 직접 입력 요청.
+1순위 세션 [CONTEXT] 블록 → 2순위 브랜치 확인 + docs 검증 → 3순위 docs 폴더 탐색 → 4순위 직접 입력 요청.
 보호 브랜치(main/master/develop/dev) 감지 시 즉시 중단.
 
 세션 컨텍스트 `[CONTEXT]`에서 `feature-path`, `module-name`, `api-module`, `ds-module`, `pkg-root`를 로드한다.
@@ -62,25 +68,45 @@ description: |
 ```
 /create-pr-be [{feature-path}] [{N}]
     ↓ 컨텍스트 결정
-    ↓ 이슈 번호 확인 (없으면 질문)
+    ↓ 이슈 번호 확인 (없으면 issues.md 자동 감지)
     ↓ 단계 1: PR 사전 체크리스트 확인
     ↓ 단계 2: git 상태 확인
     ↓ 단계 3: 커밋 메시지 제안 [GATE]
     ↓ 단계 4: PR 제목·본문 생성 [GATE]
     ↓ 단계 5: push + gh pr create 직접 실행
-    ↓ 단계 6: 완료 출력
+    ↓ 단계 6: 완료 출력 + docs/ 폴더 삭제
 ```
 
 ---
 
 ## 이슈 번호가 없는 경우
 
-`{N}`이 입력되지 않으면 경로 확정 후 바로 질문한다.
+`{N}`이 입력되지 않으면 경로 확정 후 `docs/issues.md`에서 이슈 번호를 자동 추출한다.
+
+**자동 감지 로직:**
+1. `docs/issues.md` 파일 읽기
+2. `## Issue {N}` 패턴으로 이슈 번호 추출 (정규식: `## Issue (\d+)`)
+3. 추출된 이슈 번호 목록을 사용
 
 ```
+📋 issues.md에서 이슈 감지:
+  Issue 1: 이메일 인증 코드 전송
+  Issue 2: 인증 코드 검증
+→ 이슈 1, 2의 PR을 생성합니다.
+```
+
+**issues.md가 없는 경우:**
+```
+⚠️  issues.md 파일이 없습니다.
 어떤 이슈의 PR을 생성할까요?
 단일: 1
 다중: 1,2,3
+```
+
+**부분 PR 생성 (일부 이슈만):**
+이슈 번호를 직접 지정하여 특정 이슈만 선택 가능:
+```
+/create-pr-be 1,3    # Issue 2만 skip
 ```
 
 ---
@@ -313,11 +339,26 @@ PR 생성 성공 시 `gh pr create` stdout에서 PR URL을 그대로 단계 6에
   ✅ /tdd-refactor-be {N}   — 코드 구조 개선
   ✅ /security-review-be {N}— 보안 검토
   ✅ /create-pr-be             — PR 생성
-
 ```
 
-> 맥락 보존: PR 본문에 모든 AC와 구현 상세가 포함되어 있으며,
-> Git 히스토리(`git log --all --full-history -- <path>`)로 언제든 검색 가능합니다.
+### docs/ 폴더 삭제 (TDD Document Policy)
+
+PR 생성 완료 후 기획 문서 폴더를 삭제하고 커밋에 포함한다:
+
+```bash
+# docs/ 폴더 삭제
+rm -rf {docs-root}
+
+# 삭제를 커밋에 반영
+git add {docs-root 경로 상위}
+git commit --amend --no-edit
+```
+
+```
+🗑️  docs/ 폴더 삭제 완료
+기획 문서는 PR 본문에 모두 포함되어 있으며,
+Git 히스토리로 언제든 검색 가능합니다.
+```
 
 다음 이슈가 있으면 /test-scenarios-be {다음 이슈 번호} 로 시작하세요.
 ```

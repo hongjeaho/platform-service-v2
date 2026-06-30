@@ -27,10 +27,10 @@ description: |
 
 ---
 
-## 컨텍스트 결정
+## 컨텍스트 결정 (브랜치 중심 Single Source of Truth)
 
 아래 4순위로 결정한다:
-1순위 세션 [CONTEXT] 블록 → 2순위 첫 토큰 `/` 포함 경로 직접 지정 → 3순위 `git branch --show-current` (`feature/*` 파싱) → 4순위 직접 입력 요청.
+1순위 세션 [CONTEXT] 블록 → 2순위 브랜치 확인 + docs 검증 → 3순위 docs 폴더 탐색 → 4순위 직접 입력 요청.
 보호 브랜치(main/master/develop/dev) 감지 시 즉시 중단.
 
 ---

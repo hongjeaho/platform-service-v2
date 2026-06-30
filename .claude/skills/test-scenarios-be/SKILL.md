@@ -22,11 +22,63 @@ description: |
 
 ---
 
-## 컨텍스트 결정
+## 컨텍스트 결정 (브랜치 중심 Single Source of Truth)
 
 아래 4순위로 결정한다:
-1순위 세션 [CONTEXT] 블록 → 2순위 첫 토큰 `/` 포함 경로 직접 지정 → 3순위 `git branch --show-current` (`feature/*` 파싱) → 4순위 직접 입력 요청.
-보호 브랜치(main/master/develop/dev) 감지 시 즉시 중단.
+1순위 세션 [CONTEXT] 블록 → 2순위 브랜치 확인 + docs 검증 → 3순위 docs 폴더 탐색 → 4순위 직접 입력 요청.
+
+### 상세 동작
+
+**1순위: 세션 [CONTEXT] 블록**
+
+`feature-planner-be` 실행 후 남은 컨텍스트가 있으면 그대로 사용.
+
+**2순위: 브랜치 확인 + docs 검증**
+
+```bash
+# 브랜치 확인
+git branch --show-current  # 예: feature/notice/list
+
+# feature-path 추출 (feature/ prefix 제거)
+# 예: notice/list
+
+# docs 폴더 존재 확인
+find api/ -type d -path "*/{feature-path}/docs" 2>/dev/null
+```
+
+**3순위: docs 폴더 탐색 (fallback)**
+
+2순위 실패 시 최근 수정된 docs 폴더 탐색.
+
+**4순위: 직접 입력 요청**
+
+위 모두 실패 시 사용자에게 직접 입력 요청.
+
+### 에러 메시지
+
+**보호 브랜치 감지 시:**
+
+```
+⛔ 보호 브랜치 감지: main
+   TDD 작업은 feature 브랜치에서만 진행할 수 있습니다.
+
+   브랜치 생성 명령어:
+   git checkout -b feature/notice/list
+
+   또는 직접 feature-path를 지정하세요:
+   /test-scenarios-be notice/list 1
+```
+
+**docs 폴더 없음 시:**
+
+```
+⚠️ docs 폴더를 찾을 수 없습니다
+
+   브랜치: feature/notice/list
+   추론된 경로: notice/list
+
+   /feature-planner-be로 먼저 기획 문서를 생성해주세요.
+```
 
 ---
 

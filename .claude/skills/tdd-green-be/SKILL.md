@@ -21,12 +21,38 @@ description: |
 
 ---
 
-## 컨텍스트 결정
+## 컨텍스트 결정 (브랜치 중심 Single Source of Truth)
 
 아래 4순위로 결정한다:
-1순위 세션 [CONTEXT] 블록 → 2순위 첫 토큰 `/` 포함 경로 직접 지정 → 3순위 `git branch --show-current` (`feature/*` 파싱) → 4순위 직접 입력 요청.
+1순위 세션 [CONTEXT] 블록 → 2순위 브랜치 확인 + docs 검증 → 3순위 docs 폴더 탐색 → 4순위 직접 입력 요청.
 보호 브랜치(main/master/develop/dev) 감지 시 즉시 중단.
 세션 컨텍스트 `[CONTEXT]`에서 `feature-path`, `module-name`, `api-module`, `ds-module`, `pkg-root`, `docs-root`를 로드한다.
+
+### 에러 메시지
+
+**보호 브랜치 감지 시:**
+
+```
+⛔ 보호 브랜치 감지: main
+   TDD 작업은 feature 브랜치에서만 진행할 수 있습니다.
+
+   브랜치 생성 명령어:
+   git checkout -b feature/notice/list
+
+   또는 직접 feature-path를 지정하세요:
+   /tdd-green-be notice/list 1
+```
+
+**docs 폴더 없음 시:**
+
+```
+⚠️ docs 폴더를 찾을 수 없습니다
+
+   브랜치: feature/notice/list
+   추론된 경로: notice/list
+
+   /test-scenarios-be로 먼저 테스트 시나리오를 생성해주세요.
+```
 
 ```
 [CONTEXT] feature-path: notice/list

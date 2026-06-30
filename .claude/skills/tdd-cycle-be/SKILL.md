@@ -1,15 +1,21 @@
 ---
 name: tdd-cycle-be
 description: |
-  TDD 풀 사이클 컨테이너. 이슈 번호 하나로 test-scenarios-be → create-pr-be까지
-  7단계를 순서대로 실행한다. 각 스킬의 승인 게이트는 그대로 유지된다.
+  TDD 풀 사이클 컨테이너. 이슈 번호 하나로 test-scenarios-be → security-review-be까지
+  6단계를 순서대로 실행하고, 완료 후 해당 이슈 단위로 git commit을 실행한다.
+  각 스킬의 승인 게이트는 그대로 유지된다.
+  모든 이슈 완료 후 /create-pr-be로 PR 생성.
   "tdd-cycle-be"·"TDD 풀 사이클"·"이슈 TDD 사이클" 언급 시 이 스킬 사용.
 ---
 
 # TDD 풀 사이클 컨테이너 [백엔드 · Spring Boot]
 
-이슈 번호 하나를 받아 7개 서브 스킬을 **순서대로** 호출한다.
+이슈 번호 하나를 받아 6개 서브 스킬을 **순서대로** 호출하고, 완료 후 **이슈 단위 커밋**을 실행한다.
 컨테이너는 순서 보장과 진행 배너 출력만 담당하며, 각 스킬 내부의 승인 게이트는 그대로 작동한다.
+
+> **워크플로우**:
+> - 각 이슈: `/tdd-cycle-be N` → 6단계 → git commit (이슈 N)
+> - 모든 이슈 완료 후: `/create-pr-be` → push → PR 생성
 
 ---
 
@@ -66,7 +72,7 @@ description: |
 │  [ 4 ] ac-verifier-be     AC 충족 검증                      │
 │  [ 5 ] tdd-refactor-be    코드 구조 개선                    │
 │  [ 6 ] security-review-be 보안·패턴·품질 점검               │
-│  [ 7 ] create-pr-be       커밋 메시지 · PR 생성             │
+│  [ 7 ] git commit         이슈 단위 커밋                   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -107,7 +113,7 @@ description: |
 | 4 ac-verifier-be | `AC 4건 모두 ✅ 충족` |
 | 5 tdd-refactor-be | `리팩토링 3건 적용, 테스트 이상 없음` |
 | 6 security-review-be | `즉시 수정 0건 / 권장 2건 / 무시 1건` |
-| 7 create-pr-be | `커밋·PR 생성 완료` |
+| 7 git commit | `커밋 완료: feat: 이메일 인증 코드 전송 (#1)` |
 
 ### 중단 출력 형식
 
@@ -181,7 +187,7 @@ Skill(skill="tdd-refactor-be", args="{N}")
 
 ---
 
-### 단계 6/7 — security-review-be
+### 단계 6/6 — security-review-be
 
 ```
 Skill(skill="security-review-be", args="{N}")
@@ -192,14 +198,41 @@ Skill(skill="security-review-be", args="{N}")
 
 ---
 
-### 단계 7/7 — create-pr-be
+### 단계 7/7 — git commit (이슈 단위)
+
+6단계 완료 후 **git commit**을 실행한다.
+
+```bash
+# 1. git status 확인
+git status
+
+# 2. 커밋 메시지 생성 (issue-{N}.md에서 추출)
+# 형식: {type}: {이슈 제목} (#{N})
+# 예: feat(users): 이메일 인증 API 구현 (#1)
+
+# 3. git commit 실행
+git add .
+git commit -m "{커밋 메시지}"
+```
+
+**커밋 메시지 생성 규칙:**
+
+1. `issue-{N}.md`의 제목에서 이슈 제목 추출
+2. Git 컨벤션 형식: `{type}: {제목} (#{N})`
+   - type: `feat` | `fix` | `refactor` | `chore`
+   - 제목: 한글 요약 (50자 이내)
+   - 예: `feat: 이메일 인증 코드 전송 (#1)`
+
+**완료 배너:**
 
 ```
-Skill(skill="create-pr-be", args="{N}")
-```
+━━━ 단계 7/7 완료 ━━━
+✅ 이슈 #{N} 커밋 완료
+📝 커밋 메시지: {실제 커밋 메시지}
 
-- 커밋 메시지 승인 [GATE], PR 제목·본문 승인 [GATE] — 사용자가 직접 응답.
-- ⛔ 감지 시 → 중단 출력 후 종료.
+다음 이슈가 있으면 /tdd-cycle-be {다음 이슈 번호}
+모든 이슈 완료 시 /create-pr-be
+```
 
 ---
 
@@ -217,8 +250,11 @@ Skill(skill="create-pr-be", args="{N}")
 │  ✅ 단계 4 — ac-verifier-be                                 │
 │  ✅ 단계 5 — tdd-refactor-be                                │
 │  ✅ 단계 6 — security-review-be                             │
-│  ✅ 단계 7 — create-pr-be                                   │
+│  ✅ 단계 7 — git commit                                     │
 └─────────────────────────────────────────────────────────────┘
+
+다음 이슈가 있으면: /tdd-cycle-be {다음 번호}
+모든 이슈 완료 시: /create-pr-be
 ```
 
 ---

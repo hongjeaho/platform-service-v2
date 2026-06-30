@@ -22,11 +22,11 @@ description: |
 
 ---
 
-## 컨텍스트 결정
+## 컨텍스트 결정 (브랜치 중심 Single Source of Truth)
 
 ### feature-path / module-name / pkg-root 결정
 
-아래 순서로 결정한다. 위 단계에서 결정되면 아래는 실행하지 않는다.
+아래 4순위로 결정한다. 위 단계에서 결정되면 아래는 실행하지 않는다.
 
 **1순위: /feature-planner-be 세션 컨텍스트**
 
@@ -42,30 +42,35 @@ description: |
           branch:       feature/notice/list
 ```
 
-**2순위: 직접 지정**
-
-첫 토큰에 슬래시(`/`)가 포함된 영문 경로 → `{feature-path}`로 판단.
-module-name·pkg-root는 `ls api/` + `find *Application.java` 로 자동 탐색한다.
-
-```
-/tdd-red-be notice/list 1   → feature-path: notice/list, N: 1
-```
-
-**3순위: 현재 브랜치 자동 추론**
+**2순위: 브랜치 확인 + docs 검증**
 
 ```bash
+# 브랜치 확인
 git branch --show-current
+
+# feature-path 추출 (feature/ prefix 제거)
+# 예: notice/list
+
+# docs 폴더 존재 확인
+find api/ -type d -path "*/{feature-path}/docs" 2>/dev/null
 ```
 
 `main`·`master`·`develop`·`dev` 또는 `feature/` prefix 없는 브랜치:
 
 ```
-⚠️  현재 브랜치: main (보호 브랜치)
-    TDD 작업은 feature 브랜치에서 진행해야 합니다.
-    feature 브랜치로 전환 후 다시 실행해주세요.
+⛔ 보호 브랜치 감지: main
+   TDD 작업은 feature 브랜치에서만 진행할 수 있습니다.
+
+   브랜치 생성 명령어:
+   git checkout -b feature/notice/list
+
+   또는 직접 feature-path를 지정하세요:
+   /tdd-red-be notice/list 1
 ```
 
-`feature/*` 브랜치라면 `feature/` prefix를 제거해 feature-path로 사용.
+**3순위: docs 폴더 탐색 (fallback)**
+
+2순위 실패 시 최근 수정된 docs 폴더 탐색.
 
 **4순위: 직접 입력 요청**
 
