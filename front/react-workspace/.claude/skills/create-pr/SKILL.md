@@ -174,6 +174,26 @@ PR이 생성되었습니다:
 https://github.com/<owner>/<repo>/pull/<number>
 ```
 
+## 단계 6: 완료 출력 및 docs/ 폴더 삭제 (TDD Document Policy)
+
+PR 생성 완료 후 기획 문서 폴더를 삭제하고 커밋에 반영합니다.
+
+```bash
+# docs/ 폴더 삭제 (feature-path가 있는 경우)
+rm -rf src/features/{feature-path}/docs/
+
+# 삭제를 커밋에 반영
+git add src/features/{feature-path}/docs/
+git commit --amend --no-edit
+git push --force-with-lease
+```
+
+```
+🗑️  docs/ 폴더 삭제 완료
+기획 문서는 PR 본문에 모두 포함되어 있으며,
+Git 히스토리로 언제든 검색 가능합니다.
+```
+
 ## 주의사항
 
 - E2E 테스트 파일(`.spec.ts`) 수정으로 실패를 통과시키는 것은 근본 원인 회피 — 절대 금지
