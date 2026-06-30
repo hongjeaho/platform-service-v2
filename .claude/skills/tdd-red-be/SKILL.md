@@ -48,8 +48,11 @@ description: |
 # 브랜치 확인
 git branch --show-current
 
-# feature-path 추출 (feature/ prefix 제거)
-# 예: notice/list
+# feature-path 추출
+# 규칙: feature/ 제거 → 첫 세그먼트 예약어(api|common|datasource|batch)면 root 추출
+#       → 마지막 세그먼트 제거(설명 레이블) → 나머지가 feature-path
+# 예: feature/users/이메일-인증       → feature-path: users
+# 예: feature/users/email/이메일-인증 → feature-path: users/email
 
 # docs 폴더 존재 확인
 find api/ -type d -path "*/{feature-path}/docs" 2>/dev/null

@@ -43,7 +43,10 @@ description: |
 아래 순서로 결정한다. 위 단계에서 결정되면 아래는 실행하지 않는다.
 
 1. 세션 내 기존 `[CONTEXT]` 블록 → 그대로 재사용
-2. 현재 브랜치 자동 추론: `git branch --show-current` (`feature/*` prefix 제거 → feature-path)
+2. 현재 브랜치 자동 추론: `git branch --show-current`
+   → `feature/` 제거 → 첫 세그먼트가 예약어(`api|common|datasource|batch`)면 root 추출 → **마지막 세그먼트 제거(설명 레이블)** → 나머지가 feature-path
+   → 예: `feature/users/이메일-인증` → feature-path: `users`
+   → 예: `feature/users/email/이메일-인증` → feature-path: `users/email`
 3. `ls api/` + `find api -name "*Application.java" | head -1` → module-name·pkg-root 확정
 4. 보호 브랜치(main/master/develop/dev) 감지 시 즉시 중단
 
