@@ -49,7 +49,7 @@ description: |
 2. `ls api/` + `find api -name "*Application.java" | head -1` → module-name·pkg-root 확정
 3. 보호 브랜치(main/master/develop/dev) 감지 시 즉시 중단
 
-컨텍스트가 확정되면 **[CONTEXT] 블록을 출력**한다.
+컨텍스트가 확정되면 **[CONTEXT] 블록을 출력**한다. 이후 서브 스킬은 `args="{feature-path} {N}"` 형태로 호출하여 브랜치 재추론을 생략한다.
 
 ```
 [CONTEXT] feature-path: {feature-path}
@@ -136,7 +136,7 @@ description: |
 ### 단계 1/7 — test-scenarios-be
 
 ```
-Skill(skill="test-scenarios-be", args="{N}")
+Skill(skill="test-scenarios-be", args="{feature-path} {N}")
 ```
 
 - 시그니처 승인 [GATE 1], 시나리오 승인 [GATE 2] — 사용자가 직접 응답.
@@ -147,7 +147,7 @@ Skill(skill="test-scenarios-be", args="{N}")
 ### 단계 2/7 — tdd-red-be
 
 ```
-Skill(skill="tdd-red-be", args="{N}")
+Skill(skill="tdd-red-be", args="{feature-path} {N}")
 ```
 
 - 게이트 없음. `issue-{N}.md`에 시그니처/시나리오 섹션 없으면 ⛔.
@@ -158,7 +158,7 @@ Skill(skill="tdd-red-be", args="{N}")
 ### 단계 3/7 — tdd-green-be
 
 ```
-Skill(skill="tdd-green-be", args="{N}")
+Skill(skill="tdd-green-be", args="{feature-path} {N}")
 ```
 
 - 게이트 없음. 피드백 루프 5회 초과 시 ⛔.
@@ -169,7 +169,7 @@ Skill(skill="tdd-green-be", args="{N}")
 ### 단계 4/7 — ac-verifier-be
 
 ```
-Skill(skill="ac-verifier-be", args="{N}")
+Skill(skill="ac-verifier-be", args="{feature-path} {N}")
 ```
 
 - 게이트 없음. ⚠️/❌ 항목이 있으면 ⛔ 출력 → 사이클 중단.
@@ -180,7 +180,7 @@ Skill(skill="ac-verifier-be", args="{N}")
 ### 단계 5/7 — tdd-refactor-be
 
 ```
-Skill(skill="tdd-refactor-be", args="{N}")
+Skill(skill="tdd-refactor-be", args="{feature-path} {N}")
 ```
 
 - 리팩토링 대상 목록 보고 [GATE] — 사용자가 전체·부분·취소 선택.
@@ -192,7 +192,7 @@ Skill(skill="tdd-refactor-be", args="{N}")
 ### 단계 6/7 — security-review-be
 
 ```
-Skill(skill="security-review-be", args="{N}")
+Skill(skill="security-review-be", args="{feature-path} {N}")
 ```
 
 - 3분류 결과 보고 [GATE] — 사용자가 즉시 수정/권장/생략 선택.
