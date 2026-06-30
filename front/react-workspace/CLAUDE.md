@@ -172,7 +172,7 @@ const userKeys = {
 | `/feature-planner {feature-path}` | 경로 직접 지정 (예: `notice/list`) |
 
 > `main`·`master`·`develop` 등 보호 브랜치에서 실행 시, 먼저 feature 브랜치 생성을 안내한다.
-> 확정된 `feature-path`는 세션 컨텍스트에 저장되어 이후 `/test-scenarios`, `/tdd-red`, `/tdd-green`, `/tdd-refactor`, `/e2e-test`, `/security-review`, `/create-pr` 스킬에 자동 전달된다.
+> `feature-path`는 컨텍스트로 저장되지 않는다. 이후 각 스킬(`/test-scenarios`, `/tdd-red`, `/tdd-green`, `/tdd-refactor`, `/e2e-test`, `/security-review`, `/create-pr`)은 **현재 브랜치에서 독립적으로 추론**한다.
 
 ### 파이프라인 개요
 

@@ -155,7 +155,8 @@ find src/features/{후보}/docs/ -type d 2>/dev/null
 
 **변환 알고리즘:**
 1. `feature/` prefix 제거
-2. 나머지를 그대로 `feature-path`로 사용 (슬래시·하이픈 변환 없음)
+2. 마지막 세그먼트 제거 (브랜치가 3개 이상 세그먼트인 경우)
+3. 나머지를 그대로 `feature-path`로 사용 (슬래시·하이픈 변환 없음)
 
 **Step 4: 추론 결과 사용자에게 확인**
 ```
@@ -594,6 +595,8 @@ PRD를 실행 가능한 작업 단위로 변환한다.
 
 task.md 확정 후 `/test-scenarios` 스킬로 이관한다.
 각 이슈의 AC(Given-When-Then)가 `/test-scenarios`에서 `issue-{N}.md` 생성의 입력이 된다.
+
+> feature-path는 컨텍스트로 저장되지 않는다. `/test-scenarios` 이후 각 스킬은 현재 브랜치에서 독립적으로 추론한다.
 
 ```
 다음 단계: /test-scenarios {N}

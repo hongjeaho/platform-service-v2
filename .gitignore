@@ -48,3 +48,4 @@ front/react-workspace/tsconfig.app.tsbuildinfo
 **/.claude/settings.local.json
 front/react-workspace/src/api/generated/model
 front/react-workspace/src/api/generated/hooks
+.DS_Store
