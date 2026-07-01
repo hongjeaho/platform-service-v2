@@ -21,8 +21,21 @@ services:
       - ./docker/mysql/conf.d:/etc/mysql/conf.d
       - ./docker/mysql/logs:/var/log/mysql
 
+  redis:
+    image: redis:7.4-alpine
+    container_name: platform-redis-v2
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    networks:
+      - storenet
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+
 volumes:
   mysql-data:
+  redis-data:
 
 networks:
   storenet:
