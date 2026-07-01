@@ -17,6 +17,11 @@ spring:
       dev: core, datasource-platform, web-base, datasource-platform-dev
   lifecycle:
     timeout-per-shutdown-phase: 30s  # Graceful shutdown 대기 시간
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    timeout: 2000
 
 file:
   upload-path: ${FILE_UPLOAD_PATH:./uploads}

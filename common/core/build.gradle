@@ -8,6 +8,7 @@ dependencies {
     api 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
     api "com.auth0:java-jwt:3.16.0" // oauth0
     api 'com.google.code.gson:gson:2.12.1'
+    api "$boot:spring-boot-starter-data-redis"
 
     implementation 'org.apache.pdfbox:pdfbox:3.0.5'
     implementation 'org.apache.pdfbox:fontbox:3.0.5'
