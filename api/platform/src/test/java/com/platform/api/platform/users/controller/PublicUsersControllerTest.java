@@ -3,8 +3,11 @@ package com.platform.api.platform.users.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.platform.api.platform.users.dto.ChangePasswordResponse;
 import com.platform.api.platform.users.dto.CheckDuplicateResponse;
+import com.platform.api.platform.users.dto.SendOtpRequest;
+import com.platform.api.platform.users.dto.SendOtpResponse;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
 import com.platform.api.platform.users.dto.UsersSignupResponse;
+import com.platform.api.platform.users.service.OtpService;
 import com.platform.api.platform.users.service.UsersService;
 import com.platform.common.web.config.filter.JWTCheckFilter;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +37,9 @@ class PublicUsersControllerTest {
 
     @MockitoBean
     private UsersService usersService;
+
+    @MockitoBean
+    private OtpService otpService;
 
     @MockitoBean
     private JWTCheckFilter jwtCheckFilter;
@@ -383,6 +389,74 @@ class PublicUsersControllerTest {
         mockMvc.perform(post("/api/public/users/change-password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userEmail\":\"not-an-email\",\"currentPassword\":\"current123\",\"newPassword\":\"new12345\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    // ========== 이슈 #2: OTP 발송 API ==========
+
+    @Test
+    @DisplayName("유효한 이메일로 OTP 발송 요청 시 200 OK와 성공 메시지를 반환한다")
+    void sendOtp_return200WithSuccessMessage_whenValidEmail() throws Exception {
+        // Given
+        SendOtpResponse response = SendOtpResponse.ofSuccess();
+        when(otpService.generateAndSave(eq("test@example.com"))).thenReturn(response);
+
+        // When & Then
+        mockMvc.perform(post("/api/public/users/send-otp")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"test@example.com\"}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.success").value(true))
+            .andExpect(jsonPath("$.data.message").value("OTP가 이메일로 발송되었습니다."));
+    }
+
+    @Test
+    @DisplayName("등록되지 않은 이메일로 OTP 발송 요청 시 400 Bad Request를 반환한다")
+    void sendOtp_return400_whenEmailNotRegistered() throws Exception {
+        // Given
+        when(otpService.generateAndSave(eq("unregistered@example.com")))
+            .thenThrow(new IllegalArgumentException("해당 이메일로 등록된 사용자가 없습니다."));
+
+        // When & Then
+        mockMvc.perform(post("/api/public/users/send-otp")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"unregistered@example.com\"}"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error.message").value("해당 이메일로 등록된 사용자가 없습니다."));
+    }
+
+    @Test
+    @DisplayName("10분 미경과 재발송 요청 시 409 Conflict를 반환한다")
+    void sendOtp_return409_whenResendIntervalNotMet() throws Exception {
+        // Given
+        when(otpService.generateAndSave(eq("test@example.com")))
+            .thenThrow(new IllegalStateException("OTP는 10분마다 재발송할 수 있습니다."));
+
+        // When & Then
+        mockMvc.perform(post("/api/public/users/send-otp")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"test@example.com\"}"))
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.error.message").value("OTP는 10분마다 재발송할 수 있습니다."));
+    }
+
+    @Test
+    @DisplayName("빈 userEmail로 OTP 발송 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
+    void sendOtp_return400_whenUserEmailIsEmpty() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/public/users/send-otp")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("올바르지 않은 이메일 형식으로 OTP 발송 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
+    void sendOtp_return400_whenEmailFormatIsInvalid() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/public/users/send-otp")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"not-an-email\"}"))
             .andExpect(status().isBadRequest());
     }
 }

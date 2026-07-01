@@ -3,10 +3,13 @@ package com.platform.api.platform.users.controller;
 import com.platform.api.platform.users.dto.ChangePasswordBeforeLoginRequest;
 import com.platform.api.platform.users.dto.ChangePasswordResponse;
 import com.platform.api.platform.users.dto.CheckDuplicateResponse;
+import com.platform.api.platform.users.dto.SendOtpRequest;
+import com.platform.api.platform.users.dto.SendOtpResponse;
 import com.platform.api.platform.users.dto.UserEmailCheckRequest;
 import com.platform.api.platform.users.dto.UserIdCheckRequest;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
 import com.platform.api.platform.users.dto.UsersSignupResponse;
+import com.platform.api.platform.users.service.OtpService;
 import com.platform.api.platform.users.service.UsersService;
 import com.platform.common.web.response.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PublicUsersController {
 
     private final UsersService usersService;
+    private final OtpService otpService;
 
     @Operation(summary = "회원 등록")
     @ApiResponses({
@@ -67,6 +71,19 @@ public class PublicUsersController {
         @RequestBody @Valid UserEmailCheckRequest request
     ) {
         return ResponseEntity.ok(ApiResult.of(usersService.checkDuplicateUserEmail(request.userEmail())));
+    }
+
+    @Operation(summary = "OTP 발송")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "발송 성공"),
+        @ApiResponse(responseCode = "400", description = "입력값 오류 / 사용자 없음"),
+        @ApiResponse(responseCode = "409", description = "재발송 간격 미달")
+    })
+    @PostMapping("/send-otp")
+    public ResponseEntity<ApiResult<SendOtpResponse>> sendOtp(
+        @RequestBody @Valid SendOtpRequest request
+    ) {
+        return ResponseEntity.ok(ApiResult.of(otpService.generateAndSave(request.userEmail())));
     }
 
     @Operation(summary = "비밀번호 변경 (로그인 전)")
