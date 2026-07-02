@@ -7,6 +7,7 @@ import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -38,6 +39,7 @@ public class PasswordChangeEmailSender implements EmailSender {
      * @param otpCode OTP 인증 코드
      * @throws IllegalArgumentException to 또는 otpCode가 null/blank인 경우
      */
+    @Async
     public void send(String to, String otpCode) {
         if (to == null || to.isBlank()) {
             throw new IllegalArgumentException("수신자 이메일은 필수입니다.");
