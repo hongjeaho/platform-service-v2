@@ -1,3 +1,11 @@
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${PLATFORM_EMAIL_USERNAME}
+    password: ${PLATFORM_EMAIL_FROM_PASSWORD}
+    protocol: smtp
+
 platform:
   email:
     from: ${PLATFORM_EMAIL_FROM:noreply@platform.com}
