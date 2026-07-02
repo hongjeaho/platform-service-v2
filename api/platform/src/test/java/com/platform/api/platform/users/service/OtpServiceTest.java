@@ -19,6 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -100,6 +101,38 @@ class OtpServiceTest {
 
         // When & Then
         assertThatThrownBy(() -> otpService.generateAndSave(userEmail, OtpTemplate.PASSWORD_CHANGE))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining("OTP는 10분마다 재발송할 수 있습니다.");
+    }
+
+    // ========== 이슈 3: 회원가입용 OTP 발송 (미가입 허용) ==========
+
+    @Test
+    @DisplayName("미가입 이메일로 generateAndSaveForSignup 호출 시 existsByEmail 체크 없이 SIGNUP 템플릿으로 이메일을 발송한다")
+    void generateAndSaveForSignup_sendEmailWithSignupTemplate_withoutExistsByEmailCheck_whenUnregisteredEmail() {
+        // Given
+        String userEmail = "newuser@example.com";
+        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        when(redisTemplate.hasKey(anyString())).thenReturn(false);
+
+        // When
+        SendOtpResponse result = otpService.generateAndSaveForSignup(userEmail);
+
+        // Then
+        assertThat(result).isNotNull();
+        verify(emailSender).send(eq(userEmail), anyString(), eq(OtpTemplate.SIGNUP));
+        verify(usersRepository, never()).existsByEmail(anyString());
+    }
+
+    @Test
+    @DisplayName("재발송 간격이 경과하지 않으면 generateAndSaveForSignup은 IllegalStateException을 던진다")
+    void generateAndSaveForSignup_throwsIllegalStateException_whenResendIntervalNotPassed() {
+        // Given
+        String userEmail = "newuser@example.com";
+        when(redisTemplate.hasKey(anyString())).thenReturn(true);
+
+        // When & Then
+        assertThatThrownBy(() -> otpService.generateAndSaveForSignup(userEmail))
             .isInstanceOf(IllegalStateException.class)
             .hasMessageContaining("OTP는 10분마다 재발송할 수 있습니다.");
     }

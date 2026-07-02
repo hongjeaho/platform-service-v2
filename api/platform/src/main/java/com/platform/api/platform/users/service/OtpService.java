@@ -58,27 +58,8 @@ public class OtpService {
             throw new IllegalArgumentException("해당 이메일로 등록된 사용자가 없습니다.");
         }
 
-        // 2. 재발송 간격 확인 (10분 미경과 시 예외)
-        Boolean hasLastSent = redisTemplate.hasKey(LAST_SENT_KEY_PREFIX + userEmail);
-        if (hasLastSent) {
-            throw new IllegalStateException("OTP는 10분마다 재발송할 수 있습니다.");
-        }
-
-        // 3. 6자리 OTP 생성
-        String otpCode = generateOtpCode();
-
-        // 4. Redis에 OTP 저장 (30분 TTL)
-        String otpKey = OTP_KEY_PREFIX + userEmail;
-        redisTemplate.opsForValue().set(otpKey, otpCode, OTP_TTL_MINUTES, TimeUnit.MINUTES);
-
-        // 5. 마지막 발송 시간 저장 (10분 TTL)
-        String lastSentKey = LAST_SENT_KEY_PREFIX + userEmail;
-        redisTemplate.opsForValue().set(lastSentKey, String.valueOf(System.currentTimeMillis()), RESEND_INTERVAL_MINUTES, TimeUnit.MINUTES);
-
-        // 6. 이메일 발송 (비동기) - 전달받은 템플릿 사용
-        emailSender.send(userEmail, otpCode, template);
-
-        return SendOtpResponse.ofSuccess();
+        // 2. OTP 발급 (재발송 간격 확인 → 생성 → 저장 → 발송)
+        return issueOtp(userEmail, template);
     }
 
     /**
@@ -95,6 +76,60 @@ public class OtpService {
     @PlatformTransactional
     public SendOtpResponse generateAndSave(String userEmail) {
         return generateAndSave(userEmail, OtpTemplate.PASSWORD_CHANGE);
+    }
+
+    /**
+     * 회원가입용 OTP를 생성·저장·발송한다.
+     *
+     * <p>회원가입은 미가입 이메일이 정상 케이스이므로 {@code existsByEmail} 체크를 생략하며,
+     * {@link OtpTemplate#SIGNUP} 템플릿을 고정으로 사용한다.</p>
+     *
+     * @param userEmail OTP를 발송할 이메일 (미가입)
+     * @return OTP 발송 성공 응답
+     * @throws IllegalStateException 10분 미경과 재발송 요청인 경우
+     */
+    @PlatformTransactional
+    public SendOtpResponse generateAndSaveForSignup(String userEmail) {
+        // 회원가입은 미가입이 정상 케이스이므로 existsByEmail 체크 없이 OTP 발급 (SIGNUP 템플릿 고정)
+        return issueOtp(userEmail, OtpTemplate.SIGNUP);
+    }
+
+    /**
+     * OTP를 생성하고 Redis에 저장한 후 이메일로 발송한다 (공통 발급 로직).
+     *
+     * <p>1. 재발송 간격 확인 (10분 미경과 시 예외)
+     * 2. 6자리 OTP 생성
+     * 3. Redis에 OTP 저장 (TTL 30분)
+     * 4. 마지막 발송 시간 저장 (10분 TTL)
+     * 5. 이메일 발송</p>
+     *
+     * @param userEmail OTP를 발송할 사용자 이메일
+     * @param template OTP 이메일 템플릿
+     * @return OTP 발송 성공 응답
+     * @throws IllegalStateException 10분 미경과 재발송 요청인 경우
+     */
+    private SendOtpResponse issueOtp(String userEmail, OtpTemplate template) {
+        // 1. 재발송 간격 확인 (10분 미경과 시 예외)
+        Boolean hasLastSent = redisTemplate.hasKey(LAST_SENT_KEY_PREFIX + userEmail);
+        if (hasLastSent) {
+            throw new IllegalStateException("OTP는 10분마다 재발송할 수 있습니다.");
+        }
+
+        // 2. 6자리 OTP 생성
+        String otpCode = generateOtpCode();
+
+        // 3. Redis에 OTP 저장 (30분 TTL)
+        String otpKey = OTP_KEY_PREFIX + userEmail;
+        redisTemplate.opsForValue().set(otpKey, otpCode, OTP_TTL_MINUTES, TimeUnit.MINUTES);
+
+        // 4. 마지막 발송 시간 저장 (10분 TTL)
+        String lastSentKey = LAST_SENT_KEY_PREFIX + userEmail;
+        redisTemplate.opsForValue().set(lastSentKey, String.valueOf(System.currentTimeMillis()), RESEND_INTERVAL_MINUTES, TimeUnit.MINUTES);
+
+        // 5. 이메일 발송
+        emailSender.send(userEmail, otpCode, template);
+
+        return SendOtpResponse.ofSuccess();
     }
 
     /**

@@ -416,4 +416,72 @@ class PublicUsersControllerTest {
                 .content("{\"userEmail\":\"test@example.com\",\"otpCode\":\"123456\",\"newPassword\":\"new123\"}"))
             .andExpect(status().isBadRequest());
     }
+
+    // ========== 이슈 3 (issue-3.md): 회원가입용 OTP 발송 API (미가입 허용) ==========
+
+    @Test
+    @DisplayName("미가입 이메일로 회원가입 OTP 발송 요청 시 200 OK와 성공 메시지를 반환한다")
+    void sendSignupOtp_return200WithSuccessMessage_whenValidUnregisteredEmail() throws Exception {
+        // Given
+        SendOtpResponse response = SendOtpResponse.ofSuccess();
+        when(usersService.sendSignupOtp(eq("newuser@example.com"))).thenReturn(response);
+
+        // When & Then
+        mockMvc.perform(post("/api/public/users/signup/otp")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"newuser@example.com\"}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.success").value(true))
+            .andExpect(jsonPath("$.data.message").value("OTP가 이메일로 발송되었습니다."));
+    }
+
+    @Test
+    @DisplayName("이미 가입된 이메일로 회원가입 OTP 발송 요청 시 409 Conflict를 반환한다")
+    void sendSignupOtp_return409_whenEmailAlreadyRegistered() throws Exception {
+        // Given
+        when(usersService.sendSignupOtp(eq("existing@example.com")))
+            .thenThrow(new IllegalStateException("이미 가입된 이메일입니다."));
+
+        // When & Then
+        mockMvc.perform(post("/api/public/users/signup/otp")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"existing@example.com\"}"))
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.error.message").value("이미 가입된 이메일입니다."));
+    }
+
+    @Test
+    @DisplayName("10분 미경과 재발송 요청 시 409 Conflict를 반환한다")
+    void sendSignupOtp_return409_whenResendIntervalNotMet() throws Exception {
+        // Given
+        when(usersService.sendSignupOtp(eq("test@example.com")))
+            .thenThrow(new IllegalStateException("OTP는 10분마다 재발송할 수 있습니다."));
+
+        // When & Then
+        mockMvc.perform(post("/api/public/users/signup/otp")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"test@example.com\"}"))
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.error.message").value("OTP는 10분마다 재발송할 수 있습니다."));
+    }
+
+    @Test
+    @DisplayName("빈 userEmail로 회원가입 OTP 발송 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
+    void sendSignupOtp_return400_whenUserEmailIsBlank() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/public/users/signup/otp")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("올바르지 않은 이메일 형식으로 회원가입 OTP 발송 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
+    void sendSignupOtp_return400_whenEmailFormatIsInvalid() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/public/users/signup/otp")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userEmail\":\"not-an-email\"}"))
+            .andExpect(status().isBadRequest());
+    }
 }
