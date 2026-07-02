@@ -1,7 +1,7 @@
 package com.platform.api.platform.users.controller;
 
-import com.platform.api.platform.users.dto.ChangePasswordBeforeLoginRequest;
 import com.platform.api.platform.users.dto.ChangePasswordResponse;
+import com.platform.api.platform.users.dto.ChangePasswordWithOtpRequest;
 import com.platform.api.platform.users.dto.CheckDuplicateResponse;
 import com.platform.api.platform.users.dto.SendOtpRequest;
 import com.platform.api.platform.users.dto.SendOtpResponse;
@@ -86,21 +86,21 @@ public class PublicUsersController {
         return ResponseEntity.ok(ApiResult.of(otpService.generateAndSave(request.userEmail())));
     }
 
-    @Operation(summary = "비밀번호 변경 (로그인 전)")
+    @Operation(summary = "비밀번호 변경 (로그인 전 - OTP 방식)")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "변경 성공"),
-        @ApiResponse(responseCode = "400", description = "입력값 오류 / 사용자 없음 / 비밀번호 불일치"),
-        @ApiResponse(responseCode = "409", description = "현재 비밀번호와 동일")
+            @ApiResponse(responseCode = "200", description = "변경 성공"),
+            @ApiResponse(responseCode = "400", description = "입력값 오류 / 사용자 없음 / OTP 만료 또는 불일치"),
+            @ApiResponse(responseCode = "409", description = "현재 비밀번호와 동일")
     })
     @PostMapping("/change-password")
     public ResponseEntity<ApiResult<ChangePasswordResponse>> changePasswordBeforeLogin(
-        @RequestBody @Valid ChangePasswordBeforeLoginRequest request
+        @RequestBody @Valid ChangePasswordWithOtpRequest request
     ) {
         return ResponseEntity.ok(ApiResult.of(
             usersService.changePasswordBeforeLogin(
                 request.userEmail(),
-                request.currentPassword(),
-                request.newPassword()
+                request.newPassword(),
+                request.otpCode()
             )
         ));
     }

@@ -11,8 +11,8 @@ platform:
       type: com.zaxxer.hikari.HikariDataSource
       driverClassName: com.mysql.cj.jdbc.Driver
       jdbcUrl: "jdbc:mysql://localhost:3306/store?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&useSSL=false"
-      username: root
-      password: root
+      username: ${PLATFORM_DB_USERNAME:root}
+      password: ${PLATFORM_DB_PASSWORD:root}
       auto-commit: false
       connectionTimeout: 30000
       maxLifetime: 1800000

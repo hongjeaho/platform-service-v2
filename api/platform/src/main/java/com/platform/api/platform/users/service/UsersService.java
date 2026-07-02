@@ -1,6 +1,5 @@
 package com.platform.api.platform.users.service;
 
-import com.platform.api.platform.users.dto.ChangePasswordBeforeLoginRequest;
 import com.platform.api.platform.users.dto.ChangePasswordResponse;
 import com.platform.api.platform.users.dto.CheckDuplicateResponse;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
@@ -27,6 +26,7 @@ public class UsersService {
 
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
+    private final OtpService otpService;
 
     /**
      * 신규 회원을 등록한다.
@@ -112,38 +112,45 @@ public class UsersService {
         return CheckDuplicateResponse.ofAvailable();
     }
 
-    // ========== 이슈 #3: 비밀번호 변경 API (로그인 전) ==========
+    // ========== 이슈 #3: OTP 방식 비밀번호 변경 API (로그인 전) ==========
 
     /**
-     * 로그인 전 상태에서 비밀번호를 변경한다.
+     * OTP로 본인 확인 후 로그인 전 상태에서 비밀번호를 변경한다.
      *
-     * <p>이메일로 사용자를 조회하고 현재 비밀번호 검증 후 새 비밀번호로 변경한다.
+     * <p>OTP 검증을 통해 본인 확인 후 사용자를 조회하고 새 비밀번호로 변경한다.
      * 비밀번호 변경 시 수정자는 시스템(0L)으로 기록된다.</p>
      *
      * @param userEmail 사용자 이메일
-     * @param currentPassword 현재 비밀번호 (원본)
      * @param newPassword 새 비밀번호
+     * @param otpCode OTP 코드
      * @return 비밀번호 변경 성공 응답
+     * @throws IllegalArgumentException OTP가 만료되었거나 일치하지 않는 경우
      * @throws IllegalArgumentException 해당 이메일로 등록된 사용자가 없는 경우
-     * @throws IllegalArgumentException 현재 비밀번호가 일치하지 않는 경우
      * @throws IllegalStateException 새 비밀번호가 현재 비밀번호와 동일한 경우
      */
     @PlatformTransactional
     public ChangePasswordResponse changePasswordBeforeLogin(
             String userEmail,
-            String currentPassword,
-            String newPassword
+            String newPassword,
+            String otpCode
     ) {
-        // 1. 사용자 조회
+        // 1. OTP 검증
+        if (!otpService.verify(userEmail, otpCode)) {
+            throw new IllegalArgumentException("OTP가 만료되었습니다. 다시 발송해주세요.");
+        }
+
+        // 2. 사용자 조회
         UsersEntity user = usersRepository.findByUserEmail(userEmail);
         if (user == null) {
             throw new IllegalArgumentException("해당 이메일로 등록된 사용자가 없습니다.");
         }
 
-        // 2. 비밀번호 검증 (private 메서드 위임)
-        validatePasswordChange(currentPassword, user.getUserPassword(), newPassword);
+        // 3. 새 비밀번호가 현재와 다른지 검증
+        if (passwordEncoder.matches(newPassword, user.getUserPassword())) {
+            throw new IllegalStateException("현재 비밀번호와 동일한 비밀번호로 변경할 수 없습니다.");
+        }
 
-        // 3. 비밀번호 변경
+        // 4. 비밀번호 변경
         String encodedNewPassword = passwordEncoder.encode(newPassword);
         usersRepository.updatePassword(user.getSeq(), encodedNewPassword, 0L);
 
