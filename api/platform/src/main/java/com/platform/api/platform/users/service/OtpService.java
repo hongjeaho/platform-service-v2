@@ -46,12 +46,13 @@ public class OtpService {
      * 6. 이메일 발송</p>
      *
      * @param userEmail OTP를 발송할 사용자 이메일
+     * @param template OTP 이메일 템플릿 (PASSWORD_CHANGE or SIGNUP)
      * @return OTP 발송 성공 응답
      * @throws IllegalArgumentException 등록되지 않은 이메일인 경우
      * @throws IllegalStateException 10분 미경과 재발송 요청인 경우
      */
     @PlatformTransactional
-    public SendOtpResponse generateAndSave(String userEmail) {
+    public SendOtpResponse generateAndSave(String userEmail, OtpTemplate template) {
         // 1. 사용자 등록 여부 확인
         if (!usersRepository.existsByEmail(userEmail)) {
             throw new IllegalArgumentException("해당 이메일로 등록된 사용자가 없습니다.");
@@ -74,10 +75,26 @@ public class OtpService {
         String lastSentKey = LAST_SENT_KEY_PREFIX + userEmail;
         redisTemplate.opsForValue().set(lastSentKey, String.valueOf(System.currentTimeMillis()), RESEND_INTERVAL_MINUTES, TimeUnit.MINUTES);
 
-        // 6. 이메일 발송 (비동기) - PASSWORD_CHANGE 템플릿 사용
-        emailSender.send(userEmail, otpCode, OtpTemplate.PASSWORD_CHANGE);
+        // 6. 이메일 발송 (비동기) - 전달받은 템플릿 사용
+        emailSender.send(userEmail, otpCode, template);
 
         return SendOtpResponse.ofSuccess();
+    }
+
+    /**
+     * OTP를 생성하고 Redis에 저장한 후 이메일로 발송한다 (기본 템플릿: PASSWORD_CHANGE).
+     *
+     * <p>이 메서드는 {@link #generateAndSave(String, OtpTemplate)}를 호출하며
+     * {@code OtpTemplate.PASSWORD_CHANGE}를 기본 템플릿으로 사용한다.</p>
+     *
+     * @param userEmail OTP를 발송할 사용자 이메일
+     * @return OTP 발송 성공 응답
+     * @throws IllegalArgumentException 등록되지 않은 이메일인 경우
+     * @throws IllegalStateException 10분 미경과 재발송 요청인 경우
+     */
+    @PlatformTransactional
+    public SendOtpResponse generateAndSave(String userEmail) {
+        return generateAndSave(userEmail, OtpTemplate.PASSWORD_CHANGE);
     }
 
     /**
