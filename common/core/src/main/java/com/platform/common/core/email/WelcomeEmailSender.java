@@ -1,6 +1,6 @@
 package com.platform.common.core.email;
 
-import com.platform.common.core.email.config.EmailProperties;
+import com.platform.common.core.config.properties.EmailProperties;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;

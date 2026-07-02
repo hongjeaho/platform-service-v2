@@ -1,5 +1,6 @@
-package com.platform.common.core.email.config;
+package com.platform.common.core.config;
 
+import com.platform.common.core.config.properties.EmailProperties;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

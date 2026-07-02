@@ -1,4 +1,4 @@
-package com.platform.common.core.email.config;
+package com.platform.common.core.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

@@ -1,6 +1,6 @@
 package com.platform.common.core.email;
 
-import com.platform.common.core.email.config.EmailProperties;
+import com.platform.common.core.config.properties.EmailProperties;
 import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
