@@ -24,8 +24,14 @@ description: |
 
 ## 컨텍스트 결정 (브랜치 중심 Single Source of Truth)
 
-아래 3순위로 결정한다:
+아래 순서로 결정한다:
 1순위 브랜치 확인 + docs 검증 → 2순위 docs 폴더 탐색 → 3순위 직접 입력 요청.
+
+> **저장소 루트 앵커링**: 현재 작업 디렉토리가 repo root가 아닐 수 있다(예: `front/react-workspace`에 남아있는 경우).
+> 상대경로(`api/`)를 그대로 쓰면 CWD가 어긋날 때 무출력으로 조용히 실패하고, 이를 "docs 없음"과 구분할 수 없어
+> 불필요한 탐색이 반복된다. 아래 모든 find는 `$(git rev-parse --show-toplevel)`을 **매 명령에 직접 인라인**해
+> CWD와 무관하게 동작시킨다 — Bash 도구는 작업 디렉토리는 유지하지만 셸 변수는 호출 간 유지하지 않으므로,
+> `ROOT=...`로 변수에 저장해 두고 다음 호출에서 재사용하는 방식은 쓰지 않는다.
 
 ### 상세 동작
 
@@ -41,13 +47,19 @@ git branch --show-current  # 예: feature/notice/list
 # 예: feature/users/이메일-인증       → feature-path: users
 # 예: feature/users/email/이메일-인증 → feature-path: users/email
 
-# docs 폴더 존재 확인
-find api/ -type d -path "*/{feature-path}/docs" 2>/dev/null
+# docs 폴더 존재 확인 (build/out 산출물 디렉토리는 제외)
+find "$(git rev-parse --show-toplevel)/api" -type d -path "*/{feature-path}/docs" -not -path "*/build/*" -not -path "*/out/*" 2>/dev/null
 ```
 
-**2순위: docs 폴더 탐색 (fallback)**
+**2순위: docs 폴더 탐색 (fallback, 1순위 실패 시 아래 한 번의 명령으로 시도)**
 
-1순위 실패 시 최근 수정된 docs 폴더 탐색.
+```bash
+find "$(git rev-parse --show-toplevel)/api" -type d -name docs -not -path "*/build/*" -not -path "*/out/*" 2>/dev/null
+```
+
+결과가 여러 개면 feature-path의 마지막 세그먼트(예: `users`)를 경로에 포함하는 항목을 우선 채택한다.
+그래도 모호하면 후보 목록을 사용자에게 보여주고 선택받는다. 결과가 없으면 3순위로 넘어간다.
+추가 탐색(issues.md, prd.md, spec*.md 개별 검색 등)을 즉흥적으로 반복하지 않는다 — 위 두 명령으로 결론이 나지 않으면 바로 3순위로 넘어간다.
 
 **3순위: 직접 입력 요청**
 
