@@ -1,6 +1,8 @@
 package com.platform.api.platform.users.service;
 
-import com.platform.common.core.email.PasswordChangeEmailSender;
+import com.platform.api.platform.users.dto.SendOtpResponse;
+import com.platform.common.core.email.OtpEmailSender;
+import com.platform.common.core.email.OtpTemplate;
 import com.platform.datasource.platform.repository.users.UsersRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +33,7 @@ class OtpServiceTest {
     private RedisTemplate<String, String> redisTemplate;
 
     @Mock
-    private PasswordChangeEmailSender emailSender;
+    private OtpEmailSender emailSender;
 
     @Mock
     private ValueOperations<String, String> valueOperations;
@@ -56,8 +58,8 @@ class OtpServiceTest {
     }
 
     @Test
-    @DisplayName("OTP가 Redis에 저장되었을 때 이메일을 발송한다")
-    void generateAndSave_shouldSendEmailViaPasswordChangeEmailSender_whenOtpSaved() {
+    @DisplayName("OTP가 Redis에 저장되었을 때 OtpEmailSender를 사용하여 이메일을 발송한다 (회귀 테스트)")
+    void generateAndSave_shouldSendEmailViaOtpEmailSender_whenOtpSaved() {
         // Given
         String userEmail = "test@example.com";
         when(usersRepository.existsByEmail(userEmail)).thenReturn(true);
@@ -67,8 +69,25 @@ class OtpServiceTest {
         // When
         otpService.generateAndSave(userEmail);
 
-        // Then
-        verify(emailSender).send(eq(userEmail), anyString());
+        // Then - OtpEmailSender로 의존성이 교체되었는지 검증
+        verify(emailSender).send(eq(userEmail), anyString(), eq(OtpTemplate.PASSWORD_CHANGE));
+    }
+
+    @Test
+    @DisplayName("등록된 이메일로 OTP 발송 요청 시 OtpEmailSender와 통합되어 정상 동작한다 (회귀 테스트)")
+    void generateAndSave_shouldWorkWithOtpEmailSenderDependency_whenRegisteredEmail() {
+        // Given
+        String userEmail = "test@example.com";
+        when(usersRepository.existsByEmail(userEmail)).thenReturn(true);
+        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        when(redisTemplate.hasKey(anyString())).thenReturn(false);
+
+        // When
+        SendOtpResponse result = otpService.generateAndSave(userEmail);
+
+        // Then - OtpEmailSender를 사용하여 PASSWORD_CHANGE 템플릿으로 발송
+        verify(emailSender).send(eq(userEmail), anyString(), eq(OtpTemplate.PASSWORD_CHANGE));
+        assertThat(result.message()).isEqualTo("OTP가 이메일로 발송되었습니다.");
     }
 
     @Test

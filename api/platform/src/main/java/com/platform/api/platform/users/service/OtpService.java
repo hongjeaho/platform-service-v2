@@ -1,7 +1,8 @@
 package com.platform.api.platform.users.service;
 
 import com.platform.api.platform.users.dto.SendOtpResponse;
-import com.platform.common.core.email.PasswordChangeEmailSender;
+import com.platform.common.core.email.OtpEmailSender;
+import com.platform.common.core.email.OtpTemplate;
 import com.platform.datasource.platform.config.database.PlatformTransactional;
 import com.platform.datasource.platform.repository.users.UsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class OtpService {
 
     private final UsersRepository usersRepository;
     private final RedisTemplate<String, String> redisTemplate;
-    private final PasswordChangeEmailSender emailSender;
+    private final OtpEmailSender emailSender;
 
     private static final String OTP_KEY_PREFIX = "otp:";
     private static final String LAST_SENT_KEY_PREFIX = "otp:last-sent:";
@@ -73,8 +74,8 @@ public class OtpService {
         String lastSentKey = LAST_SENT_KEY_PREFIX + userEmail;
         redisTemplate.opsForValue().set(lastSentKey, String.valueOf(System.currentTimeMillis()), RESEND_INTERVAL_MINUTES, TimeUnit.MINUTES);
 
-        // 6. 이메일 발송 (비동기)
-        emailSender.send(userEmail, otpCode);
+        // 6. 이메일 발송 (비동기) - PASSWORD_CHANGE 템플릿 사용
+        emailSender.send(userEmail, otpCode, OtpTemplate.PASSWORD_CHANGE);
 
         return SendOtpResponse.ofSuccess();
     }
