@@ -3,6 +3,7 @@ package com.platform.api.platform.users.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Schema(description = "회원 등록 요청")
 public record UsersSignupRequest(
@@ -22,5 +23,10 @@ public record UsersSignupRequest(
         @NotBlank(message = "이메일은 필수입니다.")
         @Email(message = "올바른 이메일 형식이 아닙니다.")
         @Schema(description = "사용자 이메일", example = "user@example.com")
-        String userEmail
+        String userEmail,
+
+        @NotBlank(message = "otpCode는 필수입니다.")
+        @Size(min = 6, max = 6, message = "OTP는 6자리여야 합니다.")
+        @Schema(description = "이메일 인증 OTP 코드 (6자리)", example = "123456")
+        String otpCode
 ) {}

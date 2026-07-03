@@ -55,7 +55,7 @@ class PublicUsersControllerTest {
 
     @BeforeEach
     void setUp() {
-        validRequest = new UsersSignupRequest("testuser", "홍길동", "password123", "test@example.com");
+        validRequest = new UsersSignupRequest("testuser", "홍길동", "password123", "test@example.com", "123456");
 
         signupResponse = new UsersSignupResponse(1L, "testuser", "홍길동");
     }
@@ -83,7 +83,7 @@ class PublicUsersControllerTest {
         // When & Then
         mockMvc.perform(post("/api/public/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"userName\":\"홍길동\",\"password\":\"password123\",\"userEmail\":\"test@example.com\"}"))
+                .content("{\"userName\":\"홍길동\",\"password\":\"password123\",\"userEmail\":\"test@example.com\",\"otpCode\":\"123456\"}"))
             .andExpect(status().isBadRequest());
     }
 
@@ -93,7 +93,7 @@ class PublicUsersControllerTest {
         // When & Then
         mockMvc.perform(post("/api/public/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"userId\":\"testuser\",\"password\":\"password123\",\"userEmail\":\"test@example.com\"}"))
+                .content("{\"userId\":\"testuser\",\"password\":\"password123\",\"userEmail\":\"test@example.com\",\"otpCode\":\"123456\"}"))
             .andExpect(status().isBadRequest());
     }
 
@@ -103,7 +103,7 @@ class PublicUsersControllerTest {
         // When & Then
         mockMvc.perform(post("/api/public/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"userId\":\"testuser\",\"userName\":\"홍길동\",\"userEmail\":\"test@example.com\"}"))
+                .content("{\"userId\":\"testuser\",\"userName\":\"홍길동\",\"userEmail\":\"test@example.com\",\"otpCode\":\"123456\"}"))
             .andExpect(status().isBadRequest());
     }
 
@@ -113,7 +113,7 @@ class PublicUsersControllerTest {
         // When & Then
         mockMvc.perform(post("/api/public/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"userId\":\"testuser\",\"userName\":\"홍길동\",\"password\":\"password123\"}"))
+                .content("{\"userId\":\"testuser\",\"userName\":\"홍길동\",\"password\":\"password123\",\"otpCode\":\"123456\"}"))
             .andExpect(status().isBadRequest());
     }
 
@@ -123,7 +123,27 @@ class PublicUsersControllerTest {
         // When & Then
         mockMvc.perform(post("/api/public/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"userId\":\"testuser\",\"userName\":\"홍길동\",\"password\":\"password123\",\"userEmail\":\"not-an-email\"}"))
+                .content("{\"userId\":\"testuser\",\"userName\":\"홍길동\",\"password\":\"password123\",\"userEmail\":\"not-an-email\",\"otpCode\":\"123456\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("otpCode가 누락되면 400을 반환한다 (Bean Validation)")
+    void signup_return400_whenOtpCodeBlank() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/public/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userId\":\"testuser\",\"userName\":\"홍길동\",\"password\":\"password123\",\"userEmail\":\"test@example.com\"}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("otpCode가 6자리가 아니면 400을 반환한다 (Bean Validation)")
+    void signup_return400_whenOtpCodeLengthInvalid() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/public/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userId\":\"testuser\",\"userName\":\"홍길동\",\"password\":\"password123\",\"userEmail\":\"test@example.com\",\"otpCode\":\"12345\"}"))
             .andExpect(status().isBadRequest());
     }
 
@@ -151,6 +171,21 @@ class PublicUsersControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(validRequest)))
             .andExpect(status().isConflict());
+    }
+
+    @Test
+    @DisplayName("OTP 검증 실패 시 400 Bad Request와 만료 메시지를 반환한다")
+    void signup_return400WithExpiredMessage_whenOtpInvalid() throws Exception {
+        // Given
+        when(usersService.signup(any()))
+            .thenThrow(new IllegalArgumentException("OTP가 만료되었습니다. 다시 발송해주세요."));
+
+        // When & Then
+        mockMvc.perform(post("/api/public/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(validRequest)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error.message").value("OTP가 만료되었습니다. 다시 발송해주세요."));
     }
 
     // ========== 이슈 #1: 아이디 중복 확인 API ==========

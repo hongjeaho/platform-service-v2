@@ -50,7 +50,9 @@ class UsersServiceTest {
 
     @BeforeEach
     void setUp() {
-        request = new UsersSignupRequest("testuser", "홍길동", "password123", "test@example.com");
+        request = new UsersSignupRequest("testuser", "홍길동", "password123", "test@example.com", "123456");
+        // signup 공통 전제조건: OTP 검증 통과 (OTP 실패 케이스만 개별 스텁으로 false 오버라이드)
+        when(otpService.verify(request.userEmail(), request.otpCode())).thenReturn(true);
     }
 
     @Test
@@ -145,6 +147,22 @@ class UsersServiceTest {
         // When & Then
         assertThatThrownBy(() -> usersService.signup(request))
             .isInstanceOf(IllegalStateException.class);
+
+        verify(usersRepository, never()).insertUser(any());
+    }
+
+    // ========== 이슈 #9: 회원 가입 OTP 검증 ==========
+
+    @Test
+    @DisplayName("OTP 검증 실패 시 IllegalArgumentException을 던지고 insertUser를 호출하지 않는다")
+    void signup_throwIllegalArgumentExceptionAndNotInsertUser_whenOtpInvalid() {
+        // Given
+        when(otpService.verify(request.userEmail(), request.otpCode())).thenReturn(false);
+
+        // When & Then
+        assertThatThrownBy(() -> usersService.signup(request))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("OTP가 만료되었습니다. 다시 발송해주세요.");
 
         verify(usersRepository, never()).insertUser(any());
     }
