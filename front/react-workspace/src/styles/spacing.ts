@@ -4,21 +4,6 @@
  */
 
 /**
- * Spacing Scale
- * TailwindCSS 기본 4px 단위 사용
- */
-export const spacingScale = {
-  0: '0px',
-  xs: '0.25rem', // 4px
-  sm: '0.5rem', // 8px
-  md: '1rem', // 16px
-  lg: '1.5rem', // 24px
-  xl: '2rem', // 32px
-  '2xl': '3rem', // 48px
-  '3xl': '4rem', // 64px
-} as const
-
-/**
  * 패딩 (Padding)
  * 컴포넌트 내부 여백
  */
@@ -71,10 +56,10 @@ export const gap = {
  * 요소의 모서리 반경
  */
 export const borderRadius = {
-  sm: 'rounded-sm', // calc(var(--radius) - 4px)
-  md: 'rounded-md', // calc(var(--radius) - 2px)
-  lg: 'rounded-lg', // var(--radius)
-  xl: 'rounded-xl', // calc(var(--radius) + 4px)
+  sm: 'rounded-sm', // var(--radius-sm) — 8px
+  md: 'rounded-md', // var(--radius-md) — 16px
+  lg: 'rounded-lg', // var(--radius-lg) — 20px
+  xl: 'rounded-xl', // var(--radius-xl) — 24px
   full: 'rounded-full',
 } as const
 
@@ -83,20 +68,20 @@ export const borderRadius = {
  * CSS 변수에 매핑되는 실제 값
  */
 export const borderRadiusValues = {
-  sm: 'var(--radius-sm)', // 4px
-  base: 'var(--radius-base)', // 4px
-  md: 'var(--radius-md)', // 12px
-  lg: 'var(--radius-lg)', // 16px
-  xl: 'var(--radius-xl)', // 24px
+  sm: 'var(--radius-sm)', // 8px — 배지, 태그
+  base: 'var(--radius-base)', // 8px
+  md: 'var(--radius-md)', // 16px — 중형 카드
+  lg: 'var(--radius-lg)', // 20px — 대형 카드, 모달
+  xl: 'var(--radius-xl)', // 24px — 페이지 컨테이너
   '2xl': 'var(--radius-2xl)', // 32px
   full: 'var(--radius-full)', // 9999px — pill
 } as const
 
 /**
- * 8px 기반 시맨틱 스페이싱 (Civic Authority)
+ * 8px 기반 시맨틱 스페이싱
  * 컴포넌트 스타일 작업 시 이 스케일을 기준으로 삼을 것
  */
-export const spacingScaleV2 = {
+export const spacingScale = {
   xs: '0.25rem', // 4px
   base: '0.5rem', // 8px — 기본 단위
   sm: '0.75rem', // 12px
@@ -203,7 +188,6 @@ export const zIndex = {
  * 간격 타입 정의
  */
 export type SpacingSize = keyof typeof spacingScale
-export type SpacingSizeV2 = keyof typeof spacingScaleV2
 export type PaddingVariant = keyof typeof padding
 export type MarginVariant = keyof typeof margin
 export type GapSize = keyof typeof gap

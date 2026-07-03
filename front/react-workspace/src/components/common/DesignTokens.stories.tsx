@@ -3,9 +3,9 @@ import type { Meta, StoryObj } from '@storybook/react'
 import {
   buttonVariants,
   shadowValues,
-  spacingScaleV2,
+  spacingScale,
   statusChipVariants,
-  textCombinationsV2,
+  textCombinations,
 } from '@/styles'
 
 const meta: Meta = {
@@ -26,7 +26,7 @@ export const Color: Story = {
   render: () => (
     <div className='p-8 flex flex-col gap-10'>
       <section>
-        <h2 className={`${textCombinationsV2.headlineSm} mb-4`}>핵심 색상 (CSS 변수)</h2>
+        <h2 className={`${textCombinations.h3} mb-4`}>핵심 색상 (CSS 변수)</h2>
         <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
           {[
             { label: '--primary', css: 'var(--primary)', text: 'var(--primary-foreground)' },
@@ -65,7 +65,7 @@ export const Color: Story = {
       </section>
 
       <section>
-        <h2 className={`${textCombinationsV2.headlineSm} mb-4`}>버튼 Variants</h2>
+        <h2 className={`${textCombinations.h3} mb-4`}>버튼 Variants</h2>
         <div className='flex flex-wrap gap-3'>
           {(Object.keys(buttonVariants) as Array<keyof typeof buttonVariants>).map(variant => (
             <button
@@ -79,7 +79,7 @@ export const Color: Story = {
       </section>
 
       <section>
-        <h2 className={`${textCombinationsV2.headlineSm} mb-4`}>상태 칩 (Status Chip)</h2>
+        <h2 className={`${textCombinations.h3} mb-4`}>상태 칩 (Status Chip)</h2>
         <div className='flex flex-wrap gap-3'>
           {(Object.keys(statusChipVariants) as Array<keyof typeof statusChipVariants>).map(
             status => (
@@ -96,7 +96,7 @@ export const Color: Story = {
       </section>
 
       <section>
-        <h2 className={`${textCombinationsV2.headlineSm} mb-4`}>섀도우</h2>
+        <h2 className={`${textCombinations.h3} mb-4`}>섀도우</h2>
         <div className='flex flex-wrap gap-6'>
           {(Object.entries(shadowValues) as [string, string][]).map(([name, value]) => (
             <div
@@ -120,19 +120,20 @@ export const Color: Story = {
 export const Typography: Story = {
   render: () => (
     <div className='p-8 flex flex-col gap-6'>
-      <h2 className={`${textCombinationsV2.headlineSm} mb-2`}>타입 스케일 (8단계)</h2>
+      <h2 className={`${textCombinations.h3} mb-2`}>타입 스케일</h2>
       {(
         [
-          { key: 'displayLg', label: 'Display LG — 48px / 700' },
-          { key: 'headlineLg', label: 'Headline LG — 32px / 700' },
-          { key: 'headlineMd', label: 'Headline MD — 24px / 600' },
-          { key: 'headlineSm', label: 'Headline SM — 20px / 600' },
-          { key: 'bodyLg', label: 'Body LG — 18px / 400' },
-          { key: 'bodyMd', label: 'Body MD — 16px / 400' },
+          { key: 'h1', label: 'H1 — 30px / 700' },
+          { key: 'h2', label: 'H2 — 24px / 600' },
+          { key: 'h3', label: 'H3 — 20px / 600' },
+          { key: 'h4', label: 'H4 — 18px / 600' },
+          { key: 'bodyLg', label: 'Body LG — 16px / 400' },
+          { key: 'body', label: 'Body — 16px / 400' },
           { key: 'bodySm', label: 'Body SM — 14px / 400' },
-          { key: 'labelLg', label: 'Label LG — 14px / 600' },
-          { key: 'labelMd', label: 'Label MD — 12px / 500' },
-        ] as { key: keyof typeof textCombinationsV2; label: string }[]
+          { key: 'bodyXs', label: 'Body XS — 12px / 400' },
+          { key: 'label', label: 'Label — 14px / 500' },
+          { key: 'labelSm', label: 'Label SM — 12px / 500' },
+        ] as { key: keyof typeof textCombinations; label: string }[]
       ).map(({ key, label }) => (
         <div
           key={key}
@@ -145,7 +146,7 @@ export const Typography: Story = {
           >
             {key}
           </span>
-          <span className={textCombinationsV2[key]}>{label}</span>
+          <span className={textCombinations[key]}>{label}</span>
         </div>
       ))}
     </div>
@@ -160,9 +161,9 @@ export const Spacing: Story = {
   render: () => (
     <div className='p-8 flex flex-col gap-8'>
       <section>
-        <h2 className={`${textCombinationsV2.headlineSm} mb-4`}>8px 시맨틱 스케일</h2>
+        <h2 className={`${textCombinations.h3} mb-4`}>8px 시맨틱 스케일</h2>
         <div className='flex flex-col gap-3'>
-          {(Object.entries(spacingScaleV2) as [string, string][]).map(([name, value]) => (
+          {(Object.entries(spacingScale) as [string, string][]).map(([name, value]) => (
             <div key={name} className='flex items-center gap-4'>
               <span
                 className='w-24 shrink-0 text-xs font-mono text-right'
@@ -188,13 +189,13 @@ export const Spacing: Story = {
       </section>
 
       <section>
-        <h2 className={`${textCombinationsV2.headlineSm} mb-4`}>보더 반경</h2>
+        <h2 className={`${textCombinations.h3} mb-4`}>보더 반경</h2>
         <div className='flex flex-wrap gap-6'>
           {[
-            { label: '--radius-sm', value: 'var(--radius-sm)', desc: '4px — 배지, 태그' },
-            { label: '--radius', value: 'var(--radius)', desc: '8px — 버튼, 입력, 카드' },
-            { label: '--radius-md', value: 'var(--radius-md)', desc: '12px — 중형 카드' },
-            { label: '--radius-lg', value: 'var(--radius-lg)', desc: '16px — 대형 카드, 모달' },
+            { label: '--radius-sm', value: 'var(--radius-sm)', desc: '8px — 배지, 태그' },
+            { label: '--radius', value: 'var(--radius)', desc: '14px — 버튼, 입력' },
+            { label: '--radius-md', value: 'var(--radius-md)', desc: '16px — 중형 카드' },
+            { label: '--radius-lg', value: 'var(--radius-lg)', desc: '20px — 대형 카드, 모달' },
             { label: '--radius-xl', value: 'var(--radius-xl)', desc: '24px — 페이지 컨테이너' },
             { label: '--radius-full', value: '9999px', desc: '9999px — 상태 칩, pill' },
           ].map(({ label, value, desc }) => (
