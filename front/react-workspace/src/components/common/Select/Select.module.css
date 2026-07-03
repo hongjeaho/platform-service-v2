@@ -102,7 +102,7 @@
   border: 1px solid var(--border);
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   border-top: none;
-  box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1));
+  box-shadow: var(--shadow-md);
   margin-top: calc(var(--spacing-1) * -1);
   z-index: var(--z-index-dropdown, 1000);
 }
