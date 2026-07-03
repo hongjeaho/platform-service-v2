@@ -2,6 +2,7 @@ package com.platform.api.platform.users.service;
 
 import com.platform.api.platform.users.dto.ChangePasswordResponse;
 import com.platform.api.platform.users.dto.CheckDuplicateResponse;
+import com.platform.api.platform.users.dto.SendOtpResponse;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
 import com.platform.api.platform.users.dto.UsersSignupResponse;
 import com.platform.datasource.platform.config.database.PlatformTransactional;
@@ -31,15 +32,20 @@ public class UsersService {
     /**
      * 신규 회원을 등록한다.
      *
-     * <p>아이디와 이메일 중복 확인 후 사용자를 생성하고 USER 권한을 부여한다.
-     * 비밀번호는 {@link PasswordEncoder}를 통해 암호화하여 저장한다.</p>
+     * <p>OTP 검증(이메일 인증) 후 아이디와 이메일 중복 확인을 거쳐 사용자를 생성하고
+     * USER 권한을 부여한다. 비밀번호는 {@link PasswordEncoder}를 통해 암호화하여 저장한다.</p>
      *
-     * @param request 회원 가입 요청 정보 (아이디, 이름, 이메일, 비밀번호)
+     * @param request 회원 가입 요청 정보 (아이디, 이름, 이메일, 비밀번호, OTP 코드)
      * @return 생성된 회원의 시퀀스와 기본 정보를 담은 응답
+     * @throws IllegalArgumentException OTP 검증에 실패한 경우
      * @throws IllegalStateException 아이디 또는 이메일이 이미 존재하는 경우
      */
     @PlatformTransactional
     public UsersSignupResponse signup(UsersSignupRequest request) {
+        // 1. OTP 검증 (이메일 인증 완료 사용자만 가입 허용)
+        verifyOtpOrThrow(request.userEmail(), request.otpCode());
+
+        // 2. 아이디/이메일 중복 확인
         if (usersRepository.existsByUserId(request.userId())) {
             throw new IllegalStateException("이미 사용 중인 아이디입니다.");
         }
@@ -135,9 +141,7 @@ public class UsersService {
             String otpCode
     ) {
         // 1. OTP 검증
-        if (!otpService.verify(userEmail, otpCode)) {
-            throw new IllegalArgumentException("OTP가 만료되었습니다. 다시 발송해주세요.");
-        }
+        verifyOtpOrThrow(userEmail, otpCode);
 
         // 2. 사용자 조회
         UsersEntity user = usersRepository.findByUserEmail(userEmail);
@@ -155,6 +159,29 @@ public class UsersService {
         usersRepository.updatePassword(user.getSeq(), encodedNewPassword, 0L);
 
         return ChangePasswordResponse.ofSuccess();
+    }
+
+    // ========== 이슈 3 (issue-3.md): 회원가입용 OTP 발송 (미가입 허용) ==========
+
+    /**
+     * 미가입 이메일에 회원가입용 OTP를 발송한다.
+     *
+     * <p>이메일이 미가입일 때 정상 동작하며, 이미 가입된 경우 예외를 던진다.
+     * 미가입인 경우 {@link OtpService#generateAndSaveForSignup(String)}에 위임한다.</p>
+     *
+     * @param userEmail 회원가입 OTP를 발송할 이메일
+     * @return OTP 발송 성공 응답
+     * @throws IllegalStateException 이미 가입된 이메일인 경우
+     */
+    @PlatformTransactional
+    public SendOtpResponse sendSignupOtp(String userEmail) {
+        // 1. 이미 가입된 이메일인지 확인
+        if (usersRepository.existsByEmail(userEmail)) {
+            throw new IllegalStateException("이미 가입된 이메일입니다.");
+        }
+
+        // 2. 회원가입용 OTP 발송 (미가입 허용)
+        return otpService.generateAndSaveForSignup(userEmail);
     }
 
     // ========== 이슈 #4: 비밀번호 변경 API (로그인 후) ==========
@@ -194,6 +221,21 @@ public class UsersService {
         usersRepository.updatePassword(seq, encodedNewPassword, seq);
 
         return ChangePasswordResponse.ofSuccess();
+    }
+
+    // ========== Private 메서드: OTP 검증 (중복 제거) ==========
+
+    /**
+     * OTP를 검증하고 만료·불일치 시 예외를 던진다.
+     *
+     * @param userEmail 사용자 이메일
+     * @param otpCode OTP 코드
+     * @throws IllegalArgumentException OTP가 만료되었거나 일치하지 않는 경우
+     */
+    private void verifyOtpOrThrow(String userEmail, String otpCode) {
+        if (!otpService.verify(userEmail, otpCode)) {
+            throw new IllegalArgumentException("OTP가 만료되었습니다. 다시 발송해주세요.");
+        }
     }
 
     // ========== Private 메서드: 비밀번호 변경 검증 (중복 제거) ==========

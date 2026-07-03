@@ -104,4 +104,19 @@ public class PublicUsersController {
             )
         ));
     }
+
+    // ========== 이슈 3 (issue-3.md): 회원가입용 OTP 발송 API (미가입 허용) ==========
+
+    @Operation(summary = "회원가입 OTP 발송")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "발송 성공"),
+        @ApiResponse(responseCode = "400", description = "입력값 오류"),
+        @ApiResponse(responseCode = "409", description = "이미 가입된 이메일 / 재발송 간격 미달")
+    })
+    @PostMapping("/signup/otp")
+    public ResponseEntity<ApiResult<SendOtpResponse>> sendSignupOtp(
+        @RequestBody @Valid SendOtpRequest request
+    ) {
+        return ResponseEntity.ok(ApiResult.of(usersService.sendSignupOtp(request.userEmail())));
+    }
 }
