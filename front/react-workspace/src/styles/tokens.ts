@@ -93,7 +93,7 @@ export const extendedColors = {
   surfaceDim: 'oklch(0.87 0.03 255)',
   surfaceBright: 'oklch(0.98 0.005 270)',
   surfaceContainerLowest: 'oklch(1 0 0)',
-  surfaceContainerLow: 'oklch(0.96 0.01 260)',
+  surfaceContainerLow: 'oklch(0.94 0.016 260)', // --card(흰색) 대비 줄무늬/hover가 뚜렷이 보이도록 상향
   surfaceContainer: 'oklch(0.93 0.02 260)',
   surfaceContainerHigh: 'oklch(0.91 0.03 255)',
   surfaceContainerHighest: 'oklch(0.89 0.03 255)',

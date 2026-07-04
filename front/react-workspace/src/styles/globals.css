@@ -173,7 +173,7 @@
   --surface-dim: oklch(0.87 0.03 255);
   --surface-bright: oklch(0.98 0.005 270);
   --surface-container-lowest: oklch(1 0 0);
-  --surface-container-low: oklch(0.96 0.01 260);
+  --surface-container-low: oklch(0.94 0.016 260); /* --card(흰색) 대비 줄무늬/hover가 뚜렷이 보이도록 상향 */
   --surface-container: oklch(0.93 0.02 260);
   --surface-container-high: oklch(0.91 0.03 255);
   --surface-container-highest: oklch(0.89 0.03 255);
