@@ -1,10 +1,10 @@
 import { useId, useRef, useState } from 'react'
 
 import { icons, iconSizes, textCombinations } from '@/styles'
+import { formatFileSize } from '@/utils/format'
 
 import styles from './MultiFileUpload.module.css'
 import type { ManagedFile, MultiFileUploadProps, MultiFileUploadSize } from './MultiFileUpload.type'
-import { formatFileSize } from '@/utils/format'
 
 const sizeClasses: Record<MultiFileUploadSize, string> = {
   sm: styles.sizeSm,

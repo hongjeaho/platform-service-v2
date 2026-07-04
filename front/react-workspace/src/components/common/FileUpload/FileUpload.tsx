@@ -1,10 +1,10 @@
 import { useId, useRef, useState } from 'react'
 
 import { icons, iconSizes, textCombinations } from '@/styles'
+import { formatFileSize } from '@/utils/format'
 
 import styles from './FileUpload.module.css'
 import type { FileUploadProps, FileUploadSize, ServerFileInfo } from './FileUpload.type'
-import { formatFileSize } from '@/utils/format'
 
 const sizeClasses: Record<FileUploadSize, string> = {
   sm: styles.sizeSm,
