@@ -8,8 +8,8 @@ Spring Boot(MVC) + React 기반의 멀티모듈 플랫폼 프로젝트입니다.
 2. [멀티모듈 구조](#멀티모듈-구조)
 3. [사전 요구사항](#사전-요구사항)
 4. [빠른 시작](#빠른-시작)
-5. [환경변수](#환경변수)
-6. [gh CLI 설치 (스킬 워크플로용)](#gh-cli-설치-스킬-워크플로용)
+5. [Claude Code 초기 설정](#claude-code-초기-설정)
+6. [환경변수](#환경변수)
 7. [개발 워크플로우](#개발-워크플로우)
 8. [빌드 및 배포(dev)](#빌드-및-배포dev)
 9. [모니터링](#모니터링)
@@ -171,31 +171,43 @@ local 프로파일은 `datasource/platform/gradle.properties`(`db.url`/`db.user`
 
 ---
 
-## gh CLI 설치 (스킬 워크플로용)
+## Claude Code 초기 설정
 
-이 프로젝트는 Matt Pocock 스킬 기반 TDD 워크플로우(`grill-me → to-prd → to-issues → tdd → improve-codebase-architecture`)를 사용하며, GitHub를 이슈 트래커로 사용합니다. `to-prd`/`to-issues` 스킬이 `gh` CLI로 이슈를 생성하므로 **설치가 필요**합니다.
+이 프로젝트는 Matt Pocock 스킬 기반 TDD 워크플로우를 사용합니다. Claude Code로 처음 시작할 때 다음 세 단계가 필수입니다.
 
-**Windows (권장 — 이 프로젝트 환경):**
+### 1. 플러그인 리로드
+
 ```bash
-winget install GitHub.cli
+/reload-plugins
 ```
 
-**macOS:**
+`.claude/` 하위의 추가된 플러그인/스킬을 다시 로드합니다.
+
+### 2. Matt Pocock 스킬 설정
+
 ```bash
-brew install gh
+/setup-matt-pocock-skills
 ```
 
-**Linux (Debian/Ubuntu):**
-```bash
-sudo apt install gh
-```
+다음을 설정/생성합니다:
+- `CONTEXT.md` — 도메인 용어 정의
+- `docs/adr/` — 아키텍처 결정 기록
+- `docs/agents/` — 이슈 트래커·트리아지 라벨 설정
 
-설치 후 인증:
+> 이 초기화는 프로젝트에 한 번만 수행하면 됩니다. 이미 완료된 경우 생략해도 됩니다.
+
+### 3. gh CLI 인증
+
+이미 설치되어 있으면 인증만 하면 됩니다:
+
 ```bash
 gh auth login
 ```
 
-> 이 설정은 `/setup-matt-pocock-skills` 스킬이 생성했으며, 상세는 `docs/agents/issue-tracker.md`에 기록되어 있습니다.
+설치가 필요한 경우:
+- **Windows:** `winget install GitHub.cli`
+- **macOS:** `brew install gh`
+- **Linux:** `sudo apt install gh`
 
 ---
 
