@@ -7,14 +7,16 @@ import { useAuthStore } from '@/store/auth/authStore'
 import { ProtectedRoute } from './ProtectedRoute'
 
 function renderWithRouter(isAuthenticated: boolean, redirectTo?: string) {
-  useAuthStore.setState({ isAuthenticated, user: isAuthenticated ? { id: 1, name: 'User', email: 'u@test.com' } : null })
+  useAuthStore.setState({
+    user: isAuthenticated ? { id: 1, name: 'User', email: 'u@test.com', roles: [] } : null,
+  })
 
   return render(
     <MemoryRouter initialEntries={['/protected']}>
       <Routes>
-        <Route path="/login" element={<div>로그인 페이지</div>} />
+        <Route path='/login' element={<div>로그인 페이지</div>} />
         <Route
-          path="/protected"
+          path='/protected'
           element={
             <ProtectedRoute redirectTo={redirectTo}>
               <div>보호된 컨텐츠</div>
@@ -28,7 +30,7 @@ function renderWithRouter(isAuthenticated: boolean, redirectTo?: string) {
 
 describe('ProtectedRoute', () => {
   beforeEach(() => {
-    useAuthStore.setState({ user: null, isAuthenticated: false })
+    useAuthStore.setState({ user: null, token: null })
   })
 
   it('인증된 사용자에게 자식 컴포넌트를 렌더링한다', () => {
@@ -43,16 +45,16 @@ describe('ProtectedRoute', () => {
   })
 
   it('커스텀 redirectTo 경로로 리다이렉트한다', () => {
-    useAuthStore.setState({ isAuthenticated: false, user: null })
+    useAuthStore.setState({ user: null })
 
     render(
       <MemoryRouter initialEntries={['/protected']}>
         <Routes>
-          <Route path="/custom-login" element={<div>커스텀 로그인</div>} />
+          <Route path='/custom-login' element={<div>커스텀 로그인</div>} />
           <Route
-            path="/protected"
+            path='/protected'
             element={
-              <ProtectedRoute redirectTo="/custom-login">
+              <ProtectedRoute redirectTo='/custom-login'>
                 <div>보호된 컨텐츠</div>
               </ProtectedRoute>
             }
