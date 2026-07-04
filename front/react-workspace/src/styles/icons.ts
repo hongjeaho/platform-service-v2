@@ -23,6 +23,7 @@ import {
   Loader2,
   MapPin,
   Menu,
+  MoreHorizontal,
   Paperclip,
   Pencil,
   Plus,
@@ -78,6 +79,7 @@ export const icons = {
   prev: ChevronLeft,
   menu: Menu,
   close: X,
+  more: MoreHorizontal,
 
   // 도메인 특화
   home: Home,
