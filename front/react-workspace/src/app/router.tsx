@@ -2,7 +2,6 @@ import { createBrowserRouter, useRouteError } from 'react-router'
 
 import type { NavSection } from '../components/layout/AppShell'
 import { AppShell } from '../components/layout/AppShell'
-// import { ProtectedRoute } from '../features/auth/components/ProtectedRoute'
 
 const navSections: NavSection[] = [{ items: [{ label: '대시보드', to: '/' }] }]
 

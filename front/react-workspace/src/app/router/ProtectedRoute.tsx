@@ -1,8 +1,12 @@
+import type { ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router'
 
 import { selectIsAuthenticated, useAuthStore } from '@/store/auth/authStore'
 
-import type { ProtectedRouteProps } from './ProtectedRoute.type'
+export interface ProtectedRouteProps {
+  children: ReactNode
+  redirectTo?: string
+}
 
 export function ProtectedRoute({ children, redirectTo = '/login' }: ProtectedRouteProps) {
   const isAuthenticated = useAuthStore(selectIsAuthenticated)
