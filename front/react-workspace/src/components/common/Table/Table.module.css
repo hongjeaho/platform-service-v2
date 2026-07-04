@@ -12,6 +12,11 @@
   box-shadow: var(--shadow-base);
 }
 
+/* 하단에 이어지는 요소(예: DataTable 페이지네이션 푸터)와 하나의 카드처럼 붙일 때 */
+.tableWrapSquareBottom {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;

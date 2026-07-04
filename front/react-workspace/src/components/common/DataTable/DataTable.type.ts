@@ -13,6 +13,10 @@ export interface ColumnDef<T> {
 export interface DataTablePagination {
   totalPages: number
   onPageChange: (page: number) => void
+  /**
+   * 전체 항목 수 — 전달 시 푸터에 "총 N건 중 X–Y" 요약이 표시됩니다.
+   */
+  totalItems?: number
 }
 
 export interface DataTableProps<T extends object> {

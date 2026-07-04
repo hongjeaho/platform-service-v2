@@ -72,13 +72,30 @@ import { statusChipVariants } from '@/styles'
 
 ---
 
+## 테이블 (Table)
+
+Card와 동일한 표면 언어 — 테두리 없이 `--radius-lg` + `--shadow-base`로 뜨는 카드.
+
+- 카드 표면: `var(--card)` 배경, `var(--radius-lg)`(20px), `var(--shadow-base)` — **배경 배너·하드 보더 금지**
+- 헤더: 배경 없음(카드와 동일한 흰 배경에 자연스럽게 이어짐), `var(--muted-foreground)` 색상의 작은 볼드 라벨(`--font-size-xs` + `--font-weight-bold`) — 컬럼 헤더를 진한 텍스트나 색상 배너로 강조하지 않음
+- 바디 셀 텍스트: `textCombinations.bodySm`
+- 행 구분: `1px solid var(--border)` (하단선만, 최소화)
+- 하단에 페이지네이션 등 다른 요소가 이어질 때는 `roundedBottom={false}`로 아래쪽 모서리를 각지게 만들어 하나의 카드처럼 이어붙입니다 (`DataTable`이 이 패턴을 사용)
+
 ## 데이터 테이블 (DataTable)
 
-- 헤더 배경: `var(--surface-container-highest)`
-- 셀 텍스트: `textCombinations.bodySm`
-- 테두리: `1px solid var(--border)` (최소화)
+- Table을 그대로 조합 — 헤더/카드 표면 규칙은 위 Table 섹션과 동일
 - 행 선택: `selectable` prop — 체크박스 컬럼(전체 선택 헤더 포함)은 이미 구현·테스트되어 있음
 - **엔터프라이즈 대시보드 패턴**(아바타+이름 셀, 상태 칩 셀, 케밥 액션 컬럼)은 새 prop 없이 기존 `columns[].render` 확장점만으로 구현합니다 — `DataTable.stories.tsx`의 `EnterpriseDashboardPattern` 스토리 참고
+- **페이지네이션**: 공통 `Pagination` 컴포넌트는 DataTable 외 소비처가 없어 제거되었습니다. `DataTablePaginationFooter`(내부 전용, `DataTable/` 폴더 소속)가 Table 바로 아래 `border-top`만으로 구분되는 조용한 톤의 푸터로 통합되어 있습니다 — 별도로 띄우지 말고 `pagination` prop만 전달하면 됩니다. `pagination.totalItems`를 함께 전달하면 "총 N건 중 X–Y" 요약이 표시됩니다
+
+```tsx
+<DataTable
+  data={data}
+  columns={columns}
+  pagination={{ totalPages: 13, totalItems: 128, onPageChange: setPage }}
+/>
+```
 
 ```tsx
 const columns: ColumnDef<Row>[] = [

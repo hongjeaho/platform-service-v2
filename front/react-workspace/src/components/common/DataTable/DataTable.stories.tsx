@@ -161,7 +161,7 @@ export const WithPagination: Story = {
         {...args}
         data={sampleData}
         columns={sampleColumns}
-        pagination={{ totalPages: 5, onPageChange: () => {} }}
+        pagination={{ totalPages: 5, totalItems: 42, onPageChange: () => {} }}
       />
     </div>
   ),
@@ -326,7 +326,13 @@ export const EnterpriseDashboardPattern: Story = {
   name: '엔터프라이즈 대시보드 패턴 (아바타·상태칩·케밥)',
   render: args => (
     <div className='w-[820px]'>
-      <BoundDataTable {...args} data={sampleData} columns={enterpriseColumns} selectable />
+      <BoundDataTable
+        {...args}
+        data={sampleData}
+        columns={enterpriseColumns}
+        selectable
+        pagination={{ totalPages: 13, totalItems: 128, onPageChange: () => {} }}
+      />
     </div>
   ),
   args: {
