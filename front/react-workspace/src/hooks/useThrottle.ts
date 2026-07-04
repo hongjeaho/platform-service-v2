@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 /**
  * 쓰로틀 훅
@@ -8,23 +8,23 @@ import { useEffect, useState } from 'react'
  */
 export function useThrottle<T>(value: T, limit: number = 500): T {
   const [throttledValue, setThrottledValue] = useState<T>(value)
-  const [lastRan, setLastRan] = useState<number>(Date.now())
+  const lastRan = useRef<number>(Date.now())
 
   useEffect(() => {
     const handler = setTimeout(
       () => {
-        if (Date.now() - lastRan >= limit) {
+        if (Date.now() - lastRan.current >= limit) {
           setThrottledValue(value)
-          setLastRan(Date.now())
+          lastRan.current = Date.now()
         }
       },
-      limit - (Date.now() - lastRan),
+      limit - (Date.now() - lastRan.current),
     )
 
     return () => {
       clearTimeout(handler)
     }
-  }, [value, limit, lastRan])
+  }, [value, limit])
 
   return throttledValue
 }
