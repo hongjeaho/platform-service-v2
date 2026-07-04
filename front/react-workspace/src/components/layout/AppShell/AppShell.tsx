@@ -14,7 +14,7 @@ export function AppShell({
   children,
 }: AppShellProps) {
   return (
-    <div className='flex min-h-screen bg-background'>
+    <div className='flex h-screen bg-background'>
       <Sidebar brand={brand} sections={sections} profile={profile} />
       <div className='flex min-w-0 flex-1 flex-col'>
         <Topbar
