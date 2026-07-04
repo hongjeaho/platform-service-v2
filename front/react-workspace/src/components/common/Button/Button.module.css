@@ -72,6 +72,7 @@
 .variantPrimary {
   background-color: var(--primary);
   color: var(--primary-foreground);
+  box-shadow: var(--shadow-primary);
 }
 
 .variantPrimary:hover:not(:disabled):not(.disabled) {
@@ -99,6 +100,7 @@
 .variantDestructive {
   background-color: var(--destructive);
   color: var(--destructive-foreground);
+  box-shadow: var(--shadow-destructive);
 }
 
 .variantDestructive:hover:not(:disabled):not(.disabled) {

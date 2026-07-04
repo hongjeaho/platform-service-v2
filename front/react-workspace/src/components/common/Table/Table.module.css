@@ -7,9 +7,14 @@
 .tableWrap {
   width: 100%;
   overflow-x: auto;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background-color: var(--card);
+  box-shadow: var(--shadow-base);
+}
+
+/* 하단에 이어지는 요소(예: DataTable 페이지네이션 푸터)와 하나의 카드처럼 붙일 때 */
+.tableWrapSquareBottom {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .table {
@@ -29,21 +34,21 @@
   white-space: nowrap;
 }
 
-/* ── 헤더 ── */
+/* ── 헤더 — 배경 없이 뮤트 라벨 스타일(카드/위젯과 동일 톤) ── */
 .table thead .cellBase {
-  background-color: var(--surface-container-highest);
-  font-weight: var(--font-weight-semibold);
-  color: var(--foreground);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--muted-foreground);
 }
 
-/* 헤더 마지막 행만 2px 하단 구분선 (thead → tbody 경계) */
+/* 헤더 마지막 행만 하단 구분선 (thead → tbody 경계) */
 .table thead tr:last-child .cellBase {
-  border-bottom: 2px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
-/* rowSpan 헤더 셀: 하단이 thead-tbody 경계에 위치하므로 동일하게 2px 적용 */
+/* rowSpan 헤더 셀: 하단이 thead-tbody 경계에 위치하므로 동일하게 적용 */
 .table thead .cellBase[rowspan] {
-  border-bottom: 2px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 /* ── 바디 마지막 행 하단 선 제거 ── */

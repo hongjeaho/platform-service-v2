@@ -43,6 +43,13 @@ export interface TableProps {
   bordered?: boolean
 
   /**
+   * 아래쪽 모서리를 둥글게 표시합니다. 페이지네이션 등 하단에 이어지는
+   * 요소와 시각적으로 하나의 카드처럼 붙여야 할 때 false로 설정합니다.
+   * @default true
+   */
+  roundedBottom?: boolean
+
+  /**
    * 접근성: table에 부여할 aria-label
    */
   ariaLabel?: string

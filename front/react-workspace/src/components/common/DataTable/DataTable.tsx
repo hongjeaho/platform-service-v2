@@ -1,12 +1,12 @@
 import { useState } from 'react'
 
 import { CheckBox } from '@/components/common/CheckBox'
-import { Pagination } from '@/components/common/Pagination'
 import { Table, TableHead, TableHeader, TableRow } from '@/components/common/Table'
 
 import styles from './DataTable.module.css'
 import type { DataTableProps } from './DataTable.type'
 import { DataTableBody } from './DataTableBody'
+import { DataTablePaginationFooter } from './DataTablePaginationFooter'
 
 /**
  * DataTable 컴포넌트
@@ -77,7 +77,7 @@ export function DataTable<T extends object>({
 
   return (
     <div className={styles.wrapper}>
-      <Table ariaLabel={ariaLabel}>
+      <Table ariaLabel={ariaLabel} roundedBottom={!pagination}>
         {hasWidths && (
           <colgroup>
             {selectable && <col style={{ width: 'var(--spacing-12)' }} />}
@@ -115,13 +115,13 @@ export function DataTable<T extends object>({
         />
       </Table>
       {pagination && (
-        <div className={styles.pagination}>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={pagination.totalPages}
-            onPageChange={handlePageChange}
-          />
-        </div>
+        <DataTablePaginationFooter
+          currentPage={currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={handlePageChange}
+          totalItems={pagination.totalItems}
+          pageSize={pageSize}
+        />
       )}
     </div>
   )

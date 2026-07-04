@@ -5,12 +5,17 @@ export function Table({
   striped = false,
   hoverable = true,
   bordered = false,
+  roundedBottom = true,
   ariaLabel,
   ariaDescribedBy,
   children,
 }: TableProps) {
   return (
-    <div className={styles.tableWrap}>
+    <div
+      className={[styles.tableWrap, !roundedBottom && styles.tableWrapSquareBottom]
+        .filter(Boolean)
+        .join(' ')}
+    >
       <table
         className={styles.table}
         data-striped={striped ? 'true' : 'false'}

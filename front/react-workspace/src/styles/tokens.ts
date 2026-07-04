@@ -10,49 +10,49 @@
  */
 
 /**
- * Civic Authority & Fairness 브랜드 색상
+ * Friendly Trust × Enterprise Dashboard 브랜드 색상
  * OKLCH 색 공간 — 지각적 균일성 보장
  */
 export const rawColors = {
-  // Primary: Rich Navy #1a365d — 확정 버튼 (제출/확인/저장)
-  primary: 'oklch(0.26 0.08 248)',
+  // Primary: Bright Blue #3366ff 계열 — 확정 액션 (제출/확인/저장)
+  primary: 'oklch(0.56 0.21 260)',
   primaryForeground: 'oklch(1 0 0)',
 
-  // Accent: Sky Blue #0061a5 — 일반 액션 (수정/조회/검색)
-  accent: 'oklch(0.44 0.14 235)',
+  // Accent: 조금 더 밝고 채도 낮은 블루 — 일반 액션 (수정/조회/검색)
+  accent: 'oklch(0.63 0.17 250)',
   accentForeground: 'oklch(1 0 0)',
 
-  // Secondary: Surface Container 배경
-  secondary: 'oklch(0.93 0.02 260)',
-  secondaryForeground: 'oklch(0.15 0.04 250)',
+  // Secondary: 옅은 블루 틴트 컨테이너 배경
+  secondary: 'oklch(0.95 0.015 255)',
+  secondaryForeground: 'oklch(0.22 0.03 258)',
 
   // Semantic Colors
-  success: 'oklch(0.60 0.15 145)',
-  successForeground: 'oklch(0.98 0 0)',
-  warning: 'oklch(0.70 0.15 70)',
-  warningForeground: 'oklch(0.20 0 0)',
-  error: 'oklch(0.45 0.22 27)', // #ba1a1a
+  success: 'oklch(0.64 0.15 155)',
+  successForeground: 'oklch(0.99 0 0)',
+  warning: 'oklch(0.76 0.15 75)',
+  warningForeground: 'oklch(0.22 0.02 75)',
+  error: 'oklch(0.60 0.21 25)',
   errorForeground: 'oklch(1 0 0)',
-  info: 'oklch(0.60 0.12 230)',
-  infoForeground: 'oklch(0.98 0 0)',
+  info: 'oklch(0.60 0.16 255)',
+  infoForeground: 'oklch(1 0 0)',
 
   // Neutral Colors
-  background: 'oklch(0.98 0.005 270)', // Blue-tinted White #f9f9ff
-  foreground: 'oklch(0.15 0.04 250)', // on-surface: Deep Navy text
+  background: 'oklch(0.97 0.008 260)', // 옅은 블루 화이트
+  foreground: 'oklch(0.18 0.02 260)', // 짙은 잉크 텍스트
   card: 'oklch(1 0 0)',
-  cardForeground: 'oklch(0.15 0.04 250)',
+  cardForeground: 'oklch(0.18 0.02 260)',
   popover: 'oklch(1 0 0)',
-  popoverForeground: 'oklch(0.15 0.04 250)',
-  muted: 'oklch(0.93 0.02 260)', // surface-container
-  mutedForeground: 'oklch(0.33 0.01 250)', // on-surface-variant
+  popoverForeground: 'oklch(0.18 0.02 260)',
+  muted: 'oklch(0.95 0.01 260)',
+  mutedForeground: 'oklch(0.54 0.02 258)',
 
   // Border & Input
-  border: 'oklch(0.80 0.01 255)', // outline-variant
-  input: 'oklch(0.96 0.01 260)', // surface-container-low
-  ring: 'oklch(0.44 0.14 235)', // Sky Blue 포커스 링
+  border: 'oklch(0.91 0.012 258)',
+  input: 'oklch(0.96 0.008 260)',
+  ring: 'oklch(0.56 0.21 260)', // Primary Blue 포커스 링
 
   // Destructive
-  destructive: 'oklch(0.45 0.22 27)',
+  destructive: 'oklch(0.60 0.21 25)',
   destructiveForeground: 'oklch(1 0 0)',
 
   // Chart Colors (유지)
@@ -93,7 +93,7 @@ export const extendedColors = {
   surfaceDim: 'oklch(0.87 0.03 255)',
   surfaceBright: 'oklch(0.98 0.005 270)',
   surfaceContainerLowest: 'oklch(1 0 0)',
-  surfaceContainerLow: 'oklch(0.96 0.01 260)',
+  surfaceContainerLow: 'oklch(0.94 0.016 260)', // --card(흰색) 대비 줄무늬/hover가 뚜렷이 보이도록 상향
   surfaceContainer: 'oklch(0.93 0.02 260)',
   surfaceContainerHigh: 'oklch(0.91 0.03 255)',
   surfaceContainerHighest: 'oklch(0.89 0.03 255)',

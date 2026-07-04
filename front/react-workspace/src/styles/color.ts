@@ -190,18 +190,22 @@ export const shadows = {
 
 /**
  * 소프트 섀도우 실제 값 (인라인 스타일용)
- * 불투명도 4–10% 수준 — 높은 값 사용 금지
+ * 브랜드/시맨틱 컬러 틴트 — 순수 블랙 대신 프라이머리·위험색 틴트를 사용
+ * 불투명도 4–20% 수준 — 높은 값 사용 금지
  */
 export const shadowValues = {
-  sm: '0 2px 8px 0 oklch(0 0 0 / 4%)',
-  md: '0 4px 12px 0 oklch(0 0 0 / 6%), 0 1px 4px 0 oklch(0 0 0 / 4%)',
-  base: '0 4px 12px 0 oklch(0 0 0 / 6%), 0 2px 6px -1px oklch(0 0 0 / 5%)',
-  lg: '0 8px 24px -4px oklch(0 0 0 / 8%), 0 4px 8px -2px oklch(0 0 0 / 5%)',
-  xl: '0 16px 40px -8px oklch(0 0 0 / 10%), 0 8px 16px -4px oklch(0 0 0 / 6%)',
-  '2xl': '0 24px 48px -12px oklch(0 0 0 / 14%)',
-  card: '0 1px 4px 0 oklch(0 0 0 / 6%)',
-  modal: '0 8px 32px 0 oklch(0 0 0 / 10%), 0 4px 12px 0 oklch(0 0 0 / 7%)',
-  inner: 'inset 0 1px 3px 0 oklch(0 0 0 / 5%)',
+  sm: '0 2px 8px 0 oklch(0.2 0.03 260 / 5%)',
+  md: '0 6px 16px -4px oklch(0.2 0.05 260 / 10%), 0 2px 6px -1px oklch(0.2 0.03 260 / 6%)',
+  base: '0 4px 14px 0 oklch(0.2 0.04 260 / 8%), 0 1px 4px 0 oklch(0.2 0.03 260 / 5%)',
+  lg: '0 12px 28px -6px oklch(0.2 0.05 260 / 12%), 0 4px 8px -2px oklch(0.2 0.03 260 / 6%)',
+  xl: '0 20px 44px -10px oklch(0.2 0.05 260 / 14%), 0 8px 16px -4px oklch(0.2 0.03 260 / 8%)',
+  '2xl': '0 28px 56px -14px oklch(0.2 0.05 260 / 18%)',
+  card: '0 4px 14px 0 oklch(0.2 0.04 260 / 8%), 0 1px 4px 0 oklch(0.2 0.03 260 / 5%)',
+  modal: '0 12px 36px 0 oklch(0.2 0.05 260 / 14%), 0 4px 12px 0 oklch(0.2 0.03 260 / 8%)',
+  inner: 'inset 0 1px 3px 0 oklch(0.2 0.03 260 / 6%)',
+  // 프라이머리/위험 액션 강조용 컬러 글로우 섀도우 (버튼 등)
+  primary: '0 10px 20px -8px oklch(0.56 0.21 260 / 45%)',
+  destructive: '0 10px 20px -8px oklch(0.6 0.21 25 / 45%)',
   none: 'none',
 } as const
 
@@ -210,16 +214,16 @@ export const shadowValues = {
  */
 export const colorPalettes = {
   primary: {
-    50: 'oklch(0.96 0.02 255)',
-    100: 'oklch(0.92 0.03 255)',
-    200: 'oklch(0.87 0.04 253)',
-    300: 'oklch(0.78 0.06 250)',
-    400: 'oklch(0.63 0.09 248)',
-    500: 'oklch(0.44 0.14 235)', // Sky Blue
-    600: 'oklch(0.36 0.11 242)',
-    700: 'oklch(0.30 0.09 245)',
-    800: 'oklch(0.26 0.08 248)', // Rich Navy
-    900: 'oklch(0.17 0.06 250)', // Deep Navy
+    50: 'oklch(0.96 0.02 260)',
+    100: 'oklch(0.92 0.05 260)',
+    200: 'oklch(0.86 0.08 260)',
+    300: 'oklch(0.78 0.12 260)',
+    400: 'oklch(0.68 0.17 260)',
+    500: 'oklch(0.56 0.21 260)', // Bright Blue — primary
+    600: 'oklch(0.49 0.2 260)',
+    700: 'oklch(0.42 0.18 260)',
+    800: 'oklch(0.34 0.15 260)',
+    900: 'oklch(0.26 0.11 260)',
   },
   gray: {
     50: 'oklch(0.98 0.001 260)',

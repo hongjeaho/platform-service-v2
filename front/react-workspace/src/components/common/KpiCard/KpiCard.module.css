@@ -1,0 +1,50 @@
+/**
+ * KpiCard 컴포넌트 스타일 (CSS Module)
+ * 디자인 시스템 토큰 기반
+ */
+
+.card {
+  border-radius: var(--radius-lg);
+  background-color: var(--card);
+  box-shadow: var(--shadow-base);
+  padding: var(--spacing-4) var(--spacing-5);
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--muted-foreground);
+  margin-bottom: var(--spacing-2);
+}
+
+.valueRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}
+
+.value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.trend {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  padding: var(--spacing-1) var(--gap-sm);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.trendUp {
+  background-color: color-mix(in srgb, var(--success) 15%, transparent);
+  color: var(--success);
+}
+
+.trendDown {
+  background-color: color-mix(in srgb, var(--destructive) 15%, transparent);
+  color: var(--destructive);
+}

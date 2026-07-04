@@ -93,63 +93,62 @@
 
 :root {
   /* ========================================
-   * Civic Authority & Fairness 디자인 시스템
+   * Friendly Trust × Enterprise Dashboard 디자인 시스템
    *
    * 원시 토큰: src/styles/tokens.ts (Single Source of Truth)
    * 이 파일의 색상 값은 tokens.ts와 동기화됩니다.
    * ======================================== */
 
   /* Border Radius */
-  --radius: 0.5rem; /* 8px — 기본 */
-  --radius-sm: 0.25rem; /* 4px */
-  --radius-base: 0.25rem; /* 4px */
-  --radius-md: 0.75rem; /* 12px */
-  --radius-lg: 1rem; /* 16px */
-  --radius-xl: 1.5rem; /* 24px */
+  --radius: 0.875rem; /* 14px — 버튼, 입력 기본 */
+  --radius-sm: 0.5rem; /* 8px — 배지, 태그 */
+  --radius-base: 0.5rem; /* 8px */
+  --radius-md: 1rem; /* 16px — 중형 카드 */
+  --radius-lg: 1.25rem; /* 20px — 대형 카드, 모달 */
+  --radius-xl: 1.5rem; /* 24px — 페이지 컨테이너 */
   --radius-2xl: 2rem; /* 32px */
   --radius-full: 9999px; /* pill */
 
   /* ── Brand Colors ── */
-  /* Primary: Rich Navy #1a365d — 확정 버튼 (제출/확인/저장) */
-  --primary: oklch(0.26 0.08 248);
+  /* Primary: Bright Blue — 확정 액션 (제출/확인/저장) */
+  --primary: oklch(0.56 0.21 260);
   --primary-foreground: oklch(1 0 0);
 
-  /* Accent: Sky Blue #0061a5 — 일반 액션 (수정/조회/검색) */
-  --accent: oklch(0.44 0.14 235);
+  /* Accent: 밝고 채도 낮은 블루 — 일반 액션 (수정/조회/검색) */
+  --accent: oklch(0.63 0.17 250);
   --accent-foreground: oklch(1 0 0);
 
-  /* Secondary: Surface Container — 보조 배경 */
-  --secondary: oklch(0.93 0.02 260);
-  --secondary-foreground: oklch(0.15 0.04 250);
+  /* Secondary: 옅은 블루 틴트 컨테이너 — 보조 배경 */
+  --secondary: oklch(0.95 0.015 255);
+  --secondary-foreground: oklch(0.22 0.03 258);
 
   /* ── Semantic Colors ── */
-  --success: oklch(0.6 0.15 145);
-  --success-foreground: oklch(0.98 0 0);
-  --warning: oklch(0.7 0.15 70);
-  --warning-foreground: oklch(0.2 0 0);
-  --error: oklch(0.45 0.22 27); /* #ba1a1a */
+  --success: oklch(0.64 0.15 155);
+  --success-foreground: oklch(0.99 0 0);
+  --warning: oklch(0.76 0.15 75);
+  --warning-foreground: oklch(0.22 0.02 75);
+  --error: oklch(0.6 0.21 25);
   --error-foreground: oklch(1 0 0);
-  --info: oklch(0.6 0.12 230);
-  --info-foreground: oklch(0.98 0 0);
+  --info: oklch(0.6 0.16 255);
+  --info-foreground: oklch(1 0 0);
 
   /* ── Neutral Colors ── */
-  /* Background: Blue-tinted White #f9f9ff */
-  --background: oklch(0.98 0.005 270);
-  --foreground: oklch(0.15 0.04 250); /* on-surface: Deep Navy text */
+  --background: oklch(0.97 0.008 260); /* 옅은 블루 화이트 */
+  --foreground: oklch(0.18 0.02 260); /* 짙은 잉크 텍스트 */
   --card: oklch(1 0 0); /* Pure White */
-  --card-foreground: oklch(0.15 0.04 250);
+  --card-foreground: oklch(0.18 0.02 260);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.04 250);
-  --muted: oklch(0.93 0.02 260); /* surface-container */
-  --muted-foreground: oklch(0.33 0.01 250); /* on-surface-variant */
+  --popover-foreground: oklch(0.18 0.02 260);
+  --muted: oklch(0.95 0.01 260);
+  --muted-foreground: oklch(0.54 0.02 258);
 
   /* ── Border & Input ── */
-  --border: oklch(0.8 0.01 255); /* outline-variant: #c4c6cf */
-  --input: oklch(0.96 0.01 260); /* surface-container-low */
-  --ring: oklch(0.44 0.14 235); /* Sky Blue 포커스 링 */
+  --border: oklch(0.91 0.012 258);
+  --input: oklch(0.96 0.008 260);
+  --ring: oklch(0.56 0.21 260); /* Primary Blue 포커스 링 */
 
   /* ── Destructive ── */
-  --destructive: oklch(0.45 0.22 27);
+  --destructive: oklch(0.6 0.21 25);
   --destructive-foreground: oklch(1 0 0);
 
   /* ── Chart Colors ── */
@@ -174,7 +173,7 @@
   --surface-dim: oklch(0.87 0.03 255);
   --surface-bright: oklch(0.98 0.005 270);
   --surface-container-lowest: oklch(1 0 0);
-  --surface-container-low: oklch(0.96 0.01 260);
+  --surface-container-low: oklch(0.94 0.016 260); /* --card(흰색) 대비 줄무늬/hover가 뚜렷이 보이도록 상향 */
   --surface-container: oklch(0.93 0.02 260);
   --surface-container-high: oklch(0.91 0.03 255);
   --surface-container-highest: oklch(0.89 0.03 255);
@@ -196,17 +195,17 @@
   --color-error-container: oklch(0.91 0.04 22); /* #ffdad6 */
   --color-on-error-container: oklch(0.3 0.18 27); /* #93000a */
 
-  /* ── Primary Palette (50-900) — Navy 방향으로 재조정 ── */
-  --color-primary-50: oklch(0.96 0.02 255);
-  --color-primary-100: oklch(0.92 0.03 255);
-  --color-primary-200: oklch(0.87 0.04 253);
-  --color-primary-300: oklch(0.78 0.06 250);
-  --color-primary-400: oklch(0.63 0.09 248);
-  --color-primary-500: oklch(0.44 0.14 235); /* Sky Blue */
-  --color-primary-600: oklch(0.36 0.11 242);
-  --color-primary-700: oklch(0.3 0.09 245);
-  --color-primary-800: oklch(0.26 0.08 248); /* Rich Navy */
-  --color-primary-900: oklch(0.17 0.06 250); /* Deep Navy */
+  /* ── Primary Palette (50-900) — Bright Blue 방향으로 재조정 ── */
+  --color-primary-50: oklch(0.96 0.02 260);
+  --color-primary-100: oklch(0.92 0.05 260);
+  --color-primary-200: oklch(0.86 0.08 260);
+  --color-primary-300: oklch(0.78 0.12 260);
+  --color-primary-400: oklch(0.68 0.17 260);
+  --color-primary-500: oklch(0.56 0.21 260); /* Bright Blue — primary */
+  --color-primary-600: oklch(0.49 0.2 260);
+  --color-primary-700: oklch(0.42 0.18 260);
+  --color-primary-800: oklch(0.34 0.15 260);
+  --color-primary-900: oklch(0.26 0.11 260);
 
   /* ── Gray Palette ── */
   --color-gray-50: oklch(0.98 0.001 260);
@@ -269,11 +268,11 @@
   --color-info-900: oklch(0.38 0.1 230);
 
   /* ── Typography ── */
-  /* 헤딩: Public Sans / 본문: Inter / 한국어 폴백: Pretendard */
-  --font-family-display: 'Public Sans', 'Pretendard Variable', 'Noto Sans KR', sans-serif;
-  --font-family-body: 'Inter', 'Pretendard Variable', 'Noto Sans KR', sans-serif;
+  /* 헤딩/본문: Pretendard Variable 우선 / 라틴 폴백: Public Sans(헤딩), Inter(본문) */
+  --font-family-display: 'Pretendard Variable', 'Public Sans', 'Noto Sans KR', sans-serif;
+  --font-family-body: 'Pretendard Variable', 'Inter', 'Noto Sans KR', sans-serif;
   --font-family-base:
-    'Inter', 'Pretendard Variable', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui,
+    'Pretendard Variable', 'Inter', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui,
     sans-serif;
   --font-family-korean: 'Pretendard Variable', 'Noto Sans KR', sans-serif;
   --font-family-monospace: 'Courier New', Courier, monospace;
@@ -369,16 +368,20 @@
   --button-height-base: 2.5rem;
   --button-height-lg: 3rem;
 
-  /* ── Soft Shadows ── */
-  --shadow-sm: 0 2px 8px 0 oklch(0 0 0 / 4%);
-  --shadow-base: 0 4px 12px 0 oklch(0 0 0 / 6%), 0 1px 4px 0 oklch(0 0 0 / 4%);
-  --shadow-md: 0 4px 12px 0 oklch(0 0 0 / 6%), 0 2px 6px -1px oklch(0 0 0 / 5%);
-  --shadow-lg: 0 8px 24px -4px oklch(0 0 0 / 8%), 0 4px 8px -2px oklch(0 0 0 / 5%);
-  --shadow-xl: 0 16px 40px -8px oklch(0 0 0 / 10%), 0 8px 16px -4px oklch(0 0 0 / 6%);
-  --shadow-2xl: 0 24px 48px -12px oklch(0 0 0 / 14%);
-  --shadow-card: 0 1px 4px 0 oklch(0 0 0 / 6%);
-  --shadow-modal: 0 8px 32px 0 oklch(0 0 0 / 10%), 0 4px 12px 0 oklch(0 0 0 / 7%);
-  --shadow-inner: inset 0 1px 3px 0 oklch(0 0 0 / 5%);
+  /* ── Soft Shadows — 브랜드/시맨틱 컬러 틴트 ── */
+  --shadow-sm: 0 2px 8px 0 oklch(0.2 0.03 260 / 5%);
+  --shadow-base: 0 4px 14px 0 oklch(0.2 0.04 260 / 8%), 0 1px 4px 0 oklch(0.2 0.03 260 / 5%);
+  --shadow-md: 0 6px 16px -4px oklch(0.2 0.05 260 / 10%), 0 2px 6px -1px oklch(0.2 0.03 260 / 6%);
+  --shadow-lg: 0 12px 28px -6px oklch(0.2 0.05 260 / 12%), 0 4px 8px -2px oklch(0.2 0.03 260 / 6%);
+  --shadow-xl:
+    0 20px 44px -10px oklch(0.2 0.05 260 / 14%), 0 8px 16px -4px oklch(0.2 0.03 260 / 8%);
+  --shadow-2xl: 0 28px 56px -14px oklch(0.2 0.05 260 / 18%);
+  --shadow-card: 0 4px 14px 0 oklch(0.2 0.04 260 / 8%), 0 1px 4px 0 oklch(0.2 0.03 260 / 5%);
+  --shadow-modal: 0 12px 36px 0 oklch(0.2 0.05 260 / 14%), 0 4px 12px 0 oklch(0.2 0.03 260 / 8%);
+  --shadow-inner: inset 0 1px 3px 0 oklch(0.2 0.03 260 / 6%);
+  /* 프라이머리/위험 액션 강조용 컬러 글로우 섀도우 (버튼 등) */
+  --shadow-primary: 0 10px 20px -8px oklch(0.56 0.21 260 / 45%);
+  --shadow-destructive: 0 10px 20px -8px oklch(0.6 0.21 25 / 45%);
 
   /* ── Transitions ── */
   --transition-fast: 150ms;
@@ -494,8 +497,8 @@
   body {
     @apply bg-background text-foreground;
     font-family:
-      'Inter',
       'Pretendard Variable',
+      'Inter',
       -apple-system,
       BlinkMacSystemFont,
       'Apple SD Gothic Neo',
@@ -505,14 +508,14 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* 헤딩에 Public Sans 적용 — 한국어 폴백 Pretendard 유지 */
+  /* 헤딩도 Pretendard Variable 우선 — 라틴 폴백 Public Sans */
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    font-family: 'Public Sans', 'Pretendard Variable', 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard Variable', 'Public Sans', 'Noto Sans KR', sans-serif;
   }
 
   .container {

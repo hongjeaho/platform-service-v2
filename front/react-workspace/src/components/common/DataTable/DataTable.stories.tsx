@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
 import { Button } from '@/components/common/Button'
+import { icons, type StatusChipType, statusChipVariants } from '@/styles'
 
 import { DataTable } from '.'
 import type { ColumnDef } from './DataTable.type'
@@ -160,7 +161,7 @@ export const WithPagination: Story = {
         {...args}
         data={sampleData}
         columns={sampleColumns}
-        pagination={{ totalPages: 5, onPageChange: () => {} }}
+        pagination={{ totalPages: 5, totalItems: 42, onPageChange: () => {} }}
       />
     </div>
   ),
@@ -238,6 +239,102 @@ const [selectedRows, setSelectedRows] = useState<SampleRow[]>([])
       },
     },
   },
+  args: {
+    ...Default.args,
+    selectable: true,
+  },
+}
+
+// 엔터프라이즈 대시보드 목업 패턴 — 아바타+이름 셀, 상태 칩, 케밥 액션 컬럼
+// DataTable에 새 prop을 추가하지 않고 기존 columns[].render 확장점만으로 구현
+const avatarPalette: Record<string, string> = {
+  김철수: 'linear-gradient(135deg, #6ea8ff, var(--primary))',
+  이영희: 'linear-gradient(135deg, #ffb199, #ff5f6d)',
+  박지민: 'linear-gradient(135deg, #7ee8b8, var(--success))',
+  최민준: 'linear-gradient(135deg, #ffd394, var(--warning))',
+  정수연: 'linear-gradient(135deg, #c3cfe2, var(--muted-foreground))',
+}
+
+const enterpriseColumns: ColumnDef<SampleRow>[] = [
+  {
+    key: 'name',
+    header: '신청인',
+    align: 'left',
+    render: (_v, row) => (
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--gap-sm)' }}>
+        <span
+          aria-hidden='true'
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '1.75rem',
+            height: '1.75rem',
+            borderRadius: 'var(--radius-full)',
+            background: avatarPalette[row.name] ?? 'var(--primary)',
+            color: 'var(--primary-foreground)',
+            fontSize: 'var(--font-size-xs)',
+            fontWeight: 'var(--font-weight-bold)',
+            flexShrink: 0,
+          }}
+        >
+          {row.name.slice(0, 1)}
+        </span>
+        {row.name}
+      </div>
+    ),
+  },
+  {
+    key: 'status',
+    header: '상태',
+    align: 'center',
+    render: v => (
+      <span
+        className={statusChipVariants[v as StatusChipType]}
+        style={{ padding: '0.25rem 0.75rem', display: 'inline-block' }}
+      >
+        {v as string}
+      </span>
+    ),
+  },
+  {
+    key: 'amount',
+    header: '금액',
+    align: 'right',
+    render: v => `${(v as number).toLocaleString()}원`,
+  },
+  { key: 'date', header: '접수일', align: 'center' },
+  {
+    key: 'id',
+    header: '',
+    width: '2.5rem',
+    align: 'center',
+    render: (_v, row) => (
+      <Button
+        variant='ghost'
+        size='sm'
+        icon={<icons.more />}
+        aria-label={`${row.name} 행 작업 메뉴`}
+      >
+        {null}
+      </Button>
+    ),
+  },
+]
+
+export const EnterpriseDashboardPattern: Story = {
+  name: '엔터프라이즈 대시보드 패턴 (아바타·상태칩·케밥)',
+  render: args => (
+    <div className='w-[820px]'>
+      <BoundDataTable
+        {...args}
+        data={sampleData}
+        columns={enterpriseColumns}
+        selectable
+        pagination={{ totalPages: 13, totalItems: 128, onPageChange: () => {} }}
+      />
+    </div>
+  ),
   args: {
     ...Default.args,
     selectable: true,
