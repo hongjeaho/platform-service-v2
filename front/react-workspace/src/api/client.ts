@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { tokenService } from './tokenService'
+import { useAuthStore } from '@/store/auth/authStore'
 
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080',
@@ -13,7 +13,7 @@ export const apiClient = axios.create({
 // Request interceptor - Add auth token
 apiClient.interceptors.request.use(
   config => {
-    const token = tokenService.get()
+    const token = useAuthStore.getState().token
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -29,7 +29,7 @@ apiClient.interceptors.response.use(
   response => response,
   error => {
     if (error.response?.status === 401) {
-      tokenService.remove()
+      useAuthStore.getState().logout()
       window.location.replace('/login')
     }
     return Promise.reject(error)

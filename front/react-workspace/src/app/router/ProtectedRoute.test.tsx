@@ -8,8 +8,7 @@ import { ProtectedRoute } from './ProtectedRoute'
 
 function renderWithRouter(isAuthenticated: boolean, redirectTo?: string) {
   useAuthStore.setState({
-    isAuthenticated,
-    user: isAuthenticated ? { id: 1, name: 'User', email: 'u@test.com' } : null,
+    user: isAuthenticated ? { id: 1, name: 'User', email: 'u@test.com', roles: [] } : null,
   })
 
   return render(
@@ -31,7 +30,7 @@ function renderWithRouter(isAuthenticated: boolean, redirectTo?: string) {
 
 describe('ProtectedRoute', () => {
   beforeEach(() => {
-    useAuthStore.setState({ user: null, isAuthenticated: false })
+    useAuthStore.setState({ user: null, token: null })
   })
 
   it('인증된 사용자에게 자식 컴포넌트를 렌더링한다', () => {
@@ -46,7 +45,7 @@ describe('ProtectedRoute', () => {
   })
 
   it('커스텀 redirectTo 경로로 리다이렉트한다', () => {
-    useAuthStore.setState({ isAuthenticated: false, user: null })
+    useAuthStore.setState({ user: null })
 
     render(
       <MemoryRouter initialEntries={['/protected']}>
