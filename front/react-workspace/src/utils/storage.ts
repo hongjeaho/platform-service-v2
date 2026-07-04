@@ -2,7 +2,7 @@
  * localStorage 래퍼 유틸리티
  */
 
-type StorageKey = string
+export type StorageKey = string
 
 /**
  * localStorage에 데이터를 저장합니다.
