@@ -1,7 +1,16 @@
 import { createBrowserRouter, useRouteError } from 'react-router'
 
-import { Layout } from '../components/layout/Layout'
+import type { NavSection } from '../components/layout/AppShell'
+import { AppShell } from '../components/layout/AppShell'
 // import { ProtectedRoute } from '../features/auth/components/ProtectedRoute'
+
+const navSections: NavSection[] = [{ items: [{ label: '대시보드', to: '/' }] }]
+
+function RootLayout() {
+  return (
+    <AppShell brand={{ label: 'React Workspace' }} sections={navSections} breadcrumb='대시보드' />
+  )
+}
 
 function RouterErrorPage() {
   const error = useRouteError()
@@ -25,8 +34,8 @@ function NotFoundPage() {
 
 export const router = createBrowserRouter([
   {
-    // path 없는 Layout Route — URL 변경 없이 Layout을 모든 자식에 적용
-    Component: Layout,
+    // path 없는 Layout Route — URL 변경 없이 AppShell을 모든 자식에 적용
+    Component: RootLayout,
     errorElement: <RouterErrorPage />,
     children: [
       {

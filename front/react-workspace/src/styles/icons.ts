@@ -5,6 +5,7 @@
 
 import {
   AlertCircle,
+  Bell,
   Briefcase,
   Building2,
   Calendar,
@@ -80,6 +81,7 @@ export const icons = {
   menu: Menu,
   close: X,
   more: MoreHorizontal,
+  notification: Bell,
 
   // 도메인 특화
   home: Home,
