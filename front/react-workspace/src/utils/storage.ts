@@ -6,11 +6,17 @@ export type StorageKey = string
 
 /**
  * localStorage에 데이터를 저장합니다.
+ * undefined인 경우 저장하지 않고 항목을 제거합니다.
  * @param key - 저장 키
  * @param value - 저장할 값
  */
 export function setStorageItem<T>(key: StorageKey, value: T): void {
   try {
+    // undefined는 저장하지 않고 제거 (JSON.stringify(undefined)는 "undefined"가 되어 파싱 에러 발생)
+    if (value === undefined) {
+      removeStorageItem(key)
+      return
+    }
     const serializedValue = JSON.stringify(value)
     localStorage.setItem(key, serializedValue)
   } catch (error) {
@@ -27,7 +33,8 @@ export function setStorageItem<T>(key: StorageKey, value: T): void {
 export function getStorageItem<T>(key: StorageKey, defaultValue: T): T {
   try {
     const item = localStorage.getItem(key)
-    if (item === null) {
+    // null뿐만 아니라 undefined도 체크 (mock localStorage.getItem()이 undefined를 반환할 수 있음)
+    if (item == null) {
       return defaultValue
     }
     return JSON.parse(item) as T
@@ -95,9 +102,11 @@ export function getStorageKeys(): StorageKey[] {
 export function getStorageSize(): number {
   try {
     let total = 0
-    for (const key in localStorage) {
-      if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
-        total += localStorage[key].length + key.length
+    const keys = Object.keys(localStorage)
+    for (const key of keys) {
+      const item = localStorage.getItem(key)
+      if (item !== null) {
+        total += item.length + key.length
       }
     }
     return total

@@ -37,6 +37,19 @@ describe('setStorageItem / getStorageItem', () => {
     localStorage.setItem('broken', 'not-json')
     expect(getStorageItem('broken', 'fallback')).toBe('fallback')
   })
+
+  it('undefined 값 저장 시 항목이 제거된다', () => {
+    setStorageItem('key', 'initial')
+    expect(getStorageItem('key', null)).toBe('initial')
+
+    setStorageItem('key', undefined)
+    expect(getStorageItem('key', 'default')).toBe('default')
+  })
+
+  it('문자열 "undefined"가 저장되어 있으면 defaultValue를 반환한다', () => {
+    localStorage.setItem('undefined-str', 'undefined')
+    expect(getStorageItem('undefined-str', 'fallback')).toBe('fallback')
+  })
 })
 
 describe('removeStorageItem', () => {
