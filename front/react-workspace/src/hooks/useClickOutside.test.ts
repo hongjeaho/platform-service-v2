@@ -22,7 +22,9 @@ describe('useClickOutside', () => {
 
     Object.defineProperty(result.current, 'current', { value: inner, writable: true })
 
-    document.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, target: outer } as MouseEventInit))
+    document.dispatchEvent(
+      new MouseEvent('mousedown', { bubbles: true, target: outer } as MouseEventInit),
+    )
 
     document.body.removeChild(outer)
   })

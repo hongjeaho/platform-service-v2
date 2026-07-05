@@ -101,11 +101,34 @@ describe('isValidPostalCode', () => {
 describe('isValidSSN', () => {
   it('유효한 주민등록번호를 true로 판별한다', () => {
     // 체크섬이 맞는 유효한 주민번호 (테스트용)
-    expect(isValidSSN('9001011234567'.replace(/.$/, String((11 - ((9*2+0*3+0*4+1*5+0*6+1*7+1*8+2*9+3*2+4*3+5*4+6*5) % 11)) % 10)))).toBeTypeOf('boolean')
+    expect(
+      isValidSSN(
+        '9001011234567'.replace(
+          /.$/,
+          String(
+            (11 -
+              ((9 * 2 +
+                0 * 3 +
+                0 * 4 +
+                1 * 5 +
+                0 * 6 +
+                1 * 7 +
+                1 * 8 +
+                2 * 9 +
+                3 * 2 +
+                4 * 3 +
+                5 * 4 +
+                6 * 5) %
+                11)) %
+              10,
+          ),
+        ),
+      ),
+    ).toBeTypeOf('boolean')
   })
 
   it('13자리가 아니면 false를 반환한다', () => {
-    expect(isValidSSN('123456789012')).toBe(false)  // 12자리
+    expect(isValidSSN('123456789012')).toBe(false) // 12자리
     expect(isValidSSN('12345678901234')).toBe(false) // 14자리
   })
 
@@ -126,7 +149,7 @@ describe('isValidBRN', () => {
   })
 
   it('10자리가 아니면 false를 반환한다', () => {
-    expect(isValidBRN('123456789')).toBe(false)  // 9자리
+    expect(isValidBRN('123456789')).toBe(false) // 9자리
     expect(isValidBRN('12345678901')).toBe(false) // 11자리
   })
 

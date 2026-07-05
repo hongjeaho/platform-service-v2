@@ -12,7 +12,7 @@ describe('cn', () => {
   })
 
   it('조건부 클래스를 처리한다', () => {
-    expect(cn('base', false && 'hidden', true && 'visible')).toBe('base visible')
+    expect(cn('base', '', 'visible')).toBe('base visible')
   })
 
   it('Tailwind 충돌 클래스를 마지막 것으로 덮어쓴다', () => {
