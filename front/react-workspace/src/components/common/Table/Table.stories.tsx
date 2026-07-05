@@ -155,7 +155,63 @@ export const WithFooter: Story = {
 }
 
 export const SpanVariants: Story = {
-  args: { ariaLabel: '병합 셀 예시', striped: false, hoverable: true, bordered: true },
+  args: { ariaLabel: '병합 셀 예시', striped: false, hoverable: true, bordered: false },
+  render: args => (
+    <div className='w-[640px]'>
+      <Table
+        ariaLabel={args.ariaLabel}
+        striped={args.striped}
+        hoverable={args.hoverable}
+        bordered={args.bordered}
+      >
+        <thead>
+          <TableRow>
+            <TableCell as='th' rowSpan={2} scope='col' align='left'>
+              구분
+            </TableCell>
+            <TableCell as='th' scope='col'>
+              항목
+            </TableCell>
+            <TableCell as='th' scope='col' align='right'>
+              금액
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell as='th' scope='col'>
+              세부 항목
+            </TableCell>
+            <TableCell as='th' scope='col' align='right'>
+              금액(원)
+            </TableCell>
+          </TableRow>
+        </thead>
+        <tbody>
+          <TableRow>
+            <TableCell rowSpan={2} align='left'>
+              토지
+            </TableCell>
+            <TableCell>지목: 전</TableCell>
+            <TableCell align='right'>30,000,000</TableCell>
+          </TableRow>
+          <TableRow groupEnd>
+            <TableCell>지목: 답</TableCell>
+            <TableCell align='right'>15,000,000</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align='left' rowSpan={1}>
+              건물
+            </TableCell>
+            <TableCell>단독주택</TableCell>
+            <TableCell align='right'>20,000,000</TableCell>
+          </TableRow>
+        </tbody>
+      </Table>
+    </div>
+  ),
+}
+
+export const SpanVariantsBordered: Story = {
+  args: { ariaLabel: '병합 셀 bordered 예시', striped: false, hoverable: true, bordered: true },
   render: args => (
     <div className='w-[640px]'>
       <Table

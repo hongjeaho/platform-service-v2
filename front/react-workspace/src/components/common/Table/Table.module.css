@@ -34,21 +34,36 @@
   white-space: nowrap;
 }
 
-/* ── 헤더 — 배경 없이 뮤트 라벨 스타일(카드/위젯과 동일 톤) ── */
-.table thead .cellBase {
+/* ── colSpan 셀 (배경색 제거) ── */
+.cellBase[colspan]:not([rowspan]) {
+  /* 배경색 제거됨 */
+}
+
+/* ── 헤더 — 행별 배경색으로 구분 ── */
+/* 메인 헤더 (첫 번째 행) */
+.table thead tr:first-child .cellBase {
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
   color: var(--muted-foreground);
+  background-color: var(--color-table-header-main);
 }
 
-/* 헤더 마지막 행만 하단 구분선 (thead → tbody 경계) */
-.table thead tr:last-child .cellBase {
-  border-bottom: 1px solid var(--border);
-}
-
-/* rowSpan 헤더 셀: 하단이 thead-tbody 경계에 위치하므로 동일하게 적용 */
+/* rowSpan 헤더 셀 하단 경계선 */
 .table thead .cellBase[rowspan] {
-  border-bottom: 1px solid var(--border);
+  border-bottom: 3px solid var(--color-table-border);
+}
+
+/* 서브 헤더 (두 번째 행 이후) */
+.table thead tr:not(:first-child) .cellBase {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--muted-foreground);
+  background-color: var(--color-table-header-sub);
+}
+
+/* 헤더 마지막 행 하단 구분선 (thead → tbody 경계) */
+.table thead tr:last-child .cellBase {
+  border-bottom: 3px solid var(--color-table-border);
 }
 
 /* ── 바디 마지막 행 하단 선 제거 ── */
@@ -56,28 +71,25 @@
   border-bottom: none;
 }
 
-/* ── rowSpan 바디 셀 (그룹 구분 역할) ── */
+/* ── rowSpan 바디 셀 (그룹 셀) ── */
 .table tbody .cellBase[rowspan] {
-  background-color: var(--surface-container-low);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   vertical-align: middle;
+  background-color: var(--color-table-group-cell);
   border-bottom: 2px solid var(--border);
-}
-
-.table[data-hoverable='true'] tbody tr:hover .cellBase[rowspan] {
-  background-color: var(--surface-container);
 }
 
 /* ── 그룹 경계 행 (마지막 span 서브행) ── */
 .table tbody tr[data-group-end='true'] .cellBase {
-  border-bottom: 2px solid var(--border);
+  border-bottom: 3px solid var(--border);
+  padding-bottom: calc(var(--spacing-4) + 4px);
 }
 
 /* ── 푸터 ── */
 .table tfoot .cellBase {
-  background-color: var(--surface-container-low);
+  background-color: var(--color-table-header-sub);
   font-weight: var(--font-weight-medium);
-  border-top: 2px solid var(--border);
+  border-top: 2px solid var(--color-table-border);
   border-bottom: none;
   color: var(--foreground);
 }
@@ -87,26 +99,30 @@
   transition: background-color var(--transition-fast) var(--transition-ease);
 }
 
-.table[data-hoverable='true'] tbody tr:hover .cellBase {
-  background-color: var(--surface-container-low);
+.table[data-hoverable='true'] tbody tr:hover .cellBase:not([rowspan]) {
+  background-color: var(--color-table-hover);
+}
+
+.table[data-hoverable='true'] tbody tr:hover .cellBase[rowspan] {
+  background-color: var(--color-table-group-cell);
 }
 
 /* ── 줄무늬 ── */
 .table[data-striped='true'] tbody tr:nth-child(even) .cellBase {
-  background-color: var(--surface-container-low);
+  background-color: var(--color-table-stripe);
 }
 
 .table[data-striped='true'][data-hoverable='true'] tbody tr:hover .cellBase {
-  background-color: var(--surface-container);
+  background-color: var(--color-table-hover);
 }
 
 /* ── 컬럼 구분선 (bordered=true) ── */
-.table[data-bordered='true'] .cellBase {
+.table[data-bordered='true'] tbody .cellBase:not([rowspan]):not([colspan]):not(:last-child) {
   border-right: 1px solid var(--border);
 }
 
-.table[data-bordered='true'] .cellBase:last-child {
-  border-right: none;
+.table[data-bordered='true'] thead .cellBase:not([rowspan]):not([colspan]):not(:last-child) {
+  border-right: 1px solid var(--border);
 }
 
 /* ── 정렬 ── */
