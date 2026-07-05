@@ -76,6 +76,7 @@ export default defineConfig(({ mode }) => {
                 exclude: [
                     'node_modules/',
                     'src/test/',
+                    'e2e',
                     '**/*.d.ts',
                     '**/*.config.*',
                     '**/mockData',
