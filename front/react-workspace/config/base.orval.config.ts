@@ -26,8 +26,8 @@ export const commonOutputConfig: OutputOptions = {
       useQuery: true,
       useMutation: true,
       queryOptions: {
-        path: './custom.query.options.ts',
-        name: 'customQueryOptionsFn',
+          path: './custom.query.options.ts',
+          name: 'customQueryOptionsFn',
       },
     },
   },
