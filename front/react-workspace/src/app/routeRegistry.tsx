@@ -1,7 +1,7 @@
+import type { NavSection } from '@components/layout/AppShell'
+import { AppShell } from '@components/layout/AppShell'
 import { createBrowserRouter, redirect, useRouteError } from 'react-router'
 
-import type { NavSection } from '../components/layout/AppShell'
-import { AppShell } from '../components/layout/AppShell'
 import { isAuthenticated } from '../store/auth/authStore'
 
 // Route meta type for use in handle.meta
