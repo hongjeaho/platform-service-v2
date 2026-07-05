@@ -2,24 +2,28 @@ import type { ReactNode } from 'react'
 
 export type TableCellAlign = 'center' | 'right' | 'left'
 
+export type CellAs = 'td' | 'th'
+
+export type ThScope = 'col' | 'row' | 'colgroup' | 'rowgroup'
+
 /**
  * Table 컴포넌트 Props
  *
  * @example
  * ```tsx
  * <Table striped hoverable>
- *   <TableHeader>
+ *   <thead>
  *     <TableRow>
- *       <TableHead align="left">이름</TableHead>
- *       <TableHead align="right">금액</TableHead>
+ *       <TableCell as="th" scope="col" align="left">이름</TableCell>
+ *       <TableCell as="th" scope="col" align="right">금액</TableCell>
  *     </TableRow>
- *   </TableHeader>
- *   <TableBody>
+ *   </thead>
+ *   <tbody>
  *     <TableRow>
  *       <TableCell align="left">딸기</TableCell>
  *       <TableCell align="right">10,000</TableCell>
  *     </TableRow>
- *   </TableBody>
+ *   </tbody>
  * </Table>
  * ```
  */
@@ -63,60 +67,12 @@ export interface TableProps {
 }
 
 /**
- * thead 컴포넌트 Props
- *
- * @example
- * ```tsx
- * <TableHeader>
- *   <TableRow>
- *     <TableHead>컬럼</TableHead>
- *   </TableRow>
- * </TableHeader>
- * ```
- */
-export interface TableHeaderProps {
-  children: ReactNode
-}
-
-/**
- * tbody 컴포넌트 Props
- *
- * @example
- * ```tsx
- * <TableBody>
- *   <TableRow>
- *     <TableCell>값</TableCell>
- *   </TableRow>
- * </TableBody>
- * ```
- */
-export interface TableBodyProps {
-  children: ReactNode
-}
-
-/**
- * tfoot 컴포넌트 Props
- *
- * @example
- * ```tsx
- * <TableFooter>
- *   <TableRow>
- *     <TableCell colSpan={2}>합계</TableCell>
- *   </TableRow>
- * </TableFooter>
- * ```
- */
-export interface TableFooterProps {
-  children: ReactNode
-}
-
-/**
  * tr 컴포넌트 Props
  *
  * @example
  * ```tsx
- * <TableRow>
- *   <TableCell>값</TableCell>
+ * <TableRow groupEnd={true}>
+ *   <TableCell>그룹 마지막 행</TableCell>
  * </TableRow>
  * ```
  */
@@ -130,38 +86,35 @@ export interface TableRowProps {
 }
 
 /**
- * th 컴포넌트 Props
+ * TableCell 컴포넌트 Props (td/th 통합)
  *
  * @example
  * ```tsx
- * <TableHead align="left">제목</TableHead>
- * ```
- */
-export interface TableHeadProps {
-  /**
-   * 정렬
-   * @default 'center'
-   */
-  align?: TableCellAlign
-  colSpan?: number
-  rowSpan?: number
-  children: ReactNode
-}
-
-/**
- * td 컴포넌트 Props
+ * // td (기본값)
+ * <TableCell align="right">값</TableCell>
  *
- * @example
- * ```tsx
- * <TableCell align="right">10,000</TableCell>
+ * // th (헤더 셀)
+ * <TableCell as="th" scope="col" align="left">제목</TableCell>
  * ```
  */
 export interface TableCellProps {
   /**
+   * 렌더링할 HTML 요소
+   * @default 'td'
+   */
+  as?: CellAs
+
+  /**
    * 정렬
    * @default 'center'
    */
   align?: TableCellAlign
+
+  /**
+   * th 요소의 scope 속성 (as='th'일 때만 사용)
+   */
+  scope?: ThScope
+
   colSpan?: number
   rowSpan?: number
   children: ReactNode

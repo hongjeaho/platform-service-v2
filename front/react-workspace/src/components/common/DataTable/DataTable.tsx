@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { CheckBox } from '@/components/common/CheckBox'
-import { Table, TableHead, TableHeader, TableRow } from '@/components/common/Table'
+import { Table, TableCell, TableRow } from '@/components/common/Table'
 
 import styles from './DataTable.module.css'
 import type { DataTableProps } from './DataTable.type'
@@ -86,20 +86,20 @@ export function DataTable<T extends object>({
             ))}
           </colgroup>
         )}
-        <TableHeader>
+        <thead>
           <TableRow>
             {selectable && (
-              <TableHead align='center'>
+              <TableCell as='th' scope='col' align='center'>
                 <CheckBox checked={allSelected} onChange={handleSelectAll} aria-label='전체 선택' />
-              </TableHead>
+              </TableCell>
             )}
             {columns.map(col => (
-              <TableHead key={String(col.key)} align={col.align ?? 'center'}>
+              <TableCell key={String(col.key)} as='th' scope='col' align={col.align ?? 'center'}>
                 {col.header}
-              </TableHead>
+              </TableCell>
             ))}
           </TableRow>
-        </TableHeader>
+        </thead>
         <DataTableBody
           columns={columns}
           data={data}

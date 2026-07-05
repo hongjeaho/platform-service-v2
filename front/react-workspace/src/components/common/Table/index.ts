@@ -1,17 +1,11 @@
 export { Table } from './Table'
 export type {
-  TableBodyProps,
+  CellAs,
   TableCellAlign,
   TableCellProps,
-  TableFooterProps,
-  TableHeaderProps,
-  TableHeadProps,
   TableProps,
   TableRowProps,
+  ThScope,
 } from './Table.type'
-export { TableBody } from './TableBody'
 export { TableCell } from './TableCell'
-export { TableFooter } from './TableFooter'
-export { TableHead } from './TableHead'
-export { TableHeader } from './TableHeader'
 export { TableRow } from './TableRow'
