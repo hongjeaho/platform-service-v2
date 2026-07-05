@@ -35,3 +35,6 @@ export const selectHasAnyRole = (roleNames: RoleName[]) => (state: AuthState) =>
   state.hasAnyRole(roleNames)
 export const selectLogin = (state: AuthState) => state.login
 export const selectLogout = (state: AuthState) => state.logout
+
+// Helper for non-React contexts (loaders, server functions)
+export const isAuthenticated = () => useAuthStore.getState().user !== null
