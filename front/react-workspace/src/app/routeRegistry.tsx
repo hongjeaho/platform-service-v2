@@ -1,4 +1,4 @@
-import { createBrowserRouter, redirect, type RouteObject, useRouteError } from 'react-router'
+import { createBrowserRouter, redirect, useRouteError } from 'react-router'
 
 import type { NavSection } from '../components/layout/AppShell'
 import { AppShell } from '../components/layout/AppShell'
@@ -13,11 +13,15 @@ export interface RouteMeta {
   authRequired?: boolean
 }
 
-// Extend RouteObject's handle type
-declare module 'react-router' {
-  interface RouteObject {
-    handle?: { meta?: RouteMeta }
-  }
+// Extended route type with meta support
+interface RouteNode {
+  path?: string
+  index?: boolean
+  Component?: React.ComponentType
+  element?: React.ReactNode
+  errorElement?: React.ReactNode
+  children?: RouteNode[]
+  meta?: RouteMeta
 }
 
 // Auth loader for protected routes
@@ -55,25 +59,40 @@ function NotFoundPage() {
   )
 }
 
-// Route tree definition
-const routeTree: RouteObject[] = [
+// Route tree definition (internal type)
+const routeTree: RouteNode[] = [
   {
     path: '/',
     Component: RootLayout,
-    handle: { meta: { title: '홈', inNav: false } },
+    meta: { title: '홈', inNav: false },
     errorElement: <RouterErrorPage />,
     children: [
       {
         index: true,
         Component: NotFoundPage,
-        handle: { meta: { title: '홈', inNav: false } },
+        meta: { title: '홈', inNav: false },
       },
     ],
   },
 ]
 
+/**
+ * Convert RouteNode to RouteObject for react-router
+ */
+function toRouteObject(node: RouteNode) {
+  const obj: any = {}
+  if (node.path) obj.path = node.path
+  if (node.index) obj.index = node.index
+  if (node.Component) obj.Component = node.Component
+  if (node.element) obj.element = node.element
+  if (node.errorElement) obj.errorElement = node.errorElement
+  if (node.children) obj.children = node.children.map(toRouteObject)
+  if (node.meta) obj.handle = { meta: node.meta }
+  return obj
+}
+
 // Create and export router
-export const router = createBrowserRouter(routeTree)
+export const router = createBrowserRouter(routeTree.map(toRouteObject))
 
 /**
  * Extract navigation sections from route tree
@@ -83,14 +102,13 @@ export function getNavSections(): NavSection[] {
   const sections: NavSection[] = []
   const navItems: NavSection['items'] = []
 
-  function traverse(routes: RouteObject[]) {
+  function traverse(routes: RouteNode[]) {
     for (const route of routes) {
-      const meta = route.handle?.meta
-      if (meta?.inNav && route.path) {
+      if (route.meta?.inNav && route.path) {
         navItems.push({
-          label: meta.navLabel || meta.title,
+          label: route.meta.navLabel || route.meta.title,
           to: route.path === 'index' ? '/' : `/${route.path}`,
-          icon: meta.icon,
+          icon: route.meta.icon,
         })
       }
       if (route.children) {
@@ -120,15 +138,15 @@ export interface Breadcrumb {
 export function getBreadcrumbs(pathname: string): Breadcrumb[] {
   const breadcrumbs: Breadcrumb[] = []
 
-  function traverse(routes: RouteObject[], parentPath = '') {
+  function traverse(routes: RouteNode[], parentPath = '') {
     for (const route of routes) {
       const currentPath = route.path
         ? `${parentPath}/${route.path}`.replace(/\/+/g, '/')
         : parentPath
 
-      if (route.handle?.meta) {
+      if (route.meta) {
         breadcrumbs.push({
-          title: route.handle.meta.title,
+          title: route.meta.title,
           path: currentPath || '/',
         })
       }
