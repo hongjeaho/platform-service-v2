@@ -77,6 +77,12 @@
   --color-sidebar-ring: var(--sidebar-ring);
   /* Surface system — Tailwind 유틸리티 */
   --color-surface: var(--surface);
+  --color-table-header-main: var(--table-header-main);
+  --color-table-header-sub: var(--table-header-sub);
+  --color-table-border: var(--table-border);
+  --color-table-group-cell: var(--table-group-cell);
+  --color-table-stripe: var(--table-stripe);
+  --color-table-hover: var(--table-hover);
   --color-surface-container: var(--surface-container);
   --color-surface-container-high: var(--surface-container-high);
   --color-surface-container-highest: var(--surface-container-highest);
@@ -139,8 +145,8 @@
   --card-foreground: oklch(0.18 0.02 260);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.18 0.02 260);
-  --muted: oklch(0.95 0.01 260);
-  --muted-foreground: oklch(0.54 0.02 258);
+  --muted: oklch(0.95 0 0); /* 순수 회색 (블루 톤 제거) */
+  --muted-foreground: oklch(0.54 0 0); /* 순수 회색 (블루 톤 제거) */
 
   /* ── Border & Input ── */
   --border: oklch(0.91 0.012 258);
@@ -173,7 +179,7 @@
   --surface-dim: oklch(0.87 0.03 255);
   --surface-bright: oklch(0.98 0.005 270);
   --surface-container-lowest: oklch(1 0 0);
-  --surface-container-low: oklch(0.94 0.016 260); /* --card(흰색) 대비 줄무늬/hover가 뚜렷이 보이도록 상향 */
+  --surface-container-low: oklch(0.85 0 0); /* 순수 회색 (더 진한 명도) */
   --surface-container: oklch(0.93 0.02 260);
   --surface-container-high: oklch(0.91 0.03 255);
   --surface-container-highest: oklch(0.89 0.03 255);
@@ -423,6 +429,22 @@
   --color-bg-error: var(--color-error-50);
   --color-bg-warning: var(--color-warning-50);
   --color-bg-info: var(--color-info-50);
+
+  /* ── Table Colors ── */
+  --table-header-main: #e2e5ec; /* 메인 헤더 */
+  --table-header-sub: #edeef2; /* 서브 헤더 */
+  --table-border: #2c3550; /* 헤더-바디 구분선 */
+  --table-group-cell: #eaedf3; /* 그룹 셀 */
+  --table-stripe: #f5f6f8; /* Stripe */
+  --table-hover: #e8ebf2; /* Hover */
+
+  /* ── Functional Colors ── */
+  --color-table-header-main: var(--table-header-main);
+  --color-table-header-sub: var(--table-header-sub);
+  --color-table-border: var(--table-border);
+  --color-table-group-cell: var(--table-group-cell);
+  --color-table-stripe: var(--table-stripe);
+  --color-table-hover: var(--table-hover);
 }
 
 /* ── Dark Mode — Civic Authority Dark ── */
@@ -438,8 +460,8 @@
   --primary-foreground: oklch(0.17 0.06 250);
   --secondary: oklch(0.25 0.05 248);
   --secondary-foreground: oklch(0.92 0.01 255);
-  --muted: oklch(0.22 0.04 248);
-  --muted-foreground: oklch(0.7 0.03 255);
+  --muted: oklch(0.22 0 0); /* 순수 회색 (블루 톤 제거) */
+  --muted-foreground: oklch(0.7 0 0); /* 순수 회색 (블루 톤 제거) */
   --accent: oklch(0.7 0.12 230);
   --accent-foreground: oklch(0.15 0.04 250);
   --destructive: oklch(0.65 0.2 22);
@@ -467,7 +489,7 @@
   --surface: oklch(0.14 0.03 250);
   --surface-dim: oklch(0.11 0.03 250);
   --surface-container-lowest: oklch(0.1 0.02 250);
-  --surface-container-low: oklch(0.17 0.04 248);
+  --surface-container-low: oklch(0.17 0 0); /* 순수 회색 (블루 톤 제거) */
   --surface-container: oklch(0.2 0.04 248);
   --surface-container-high: oklch(0.24 0.04 248);
   --surface-container-highest: oklch(0.28 0.04 248);

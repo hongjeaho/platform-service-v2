@@ -43,8 +43,8 @@ export const rawColors = {
   cardForeground: 'oklch(0.18 0.02 260)',
   popover: 'oklch(1 0 0)',
   popoverForeground: 'oklch(0.18 0.02 260)',
-  muted: 'oklch(0.95 0.01 260)',
-  mutedForeground: 'oklch(0.54 0.02 258)',
+  muted: 'oklch(0.95 0 0)', // 순수 회색 (블루 톤 제거)
+  mutedForeground: 'oklch(0.54 0 0)', // 순수 회색 (블루 톤 제거)
 
   // Border & Input
   border: 'oklch(0.91 0.012 258)',
@@ -93,7 +93,7 @@ export const extendedColors = {
   surfaceDim: 'oklch(0.87 0.03 255)',
   surfaceBright: 'oklch(0.98 0.005 270)',
   surfaceContainerLowest: 'oklch(1 0 0)',
-  surfaceContainerLow: 'oklch(0.94 0.016 260)', // --card(흰색) 대비 줄무늬/hover가 뚜렷이 보이도록 상향
+  surfaceContainerLow: 'oklch(0.85 0 0)', // 순수 회색 (더 진한 명도)
   surfaceContainer: 'oklch(0.93 0.02 260)',
   surfaceContainerHigh: 'oklch(0.91 0.03 255)',
   surfaceContainerHighest: 'oklch(0.89 0.03 255)',
@@ -107,6 +107,14 @@ export const extendedColors = {
   // 에러 컨테이너
   errorContainer: 'oklch(0.91 0.04 22)', // #ffdad6
   onErrorContainer: 'oklch(0.30 0.18 27)', // #93000a
+
+  // 테이블 전용 색상 — 그라데이션 계층 구조
+  tableHeaderMain: 'oklch(0.91 0.007 250)', // #E2E5EC — 메인 헤더
+  tableHeaderSub: 'oklch(0.94 0.005 250)', // #EDEEF2 — 서브 헤더
+  tableBorder: 'oklch(0.28 0.05 250)', // #2C3550 — 헤더-바디 구분선
+  tableGroupCell: 'oklch(0.93 0.006 250)', // #EAEDF3 — 그룹 셀
+  tableStripe: 'oklch(0.97 0.004 250)', // #F5F6F8 — Stripe
+  tableHover: 'oklch(0.92 0.006 250)', // #E8EBF2 — Hover
 } as const
 
 export type ExtendedColorKey = keyof typeof extendedColors
