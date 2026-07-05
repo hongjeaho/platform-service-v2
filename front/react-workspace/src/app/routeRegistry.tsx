@@ -79,8 +79,8 @@ const routeTree: RouteNode[] = [
 /**
  * Convert RouteNode to RouteObject for react-router
  */
-function toRouteObject(node: RouteNode) {
-  const obj: any = {}
+function toRouteObject(node: RouteNode): Record<string, unknown> {
+  const obj: Record<string, unknown> = {}
   if (node.path) obj.path = node.path
   if (node.index) obj.index = node.index
   if (node.Component) obj.Component = node.Component
