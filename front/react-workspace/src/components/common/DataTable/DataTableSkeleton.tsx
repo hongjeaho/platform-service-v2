@@ -1,11 +1,11 @@
-import { TableBody, TableCell, TableRow } from '@/components/common/Table'
+import { TableCell, TableRow } from '@/components/common/Table'
 
 import styles from './DataTable.module.css'
 import type { DataTableSkeletonProps } from './DataTable.type'
 
 export function DataTableSkeleton({ pageSize, columnCount }: DataTableSkeletonProps) {
   return (
-    <TableBody>
+    <tbody>
       {Array.from({ length: pageSize }, (_, rowIdx) => (
         <TableRow key={rowIdx}>
           {Array.from({ length: columnCount }, (_, colIdx) => (
@@ -15,6 +15,6 @@ export function DataTableSkeleton({ pageSize, columnCount }: DataTableSkeletonPr
           ))}
         </TableRow>
       ))}
-    </TableBody>
+    </tbody>
   )
 }

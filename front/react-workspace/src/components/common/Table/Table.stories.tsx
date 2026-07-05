@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '.'
+import { Table, TableCell, TableRow } from '.'
 
 type Story = StoryObj<typeof Table>
 
@@ -13,17 +13,29 @@ const AdminTableRender: Story['render'] = args => (
       hoverable={args.hoverable}
       bordered={args.bordered}
     >
-      <TableHeader>
+      <thead>
         <TableRow>
-          <TableHead align='left'>사건번호</TableHead>
-          <TableHead align='left'>수취인 성명</TableHead>
-          <TableHead align='left'>송달 종류</TableHead>
-          <TableHead align='left'>현재 상태</TableHead>
-          <TableHead align='left'>예정/완료일</TableHead>
-          <TableHead align='center'>관리</TableHead>
+          <TableCell as='th' scope='col' align='left'>
+            사건번호
+          </TableCell>
+          <TableCell as='th' scope='col' align='left'>
+            수취인 성명
+          </TableCell>
+          <TableCell as='th' scope='col' align='left'>
+            송달 종류
+          </TableCell>
+          <TableCell as='th' scope='col' align='left'>
+            현재 상태
+          </TableCell>
+          <TableCell as='th' scope='col' align='left'>
+            예정/완료일
+          </TableCell>
+          <TableCell as='th' scope='col' align='center'>
+            관리
+          </TableCell>
         </TableRow>
-      </TableHeader>
-      <TableBody>
+      </thead>
+      <tbody>
         <TableRow>
           <TableCell align='left'>2024-수용-0081</TableCell>
           <TableCell align='left'>김철수</TableCell>
@@ -56,7 +68,7 @@ const AdminTableRender: Story['render'] = args => (
           <TableCell align='left'>2024-11-10</TableCell>
           <TableCell align='center'>내역 보기</TableCell>
         </TableRow>
-      </TableBody>
+      </tbody>
     </Table>
   </div>
 )
@@ -99,14 +111,20 @@ export const WithFooter: Story = {
   render: args => (
     <div className='w-[640px]'>
       <Table ariaLabel={args.ariaLabel} striped={args.striped} hoverable={args.hoverable}>
-        <TableHeader>
+        <thead>
           <TableRow>
-            <TableHead align='left'>항목</TableHead>
-            <TableHead align='left'>구분</TableHead>
-            <TableHead align='right'>금액</TableHead>
+            <TableCell as='th' scope='col' align='left'>
+              항목
+            </TableCell>
+            <TableCell as='th' scope='col' align='left'>
+              구분
+            </TableCell>
+            <TableCell as='th' scope='col' align='right'>
+              금액
+            </TableCell>
           </TableRow>
-        </TableHeader>
-        <TableBody>
+        </thead>
+        <tbody>
           <TableRow>
             <TableCell align='left'>토지 보상금</TableCell>
             <TableCell align='left'>현금</TableCell>
@@ -122,15 +140,15 @@ export const WithFooter: Story = {
             <TableCell align='left'>현금</TableCell>
             <TableCell align='right'>8,000,000</TableCell>
           </TableRow>
-        </TableBody>
-        <TableFooter>
+        </tbody>
+        <tfoot>
           <TableRow>
             <TableCell colSpan={2} align='left'>
               합계
             </TableCell>
             <TableCell align='right'>58,000,000</TableCell>
           </TableRow>
-        </TableFooter>
+        </tfoot>
       </Table>
     </div>
   ),
@@ -146,20 +164,28 @@ export const SpanVariants: Story = {
         hoverable={args.hoverable}
         bordered={args.bordered}
       >
-        <TableHeader>
+        <thead>
           <TableRow>
-            <TableHead rowSpan={2} align='left'>
+            <TableCell as='th' rowSpan={2} scope='col' align='left'>
               구분
-            </TableHead>
-            <TableHead>항목</TableHead>
-            <TableHead align='right'>금액</TableHead>
+            </TableCell>
+            <TableCell as='th' scope='col'>
+              항목
+            </TableCell>
+            <TableCell as='th' scope='col' align='right'>
+              금액
+            </TableCell>
           </TableRow>
           <TableRow>
-            <TableHead>세부 항목</TableHead>
-            <TableHead align='right'>금액(원)</TableHead>
+            <TableCell as='th' scope='col'>
+              세부 항목
+            </TableCell>
+            <TableCell as='th' scope='col' align='right'>
+              금액(원)
+            </TableCell>
           </TableRow>
-        </TableHeader>
-        <TableBody>
+        </thead>
+        <tbody>
           <TableRow>
             <TableCell rowSpan={2} align='left'>
               토지
@@ -178,7 +204,7 @@ export const SpanVariants: Story = {
             <TableCell>단독주택</TableCell>
             <TableCell align='right'>20,000,000</TableCell>
           </TableRow>
-        </TableBody>
+        </tbody>
       </Table>
     </div>
   ),
@@ -189,14 +215,20 @@ export const AlignVariants: Story = {
   render: args => (
     <div className='w-[480px]'>
       <Table ariaLabel={args.ariaLabel} striped={args.striped} hoverable={args.hoverable}>
-        <TableHeader>
+        <thead>
           <TableRow>
-            <TableHead align='left'>좌측 정렬</TableHead>
-            <TableHead align='center'>가운데 정렬</TableHead>
-            <TableHead align='right'>우측 정렬</TableHead>
+            <TableCell as='th' scope='col' align='left'>
+              좌측 정렬
+            </TableCell>
+            <TableCell as='th' scope='col' align='center'>
+              가운데 정렬
+            </TableCell>
+            <TableCell as='th' scope='col' align='right'>
+              우측 정렬
+            </TableCell>
           </TableRow>
-        </TableHeader>
-        <TableBody>
+        </thead>
+        <tbody>
           <TableRow>
             <TableCell align='left'>항목 A</TableCell>
             <TableCell align='center'>완료</TableCell>
@@ -207,7 +239,7 @@ export const AlignVariants: Story = {
             <TableCell align='center'>검토중</TableCell>
             <TableCell align='right'>850,000</TableCell>
           </TableRow>
-        </TableBody>
+        </tbody>
       </Table>
     </div>
   ),

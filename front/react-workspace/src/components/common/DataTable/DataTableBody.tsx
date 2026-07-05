@@ -1,6 +1,6 @@
 import { Button } from '@/components/common/Button'
 import { CheckBox } from '@/components/common/CheckBox'
-import { TableBody, TableCell, TableRow } from '@/components/common/Table'
+import { TableCell, TableRow } from '@/components/common/Table'
 
 import styles from './DataTable.module.css'
 import type { DataTableBodyProps } from './DataTable.type'
@@ -21,7 +21,7 @@ export function DataTableBody<T extends object>({
 }: DataTableBodyProps<T>) {
   if (isError) {
     return (
-      <TableBody>
+      <tbody>
         <TableRow>
           <TableCell colSpan={columnCount}>
             <div className={styles.stateContainer}>
@@ -34,7 +34,7 @@ export function DataTableBody<T extends object>({
             </div>
           </TableCell>
         </TableRow>
-      </TableBody>
+      </tbody>
     )
   }
 
@@ -44,7 +44,7 @@ export function DataTableBody<T extends object>({
 
   if (data.length === 0) {
     return (
-      <TableBody>
+      <tbody>
         <TableRow>
           <TableCell colSpan={columnCount}>
             <div className={styles.stateContainer}>
@@ -52,7 +52,7 @@ export function DataTableBody<T extends object>({
             </div>
           </TableCell>
         </TableRow>
-      </TableBody>
+      </tbody>
     )
   }
 
@@ -63,7 +63,7 @@ export function DataTableBody<T extends object>({
   }
 
   return (
-    <TableBody>
+    <tbody>
       {data.map((row, rowIdx) => {
         const isSelected = selectedRows.includes(row)
         return (
@@ -88,6 +88,6 @@ export function DataTableBody<T extends object>({
           </TableRow>
         )
       })}
-    </TableBody>
+    </tbody>
   )
 }

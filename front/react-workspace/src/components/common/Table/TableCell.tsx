@@ -7,15 +7,25 @@ function getAlignClass(align: NonNullable<TableCellProps['align']>) {
   return styles.alignCenter
 }
 
-export function TableCell({ align = 'center', colSpan, rowSpan, children }: TableCellProps) {
+export function TableCell({
+  as = 'td',
+  align = 'center',
+  scope,
+  colSpan,
+  rowSpan,
+  children,
+}: TableCellProps) {
+  const Component = as
+
   return (
-    <td
+    <Component
       className={[styles.cellBase, getAlignClass(align)].join(' ')}
       data-align={align}
+      scope={as === 'th' ? scope : undefined}
       colSpan={colSpan}
       rowSpan={rowSpan}
     >
       {children}
-    </td>
+    </Component>
   )
 }
