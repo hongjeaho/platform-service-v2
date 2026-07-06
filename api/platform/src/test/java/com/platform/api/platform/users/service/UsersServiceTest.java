@@ -169,66 +169,50 @@ class UsersServiceTest {
         verify(usersRepository, never()).insertUser(any());
     }
 
-    // ========== 이슈 #1: 아이디 중복 확인 API ==========
+    // ========== RESTful 재설계: 가용성 확인 통합 (checkAvailability) ==========
 
     @Test
-    @DisplayName("존재하지 않는 userId로 중복 확인 시 사용 가능 응답을 반환한다")
-    void checkDuplicateUserId_returnAvailableTrue_whenUserIdNotExists() {
+    @DisplayName("userId만 주어지고 미존재하면 사용 가능 응답을 반환한다")
+    void checkAvailability_returnAvailableTrue_whenUserIdOnlyAndNotExists() {
         // Given
-        String userId = "newuser";
-        when(usersRepository.existsByUserId(userId)).thenReturn(false);
+        when(usersRepository.existsByUserId("newuser")).thenReturn(false);
 
         // When
-        CheckDuplicateResponse response = usersService.checkDuplicateUserId(userId);
+        CheckDuplicateResponse response = usersService.checkAvailability("newuser", null);
 
         // Then
-        assertThat(response).isNotNull();
         assertThat(response.available()).isTrue();
         assertThat(response.message()).isEqualTo("사용 가능합니다.");
     }
 
     @Test
-    @DisplayName("이미 존재하는 userId로 중복 확인 시 IllegalStateException을 던진다")
-    void checkDuplicateUserId_throwIllegalStateException_whenUserIdAlreadyExists() {
+    @DisplayName("userEmail만 주어지고 미존재하면 사용 가능 응답을 반환한다")
+    void checkAvailability_returnAvailableTrue_whenUserEmailOnlyAndNotExists() {
         // Given
-        String userId = "existinguser";
-        when(usersRepository.existsByUserId(userId)).thenReturn(true);
+        when(usersRepository.existsByEmail("newuser@example.com")).thenReturn(true);
 
         // When & Then
-        assertThatThrownBy(() -> usersService.checkDuplicateUserId(userId))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("이미 사용 중인 아이디입니다.");
-    }
-
-    // ========== 이슈 #2: 이메일 중복 확인 API ==========
-
-    @Test
-    @DisplayName("존재하지 않는 userEmail로 중복 확인 시 사용 가능 응답을 반환한다")
-    void checkDuplicateUserEmail_returnAvailableTrue_whenEmailNotExists() {
-        // Given
-        String userEmail = "newuser@example.com";
-        when(usersRepository.existsByEmail(userEmail)).thenReturn(false);
-
-        // When
-        CheckDuplicateResponse response = usersService.checkDuplicateUserEmail(userEmail);
-
-        // Then
-        assertThat(response).isNotNull();
-        assertThat(response.available()).isTrue();
-        assertThat(response.message()).isEqualTo("사용 가능합니다.");
-    }
-
-    @Test
-    @DisplayName("이미 존재하는 userEmail로 중복 확인 시 IllegalStateException을 던진다")
-    void checkDuplicateUserEmail_throwIllegalStateException_whenEmailAlreadyExists() {
-        // Given
-        String userEmail = "existing@example.com";
-        when(usersRepository.existsByEmail(userEmail)).thenReturn(true);
-
-        // When & Then
-        assertThatThrownBy(() -> usersService.checkDuplicateUserEmail(userEmail))
+        assertThatThrownBy(() -> usersService.checkAvailability(null, "newuser@example.com"))
             .isInstanceOf(IllegalStateException.class)
             .hasMessageContaining("이미 사용 중인 이메일입니다.");
+    }
+
+    @Test
+    @DisplayName("userId와 userEmail이 둘 다 없으면 IllegalArgumentException을 던진다")
+    void checkAvailability_throwIllegalArgumentException_whenBothMissing() {
+        // When & Then
+        assertThatThrownBy(() -> usersService.checkAvailability(null, null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("userId 또는 userEmail 중 하나만 입력해주세요.");
+    }
+
+    @Test
+    @DisplayName("userId와 userEmail이 둘 다 주어지면 IllegalArgumentException을 던진다")
+    void checkAvailability_throwIllegalArgumentException_whenBothProvided() {
+        // When & Then
+        assertThatThrownBy(() -> usersService.checkAvailability("testuser", "test@example.com"))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("userId 또는 userEmail 중 하나만 입력해주세요.");
     }
 
     // ========== 이슈 #4: 비밀번호 변경 API (로그인 후) ==========

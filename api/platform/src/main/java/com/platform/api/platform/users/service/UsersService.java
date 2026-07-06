@@ -79,40 +79,31 @@ public class UsersService {
         return new UsersSignupResponse(seq, request.userId(), request.userName());
     }
 
-    // ========== 이슈 #1: 아이디 중복 확인 API ==========
+    // ========== RESTful 재설계: 아이디·이메일 가용성 확인 통합 API ==========
 
     /**
-     * 아이디 중복 여부를 확인한다.
+     * 아이디 또는 이메일의 가용성을 확인한다.
      *
-     * <p>아이디가 이미 사용 중인 경우 예외를 던지고, 사용 가능한 경우
-     * {@code available} 상태의 응답을 반환한다.</p>
+     * <p>정확히 하나(userId 또는 userEmail)만 주어져야 하며, 이미 사용 중인 경우 예외를 던지고
+     * 사용 가능한 경우 {@code available} 상태의 응답을 반환한다.</p>
      *
-     * @param userId 중복 확인할 아이디
+     * @param userId 중복 확인할 아이디 (userEmail과 동시에 줄 수 없음)
+     * @param userEmail 중복 확인할 이메일 (userId와 동시에 줄 수 없음)
      * @return 사용 가능한 경우 {@code available} 상태 응답
-     * @throws IllegalStateException 아이디가 이미 사용 중인 경우
+     * @throws IllegalArgumentException userId·userEmail이 둘 다 없거나 둘 다 주어진 경우
+     * @throws IllegalStateException 아이디 또는 이메일이 이미 사용 중인 경우
      */
     @PlatformTransactional(readOnly = true)
-    public CheckDuplicateResponse checkDuplicateUserId(String userId) {
-        if (usersRepository.existsByUserId(userId)) {
-            throw new IllegalStateException("이미 사용 중인 아이디입니다.");
+    public CheckDuplicateResponse checkAvailability(String userId, String userEmail) {
+        if ((userId == null) == (userEmail == null)) {
+            throw new IllegalArgumentException("userId 또는 userEmail 중 하나만 입력해주세요.");
         }
-        return CheckDuplicateResponse.ofAvailable();
-    }
-
-    // ========== 이슈 #2: 이메일 중복 확인 API ==========
-
-    /**
-     * 이메일 중복 여부를 확인한다.
-     *
-     * <p>이메일이 이미 사용 중인 경우 예외를 던지고, 사용 가능한 경우
-     * {@code available} 상태의 응답을 반환한다.</p>
-     *
-     * @param userEmail 중복 확인할 이메일
-     * @return 사용 가능한 경우 {@code available} 상태 응답
-     * @throws IllegalStateException 이메일이 이미 사용 중인 경우
-     */
-    @PlatformTransactional(readOnly = true)
-    public CheckDuplicateResponse checkDuplicateUserEmail(String userEmail) {
+        if (userId != null) {
+            if (usersRepository.existsByUserId(userId)) {
+                throw new IllegalStateException("이미 사용 중인 아이디입니다.");
+            }
+            return CheckDuplicateResponse.ofAvailable();
+        }
         if (usersRepository.existsByEmail(userEmail)) {
             throw new IllegalStateException("이미 사용 중인 이메일입니다.");
         }
