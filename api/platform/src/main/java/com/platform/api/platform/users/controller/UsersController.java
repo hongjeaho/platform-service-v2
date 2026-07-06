@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +32,7 @@ public class UsersController {
         @ApiResponse(responseCode = "401", description = "JWT 인증 실패 (SecurityConfig 자동 처리)"),
         @ApiResponse(responseCode = "409", description = "현재 비밀번호와 동일")
     })
-    @PostMapping("/password/change")
+    @PatchMapping("/password")
     public ResponseEntity<ApiResult<ChangePasswordResponse>> changePassword(
         @RequestBody @Valid ChangePasswordRequest request
     ) {
