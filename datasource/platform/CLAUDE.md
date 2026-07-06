@@ -54,7 +54,7 @@ MyBatis XML: `src/main/resources/mybatis-mapper/{domain}/{Domain}Mapper.xml`
 | POJO | `{TableName}Entity` | `UserEntity`, `CaseInfoEntity` |
 | POJO 패키지 | `...jooq.generated.tables.pojos` | — |
 
-JOOQ 코드 재생성: `./gradlew :datasource:platform:generateJooq`
+JOOQ 코드 재생성: `./gradlew :datasource-platform:generateJooq`
 생성된 코드는 **수동으로 수정하지 않습니다.**
 
 ### Repository 작성 패턴

@@ -21,16 +21,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # 빌드
-./gradlew :api:platform:build -x test
+./gradlew :api-platform:build -x test
 
 # 실행 (local 프로파일)
-./gradlew :api:platform:bootRun --args='--spring.profiles.active=local'
+./gradlew :api-platform:bootRun --args='--spring.profiles.active=local'
 
 # 테스트
-./gradlew :api:platform:test
+./gradlew :api-platform:test
 
 # JOOQ 코드 재생성 (스키마 변경 후 필수)
-./gradlew :datasource:platform:generateJooq
+./gradlew :datasource-platform:generateJooq
 
 # 헬스체크
 GET /public/platform/actuator/health
