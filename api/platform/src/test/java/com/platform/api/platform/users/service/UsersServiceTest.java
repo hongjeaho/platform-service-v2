@@ -5,6 +5,7 @@ import com.platform.api.platform.users.dto.CheckDuplicateResponse;
 import com.platform.api.platform.users.dto.SendOtpResponse;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
 import com.platform.api.platform.users.dto.UsersSignupResponse;
+import com.platform.api.platform.users.type.OtpPurpose;
 import com.platform.datasource.platform.jooq.generated.tables.pojos.UsersEntity;
 import com.platform.datasource.platform.repository.users.UsersRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +53,7 @@ class UsersServiceTest {
     void setUp() {
         request = new UsersSignupRequest("testuser", "홍길동", "password123", "test@example.com", "123456");
         // signup 공통 전제조건: OTP 검증 통과 (OTP 실패 케이스만 개별 스텁으로 false 오버라이드)
-        when(otpService.verify(request.userEmail(), request.otpCode())).thenReturn(true);
+        when(otpService.verify(request.userEmail(), request.otpCode(), OtpPurpose.SIGNUP)).thenReturn(true);
     }
 
     @Test
@@ -73,6 +74,7 @@ class UsersServiceTest {
         assertThat(result.seq()).isEqualTo(1L);
         assertThat(result.userId()).isEqualTo("testuser");
         assertThat(result.userName()).isEqualTo("홍길동");
+        verify(otpService).verify(request.userEmail(), request.otpCode(), OtpPurpose.SIGNUP);
     }
 
     @Test
@@ -157,7 +159,7 @@ class UsersServiceTest {
     @DisplayName("OTP 검증 실패 시 IllegalArgumentException을 던지고 insertUser를 호출하지 않는다")
     void signup_throwIllegalArgumentExceptionAndNotInsertUser_whenOtpInvalid() {
         // Given
-        when(otpService.verify(request.userEmail(), request.otpCode())).thenReturn(false);
+        when(otpService.verify(request.userEmail(), request.otpCode(), OtpPurpose.SIGNUP)).thenReturn(false);
 
         // When & Then
         assertThatThrownBy(() -> usersService.signup(request))
@@ -399,7 +401,7 @@ class UsersServiceTest {
         existingUser.setUserEmail(userEmail);
         existingUser.setUserPassword("$2a$10$encodedOldPassword");
 
-        when(otpService.verify(userEmail, otpCode)).thenReturn(true);
+        when(otpService.verify(userEmail, otpCode, OtpPurpose.PASSWORD_CHANGE)).thenReturn(true);
         when(usersRepository.findByUserEmail(userEmail)).thenReturn(existingUser);
         when(passwordEncoder.matches(newPassword, existingUser.getUserPassword())).thenReturn(false);
         when(passwordEncoder.encode(newPassword)).thenReturn("$2a$10$encodedNew12345");
@@ -411,7 +413,7 @@ class UsersServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.success()).isTrue();
         assertThat(result.message()).isEqualTo("비밀번호가 변경되었습니다.");
-        verify(otpService).verify(userEmail, otpCode);
+        verify(otpService).verify(userEmail, otpCode, OtpPurpose.PASSWORD_CHANGE);
         verify(usersRepository).updatePassword(eq(1L), any(), eq(0L));
     }
 
@@ -423,7 +425,7 @@ class UsersServiceTest {
         String otpCode = "123456";
         String newPassword = "new12345";
 
-        when(otpService.verify(userEmail, otpCode)).thenReturn(false);
+        when(otpService.verify(userEmail, otpCode, OtpPurpose.PASSWORD_CHANGE)).thenReturn(false);
 
         // When & Then
         assertThatThrownBy(() -> usersService.changePasswordBeforeLogin(userEmail, newPassword, otpCode))
@@ -444,7 +446,7 @@ class UsersServiceTest {
         existingUser.setUserEmail(userEmail);
         existingUser.setUserPassword("$2a$10$encodedCurrent123");
 
-        when(otpService.verify(userEmail, otpCode)).thenReturn(true);
+        when(otpService.verify(userEmail, otpCode, OtpPurpose.PASSWORD_CHANGE)).thenReturn(true);
         when(usersRepository.findByUserEmail(userEmail)).thenReturn(existingUser);
         when(passwordEncoder.matches(newPassword, existingUser.getUserPassword())).thenReturn(true);
 
@@ -462,7 +464,7 @@ class UsersServiceTest {
         String otpCode = "123456";
         String newPassword = "new12345";
 
-        when(otpService.verify(userEmail, otpCode)).thenReturn(true);
+        when(otpService.verify(userEmail, otpCode, OtpPurpose.PASSWORD_CHANGE)).thenReturn(true);
         when(usersRepository.findByUserEmail(userEmail)).thenReturn(null);
 
         // When & Then
@@ -474,13 +476,13 @@ class UsersServiceTest {
     // ========== 이슈 3 (issue-3.md): 회원가입용 OTP 발송 (미가입 허용) ==========
 
     @Test
-    @DisplayName("미가입 이메일로 sendSignupOtp 호출 시 OtpService.generateAndSaveForSignup에 위임하고 SendOtpResponse를 반환한다")
-    void sendSignupOtp_delegateToOtpServiceAndReturnResponse_whenEmailNotRegistered() {
+    @DisplayName("미가입 이메일로 sendSignupOtp 호출 시 OtpService.issue(email, SIGNUP)에 위임하고 SendOtpResponse를 반환한다")
+    void sendSignupOtp_delegateIssueWithSignupPurpose_whenEmailNotRegistered() {
         // Given
         String userEmail = "newuser@example.com";
         SendOtpResponse expected = SendOtpResponse.ofSuccess();
         when(usersRepository.existsByEmail(userEmail)).thenReturn(false);
-        when(otpService.generateAndSaveForSignup(userEmail)).thenReturn(expected);
+        when(otpService.issue(userEmail, OtpPurpose.SIGNUP)).thenReturn(expected);
 
         // When
         SendOtpResponse result = usersService.sendSignupOtp(userEmail);
@@ -488,7 +490,7 @@ class UsersServiceTest {
         // Then
         assertThat(result).isNotNull();
         assertThat(result.message()).isEqualTo("OTP가 이메일로 발송되었습니다.");
-        verify(otpService).generateAndSaveForSignup(userEmail);
+        verify(otpService).issue(userEmail, OtpPurpose.SIGNUP);
     }
 
     @Test
@@ -502,6 +504,40 @@ class UsersServiceTest {
         assertThatThrownBy(() -> usersService.sendSignupOtp(userEmail))
             .isInstanceOf(IllegalStateException.class)
             .hasMessageContaining("이미 가입된 이메일입니다.");
-        verify(otpService, never()).generateAndSaveForSignup(anyString());
+        verify(otpService, never()).issue(anyString(), any(OtpPurpose.class));
+    }
+
+    // ========== 슬라이스 3: 사전조건 이동 (sendPasswordChangeOtp — 가입 필요) ==========
+
+    @Test
+    @DisplayName("가입된 이메일로 sendPasswordChangeOtp 호출 시 OtpService.issue(email, PASSWORD_CHANGE)에 위임한다")
+    void sendPasswordChangeOtp_delegateIssueWithPasswordChangePurpose_whenEmailRegistered() {
+        // Given
+        String userEmail = "test@example.com";
+        SendOtpResponse expected = SendOtpResponse.ofSuccess();
+        when(usersRepository.existsByEmail(userEmail)).thenReturn(true);
+        when(otpService.issue(userEmail, OtpPurpose.PASSWORD_CHANGE)).thenReturn(expected);
+
+        // When
+        SendOtpResponse result = usersService.sendPasswordChangeOtp(userEmail);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.message()).isEqualTo("OTP가 이메일로 발송되었습니다.");
+        verify(otpService).issue(userEmail, OtpPurpose.PASSWORD_CHANGE);
+    }
+
+    @Test
+    @DisplayName("가입되지 않은 이메일로 sendPasswordChangeOtp 호출 시 IllegalArgumentException을 던지고 issue를 호출하지 않는다")
+    void sendPasswordChangeOtp_throwIllegalArgumentException_whenEmailNotRegistered() {
+        // Given
+        String userEmail = "unregistered@example.com";
+        when(usersRepository.existsByEmail(userEmail)).thenReturn(false);
+
+        // When & Then
+        assertThatThrownBy(() -> usersService.sendPasswordChangeOtp(userEmail))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("해당 이메일로 등록된 사용자가 없습니다.");
+        verify(otpService, never()).issue(anyString(), any(OtpPurpose.class));
     }
 }

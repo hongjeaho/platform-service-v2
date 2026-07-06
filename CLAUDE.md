@@ -21,17 +21,17 @@ docker-compose up -d                              # MySQL 8(3306, db=store, root
 # JOOQ 코드 생성 — local 프로필은 datasource/platform/gradle.properties(커밋 금지) 필요:
 #   cp datasource/platform/gradle.properties.example datasource/platform/gradle.properties
 #   (db.url / db.user / db.password 기입). dev 등은 환경변수 DB_JDBC_URL/DB_USERNAME/DB_PASSWORD 사용.
-./gradlew :datasource:platform:generateJooq       # compileJava가 이 태스크에 의존 → 빌드 전 필수
+./gradlew :datasource-platform:generateJooq       # compileJava가 이 태스크에 의존 → 빌드 전 필수
 ```
 
 ### 백엔드
 
 ```bash
-./gradlew :api:platform:bootRun --args='--spring.profiles.active=local'   # 8080 포트
-./gradlew :api:platform:test                                              # 전체 테스트
-./gradlew :api:platform:test --tests "com.platform.api.platform.users.*"  # 특정 도메인만
+./gradlew :api-platform:bootRun --args='--spring.profiles.active=local'   # 8080 포트
+./gradlew :api-platform:test                                              # 전체 테스트
+./gradlew :api-platform:test --tests "com.platform.api.platform.users.*"  # 특정 도메인만
 ./gradlew jacocoMergedReport                                             # 전체 모듈 통합 커버리지(common-jooq 제외)
-./gradlew :api:platform:build -x test                                     # JAR 빌드(build/libs/platform-*.jar)
+./gradlew :api-platform:build -x test                                     # JAR 빌드(build/libs/platform-*.jar)
 ```
 
 ### 프론트엔드 (`cd front/react-workspace`)
@@ -102,7 +102,7 @@ HTTP → SecurityConfig(JWT 필터, CORS 허용, CSRF 비활성) → Controller(
 | Service 단위 | `@ExtendWith(MockitoExtension.class)` | Repository (`@Mock`) |
 | Controller 슬라이스 | `@WebMvcTest` | Service (`@MockBean`) |
 
-- 실행: `./gradlew :api:platform:test`(전체) · `--tests "com.platform.api.platform.{domain}.*"`(특정 도메인) · `./gradlew jacocoMergedReport`(전체 모듈 통합 커버리지). JaCoCo 제외 대상은 위 영속성 섹션 참조.
+- 실행: `./gradlew :api-platform:test`(전체) · `--tests "com.platform.api.platform.{domain}.*"`(특정 도메인) · `./gradlew jacocoMergedReport`(전체 모듈 통합 커버리지). JaCoCo 제외 대상은 위 영속성 섹션 참조.
 
 ### 프론트엔드 아키텍처 (`front/react-workspace`)
 

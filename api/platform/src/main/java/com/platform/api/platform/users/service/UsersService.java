@@ -5,6 +5,7 @@ import com.platform.api.platform.users.dto.CheckDuplicateResponse;
 import com.platform.api.platform.users.dto.SendOtpResponse;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
 import com.platform.api.platform.users.dto.UsersSignupResponse;
+import com.platform.api.platform.users.type.OtpPurpose;
 import com.platform.datasource.platform.config.database.PlatformTransactional;
 import com.platform.datasource.platform.jooq.generated.tables.pojos.UsersEntity;
 import com.platform.datasource.platform.repository.users.UsersRepository;
@@ -42,8 +43,8 @@ public class UsersService {
      */
     @PlatformTransactional
     public UsersSignupResponse signup(UsersSignupRequest request) {
-        // 1. OTP 검증 (이메일 인증 완료 사용자만 가입 허용)
-        verifyOtpOrThrow(request.userEmail(), request.otpCode());
+        // 1. OTP 검증 (이메일 인증 완료 사용자만 가입 허용 — SIGNUP 용도)
+        verifyOtpOrThrow(request.userEmail(), request.otpCode(), OtpPurpose.SIGNUP);
 
         // 2. 아이디/이메일 중복 확인
         if (usersRepository.existsByUserId(request.userId())) {
@@ -140,8 +141,8 @@ public class UsersService {
             String newPassword,
             String otpCode
     ) {
-        // 1. OTP 검증
-        verifyOtpOrThrow(userEmail, otpCode);
+        // 1. OTP 검증 (PASSWORD_CHANGE 용도)
+        verifyOtpOrThrow(userEmail, otpCode, OtpPurpose.PASSWORD_CHANGE);
 
         // 2. 사용자 조회
         UsersEntity user = usersRepository.findByUserEmail(userEmail);
@@ -167,7 +168,9 @@ public class UsersService {
      * 미가입 이메일에 회원가입용 OTP를 발송한다.
      *
      * <p>이메일이 미가입일 때 정상 동작하며, 이미 가입된 경우 예외를 던진다.
-     * 미가입인 경우 {@link OtpService#generateAndSaveForSignup(String)}에 위임한다.</p>
+     * 사전조건(미가입 필요)은 회원 도메인이 소유한다 — OTP 기계(OtpService)는 회원 가입 여부를
+     * 알지 않는다 (ADR-0001). 미가입인 경우 {@link OtpService#issue(String, OtpPurpose)}에
+     * {@code SIGNUP} 용도로 위임한다.</p>
      *
      * @param userEmail 회원가입 OTP를 발송할 이메일
      * @return OTP 발송 성공 응답
@@ -175,13 +178,34 @@ public class UsersService {
      */
     @PlatformTransactional
     public SendOtpResponse sendSignupOtp(String userEmail) {
-        // 1. 이미 가입된 이메일인지 확인
+        // 1. 이미 가입된 이메일인지 확인 (사전조건 — 호출자 소유)
         if (usersRepository.existsByEmail(userEmail)) {
             throw new IllegalStateException("이미 가입된 이메일입니다.");
         }
 
-        // 2. 회원가입용 OTP 발송 (미가입 허용)
-        return otpService.generateAndSaveForSignup(userEmail);
+        // 2. 회원가입용 OTP 발송 (SIGNUP 용도)
+        return otpService.issue(userEmail, OtpPurpose.SIGNUP);
+    }
+
+    /**
+     * 가입된 이메일에 비밀번호 재설정용 OTP를 발송한다.
+     *
+     * <p>사전조건(가입 필요)은 회원 도메인이 소유한다 — OTP 기계(OtpService)는 회원 가입 여부를
+     * 알지 않는다 (ADR-0001). 이미 가입된 이메일만 허용하며, 미가입인 경우 예외를 던진다.</p>
+     *
+     * @param userEmail 비밀번호 재설정 OTP를 발송할 이메일
+     * @return OTP 발송 성공 응답
+     * @throws IllegalArgumentException 해당 이메일로 등록된 사용자가 없는 경우
+     */
+    @PlatformTransactional
+    public SendOtpResponse sendPasswordChangeOtp(String userEmail) {
+        // 1. 가입된 이메일인지 확인 (사전조건 — 호출자 소유)
+        if (!usersRepository.existsByEmail(userEmail)) {
+            throw new IllegalArgumentException("해당 이메일로 등록된 사용자가 없습니다.");
+        }
+
+        // 2. 비밀번호 재설정용 OTP 발송 (PASSWORD_CHANGE 용도)
+        return otpService.issue(userEmail, OtpPurpose.PASSWORD_CHANGE);
     }
 
     // ========== 이슈 #4: 비밀번호 변경 API (로그인 후) ==========
@@ -230,10 +254,11 @@ public class UsersService {
      *
      * @param userEmail 사용자 이메일
      * @param otpCode OTP 코드
+     * @param purpose OTP 검증 용도
      * @throws IllegalArgumentException OTP가 만료되었거나 일치하지 않는 경우
      */
-    private void verifyOtpOrThrow(String userEmail, String otpCode) {
-        if (!otpService.verify(userEmail, otpCode)) {
+    private void verifyOtpOrThrow(String userEmail, String otpCode, OtpPurpose purpose) {
+        if (!otpService.verify(userEmail, otpCode, purpose)) {
             throw new IllegalArgumentException("OTP가 만료되었습니다. 다시 발송해주세요.");
         }
     }

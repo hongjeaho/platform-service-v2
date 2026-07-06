@@ -32,7 +32,7 @@ public class UsersController {
         @ApiResponse(responseCode = "401", description = "JWT 인증 실패 (SecurityConfig 자동 처리)"),
         @ApiResponse(responseCode = "409", description = "현재 비밀번호와 동일")
     })
-    @PostMapping("/change-password")
+    @PostMapping("/password/change")
     public ResponseEntity<ApiResult<ChangePasswordResponse>> changePassword(
         @RequestBody @Valid ChangePasswordRequest request
     ) {
