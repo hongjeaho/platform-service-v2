@@ -7,7 +7,6 @@ import com.platform.api.platform.users.dto.SendOtpRequest;
 import com.platform.api.platform.users.dto.SendOtpResponse;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
 import com.platform.api.platform.users.dto.UsersSignupResponse;
-import com.platform.api.platform.users.service.OtpService;
 import com.platform.api.platform.users.service.UsersService;
 import com.platform.common.web.config.filter.JWTCheckFilter;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,9 +38,6 @@ class PublicUsersControllerTest {
     private UsersService usersService;
 
     @MockitoBean
-    private OtpService otpService;
-
-    @MockitoBean
     private JWTCheckFilter jwtCheckFilter;
 
     @MockitoBean(name = "platformHeaderFilter")
@@ -67,7 +63,7 @@ class PublicUsersControllerTest {
         when(usersService.signup(any())).thenReturn(signupResponse);
 
         // When & Then
-        mockMvc.perform(post("/api/public/users")
+        mockMvc.perform(post("/api/public/users/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(validRequest)))
             .andExpect(status().isCreated())
@@ -81,7 +77,7 @@ class PublicUsersControllerTest {
     @DisplayName("userId가 없으면 400을 반환한다")
     void signup_return400_whenUserIdBlank() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/public/users")
+        mockMvc.perform(post("/api/public/users/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userName\":\"홍길동\",\"password\":\"password123\",\"userEmail\":\"test@example.com\",\"otpCode\":\"123456\"}"))
             .andExpect(status().isBadRequest());
@@ -91,7 +87,7 @@ class PublicUsersControllerTest {
     @DisplayName("userName이 없으면 400을 반환한다")
     void signup_return400_whenUserNameBlank() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/public/users")
+        mockMvc.perform(post("/api/public/users/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userId\":\"testuser\",\"password\":\"password123\",\"userEmail\":\"test@example.com\",\"otpCode\":\"123456\"}"))
             .andExpect(status().isBadRequest());
@@ -101,7 +97,7 @@ class PublicUsersControllerTest {
     @DisplayName("password가 없으면 400을 반환한다")
     void signup_return400_whenPasswordBlank() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/public/users")
+        mockMvc.perform(post("/api/public/users/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userId\":\"testuser\",\"userName\":\"홍길동\",\"userEmail\":\"test@example.com\",\"otpCode\":\"123456\"}"))
             .andExpect(status().isBadRequest());
@@ -111,7 +107,7 @@ class PublicUsersControllerTest {
     @DisplayName("userEmail이 없으면 400을 반환한다")
     void signup_return400_whenUserEmailBlank() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/public/users")
+        mockMvc.perform(post("/api/public/users/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userId\":\"testuser\",\"userName\":\"홍길동\",\"password\":\"password123\",\"otpCode\":\"123456\"}"))
             .andExpect(status().isBadRequest());
@@ -121,7 +117,7 @@ class PublicUsersControllerTest {
     @DisplayName("userEmail 형식이 올바르지 않으면 400을 반환한다")
     void signup_return400_whenInvalidEmail() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/public/users")
+        mockMvc.perform(post("/api/public/users/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userId\":\"testuser\",\"userName\":\"홍길동\",\"password\":\"password123\",\"userEmail\":\"not-an-email\",\"otpCode\":\"123456\"}"))
             .andExpect(status().isBadRequest());
@@ -131,7 +127,7 @@ class PublicUsersControllerTest {
     @DisplayName("otpCode가 누락되면 400을 반환한다 (Bean Validation)")
     void signup_return400_whenOtpCodeBlank() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/public/users")
+        mockMvc.perform(post("/api/public/users/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userId\":\"testuser\",\"userName\":\"홍길동\",\"password\":\"password123\",\"userEmail\":\"test@example.com\"}"))
             .andExpect(status().isBadRequest());
@@ -141,7 +137,7 @@ class PublicUsersControllerTest {
     @DisplayName("otpCode가 6자리가 아니면 400을 반환한다 (Bean Validation)")
     void signup_return400_whenOtpCodeLengthInvalid() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/public/users")
+        mockMvc.perform(post("/api/public/users/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userId\":\"testuser\",\"userName\":\"홍길동\",\"password\":\"password123\",\"userEmail\":\"test@example.com\",\"otpCode\":\"12345\"}"))
             .andExpect(status().isBadRequest());
@@ -154,7 +150,7 @@ class PublicUsersControllerTest {
         when(usersService.signup(any())).thenThrow(new IllegalStateException("이미 사용 중인 아이디입니다."));
 
         // When & Then
-        mockMvc.perform(post("/api/public/users")
+        mockMvc.perform(post("/api/public/users/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(validRequest)))
             .andExpect(status().isConflict());
@@ -167,7 +163,7 @@ class PublicUsersControllerTest {
         when(usersService.signup(any())).thenThrow(new IllegalStateException("이미 사용 중인 이메일입니다."));
 
         // When & Then
-        mockMvc.perform(post("/api/public/users")
+        mockMvc.perform(post("/api/public/users/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(validRequest)))
             .andExpect(status().isConflict());
@@ -181,7 +177,7 @@ class PublicUsersControllerTest {
             .thenThrow(new IllegalArgumentException("OTP가 만료되었습니다. 다시 발송해주세요."));
 
         // When & Then
-        mockMvc.perform(post("/api/public/users")
+        mockMvc.perform(post("/api/public/users/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(validRequest)))
             .andExpect(status().isBadRequest())
@@ -310,13 +306,13 @@ class PublicUsersControllerTest {
 
     @Test
     @DisplayName("유효한 이메일로 OTP 발송 요청 시 200 OK와 성공 메시지를 반환한다")
-    void sendOtp_return200WithSuccessMessage_whenValidEmail() throws Exception {
+    void sendPasswordChangeOtp_return200WithSuccessMessage_whenValidEmail() throws Exception {
         // Given
         SendOtpResponse response = SendOtpResponse.ofSuccess();
-        when(otpService.generateAndSave(eq("test@example.com"))).thenReturn(response);
+        when(usersService.sendPasswordChangeOtp(eq("test@example.com"))).thenReturn(response);
 
         // When & Then
-        mockMvc.perform(post("/api/public/users/send-otp")
+        mockMvc.perform(post("/api/public/users/password/otp")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userEmail\":\"test@example.com\"}"))
             .andExpect(status().isOk())
@@ -326,13 +322,13 @@ class PublicUsersControllerTest {
 
     @Test
     @DisplayName("등록되지 않은 이메일로 OTP 발송 요청 시 400 Bad Request를 반환한다")
-    void sendOtp_return400_whenEmailNotRegistered() throws Exception {
+    void sendPasswordChangeOtp_return400_whenEmailNotRegistered() throws Exception {
         // Given
-        when(otpService.generateAndSave(eq("unregistered@example.com")))
+        when(usersService.sendPasswordChangeOtp(eq("unregistered@example.com")))
             .thenThrow(new IllegalArgumentException("해당 이메일로 등록된 사용자가 없습니다."));
 
         // When & Then
-        mockMvc.perform(post("/api/public/users/send-otp")
+        mockMvc.perform(post("/api/public/users/password/otp")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userEmail\":\"unregistered@example.com\"}"))
             .andExpect(status().isBadRequest())
@@ -341,13 +337,13 @@ class PublicUsersControllerTest {
 
     @Test
     @DisplayName("10분 미경과 재발송 요청 시 409 Conflict를 반환한다")
-    void sendOtp_return409_whenResendIntervalNotMet() throws Exception {
+    void sendPasswordChangeOtp_return409_whenResendIntervalNotMet() throws Exception {
         // Given
-        when(otpService.generateAndSave(eq("test@example.com")))
+        when(usersService.sendPasswordChangeOtp(eq("test@example.com")))
             .thenThrow(new IllegalStateException("OTP는 10분마다 재발송할 수 있습니다."));
 
         // When & Then
-        mockMvc.perform(post("/api/public/users/send-otp")
+        mockMvc.perform(post("/api/public/users/password/otp")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userEmail\":\"test@example.com\"}"))
             .andExpect(status().isConflict())
@@ -356,9 +352,9 @@ class PublicUsersControllerTest {
 
     @Test
     @DisplayName("빈 userEmail로 OTP 발송 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
-    void sendOtp_return400_whenUserEmailIsEmpty() throws Exception {
+    void sendPasswordChangeOtp_return400_whenUserEmailIsEmpty() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/public/users/send-otp")
+        mockMvc.perform(post("/api/public/users/password/otp")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userEmail\":\"\"}"))
             .andExpect(status().isBadRequest());
@@ -366,9 +362,9 @@ class PublicUsersControllerTest {
 
     @Test
     @DisplayName("올바르지 않은 이메일 형식으로 OTP 발송 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
-    void sendOtp_return400_whenEmailFormatIsInvalid() throws Exception {
+    void sendPasswordChangeOtp_return400_whenEmailFormatIsInvalid() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/public/users/send-otp")
+        mockMvc.perform(post("/api/public/users/password/otp")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userEmail\":\"not-an-email\"}"))
             .andExpect(status().isBadRequest());
@@ -384,7 +380,7 @@ class PublicUsersControllerTest {
         when(usersService.changePasswordBeforeLogin(any(), any(), any())).thenReturn(response);
 
         // When & Then
-        mockMvc.perform(post("/api/public/users/change-password")
+        mockMvc.perform(post("/api/public/users/password/change")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userEmail\":\"test@example.com\",\"otpCode\":\"123456\",\"newPassword\":\"new12345\"}"))
             .andExpect(status().isOk())
@@ -400,7 +396,7 @@ class PublicUsersControllerTest {
             .thenThrow(new IllegalArgumentException("OTP가 만료되었습니다. 다시 발송해주세요."));
 
         // When & Then
-        mockMvc.perform(post("/api/public/users/change-password")
+        mockMvc.perform(post("/api/public/users/password/change")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userEmail\":\"test@example.com\",\"otpCode\":\"123456\",\"newPassword\":\"new12345\"}"))
             .andExpect(status().isBadRequest())
@@ -415,7 +411,7 @@ class PublicUsersControllerTest {
             .thenThrow(new IllegalStateException("현재 비밀번호와 동일한 비밀번호로 변경할 수 없습니다."));
 
         // When & Then
-        mockMvc.perform(post("/api/public/users/change-password")
+        mockMvc.perform(post("/api/public/users/password/change")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userEmail\":\"test@example.com\",\"otpCode\":\"123456\",\"newPassword\":\"current123\"}"))
             .andExpect(status().isConflict())
@@ -426,7 +422,7 @@ class PublicUsersControllerTest {
     @DisplayName("Bean Validation 검증 실패 시 400 Bad Request를 반환한다 - userEmail blank")
     void changePasswordBeforeLoginWithOtp_return400_whenUserEmailBlank() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/public/users/change-password")
+        mockMvc.perform(post("/api/public/users/password/change")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userEmail\":\"\",\"otpCode\":\"123456\",\"newPassword\":\"new12345\"}"))
             .andExpect(status().isBadRequest());
@@ -436,7 +432,7 @@ class PublicUsersControllerTest {
     @DisplayName("Bean Validation 검증 실패 시 400 Bad Request를 반환한다 - otpCode 길이 오류")
     void changePasswordBeforeLoginWithOtp_return400_whenOtpCodeLengthInvalid() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/public/users/change-password")
+        mockMvc.perform(post("/api/public/users/password/change")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userEmail\":\"test@example.com\",\"otpCode\":\"12345\",\"newPassword\":\"new12345\"}"))
             .andExpect(status().isBadRequest());
@@ -446,7 +442,7 @@ class PublicUsersControllerTest {
     @DisplayName("Bean Validation 검증 실패 시 400 Bad Request를 반환한다 - newPassword 길이 오류")
     void changePasswordBeforeLoginWithOtp_return400_whenNewPasswordLengthInvalid() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/public/users/change-password")
+        mockMvc.perform(post("/api/public/users/password/change")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userEmail\":\"test@example.com\",\"otpCode\":\"123456\",\"newPassword\":\"new123\"}"))
             .andExpect(status().isBadRequest());

@@ -9,7 +9,6 @@ import com.platform.api.platform.users.dto.UserEmailCheckRequest;
 import com.platform.api.platform.users.dto.UserIdCheckRequest;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
 import com.platform.api.platform.users.dto.UsersSignupResponse;
-import com.platform.api.platform.users.service.OtpService;
 import com.platform.api.platform.users.service.UsersService;
 import com.platform.common.web.response.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,15 +31,27 @@ import org.springframework.web.bind.annotation.RestController;
 public class PublicUsersController {
 
     private final UsersService usersService;
-    private final OtpService otpService;
 
-    @Operation(summary = "회원 등록")
+    @Operation(summary = "회원가입 OTP 발송")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "발송 성공"),
+            @ApiResponse(responseCode = "400", description = "입력값 오류"),
+            @ApiResponse(responseCode = "409", description = "이미 가입된 이메일 / 재발송 간격 미달")
+    })
+    @PostMapping("/signup/otp")
+    public ResponseEntity<ApiResult<SendOtpResponse>> sendSignupOtp(
+            @RequestBody @Valid SendOtpRequest request
+    ) {
+        return ResponseEntity.ok(ApiResult.of(usersService.sendSignupOtp(request.userEmail())));
+    }
+
+    @Operation(summary = "회원가입")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "등록 성공"),
         @ApiResponse(responseCode = "400", description = "입력값 오류"),
         @ApiResponse(responseCode = "409", description = "중복 아이디 또는 이메일")
     })
-    @PostMapping
+    @PostMapping("/signup")
     public ResponseEntity<ApiResult<UsersSignupResponse>> signup(
         @RequestBody @Valid UsersSignupRequest request
     ) {
@@ -73,17 +84,17 @@ public class PublicUsersController {
         return ResponseEntity.ok(ApiResult.of(usersService.checkDuplicateUserEmail(request.userEmail())));
     }
 
-    @Operation(summary = "OTP 발송")
+    @Operation(summary = "비밀번호 재설정 OTP 발송")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "발송 성공"),
         @ApiResponse(responseCode = "400", description = "입력값 오류 / 사용자 없음"),
         @ApiResponse(responseCode = "409", description = "재발송 간격 미달")
     })
-    @PostMapping("/send-otp")
-    public ResponseEntity<ApiResult<SendOtpResponse>> sendOtp(
+    @PostMapping("/password/otp")
+    public ResponseEntity<ApiResult<SendOtpResponse>> sendPasswordChangeOtp(
         @RequestBody @Valid SendOtpRequest request
     ) {
-        return ResponseEntity.ok(ApiResult.of(otpService.generateAndSave(request.userEmail())));
+        return ResponseEntity.ok(ApiResult.of(usersService.sendPasswordChangeOtp(request.userEmail())));
     }
 
     @Operation(summary = "비밀번호 변경 (로그인 전 - OTP 방식)")
@@ -92,7 +103,7 @@ public class PublicUsersController {
             @ApiResponse(responseCode = "400", description = "입력값 오류 / 사용자 없음 / OTP 만료 또는 불일치"),
             @ApiResponse(responseCode = "409", description = "현재 비밀번호와 동일")
     })
-    @PostMapping("/change-password")
+    @PostMapping("/password/change")
     public ResponseEntity<ApiResult<ChangePasswordResponse>> changePasswordBeforeLogin(
         @RequestBody @Valid ChangePasswordWithOtpRequest request
     ) {
@@ -103,20 +114,5 @@ public class PublicUsersController {
                 request.otpCode()
             )
         ));
-    }
-
-    // ========== 이슈 3 (issue-3.md): 회원가입용 OTP 발송 API (미가입 허용) ==========
-
-    @Operation(summary = "회원가입 OTP 발송")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "발송 성공"),
-        @ApiResponse(responseCode = "400", description = "입력값 오류"),
-        @ApiResponse(responseCode = "409", description = "이미 가입된 이메일 / 재발송 간격 미달")
-    })
-    @PostMapping("/signup/otp")
-    public ResponseEntity<ApiResult<SendOtpResponse>> sendSignupOtp(
-        @RequestBody @Valid SendOtpRequest request
-    ) {
-        return ResponseEntity.ok(ApiResult.of(usersService.sendSignupOtp(request.userEmail())));
     }
 }

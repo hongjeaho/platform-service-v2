@@ -77,7 +77,7 @@ class UsersControllerTest {
         when(usersService.changePassword(any(), any(), any())).thenReturn(response);
 
         // When & Then
-        mockMvc.perform(post("/api/users/change-password")
+        mockMvc.perform(post("/api/users/password/change")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"currentPassword\":\"current123\",\"newPassword\":\"new12345\"}"))
             .andExpect(status().isOk())
@@ -94,7 +94,7 @@ class UsersControllerTest {
             .thenThrow(new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
 
         // When & Then
-        mockMvc.perform(post("/api/users/change-password")
+        mockMvc.perform(post("/api/users/password/change")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"currentPassword\":\"wrongPassword\",\"newPassword\":\"new12345\"}"))
             .andExpect(status().isBadRequest());
@@ -108,7 +108,7 @@ class UsersControllerTest {
             .thenThrow(new IllegalStateException("현재 비밀번호와 동일합니다."));
 
         // When & Then
-        mockMvc.perform(post("/api/users/change-password")
+        mockMvc.perform(post("/api/users/password/change")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"currentPassword\":\"current123\",\"newPassword\":\"current123\"}"))
             .andExpect(status().isConflict());
@@ -118,7 +118,7 @@ class UsersControllerTest {
     @DisplayName("8자 미만 newPassword로 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
     void changePassword_return400_whenNewPasswordLessThan8Chars() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/users/change-password")
+        mockMvc.perform(post("/api/users/password/change")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"currentPassword\":\"current123\",\"newPassword\":\"new123\"}"))
             .andExpect(status().isBadRequest());
@@ -128,7 +128,7 @@ class UsersControllerTest {
     @DisplayName("12자 초과 newPassword로 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
     void changePassword_return400_whenNewPasswordExceeds12Chars() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/users/change-password")
+        mockMvc.perform(post("/api/users/password/change")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"currentPassword\":\"current123\",\"newPassword\":\"new123456789012\"}"))
             .andExpect(status().isBadRequest());
@@ -138,7 +138,7 @@ class UsersControllerTest {
     @DisplayName("빈 currentPassword로 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
     void changePassword_return400_whenCurrentPasswordIsEmpty() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/users/change-password")
+        mockMvc.perform(post("/api/users/password/change")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"currentPassword\":\"\",\"newPassword\":\"new12345\"}"))
             .andExpect(status().isBadRequest());
@@ -148,7 +148,7 @@ class UsersControllerTest {
     @DisplayName("빈 newPassword로 요청 시 400 Bad Request를 반환한다 (Bean Validation)")
     void changePassword_return400_whenNewPasswordIsEmpty() throws Exception {
         // When & Then
-        mockMvc.perform(post("/api/users/change-password")
+        mockMvc.perform(post("/api/users/password/change")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"currentPassword\":\"current123\",\"newPassword\":\"\"}"))
             .andExpect(status().isBadRequest());
