@@ -1,4 +1,5 @@
 import type { NavSection } from '@components/layout/AppShell'
+import { Component as LoginPage } from '@features/auth/pages/LoginPage'
 
 import { NotFoundPage, RootLayout, RouterErrorPage } from './layout'
 
@@ -36,6 +37,12 @@ export const routeTree: RouteNode[] = [
         meta: { title: '홈', inNav: false },
       },
     ],
+  },
+  {
+    path: '/login',
+    Component: LoginPage,
+    meta: { title: '로그인', inNav: false },
+    errorElement: <RouterErrorPage />,
   },
 ]
 

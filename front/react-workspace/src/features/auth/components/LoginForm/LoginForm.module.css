@@ -1,0 +1,42 @@
+/**
+ * LoginForm 스타일 (CSS Module)
+ * 디자인 시스템 토큰 기반 (--error, --spacing-*, --radius)
+ */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+.banner {
+  padding: var(--spacing-3);
+  border-radius: var(--radius);
+  background-color: color-mix(in oklch, var(--error) 8%, var(--card));
+  color: var(--error);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  color: var(--muted-foreground);
+}
+
+.links a {
+  color: var(--accent);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+.linkDivider {
+  color: var(--border);
+}
