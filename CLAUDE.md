@@ -220,6 +220,7 @@ GitHub Issues(`github.com/hongjeaho/platform-service-v2`)를 `gh` CLI로 사용.
 - 모든 작업은 기능 브랜치에서 진행
 - 브랜치 명명: `type/description` 또는 `type/ISSUE-NUMBER-description`
 - 작업 완료 후 PR을 통해 main 병합
+- **PR 머지 전략은 squash.** blocked-by 이슈는 선행 PR이 실제로 main에 머지된 걸 확인한 뒤 main에서 새 브랜치를 딴다 — 이유는 `docs/adr/0002-branch-strategy-for-blocked-issues.md` 참조.
 
 ### 커밋 메시지
 
