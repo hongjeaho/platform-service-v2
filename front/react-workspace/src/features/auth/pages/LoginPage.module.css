@@ -1,0 +1,18 @@
+.heading {
+  margin-bottom: var(--spacing-6);
+}
+
+.heading h1 {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-display);
+  color: var(--foreground);
+}
+
+.heading p {
+  margin: var(--spacing-1) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--muted-foreground);
+}
