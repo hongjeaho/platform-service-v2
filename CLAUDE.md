@@ -216,10 +216,10 @@ GitHub Issues(`github.com/hongjeaho/platform-service-v2`)를 `gh` CLI로 사용.
 
 ### 브랜치 전략
 
-- **master 브랜치에서 직접 작업 금지**
+- **main 브랜치에서 직접 작업 금지**
 - 모든 작업은 기능 브랜치에서 진행
 - 브랜치 명명: `type/description` 또는 `type/ISSUE-NUMBER-description`
-- 작업 완료 후 PR을 통해 master에 병합
+- 작업 완료 후 PR을 통해 main 병합
 
 ### 커밋 메시지
 
