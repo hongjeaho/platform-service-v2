@@ -14,4 +14,15 @@ test.describe('로그인', () => {
     await expect(page).toHaveURL('/')
     await expect(page.getByRole('button', { name: '로그인' })).not.toBeVisible()
   })
+
+  test('잘못된 자격증명으로 로그인하면 배너를 표시하고 페이지에 머문다', async ({ page }) => {
+    await page.goto('/login')
+
+    await page.getByLabel('아이디').fill(SEEDED_ADMIN.id)
+    await page.getByLabel('비밀번호').fill('wrong-password')
+    await page.getByRole('button', { name: '로그인' }).click()
+
+    await expect(page.getByRole('alert')).toHaveText('아이디 또는 비밀번호가 일치하지 않습니다')
+    await expect(page).toHaveURL('/login')
+  })
 })

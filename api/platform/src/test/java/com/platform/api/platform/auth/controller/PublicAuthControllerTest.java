@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.springframework.security.authentication.BadCredentialsException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.platform.api.platform.auth.dto.LoginResponse;
 import com.platform.api.platform.auth.service.AuthService;
@@ -129,6 +131,23 @@ class PublicAuthControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("{\"id\":\"admin\"}"))
                     .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("아이디 또는 비밀번호가 일치하지 않으면 401 Unauthorized를 반환한다")
+        void badCredentials_returns401() throws Exception {
+            // Given
+            when(authService.login(any()))
+                    .thenThrow(new BadCredentialsException("Bad credentials"));
+
+            // When & Then
+            mockMvc.perform(post("/api/public/auth")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(
+                                    new com.platform.common.core.auth.AuthRequest("admin", "wrong"))))
+                    .andExpect(status().isUnauthorized())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.error.message").value("아이디 또는 비밀번호가 일치하지 않습니다"));
         }
 
         @Test
