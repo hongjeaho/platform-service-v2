@@ -28,7 +28,10 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   response => response,
   error => {
-    if (error.response?.status === 401) {
+    // /api/public/** 는 인증이 필요 없는 엔드포인트라 401이 "세션 만료"를 의미하지 않는다
+    // (예: 로그인 자체의 자격증명 불일치) — 이 경우엔 로그아웃/리다이렉트를 트리거하지 않는다
+    const isPublicEndpoint = error.config?.url?.includes('/api/public/')
+    if (error.response?.status === 401 && !isPublicEndpoint) {
       useAuthStore.getState().logout()
       window.location.replace('/login')
     }

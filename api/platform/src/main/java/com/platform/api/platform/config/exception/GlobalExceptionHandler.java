@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -109,6 +110,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResult> handleIllegalStateException(IllegalStateException ex) {
         log.warn("Illegal state: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorResult.of(ErrorCode.BUSINESS_ERROR, ex.getMessage()));
+    }
+
+    /**
+     * 인증 실패 예외 처리 (401 Unauthorized)
+     * <p>
+     * 로그인 시 아이디/비밀번호가 일치하지 않으면 AuthenticationManager가 던진다.
+     * 아이디/비밀번호 중 무엇이 틀렸는지는 노출하지 않는다(보안 관례).
+     */
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResult> handleAuthenticationException(AuthenticationException ex) {
+        log.warn("Authentication failed: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorResult.of(ErrorCode.AUTH_REQUIRED, "아이디 또는 비밀번호가 일치하지 않습니다"));
     }
 
     /**
