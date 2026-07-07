@@ -1,5 +1,7 @@
 import type { NavSection } from '@components/layout/AppShell'
 import { Component as LoginPage } from '@features/auth/pages/LoginPage'
+import { Component as PasswordResetPage } from '@features/auth/pages/PasswordResetPage'
+import { Component as SignupPage } from '@features/auth/pages/SignupPage'
 
 import { NotFoundPage, RootLayout, RouterErrorPage } from './layout'
 
@@ -42,6 +44,18 @@ export const routeTree: RouteNode[] = [
     path: '/login',
     Component: LoginPage,
     meta: { title: '로그인', inNav: false },
+    errorElement: <RouterErrorPage />,
+  },
+  {
+    path: '/signup',
+    Component: SignupPage,
+    meta: { title: '회원가입', inNav: false },
+    errorElement: <RouterErrorPage />,
+  },
+  {
+    path: '/password-reset',
+    Component: PasswordResetPage,
+    meta: { title: '비밀번호 재설정', inNav: false },
     errorElement: <RouterErrorPage />,
   },
 ]
