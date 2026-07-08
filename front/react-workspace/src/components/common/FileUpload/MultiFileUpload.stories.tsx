@@ -26,7 +26,7 @@ const meta: Meta<typeof MultiFileUpload> = {
     size: {
       control: 'radio',
       options: ['sm', 'md', 'lg'],
-      description: '드롭존 크기',
+      description: '드롭존 박스 크기 (고정 높이)',
     },
     maxFiles: {
       control: 'number',
@@ -52,6 +52,7 @@ const meta: Meta<typeof MultiFileUpload> = {
       control: 'boolean',
       description: '필수 여부',
     },
+    onFilesChange: { action: 'filesChange' },
     onManagedFilesChange: { action: 'managedFilesChange' },
     onChange: { action: 'changed' },
   },
@@ -137,6 +138,31 @@ export const Disabled: Story = {
 }
 
 // ============================================================================
+// 파일이 많을 때 (스크롤 확인용)
+// ============================================================================
+
+const manyFiles: ServerFileInfo[] = Array.from({ length: 8 }, (_, i) => ({
+  seqNo: i + 1,
+  name: `문서_${i + 1}.pdf`,
+  size: 1024 * (i + 1) * 20,
+}))
+
+export const ScrollableFileList: Story = {
+  args: {
+    label: '첨부파일 (스크롤 확인)',
+    initialFiles: manyFiles,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          '박스 높이는 size별로 고정되어 있어, 파일이 많아지면 헤더 아래 목록 영역이 내부 스크롤됩니다.',
+      },
+    },
+  },
+}
+
+// ============================================================================
 // React Hook Form (예외 — 복합 컴포넌트 조합 예제)
 // ============================================================================
 
@@ -180,7 +206,7 @@ export const WithReactHookForm: Story = {
     docs: {
       description: {
         story:
-          '복수 파일 선택. 드롭존이 항상 유지되어 파일을 계속 추가할 수 있습니다. `register()`를 스프레드하고 `error`를 연결합니다.',
+          '복수 파일 선택. 박스 내부에 파일 목록이 함께 표시됩니다. `register()`를 스프레드하고 `error`를 연결합니다.',
       },
       source: {
         language: 'tsx',
@@ -229,8 +255,12 @@ const RHFEditRender: Story['render'] = args => {
   const [managedFiles, setManagedFiles] = useState<ManagedFile[]>([])
 
   const onSubmit = () => {
-    const toDelete = managedFiles.filter(f => f.state === 'deleted').map(f => f.seqNo)
-    const toUpload = managedFiles.filter(f => f.state === 'added').map(f => f.file)
+    const toDelete = managedFiles
+      .filter((f): f is Extract<ManagedFile, { state: 'deleted' }> => f.state === 'deleted')
+      .map(f => f.seqNo)
+    const toUpload = managedFiles
+      .filter((f): f is Extract<ManagedFile, { state: 'added' }> => f.state === 'added')
+      .map(f => f.file)
 
     const parts: string[] = []
     if (toDelete.length > 0) parts.push(`삭제된 파일 seqNo: [${toDelete.join(', ')}]`)
@@ -264,57 +294,8 @@ export const WithReactHookFormEdit: Story = {
     docs: {
       description: {
         story:
-          '수정 폼: 서버에서 받아온 기존 파일 목록(`initialFiles`)이 사전 표시됩니다. 기존 파일을 삭제하거나 새 파일을 추가할 수 있습니다. `onFilesChange`는 신규 업로드 파일만 전달합니다.',
-      },
-      source: {
-        language: 'tsx',
-        code: `
-// 서버 응답 데이터
-const existingFiles = [
-  { seqNo: 101, name: '계획서_2024.pdf', size: 204800 },
-  { seqNo: 102, name: '결과보고.xlsx', size: 51200 },
-]
-
-const { register, handleSubmit, formState: { errors } } = useForm<{ attachments: FileList }>()
-const [managedFiles, setManagedFiles] = useState<ManagedFile[]>([])
-
-const onSubmit = () => {
-  const toDelete = managedFiles.filter(f => f.state === 'deleted').map(f => f.seqNo)
-  const toUpload = managedFiles.filter(f => f.state === 'added').map(f => f.file)
-  // toDelete → 서버에 삭제 요청할 seqNo 목록
-  // toUpload → 신규 업로드할 File 목록
-}
-
-<form onSubmit={handleSubmit(onSubmit)} className="flex w-96 flex-col gap-4">
-  <MultiFileUpload
-    initialFiles={existingFiles}
-    label="첨부파일"
-    required
-    maxFiles={5}
-    {...register('attachments')}
-    error={errors.attachments?.message}
-    onManagedFilesChange={setManagedFiles}
-  />
-  <Button type="submit">저장</Button>
-</form>
-        `.trim(),
+          '수정 시나리오: `initialFiles`로 서버 기존 파일을 미리 채웁니다. 기존 파일을 삭제하면 목록에서는 사라지지만 `onManagedFilesChange`에는 deleted 상태로 유지되어, 제출 시 삭제 대상 seqNo를 계산할 수 있습니다.',
       },
     },
-  },
-}
-
-// ============================================================================
-// Playground
-// ============================================================================
-
-export const Playground: Story = {
-  args: {
-    size: 'md',
-    disabled: false,
-    label: '파일 업로드',
-    required: false,
-  },
-  parameters: {
-    controls: { expanded: true },
   },
 }

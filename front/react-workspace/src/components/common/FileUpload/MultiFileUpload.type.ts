@@ -1,36 +1,25 @@
 import type { AriaAttributes, ChangeEventHandler, FocusEventHandler, Ref } from 'react'
 
-import type { ServerFileInfo } from './FileUpload.type'
+import type { ManagedFile, ServerFileInfo } from './FileUpload.type'
 
-export type { ServerFileInfo }
+export type { ManagedFile, ServerFileInfo }
 
 /**
- * MultiFileUpload 드롭존 크기
+ * MultiFileUpload 드롭존 크기 (고정 높이)
  */
 export type MultiFileUploadSize = 'sm' | 'md' | 'lg'
 
 /**
- * 수정 시나리오에서 파일의 상태를 나타내는 타입
- * - existing: 서버에서 받아온 기존 파일 (변경 없음)
- * - deleted:  기존 파일이 삭제됨 (서버에 삭제 요청 필요)
- * - added:    새로 추가된 파일 (서버에 업로드 필요)
- */
-export type ManagedFile =
-  | { state: 'existing'; seqNo: number; name: string; size: number }
-  | { state: 'deleted'; seqNo: number; name: string; size: number }
-  | { state: 'added'; file: File; name: string; size: number }
-
-/**
  * MultiFileUpload 컴포넌트 Props
  *
- * 여러 파일 선택을 위한 드롭존형 컴포넌트입니다.
- * 파일을 추가해도 드롭존이 유지되어 계속 파일을 추가할 수 있습니다.
- * 실제 업로드(API 호출)는 상위 컴포넌트가 처리합니다.
+ * 드롭존 내부에 선택된 파일 목록이 함께 표시되는 복수 파일 선택 컴포넌트입니다.
+ * 파일이 없을 때는 큰 안내 프롬프트가, 1개 이상 있을 때는 슬림 헤더 + 스크롤 가능한
+ * 파일 목록이 표시됩니다. 실제 업로드(API 호출)는 상위 컴포넌트가 처리합니다.
  *
  * @example
  * ```tsx
  * // 기본 사용
- * <MultiFileUpload label="첨부파일" onManagedFilesChange={setManagedFiles} />
+ * <MultiFileUpload label="첨부파일" onFilesChange={setFiles} />
  *
  * // RHF register 패턴
  * <MultiFileUpload
@@ -39,8 +28,11 @@ export type ManagedFile =
  *   error={errors.attachments?.message}
  * />
  *
- * // 최대 파일 수 제한
- * <MultiFileUpload label="이미지" accept="image/*" maxFiles={5} />
+ * // 수정 시나리오
+ * <MultiFileUpload
+ *   initialFiles={existingFiles}
+ *   onManagedFilesChange={setManagedFiles}
+ * />
  * ```
  */
 export interface MultiFileUploadProps extends AriaAttributes {
@@ -61,7 +53,7 @@ export interface MultiFileUploadProps extends AriaAttributes {
   maxFiles?: number
 
   /**
-   * 드롭존 크기
+   * 드롭존 크기 (고정 높이)
    * @default 'md'
    */
   size?: MultiFileUploadSize
@@ -115,9 +107,14 @@ export interface MultiFileUploadProps extends AriaAttributes {
   initialFiles?: ServerFileInfo[]
 
   /**
-   * 파일 목록 변경 콜백
-   * 파일 추가·삭제 시 전체 ManagedFile[] 목록을 전달합니다.
-   * 수정 시나리오에서는 state 필드로 기존/삭제/신규를 구분합니다.
+   * 파일 목록 변경 콜백 (간단 setState 패턴용)
+   * 새로 추가된 raw File만 전달합니다. 추가·삭제 시 호출됩니다.
+   */
+  onFilesChange?: (files: File[]) => void
+
+  /**
+   * 복수 파일 상태 변경 콜백 (수정 시나리오용)
+   * 추가·삭제 시 전체 ManagedFile[] 목록(deleted 포함)을 전달합니다.
    */
   onManagedFilesChange?: (files: ManagedFile[]) => void
 

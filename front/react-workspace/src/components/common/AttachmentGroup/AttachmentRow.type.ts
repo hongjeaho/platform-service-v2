@@ -1,6 +1,6 @@
 import type { AriaAttributes, ChangeEventHandler, FocusEventHandler, Ref } from 'react'
 
-import type { ManagedFile, ServerFileInfo } from '../FileUpload/MultiFileUpload.type'
+import type { ManagedFile, ServerFileInfo } from '../FileUpload/FileUpload.type'
 
 export type { ManagedFile, ServerFileInfo }
 
