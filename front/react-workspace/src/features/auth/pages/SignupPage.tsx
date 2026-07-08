@@ -2,6 +2,7 @@ import { AuthLayout } from '@components/layout/AuthLayout'
 
 import { SignupForm } from '../components/SignupForm'
 import { useCheckUserId } from '../hooks/useCheckUserId'
+import { useSendSignupOtp } from '../hooks/useSendSignupOtp'
 import styles from './SignupPage.module.css'
 
 /**
@@ -11,6 +12,7 @@ import styles from './SignupPage.module.css'
  */
 export function Component() {
   const { mutateAsync: checkUserId } = useCheckUserId()
+  const { mutateAsync: sendOtp } = useSendSignupOtp()
 
   return (
     <AuthLayout>
@@ -18,7 +20,7 @@ export function Component() {
         <h1>회원가입</h1>
         <p>몇 가지 정보만 입력하면 시작할 수 있어요</p>
       </div>
-      <SignupForm onCheckUserId={checkUserId} />
+      <SignupForm onCheckUserId={checkUserId} onSendOtp={sendOtp} />
     </AuthLayout>
   )
 }
