@@ -16,3 +16,13 @@
   font-size: var(--font-size-sm);
   color: var(--muted-foreground);
 }
+
+.successBanner {
+  margin-bottom: var(--spacing-5);
+  padding: var(--spacing-3);
+  border-radius: var(--radius);
+  background-color: color-mix(in oklch, var(--success) 10%, var(--card));
+  color: color-mix(in oklch, var(--success) 55%, var(--foreground));
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}

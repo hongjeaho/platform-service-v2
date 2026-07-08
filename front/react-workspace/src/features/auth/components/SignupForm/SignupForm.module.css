@@ -27,3 +27,12 @@
 .hintError {
   color: var(--destructive);
 }
+
+.banner {
+  padding: var(--spacing-3);
+  border-radius: var(--radius);
+  background-color: color-mix(in oklch, var(--error) 8%, var(--card));
+  color: var(--error);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
