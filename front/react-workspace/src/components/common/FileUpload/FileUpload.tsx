@@ -20,7 +20,7 @@ const sizeClasses: Record<FileUploadSize, string> = {
  * - 선택 후: 파일 이름·크기·삭제 버튼이 있는 카드로 교체
  * - 클릭 또는 Drag & Drop 지원
  *
- * 여러 파일 선택이 필요하면 `MultiFileUpload`를 사용하세요.
+ * 여러 파일 선택이 필요하면 `AttachmentRow`(multiple)를 사용하세요.
  *
  * @example
  * ```tsx
