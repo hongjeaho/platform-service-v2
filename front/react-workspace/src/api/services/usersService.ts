@@ -1,4 +1,5 @@
 import { apiClient } from '@api/client'
+import type { UsersSignupRequest, UsersSignupResponse } from '@api/generated/model'
 import axios from 'axios'
 
 /**
@@ -39,4 +40,16 @@ export async function checkUserIdAvailability(userId: string): Promise<boolean> 
     }
     throw error
   }
+}
+
+/**
+ * 회원가입을 완료한다.
+ */
+export async function signup(request: UsersSignupRequest): Promise<UsersSignupResponse> {
+  const response = await apiClient.post<ApiResultResponse<UsersSignupResponse>>(
+    '/api/public/users',
+    request,
+  )
+
+  return response.data.data
 }

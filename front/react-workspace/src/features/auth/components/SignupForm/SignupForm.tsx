@@ -20,13 +20,26 @@ function formatCooldown(seconds: number): string {
   return `${minutes}:${String(remainingSeconds).padStart(2, '0')}`
 }
 
-export function SignupForm({ onCheckUserId, onSendOtp }: SignupFormProps) {
+export function SignupForm({
+  onCheckUserId,
+  onSendOtp,
+  onSubmit,
+  isSubmitting,
+  errorMessage,
+}: SignupFormProps) {
   const [userId, setUserId] = useState('')
   const [userIdCheckState, setUserIdCheckState] = useState<UserIdCheckState>('idle')
   const [userEmail, setUserEmail] = useState('')
   const [otpSendState, setOtpSendState] = useState<OtpSendState>('idle')
   const [otpCode, setOtpCode] = useState('')
   const [resendCooldown, setResendCooldown] = useState(0)
+  const [userName, setUserName] = useState('')
+  const [userNameTouched, setUserNameTouched] = useState(false)
+  const [password, setPassword] = useState('')
+  const [passwordConfirm, setPasswordConfirm] = useState('')
+
+  const passwordLengthValid = password === '' || (password.length >= 8 && password.length <= 12)
+  const passwordConfirmValid = passwordConfirm === '' || passwordConfirm === password
 
   const userEmailFormatValid = userEmail === '' || EMAIL_PATTERN.test(userEmail)
 
@@ -91,8 +104,29 @@ export function SignupForm({ onCheckUserId, onSendOtp }: SignupFormProps) {
         ? '이미 사용 중인 아이디예요'
         : undefined
 
+  const canSubmit =
+    userIdCheckState === 'available' &&
+    otpSendState === 'sent' &&
+    userName !== '' &&
+    passwordLengthValid &&
+    password !== '' &&
+    passwordConfirmValid &&
+    passwordConfirm !== '' &&
+    otpCode !== ''
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!canSubmit) return
+    onSubmit({ userId, userName, password, userEmail, otpCode })
+  }
+
   return (
-    <form className={styles.form}>
+    <form onSubmit={handleSubmit} className={styles.form}>
+      {errorMessage && (
+        <div className={styles.banner} role='alert'>
+          {errorMessage}
+        </div>
+      )}
       <div className={styles.fieldRow}>
         <Input
           label='아이디'
@@ -168,6 +202,47 @@ export function SignupForm({ onCheckUserId, onSendOtp }: SignupFormProps) {
           onValueChange={setOtpCode}
         />
       )}
+
+      <Input
+        label='이름'
+        placeholder='이름을 입력해주세요'
+        autoComplete='name'
+        value={userName}
+        onValueChange={setUserName}
+        onBlur={() => setUserNameTouched(true)}
+        error={userNameTouched && userName === '' ? '이름을 입력해주세요' : undefined}
+      />
+
+      <Input
+        label='비밀번호'
+        type='password'
+        placeholder='8~12자로 입력해주세요'
+        autoComplete='new-password'
+        value={password}
+        onValueChange={setPassword}
+        error={passwordLengthValid ? undefined : '비밀번호는 8~12자로 입력해주세요'}
+      />
+
+      <Input
+        label='비밀번호 확인'
+        type='password'
+        placeholder='비밀번호를 한 번 더 입력해주세요'
+        autoComplete='new-password'
+        value={passwordConfirm}
+        onValueChange={setPasswordConfirm}
+        error={passwordConfirmValid ? undefined : '비밀번호가 일치하지 않아요'}
+      />
+
+      <Button
+        type='submit'
+        variant='primary'
+        fullWidth
+        disabled={!canSubmit}
+        loading={isSubmitting}
+      >
+        회원가입
+      </Button>
+      {!canSubmit && <p className={styles.hint}>아이디 중복확인과 이메일 인증을 완료해주세요</p>}
     </form>
   )
 }

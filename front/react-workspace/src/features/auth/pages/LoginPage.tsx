@@ -10,6 +10,7 @@ import styles from './LoginPage.module.css'
 
 interface LoginRedirectState {
   from?: { pathname: string }
+  message?: string
 }
 
 /**
@@ -23,14 +24,14 @@ export function Component() {
   const login = useAuthStore(selectLogin)
   const { mutate, isPending } = useLogin()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const redirectState = location.state as LoginRedirectState | null
 
   const handleSubmit = (values: { id: string; password: string }) => {
     setErrorMessage(null)
     mutate(values, {
       onSuccess: result => {
         login(result.user, result.token)
-        const state = location.state as LoginRedirectState | null
-        navigate(state?.from?.pathname ?? '/', { replace: true })
+        navigate(redirectState?.from?.pathname ?? '/', { replace: true })
       },
       onError: () => {
         setErrorMessage('아이디 또는 비밀번호가 일치하지 않습니다')
@@ -44,6 +45,11 @@ export function Component() {
         <h1>로그인</h1>
         <p>다시 오신 것을 환영합니다</p>
       </div>
+      {redirectState?.message && (
+        <div className={styles.successBanner} role='status'>
+          {redirectState.message}
+        </div>
+      )}
       <LoginForm onSubmit={handleSubmit} isSubmitting={isPending} errorMessage={errorMessage} />
     </AuthLayout>
   )
