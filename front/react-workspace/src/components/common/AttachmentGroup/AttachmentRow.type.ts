@@ -1,8 +1,8 @@
 import type { AriaAttributes, ChangeEventHandler, FocusEventHandler, Ref } from 'react'
 
-import type { ServerFileInfo } from '../FileUpload/FileUpload.type'
+import type { ManagedFile, ServerFileInfo } from '../FileUpload/FileUpload.type'
 
-export type { ServerFileInfo }
+export type { ManagedFile, ServerFileInfo }
 
 /**
  * 단일 파일 수정 시나리오 상태
@@ -15,17 +15,6 @@ export type SingleManagedFile =
   | { state: 'existing'; seqNo: number; name: string; size: number }
   | { state: 'deleted'; seqNo: number; name: string; size: number }
   | { state: 'replace'; seqNo: number; name: string; size: number; file: File }
-  | { state: 'added'; file: File; name: string; size: number }
-
-/**
- * 복수 파일 수정 시나리오에서 파일의 상태를 나타내는 타입
- * - existing: 서버에서 받아온 기존 파일 (변경 없음)
- * - deleted:  기존 파일이 삭제됨 (서버에 삭제 요청 필요)
- * - added:    새로 추가된 파일 (서버에 업로드 필요)
- */
-export type ManagedFile =
-  | { state: 'existing'; seqNo: number; name: string; size: number }
-  | { state: 'deleted'; seqNo: number; name: string; size: number }
   | { state: 'added'; file: File; name: string; size: number }
 
 /**

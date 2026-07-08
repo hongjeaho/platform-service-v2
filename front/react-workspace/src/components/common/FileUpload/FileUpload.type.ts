@@ -18,6 +18,17 @@ export type ServerFileInfo = {
 }
 
 /**
+ * 복수 파일 수정 시나리오에서 파일의 상태를 나타내는 타입
+ * - existing: 서버에서 받아온 기존 파일 (변경 없음)
+ * - deleted:  기존 파일이 삭제됨 (서버에 삭제 요청 필요)
+ * - added:    새로 추가된 파일 (서버에 업로드 필요)
+ */
+export type ManagedFile =
+  | { state: 'existing'; seqNo: number; name: string; size: number }
+  | { state: 'deleted'; seqNo: number; name: string; size: number }
+  | { state: 'added'; file: File; name: string; size: number }
+
+/**
  * FileUpload 컴포넌트 Props
  *
  * 단일 파일 선택을 위한 인풋 필드형 컴포넌트입니다.

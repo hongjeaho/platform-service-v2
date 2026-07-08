@@ -1,5 +1,6 @@
 import { useId, useRef, useState } from 'react'
 
+import { useManagedFiles } from '@/hooks/useManagedFiles'
 import { icons, iconSizes, textCombinations } from '@/styles'
 import { formatFileSize } from '@/utils/format'
 
@@ -59,13 +60,15 @@ export function AttachmentRow({
   )
 
   // ── Multi 모드 상태 ───────────────────────────────────────────
-  const [managedFiles, setManagedFiles] = useState<ManagedFile[]>(
-    () => initialFiles?.map(f => ({ state: 'existing' as const, ...f })) ?? [],
-  )
+  const {
+    files: managedFiles,
+    visibleFiles,
+    addFiles: addManagedFiles,
+    removeFile: removeManagedFile,
+  } = useManagedFiles(initialFiles, maxFiles)
 
   // 화면에 표시할 파일 (deleted 제외)
   const visibleFile = managedFile?.state !== 'deleted' ? managedFile : null
-  const visibleFiles = managedFiles.filter(f => f.state !== 'deleted')
 
   const [isExpanded, setIsExpanded] = useState(() => multiple && (initialFiles?.length ?? 0) > 0)
   const [isDragging, setIsDragging] = useState(false)
@@ -108,17 +111,8 @@ export function AttachmentRow({
 
   // ── Multi 파일 추가 ───────────────────────────────────────────
   const addMultiFiles = (newFiles: File[]) => {
-    const remaining = maxFiles != null ? maxFiles - visibleFiles.length : newFiles.length
-    const toAdd = newFiles.slice(0, remaining)
-    if (toAdd.length === 0) return
-    const added: ManagedFile[] = toAdd.map(f => ({
-      state: 'added' as const,
-      file: f,
-      name: f.name,
-      size: f.size,
-    }))
-    const updated = [...managedFiles, ...added]
-    setManagedFiles(updated)
+    const updated = addManagedFiles(newFiles)
+    if (updated === managedFiles) return
     onManagedFilesChange?.(updated)
     onFilesChange?.(
       updated
@@ -130,11 +124,7 @@ export function AttachmentRow({
 
   // ── Multi 파일 삭제 ───────────────────────────────────────────
   const removeMultiFile = (target: ManagedFile) => {
-    const updated =
-      target.state === 'existing'
-        ? managedFiles.map(f => (f === target ? { ...f, state: 'deleted' as const } : f))
-        : managedFiles.filter(f => f !== target)
-    setManagedFiles(updated)
+    const updated = removeManagedFile(target)
     onManagedFilesChange?.(updated)
     onFilesChange?.(
       updated
