@@ -10,6 +10,7 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       login: (user, token) => set({ user, token }),
       logout: () => set({ user: null, token: null }),
+      renewToken: token => set({ token }),
       hasRole: roleName => {
         const { user } = get()
         return user?.roles.some(r => r.name === roleName) ?? false

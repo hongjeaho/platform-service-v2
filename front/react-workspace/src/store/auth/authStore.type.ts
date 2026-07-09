@@ -17,6 +17,7 @@ export interface AuthState {
   token: string | null
   login: (user: User, token: string) => void
   logout: () => void
+  renewToken: (token: string) => void
   hasRole: (roleName: RoleName) => boolean
   hasAnyRole: (roleNames: RoleName[]) => boolean
 }

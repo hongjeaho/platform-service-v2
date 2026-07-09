@@ -73,6 +73,15 @@ describe('authStore', () => {
     expect(useAuthStore.getState().token).toBe('token2')
   })
 
+  it('renewToken updates only the token, leaving user unchanged', () => {
+    useAuthStore.getState().login(mockUser, 'old-token')
+    useAuthStore.getState().renewToken('new-token')
+
+    const state = useAuthStore.getState()
+    expect(state.token).toBe('new-token')
+    expect(state.user).toEqual(mockUser)
+  })
+
   it('hasRole returns true when user has the role', () => {
     useAuthStore.getState().login(mockUser, 'token')
 
