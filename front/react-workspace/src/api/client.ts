@@ -1,6 +1,10 @@
-import axios from 'axios'
+import axios, { type AxiosResponse } from 'axios'
 
 import { useAuthStore } from '@/store/auth/authStore'
+
+export function extractRenewedToken(headers: Record<string, string | undefined>): string | undefined {
+  return headers.authorization || undefined
+}
 
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080',
@@ -24,9 +28,22 @@ apiClient.interceptors.request.use(
   },
 )
 
-// Response interceptor - Handle 401 errors
+export function handleAuthResponse(response: AxiosResponse): AxiosResponse {
+  const isPublicEndpoint = response.config?.url?.includes('/api/public/')
+  if (isPublicEndpoint) {
+    return response
+  }
+
+  const renewedToken = extractRenewedToken(response.headers as Record<string, string | undefined>)
+  if (renewedToken) {
+    useAuthStore.getState().renewToken(renewedToken)
+  }
+  return response
+}
+
+// Response interceptor - Handle 401 errors, consume renewed token
 apiClient.interceptors.response.use(
-  response => response,
+  handleAuthResponse,
   error => {
     // /api/public/** 는 인증이 필요 없는 엔드포인트라 401이 "세션 만료"를 의미하지 않는다
     // (예: 로그인 자체의 자격증명 불일치) — 이 경우엔 로그아웃/리다이렉트를 트리거하지 않는다
