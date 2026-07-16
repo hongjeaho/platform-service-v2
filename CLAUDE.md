@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Spring Boot 3.4.2(Spring MVC) + React 19 풀스택 멀티모듈 모노레포.
 
+**이 리포는 발판(base) 리포다.** 새 시스템(개인 서비스, 공공시스템 등)이 필요할 때 이 리포에서 **독립 git 리포지토리를 생성**하고, 그 리포는 이후 독립적으로 성장한다(업스트림 머지 없음). 따라서 아키텍처 판단 기준은 "새 리포가 분기 시점에 무엇을 상속하는가"다 — 발판의 도메인 누수·cruft는 분기 전에 정리하는 것이 가장 싸다.
+
 - **Backend**: Spring Boot 3.4.2(MVC, WebFlux 아님), Spring Security, JOOQ 3.19.18, MyBatis, Flyway 12.6.2, MySQL 8, Redis 7, JWT(auth0 java-jwt), Java 21
 - **Frontend**: React 19, TypeScript, Vite 6, Zustand, TanStack Query, Tailwind CSS v4, Orval(OpenAPI → 코드 생성), Vitest, Storybook, Playwright
 - **Build**: Gradle 8(백엔드), pnpm 10(프론트엔드)
