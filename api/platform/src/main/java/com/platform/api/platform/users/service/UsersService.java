@@ -5,6 +5,7 @@ import com.platform.api.platform.users.dto.CheckDuplicateResponse;
 import com.platform.api.platform.users.dto.SendOtpResponse;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
 import com.platform.api.platform.users.dto.UsersSignupResponse;
+import com.platform.api.platform.users.email.WelcomeEmailSender;
 import com.platform.api.platform.users.type.OtpPurpose;
 import com.platform.datasource.platform.config.database.PlatformTransactional;
 import com.platform.datasource.platform.jooq.generated.tables.pojos.UsersEntity;
@@ -29,6 +30,7 @@ public class UsersService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
     private final OtpService otpService;
+    private final WelcomeEmailSender welcomeEmailSender;
 
     /**
      * 신규 회원을 등록한다.
@@ -64,6 +66,9 @@ public class UsersService {
         Long userSeq = usersRepository.insertUser(user);
         Long roleSeq = usersRepository.findRoleSeqByName("USER");
         usersRepository.insertUserRole(userSeq, roleSeq, 0L);
+
+        // 가입 완료 축하 메일 — 비동기 발송이므로 가입 응답을 블로킹하지 않는다(ADR-0005)
+        welcomeEmailSender.send(request.userEmail(), request.userName());
 
         return toResponse(userSeq, request);
     }
