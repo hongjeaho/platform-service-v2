@@ -7,6 +7,7 @@ import com.platform.common.web.error.ErrorResult;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -45,18 +46,22 @@ public class SecurityConfig {
   private final OncePerRequestFilter platformHeaderFilter;
   private final ObjectMapper objectMapper;
 
-  private static final List<String> ALLOWED_ORIGINS = List.of(
-      "http://localhost",
-      "http://localhost:3000"
-  );
+  // 인스턴스 정체성은 설정으로만 — Java 상수 금지(ADR-0006). 재컴파일 없이 변경 가능해야 한다.
+  private final List<String> allowedOrigins;
+  // 단일 소스는 common-web yml의 management.endpoints.web.base-path — 리터럴 중복 금지(ADR-0006)
+  private final String actuatorBasePath;
 
   public SecurityConfig(UserDetailsService userDetailsService, JWTCheckFilter jwtCheckFilter,
       @Qualifier("platformHeaderFilter") OncePerRequestFilter platformHeaderFilter,
-      ObjectMapper objectMapper) {
+      ObjectMapper objectMapper,
+      @Value("${cors.allowed-origins}") List<String> allowedOrigins,
+      @Value("${management.endpoints.web.base-path}") String actuatorBasePath) {
     this.userDetailsService = userDetailsService;
     this.jwtCheckFilter = jwtCheckFilter;
     this.platformHeaderFilter = platformHeaderFilter;
     this.objectMapper = objectMapper;
+    this.allowedOrigins = allowedOrigins;
+    this.actuatorBasePath = actuatorBasePath;
   }
 
   @Bean
@@ -98,8 +103,8 @@ public class SecurityConfig {
             authorizeRequests
                 .requestMatchers("/public/swagger-ui/**").permitAll()
                 // Actuator 보안 강화: health 엔드포인트만 공개, 나머지는 인증 필요
-                .requestMatchers("/public/platform/actuator/health", "/public/platform/actuator/health/**").permitAll()
-                .requestMatchers("/public/platform/actuator/**").authenticated()
+                .requestMatchers(actuatorBasePath + "/health", actuatorBasePath + "/health/**").permitAll()
+                .requestMatchers(actuatorBasePath + "/**").authenticated()
                 .requestMatchers("/error", "/api/public/**").permitAll() // 인증 없이 접근 설정
                 .anyRequest().authenticated()); //  모든 요청에 대해 인증을 요구하도록 설정
 
@@ -143,7 +148,7 @@ public class SecurityConfig {
   // cors 설정
   private CorsConfigurationSource corsConfigurationSource() {
     var config = new CorsConfiguration();
-    ALLOWED_ORIGINS.forEach(config::addAllowedOrigin);
+    allowedOrigins.forEach(config::addAllowedOrigin);
 
     List.of("Authorization", "Content-Type", "x-token-expired", "Accept")
         .forEach(config::addAllowedHeader);

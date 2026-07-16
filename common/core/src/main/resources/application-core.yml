@@ -1,7 +1,7 @@
 spring:
   mail:
-    host: smtp.gmail.com
-    port: 587
+    host: ${PLATFORM_EMAIL_HOST:smtp.gmail.com}
+    port: ${PLATFORM_EMAIL_PORT:587}
     username: ${PLATFORM_EMAIL_USERNAME}
     password: ${PLATFORM_EMAIL_FROM_PASSWORD}
     protocol: smtp

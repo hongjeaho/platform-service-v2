@@ -26,6 +26,10 @@ spring:
 file:
   upload-path: ${FILE_UPLOAD_PATH:./uploads}
 
+cors:
+  # 인스턴스 정체성(ADR-0006) — 분기 시스템은 자기 origin으로 변경. 콤마 구분, env 오버라이드 가능
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost,http://localhost:3000}
+
 jwt:
   secret: ${JWT_SECRET:local-dev-secret-change-in-production}
   issuer: platform-service  # 인스턴스 정체성 선언 — 기본값 없는 필수 프로퍼티(ADR-0004). 발판에서 분기한 시스템은 자기 이름으로 변경해야 한다.
