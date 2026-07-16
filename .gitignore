@@ -3,6 +3,8 @@ node_modules/
 .gradle
 build/
 .env
+# 프론트 .env는 커밋 — VITE_* 공개 설정(브랜드명 등, ADR-0006)만 담는다. 비밀은 .env.local에.
+!front/react-workspace/.env
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
