@@ -32,6 +32,6 @@ test-results
 storybook-static
 
 # Environment variables
-.env
+# .env는 커밋한다 — VITE_* 공개 설정(브랜드명 등, ADR-0006)만 담는다. 비밀은 .env.local에.
 .env.local
 .env.*.local
