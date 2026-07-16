@@ -2,7 +2,7 @@ package com.platform.api.platform.users.controller;
 
 import com.platform.api.platform.users.dto.ChangePasswordResponse;
 import com.platform.api.platform.users.service.UsersService;
-import com.platform.common.core.auth.AuthUser;
+import com.platform.api.platform.auth.AuthUser;
 import com.platform.common.web.config.filter.JWTCheckFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,8 +50,8 @@ class UsersControllerTest {
     @BeforeEach
     void setUp() {
         // SecurityContext 설정 (UserAccountHolder.getSeqNo()가 동작하도록)
-        Set<com.platform.common.core.auth.BasicAuthority> authorities = new HashSet<>();
-        authorities.add(com.platform.common.core.auth.BasicAuthority.builder()
+        Set<com.platform.api.platform.auth.BasicAuthority> authorities = new HashSet<>();
+        authorities.add(com.platform.api.platform.auth.BasicAuthority.builder()
             .userSeq(1L)
             .role("USER")
             .build());

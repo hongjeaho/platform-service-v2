@@ -7,10 +7,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.platform.common.core.auth.AuthRequest;
-import com.platform.common.core.auth.AuthUser;
-import com.platform.common.core.auth.BasicAuthority;
-import com.platform.common.core.util.JwtTokenUtil;
+import com.platform.api.platform.auth.dto.AuthRequest;
+import com.platform.api.platform.auth.AuthUser;
+import com.platform.api.platform.auth.BasicAuthority;
+import com.platform.common.core.jwt.JwtSessionManager;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -33,7 +33,7 @@ class AuthServiceTest {
     private AuthenticationManager authenticationManager;
 
     @Mock
-    private JwtTokenUtil jwtTokenUtil;
+    private JwtSessionManager jwtSessionManager;
 
     @InjectMocks
     private AuthService authService;
@@ -60,7 +60,7 @@ class AuthServiceTest {
             when(authentication.getPrincipal()).thenReturn(authUser);
             when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                     .thenReturn(authentication);
-            when(jwtTokenUtil.makeAuthToken(any(AuthUser.class), any(Long.class)))
+            when(jwtSessionManager.issue(any(AuthUser.class)))
                     .thenReturn("jwt-token");
 
             // When
@@ -74,7 +74,7 @@ class AuthServiceTest {
             assertThat(result.user().getUserId()).isEqualTo("admin");
 
             verify(authenticationManager).authenticate(any());
-            verify(jwtTokenUtil).makeAuthToken(any(), any(Long.class));
+            verify(jwtSessionManager).issue(any(AuthUser.class));
         }
 
         @Test

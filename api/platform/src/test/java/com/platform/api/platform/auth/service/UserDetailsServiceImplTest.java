@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
-import com.platform.common.core.auth.AuthUser;
+import com.platform.api.platform.auth.AuthUser;
 import com.platform.datasource.platform.repository.authority.AuthorityRepository;
 import com.platform.datasource.platform.repository.authority.UserAuthorityRow;
 import java.util.List;

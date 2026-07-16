@@ -1,8 +1,8 @@
 package com.platform.api.platform.auth.controller;
 
 import com.platform.api.platform.auth.service.AuthService;
-import com.platform.common.core.auth.AuthRequest;
-import com.platform.common.core.auth.AuthUser;
+import com.platform.api.platform.auth.dto.AuthRequest;
+import com.platform.api.platform.auth.AuthUser;
 import com.platform.common.web.response.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
