@@ -89,7 +89,7 @@ export interface BaseFieldProps {
   /**
    * onBlur
    */
-  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
+  onBlur?: (e: React.FocusEvent<Element>) => void
 
   /** 옵션으로 사용할 Item 자식 */
   children: React.ReactNode

@@ -40,22 +40,14 @@ describe('Input', () => {
   })
 
   describe('variant', () => {
-    it.each([
-      ['primary', 'Primary'],
-      ['secondary', 'Secondary'],
-      ['tertiary', 'Tertiary'],
-    ] as const)('%s variant로 렌더링됩니다', variant => {
+    it.each(['primary', 'secondary', 'tertiary'] as const)('%s variant로 렌더링됩니다', variant => {
       render(<Input variant={variant} placeholder='테스트' />)
       expect(screen.getByRole('textbox')).toBeInTheDocument()
     })
   })
 
   describe('size', () => {
-    it.each([
-      ['sm', 'Small'],
-      ['md', 'Medium'],
-      ['lg', 'Large'],
-    ] as const)('%s 크기로 렌더링됩니다', size => {
+    it.each(['sm', 'md', 'lg'] as const)('%s 크기로 렌더링됩니다', size => {
       render(<Input size={size} placeholder='테스트' />)
       expect(screen.getByRole('textbox')).toBeInTheDocument()
     })

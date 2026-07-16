@@ -1,7 +1,7 @@
 import type * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog'
 import type { ComponentPropsWithoutRef, ReactNode, Ref } from 'react'
 
-import type { ButtonVariant as DSButtonVariant } from '@/styles'
+import type { ButtonVariant as DSButtonVariant } from '../Button'
 
 /**
  * AlertDialog 버튼 크기 타입

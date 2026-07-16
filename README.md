@@ -36,11 +36,9 @@ Spring Boot(MVC) + React 기반의 멀티모듈 플랫폼 프로젝트입니다.
 platform-service-v2/
 ├── api/
 │   └── platform/          # Spring Boot REST API 서버 (포트 8080, bootJar)
-├── batch/
-│   └── platform/          # 배치 처리 애플리케이션 (bootJar)
 ├── common/
 │   ├── core/              # 핵심 공통 — JWT, DTO, OpenAPI, Redis, 메일 (jar)
-│   ├── web/               # 웹 공통 — AOP, 캐시, Actuator, Prometheus, 보안 설정 (jar)
+│   ├── web/               # 웹 공통 — AOP, Actuator, Prometheus, 보안 설정 (jar)
 │   └── jooq/              # JOOQ 코드 생성 전략 (jar)
 ├── datasource/
 │   └── platform/          # DB 접근 — JOOQ 생성 코드, MyBatis 매퍼, Repository, Flyway (jar)
