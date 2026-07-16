@@ -3,5 +3,8 @@ apply from: '../api-common.gradle'
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // 도메인 메일 템플릿 실렌더 테스트용(ADR-0005) — 런타임 렌더는 common-core 기계가 담당
+    testImplementation "$boot:spring-boot-starter-thymeleaf"
 }
 
