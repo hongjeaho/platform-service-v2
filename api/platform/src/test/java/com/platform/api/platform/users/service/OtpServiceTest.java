@@ -1,8 +1,8 @@
 package com.platform.api.platform.users.service;
 
 import com.platform.api.platform.users.type.OtpPurpose;
-import com.platform.common.core.email.OtpEmailSender;
-import com.platform.common.core.email.OtpTemplate;
+import com.platform.api.platform.users.email.OtpEmailSender;
+import com.platform.api.platform.users.email.OtpTemplate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

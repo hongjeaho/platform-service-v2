@@ -2,8 +2,8 @@ package com.platform.api.platform.users.service;
 
 import com.platform.api.platform.users.dto.SendOtpResponse;
 import com.platform.api.platform.users.type.OtpPurpose;
-import com.platform.common.core.email.OtpEmailSender;
-import com.platform.common.core.email.OtpTemplate;
+import com.platform.api.platform.users.email.OtpEmailSender;
+import com.platform.api.platform.users.email.OtpTemplate;
 import com.platform.datasource.platform.config.database.PlatformTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
