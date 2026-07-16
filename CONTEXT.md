@@ -19,3 +19,11 @@ OTP가 **무엇을 증명하는지**를 나타내는 차원. 두 용도는 **서
 - **`PASSWORD_CHANGE`** — *가입된* 사용자가 해당 이메일을 통제함을 증명. 비밀번호 재설정(로그인 전) 시 사용.
 
 > 용도별 사전조건(가입 필요 vs 미가입 필요)은 **OTP 기계가 아닌 호출자(회원 도메인)가 소유**한다. OTP 인증 메커니즘은 회원 가입 여부를 알지 않는다 — 이 결정의 근거는 [ADR-0001](docs/adr/0001-otp-purpose-scoping.md)에 기록되어 있다.
+
+## 인증 (Authentication)
+
+### JWT 세션
+로그인 시 발급되는 JWT 하나로 유지되는 무상태 세션. 리프레시 토큰 없이, 인증된 요청마다 남은 유효시간이 임계값 미만이면 새 토큰을 응답 헤더로 실어 보내는 **슬라이딩 윈도우 방식**으로 연장된다([ADR-0003](docs/adr/0003-jwt-sliding-window-renewal.md)). 발급·검증·갱신 판단은 `JwtSessionManager`(common-core kernel)가 소유한다.
+
+### TokenUserCodec
+시스템의 인증 주체(principal)와 JWT claims 간 변환을 소유하는 **도메인 제공 adapter**. kernel은 principal의 shape를 모르며, codec bean의 존재 자체가 "이 시스템은 JWT 인증을 쓴다"는 선언이다 — codec이 없는 시스템은 JWT 스택 없이 부팅된다. 회원 도메인이 첫 adapter다([ADR-0004](docs/adr/0004-jwt-session-kernel-codec-seam.md)).
