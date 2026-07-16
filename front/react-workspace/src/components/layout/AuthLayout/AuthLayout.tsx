@@ -1,3 +1,5 @@
+import { brand } from '@/config/brand'
+
 import styles from './AuthLayout.module.css'
 import type { AuthLayoutProps } from './AuthLayout.type'
 
@@ -14,8 +16,8 @@ export function AuthLayout({ children }: AuthLayoutProps) {
       <div className={styles.glow} aria-hidden='true' />
       <div className={styles.card}>
         <div className={styles.brand}>
-          <span className={styles.brandMark}>R</span>
-          <span className={styles.brandName}>React Workspace</span>
+          <span className={styles.brandMark}>{brand.mark}</span>
+          <span className={styles.brandName}>{brand.label}</span>
         </div>
         {children}
       </div>

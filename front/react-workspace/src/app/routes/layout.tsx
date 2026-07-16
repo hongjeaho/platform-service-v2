@@ -1,15 +1,15 @@
 import { AppShell } from '@components/layout/AppShell'
 import { useRouteError } from 'react-router'
 
+import { brand } from '@/config/brand'
+
 import { getNavSections } from '../routeRegistry'
 
 /**
  * Root layout component with AppShell
  */
 export function RootLayout() {
-  return (
-    <AppShell brand={{ label: 'React Workspace' }} sections={getNavSections()} breadcrumb='홈' />
-  )
+  return <AppShell brand={{ label: brand.label }} sections={getNavSections()} breadcrumb='홈' />
 }
 
 /**
