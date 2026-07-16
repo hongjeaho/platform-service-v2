@@ -1,7 +1,16 @@
 import type { AriaAttributes, DOMAttributes, ReactNode, Ref } from 'react'
 
-// Design system imports
-import type { ButtonVariant as DSButtonVariant } from '@/styles'
+/**
+ * 버튼 variant — 컴포넌트가 소유한다(토큰 층에 값/타입 사본 금지, ADR-0007)
+ */
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'accent'
+  | 'destructive'
+  | 'outline'
+  | 'ghost'
+  | 'link'
 
 /**
  * 버튼 크기 타입
@@ -29,7 +38,7 @@ export interface ButtonProps
    * 버튼 variant (디자인 시스템 토큰 사용)
    * @default 'primary'
    */
-  variant?: DSButtonVariant
+  variant?: ButtonVariant
 
   /**
    * 버튼 크기 (디자인 시스템 간격 토큰 사용)
@@ -53,7 +62,7 @@ export interface ButtonProps
    * 폼 제출 관련 속성
    */
   formAction?: string
-  formEncType?: HTMLButtonElement['formEncType']
+  formEncType?: HTMLButtonElement['formEnctype']
   formMethod?: HTMLButtonElement['formMethod']
   formNoValidate?: boolean
   formTarget?: HTMLButtonElement['formTarget']

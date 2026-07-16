@@ -61,14 +61,13 @@ Orval은 **백엔드 API 서버가 켜져 있어야** 동작한다(실행 중인
 | 모듈 | 산출물 | 역할 |
 |------|--------|------|
 | `common-core` | jar | 핵심 공통 — JWT, DTO, OpenAPI(springdoc), Redis, 메일, test-fixtures |
-| `common-web` | jar | 웹 공통 — Spring Web/AOP/Cache(Caffeine), Actuator, Prometheus, 보안 설정 |
+| `common-web` | jar | 웹 공통 — Spring Web/AOP, Actuator, Prometheus, 보안 설정 |
 | `common-jooq` | jar | JOOQ 코드 생성 전략(`CustomGeneratorStrategy`). JaCoCo 제외 |
 | `datasource-platform` | jar | 데이터 접근 — JOOQ 생성 코드, MyBatis 매퍼, Repository, Flyway 마이그레이션(`flyway/`) |
 | `api-platform` | bootJar | 실행 가능 REST API 서버 |
-| `batch-platform` | bootJar | 배치 처리 |
 | `front/react-workspace` | — | React SPA |
 
-`settings.gradle`이 `common/`·`datasource/`·`api/`·`batch/` 하위 디렉토리를 자동 검색하여 `:common-core` 형태의 모듈로 등록한다. **새 모듈 디렉토리를 만들면 `build.gradle`과 소스 폴더(`src/main/java/com/platform/{comp}/{name}`)를 자동 생성**한다.
+`settings.gradle`이 `common/`·`datasource/`·`api/`·`batch/` 하위 디렉토리를 자동 검색하여 `:common-core` 형태의 모듈로 등록한다. **새 모듈 디렉토리를 만들면 `build.gradle`과 소스 폴더(`src/main/java/com/platform/{comp}/{name}`)를 자동 생성**한다. 배치 처리가 필요한 시스템은 `batch/{name}` 디렉토리를 만들면 같은 메커니즘으로 등록된다(빈 스텁은 두지 않는다 — deletion test).
 
 의존성 방향: `api`·`batch` → `common-web` + `datasource-platform` → `common-core`(`common-web`과 `datasource-platform` 모두가 `common-core`에 의존).
 

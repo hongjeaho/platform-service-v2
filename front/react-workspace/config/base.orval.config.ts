@@ -7,12 +7,10 @@ export const commonOutputConfig: OutputOptions = {
   client: 'react-query',
   httpClient: 'axios',
   clean: true,
-  prettier: true,
   mock: false,
   allParamsOptional: true,
   urlEncodeParameters: true,
   // 성능 최적화 설정
-  biome: false, // prettier 사용 중이므로 비활성화
   override: {
     mutator: {
       path: '../src/api/request.ts',

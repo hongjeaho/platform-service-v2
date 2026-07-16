@@ -69,11 +69,7 @@ describe('Select', () => {
   })
 
   describe('size', () => {
-    it.each([
-      ['sm', 'Small'],
-      ['md', 'Medium'],
-      ['lg', 'Large'],
-    ] as const)('%s 크기로 트리거를 렌더링합니다', size => {
+    it.each(['sm', 'md', 'lg'] as const)('%s 크기로 트리거를 렌더링합니다', size => {
       render(
         <Select size={size} placeholder='선택' name='f'>
           {defaultChildren}

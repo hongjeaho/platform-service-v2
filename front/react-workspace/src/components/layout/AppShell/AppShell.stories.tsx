@@ -9,10 +9,10 @@ import type { NavSection } from './AppShell.type'
 const sections: NavSection[] = [
   { items: [{ label: '대시보드', to: '/', icon: icons.home }] },
   {
-    label: '사건',
+    label: '문서',
     items: [
-      { label: '전체 사건', to: '/cases', icon: icons.folder },
-      { label: '신청접수', to: '/cases/new', icon: icons.add },
+      { label: '전체 문서', to: '/docs', icon: icons.folder },
+      { label: '새 문서', to: '/docs/new', icon: icons.add },
     ],
   },
   {
@@ -29,7 +29,7 @@ const meta: Meta<typeof AppShell> = {
   },
   decorators: [
     Story => (
-      <MemoryRouter initialEntries={['/cases']}>
+      <MemoryRouter initialEntries={['/docs']}>
         <Story />
       </MemoryRouter>
     ),
@@ -41,12 +41,12 @@ type Story = StoryObj<typeof AppShell>
 
 export const Default: Story = {
   args: {
-    brand: { label: '토지수용위원회' },
+    brand: { label: 'React Workspace' },
     sections,
-    profile: { name: '김민준', role: '심사관' },
+    profile: { name: '김민준', role: '관리자' },
     breadcrumb: (
       <span>
-        사건관리 › <b style={{ color: 'var(--foreground)' }}>전체 목록</b>
+        문서 › <b style={{ color: 'var(--foreground)' }}>전체 목록</b>
       </span>
     ),
     children: (

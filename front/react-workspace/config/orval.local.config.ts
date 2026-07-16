@@ -6,8 +6,8 @@ export default defineConfig({
   store: {
     output: {
       ...commonOutputConfig,
-      // 개발 환경에서만 mock 활성화 고려
-      mock: true,
+      // MSW 미사용 정책(CLAUDE.md) — mock 산출물은 msw/@faker-js 미설치로 tsc를 깨뜨린다
+      mock: false,
     },
     hooks: commonHooks,
     input: {
