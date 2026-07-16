@@ -28,6 +28,7 @@ file:
 
 jwt:
   secret: ${JWT_SECRET:local-dev-secret-change-in-production}
+  issuer: platform-service  # 인스턴스 정체성 선언 — 기본값 없는 필수 프로퍼티(ADR-0004). 발판에서 분기한 시스템은 자기 이름으로 변경해야 한다.
   expiration:
     period: 86400000 # 24 * 60 * 60 * 1000 (하루)
     #    period: 60000 # 60 * 1000 : 테스트용 (1분)

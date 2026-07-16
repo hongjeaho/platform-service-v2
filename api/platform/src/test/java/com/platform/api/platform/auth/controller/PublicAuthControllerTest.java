@@ -11,9 +11,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.platform.api.platform.auth.dto.LoginResponse;
 import com.platform.api.platform.auth.service.AuthService;
-import com.platform.common.core.auth.AuthUser;
-import com.platform.common.core.auth.BasicAuthority;
-import com.platform.common.core.util.JwtTokenUtil;
+import com.platform.api.platform.auth.AuthUser;
+import com.platform.api.platform.auth.BasicAuthority;
 import com.platform.common.web.config.filter.JWTCheckFilter;
 
 import java.util.Set;
@@ -48,8 +47,6 @@ class PublicAuthControllerTest {
 
     // SecurityConfig 의존성 방지를 위한 MockitoBean 추가
     @MockitoBean
-    private JwtTokenUtil jwtTokenUtil;
-    @MockitoBean
     private org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
     @MockitoBean
     private JWTCheckFilter jwtCheckFilter;
@@ -83,7 +80,7 @@ class PublicAuthControllerTest {
             mockMvc.perform(post("/api/public/auth")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(
-                                    new com.platform.common.core.auth.AuthRequest("admin", "password"))))
+                                    new com.platform.api.platform.auth.dto.AuthRequest("admin", "password"))))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data").exists())
@@ -144,7 +141,7 @@ class PublicAuthControllerTest {
             mockMvc.perform(post("/api/public/auth")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(
-                                    new com.platform.common.core.auth.AuthRequest("admin", "wrong"))))
+                                    new com.platform.api.platform.auth.dto.AuthRequest("admin", "wrong"))))
                     .andExpect(status().isUnauthorized())
                     .andExpect(jsonPath("$.success").value(false))
                     .andExpect(jsonPath("$.error.message").value("아이디 또는 비밀번호가 일치하지 않습니다"));
@@ -166,7 +163,7 @@ class PublicAuthControllerTest {
             mockMvc.perform(post("/api/public/auth")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(
-                                    new com.platform.common.core.auth.AuthRequest("admin", "password"))))
+                                    new com.platform.api.platform.auth.dto.AuthRequest("admin", "password"))))
                     .andExpect(status().isOk())
                     .andExpect(result -> {
                         String authHeader = result.getResponse().getHeader("Authorization");

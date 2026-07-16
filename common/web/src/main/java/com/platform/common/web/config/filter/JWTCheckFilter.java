@@ -1,40 +1,33 @@
 package com.platform.common.web.config.filter;
 
-import com.platform.common.core.auth.AuthUser;
-import com.platform.common.core.util.JwtTokenUtil;
+import com.platform.common.core.jwt.JwtSessionManager;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/**
+ * JWT 인증 서블릿 adapter — 헤더 I/O와 SecurityContext 등록만 담당한다.
+ *
+ * <p>검증·principal 복원·갱신 판단은 전부 {@link JwtSessionManager} kernel의 몫이다(ADR-0004).
+ * 이 필터는 {@code TokenUserCodec} bean이 존재할 때만 등록된다 — 컴포넌트 스캔 대상이 아니다.
+ */
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class JWTCheckFilter extends OncePerRequestFilter {
 
     private static final String SPACE = " ";
 
-    // token 만료 시간
-    @Value("${jwt.expiration.period:86400000}") // 기본 하루 (1 * 24 * 60 * 60 * 1000)
-    private long jwtExpirationPeriod;
-
-    // token 만료 남은 시간
-    @Value("${jwt.expiration.renew-before:3600000}") // 한시간 (1 * 60 * 60 * 1000)
-    private long jwtTokenRenewBefore;
-
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtSessionManager jwtSessionManager;
 
     @Override
     protected void doFilterInternal(
@@ -57,38 +50,28 @@ public class JWTCheckFilter extends OncePerRequestFilter {
         }
 
         final var token = headerAuthorization.split(SPACE)[1].trim();
-        var userVerify = jwtTokenUtil.verify(token);
+        final var session = jwtSessionManager.authenticate(token);
 
-        if (!userVerify.isSuccess()) {
+        if (session.isEmpty()) {
             log.error("토큰이 만료 되었습니다.");
             response.setHeader("X-Token-Expired", "true");
             filterChain.doFilter(request, response);
             return;
         }
 
+        final var principal = session.get().principal();
         final var authentication = new UsernamePasswordAuthenticationToken(
-            userVerify,
+            principal,
             null,
-            userVerify.getAuthorities()
+            principal.getAuthorities()
         );
 
-        // 만료 시간이 얼마 남지 않았다면 시간을 연장 한다.
-        checkAndRenewAccessToken(response, userVerify, token);
+        // 갱신 시점이 도래했다면 kernel이 발급한 새 토큰을 응답 헤더에 싣는다(ADR-0003).
+        session.get().renewedToken()
+            .ifPresent(renewed -> response.setHeader(HttpHeaders.AUTHORIZATION, renewed));
 
-        // 인증 정보를 생성하여 SecurityContext에 등록한다.
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
-    }
-
-    private void checkAndRenewAccessToken(
-        final HttpServletResponse response, final AuthUser user, final String token
-    ) {
-        final var tokenExpirationDate = jwtTokenUtil.getExpirationDate(token);
-        final var comparingTime = tokenExpirationDate.getTime() - jwtTokenRenewBefore;
-        if (new Date().after(new Date(comparingTime))) {
-            response.setHeader(HttpHeaders.AUTHORIZATION,
-                jwtTokenUtil.makeAuthToken(user, jwtExpirationPeriod));
-        }
     }
 }

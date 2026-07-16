@@ -2,7 +2,7 @@ package com.platform.api.platform.auth.codec;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.platform.common.core.auth.AuthUser;
+import com.platform.api.platform.auth.AuthUser;
 import com.platform.common.core.jwt.TokenUserCodec;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package com.platform.api.platform.auth.service;
 
-import com.platform.common.core.auth.AuthUser;
-import com.platform.common.core.auth.BasicAuthority;
+import com.platform.api.platform.auth.AuthUser;
+import com.platform.api.platform.auth.BasicAuthority;
 import com.platform.datasource.platform.repository.authority.AuthorityRepository;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;

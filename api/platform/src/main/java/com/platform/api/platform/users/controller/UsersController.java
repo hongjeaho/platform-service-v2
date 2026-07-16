@@ -3,7 +3,7 @@ package com.platform.api.platform.users.controller;
 import com.platform.api.platform.users.dto.ChangePasswordRequest;
 import com.platform.api.platform.users.dto.ChangePasswordResponse;
 import com.platform.api.platform.users.service.UsersService;
-import com.platform.common.core.auth.context.UserAccountHolder;
+import com.platform.api.platform.auth.context.UserAccountHolder;
 import com.platform.common.web.response.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

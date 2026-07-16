@@ -1,4 +1,4 @@
-package com.platform.common.core.auth;
+package com.platform.api.platform.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;

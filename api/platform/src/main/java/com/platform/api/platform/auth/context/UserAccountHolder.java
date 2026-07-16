@@ -1,7 +1,7 @@
-package com.platform.common.core.auth.context;
+package com.platform.api.platform.auth.context;
 
-import com.platform.common.core.auth.AuthUser;
-import com.platform.common.core.auth.BasicAuthority;
+import com.platform.api.platform.auth.AuthUser;
+import com.platform.api.platform.auth.BasicAuthority;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.security.core.Authentication;

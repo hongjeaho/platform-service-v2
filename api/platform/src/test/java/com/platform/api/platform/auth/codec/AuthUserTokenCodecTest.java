@@ -3,8 +3,8 @@ package com.platform.api.platform.auth.codec;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.platform.common.core.auth.AuthUser;
-import com.platform.common.core.auth.BasicAuthority;
+import com.platform.api.platform.auth.AuthUser;
+import com.platform.api.platform.auth.BasicAuthority;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
