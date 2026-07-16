@@ -158,7 +158,7 @@ Zustand는 **selector로 구독 범위 최소화** (`useAuthStore(selectUser)`, 
 - 커버리지(v8): lines/functions/branches/statements **80% 임계값**. `api/generated`, `features/**/hooks`(TanStack Query), `features/**/pages`, `app/router`는 단위 테스트 제외(통합·E2E 영역).
 - MSW 미사용 → TanStack Query 훅은 통합·E2E로 검증(컴포넌트 단위 테스트 대상 아님).
 
-**디자인 시스템:** 색상/스페이싱/타이포그래피는 `src/styles/`의 CSS 변수 또는 TS 토큰으로만. **하드코딩 hex/rgb/px 금지**, Tailwind 기본 팔레트(`bg-gray-*`) 직접 사용 금지. `cn()`(`utils/cn.ts`, clsx+tailwind-merge) 사용.
+**디자인 시스템:** 색상/스페이싱의 단일 소스는 `src/styles/globals.css`의 CSS 변수(`:root` + `@theme inline`) — **TS 색상 토큰 사본 금지**(ADR-0007). TS 헬퍼는 클래스 문자열(`typography.ts`의 `textCombinations`)과 아이콘 매핑(`icons.ts`)만. **하드코딩 hex/rgb/px 금지**, Tailwind 기본 팔레트(`bg-gray-*`) 직접 사용 금지. `cn()`(`utils/cn.ts`, clsx+tailwind-merge) 사용. 다크 모드는 현재 미지원(요구사항 도래 시 신규 설계).
 
 **네이밍:** 컴포넌트 PascalCase · 훅 `use*` camelCase · 서비스 `*Service` · Query key `{domain}Keys` · Store `use{Name}Store` · 타입 `{name}.type.ts`.
 
