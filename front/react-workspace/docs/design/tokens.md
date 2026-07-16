@@ -1,70 +1,49 @@
-# Design System — TypeScript Token Reference
+# Design System — Token Reference
 
-> 중앙 import: `import { ... } from '@/styles'`
-> 전체 export 목록: `src/styles/index.ts`
-
----
-
-## 원시 토큰 (Single Source of Truth)
-
-| export           | 파일        | 설명                                                                                                  |
-| ---------------- | ----------- | ----------------------------------------------------------------------------------------------------- |
-| `rawColors`      | `tokens.ts` | OKLCH 원본 색상값 (Bright Blue 브랜드·의미론·중립 계열)                                               |
-| `extendedColors` | `tokens.ts` | Material You 서피스 + 브랜드 확장 색상 (이번 재설계에서 미변경)                                       |
-| `darkModeColors` | `tokens.ts` | 다크 모드 전용 색상 재정의 — **이전 팔레트 기준값 그대로, 라이트 모드와 불일치** (`overview.md` 참조) |
+> **단일 소스**: 색상·radius·섀도우는 `src/styles/globals.css`의 `:root` CSS 변수 + `@theme inline` 매핑이 유일한 소스다([ADR-0007](../../../docs/adr/0007-css-variables-single-theme-source.md)). **TS 값 사본 금지** — 과거의 `tokens.ts`(rawColors 등)·`color.ts`·`spacing.ts`는 소비자 없는 3벌 동기화였으므로 삭제되었다.
+> TS 헬퍼는 값이 아닌 클래스 문자열·아이콘 매핑만: `import { textCombinations, icons } from '@/styles'`
 
 ---
 
-## 색상 토큰
+## 색상·radius·섀도우 — CSS 변수 (`globals.css :root`)
 
-| export                 | 파일       | 설명                                                                           |
-| ---------------------- | ---------- | ------------------------------------------------------------------------------ |
-| `buttonVariants`       | `color.ts` | 버튼 variant별 Tailwind 클래스 (primary/accent/outline/destructive/ghost/link) |
-| `statusChipVariants`   | `color.ts` | 상태 칩 Tailwind 클래스 (접수/검토중/완료/반려/보류)                           |
-| `surfaceColors`        | `color.ts` | Material You 서피스 그룹                                                       |
-| `semanticColors`       | `color.ts` | 의미론적 상태 색상 (success/warning/error/info)                                |
-| `semanticColorClasses` | `color.ts` | 상태 색상 Tailwind 클래스 조합                                                 |
-| `brandColors`          | `color.ts` | 브랜드 아이덴티티 색상                                                         |
-| `shadowValues`         | `color.ts` | 컬러 틴트 소프트 섀도우 토큰 (card/base/md/modal/primary/destructive)          |
-| `themeColors`          | `color.ts` | CSS 변수 기반 테마 색상 전체                                                   |
-| `colorPalettes`        | `color.ts` | 색상 스케일 50-900 (primary는 Bright Blue 계열로 재산정됨)                     |
+| 그룹 | 변수 예시 | Tailwind 유틸리티 |
+| --- | --- | --- |
+| 브랜드 | `--primary`, `--accent`, `--secondary` | `bg-primary`, `text-accent` … |
+| 시맨틱 | `--success`, `--warning`, `--error`, `--info` (+`-foreground`) | `bg-success`, `text-error` … |
+| 중립 | `--background`, `--foreground`, `--card`, `--muted`, `--border` | `bg-background`, `border-border` … |
+| 사이드바 | `--sidebar-*` | `bg-sidebar` … |
+| 서피스 | `--surface-*`, `--on-surface*`, `--outline*` | `bg-surface-container` … |
+| 반경 | `--radius`, `--radius-sm/md/lg/xl` | `rounded-lg` … |
+| 섀도우 | `--shadow-sm/base/md/lg/xl/2xl` | CSS `box-shadow: var(--shadow-base)` |
+| 폰트 | `--font-family-display`(헤딩) · `--font-family-body`(본문) · `--font-family-base`(폼) | `body`/`h1–h6` 규칙과 CSS Module이 참조 |
 
----
+리스킨 = `:root` 블록 교체. Storybook의 `Design System/Tokens` 스토리가 이 변수들을 **직접 렌더**하므로 문서와 실물이 어긋날 수 없다.
 
-## 타이포그래피 토큰
-
-| export             | 파일            | 설명                                                                                                                           |
-| ------------------ | --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `textCombinations` | `typography.ts` | Tailwind 클래스 조합 (h1–h4/body/label/caption 등) — **단일 타입 스케일**. 과거의 `textCombinationsV2`/`displayScale`은 삭제됨 |
-| `fontWeights`      | `typography.ts` | 폰트 굵기 (light 300 ~ black 900)                                                                                              |
-| `lineHeights`      | `typography.ts` | 행간 (tight 1.25 ~ relaxed 1.75)                                                                                               |
-| `transitions`      | `typography.ts` | CSS 트랜지션 클래스                                                                                                            |
-| `durations`        | `typography.ts` | 애니메이션 지속 시간                                                                                                           |
-| `easings`          | `typography.ts` | 이징 함수                                                                                                                      |
+다크 모드는 현재 미지원 — `overview.md` 참조.
 
 ---
 
-## 스페이싱 토큰
+## 타이포그래피 헬퍼 (`typography.ts` — 클래스 문자열)
 
-| export               | 파일         | 설명                                                                                                                                          |
-| -------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `spacingScale`       | `spacing.ts` | 8px 기반 시맨틱 스케일 (xs/base/sm/md/lg/xl/gutter/margin) — **단일 스케일**. 과거의 4px 단위 v1 `spacingScale`은 삭제되고 이 이름으로 통합됨 |
-| `borderRadiusValues` | `spacing.ts` | 보더 반경 CSS 변수 참조 (sm/base/md/lg/xl/2xl/full) — 이번 재설계에서 전반적으로 확대됨                                                       |
-| `layouts`            | `spacing.ts` | 페이지·섹션 레이아웃 클래스                                                                                                                   |
-| `padding`            | `spacing.ts` | 컴포넌트 내부 여백 클래스                                                                                                                     |
-| `gap`                | `spacing.ts` | Flex/Grid 간격 클래스                                                                                                                         |
-| `zIndex`             | `spacing.ts` | z-index 레이어 (dropdown/sticky/modal/tooltip)                                                                                                |
-| `breakpoints`        | `spacing.ts` | 반응형 브레이크포인트 값                                                                                                                      |
+| export             | 설명                                                                                          |
+| ------------------ | --------------------------------------------------------------------------------------------- |
+| `textCombinations` | Tailwind 클래스 조합 (h1–h4/body/label/caption 등) — **단일 타입 스케일**                     |
+| `fontWeights`      | 폰트 굵기 (light 300 ~ black 900)                                                             |
+| `lineHeights`      | 행간 (tight 1.25 ~ relaxed 1.75)                                                              |
+| `transitions`      | CSS 트랜지션 클래스                                                                           |
+| `durations`        | 애니메이션 지속 시간                                                                          |
+| `easings`          | 이징 함수                                                                                     |
 
 ---
 
-## 아이콘 토큰
+## 아이콘 헬퍼 (`icons.ts`)
 
-| export         | 파일       | 설명                                                                            |
-| -------------- | ---------- | ------------------------------------------------------------------------------- |
-| `icons`        | `icons.ts` | 아이콘 이름 상수 (add/edit/delete/search/document/**more**/**notification** 등) |
-| `iconSizes`    | `icons.ts` | 아이콘 크기 (xs 12px ~ xl 32px)                                                 |
-| `iconVariants` | `icons.ts` | 크기+색상 조합 클래스 (smPrimary/mdSuccess 등)                                  |
+| export         | 설명                                                                            |
+| -------------- | ------------------------------------------------------------------------------- |
+| `icons`        | 아이콘 이름 상수 (add/edit/delete/search/document/**more**/**notification** 등) |
+| `iconSizes`    | 아이콘 크기 (xs 12px ~ xl 32px)                                                 |
+| `iconVariants` | 크기+색상 조합 클래스 (smPrimary/mdSuccess 등)                                  |
 
 `more`(케밥/⋯, DataTable 행 액션용)와 `notification`(Bell, Topbar 알림 버튼용)이 AppShell·DataTable 작업 과정에서 추가되었습니다.
 
@@ -74,20 +53,8 @@
 
 ```ts
 import {
-  // 색상
-  buttonVariants,
-  statusChipVariants,
-  shadowValues,
-  rawColors,
-  surfaceColors,
-
-  // 타이포그래피
+  // 타이포그래피 (클래스 문자열)
   textCombinations,
-
-  // 스페이싱
-  spacingScale,
-  borderRadiusValues,
-  layouts,
 
   // 아이콘
   icons,
@@ -95,11 +62,13 @@ import {
 } from '@/styles'
 ```
 
+색상·스페이싱 값이 필요하면 TS import가 아니라 **Tailwind 유틸리티 또는 `var(--...)`** 를 사용한다.
+
 ---
 
 ## 신규 공통 컴포넌트 (토큰 소비처)
 
-이번 재설계로 추가된 컴포넌트는 모두 위 토큰만 참조하며 하드코딩된 값이 없습니다.
+이번 재설계로 추가된 컴포넌트는 모두 CSS 변수/Tailwind 유틸리티만 참조하며 하드코딩된 값이 없습니다.
 
 | 컴포넌트                          | 위치                              | 설명                                                     |
 | --------------------------------- | --------------------------------- | -------------------------------------------------------- |

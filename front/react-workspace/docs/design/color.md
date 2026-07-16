@@ -1,7 +1,7 @@
 # Design System — Color
 
-> 구현 파일: `src/styles/tokens.ts` (원시값) · `src/styles/color.ts` (의미론) · `src/styles/globals.css` (CSS 변수)
-> TypeScript import: `import { rawColors, statusChipVariants, buttonVariants, surfaceColors } from '@/styles'`
+> 구현 파일: `src/styles/globals.css` — `:root` CSS 변수가 유일한 소스([ADR-0007](../../../docs/adr/0007-css-variables-single-theme-source.md)). TS 값 사본 금지.
+> 사용법: Tailwind 유틸리티(`bg-primary` 등) 또는 `var(--primary)` 직접 참조.
 
 ---
 
@@ -44,33 +44,24 @@
 
 ## 상태 색상 (Status Chip)
 
-파스텔 배경(15%) + 채도 높은 텍스트 조합, pill 형태. `statusChipVariants`만 사용.
+파스텔 배경(15%) + 채도 높은 텍스트 조합, pill 형태. 상태 어휘(접수/완료 등)는 도메인 개념이므로 **토큰 층이 아닌 사용처(feature)가 소유**한다(ADR-0007) — 클래스 조합 레시피만 여기 기록한다.
 
 ```tsx
-import { statusChipVariants } from '@/styles'
-
-// 접수: bg-info/15 text-info
-// 검토중: bg-warning/15 text-warning-foreground
-// 완료: bg-success/15 text-success
-// 반려: bg-error/15 text-error
-// 보류: bg-muted text-muted-foreground
-;<span className={statusChipVariants['완료']}>완료</span>
+// 레시피: bg-{tone}/15 text-{tone} border border-{tone}/30 rounded-full
+<span className='bg-success/15 text-success border border-success/30 rounded-full px-3 py-1'>완료</span>
 ```
 
 ---
 
 ## 버튼 색상 (Button Variants)
 
-Primary/Destructive에는 각각 `--shadow-primary`/`--shadow-destructive` 컬러 글로우 섀도우가 함께 적용됩니다.
+Primary/Destructive에는 각각 `--shadow-primary`/`--shadow-destructive` 컬러 글로우 섀도우가 함께 적용됩니다. 버튼은 공통 `Button` 컴포넌트의 `variant` prop으로 사용한다(클래스 문자열 직접 조립 금지).
 
 ```tsx
-import { buttonVariants } from '@/styles'
+import { Button } from '@/components/common/Button'
 
-<button className={buttonVariants.primary}>저장</button>     // Bright Blue + 컬러 글로우 섀도우
-<button className={buttonVariants.accent}>검색</button>      // 밝은 Blue
-<button className={buttonVariants.outline}>취소</button>     // 투명 + border
-<button className={buttonVariants.destructive}>삭제</button> // Red + 컬러 글로우 섀도우
-<button className={buttonVariants.ghost}>더보기</button>     // 투명
+<Button variant='primary'>저장</Button>     // Bright Blue + 컬러 글로우 섀도우
+<Button variant='outline'>취소</Button>     // 투명 + border
 ```
 
 ---
@@ -83,7 +74,7 @@ import { buttonVariants } from '@/styles'
 
 ## 섀도우 (컬러 틴트 소프트 섀도우)
 
-순수 블랙 대신 프라이머리 컬러가 옅게 섞인 소프트 섀도우를 사용합니다. `shadowValues` 토큰 사용.
+순수 블랙 대신 프라이머리 컬러가 옅게 섞인 소프트 섀도우를 사용합니다. `var(--shadow-*)` CSS 변수를 직접 참조한다.
 
 ```css
 :root {
@@ -105,7 +96,7 @@ import { buttonVariants } from '@/styles'
 - 링크 색상은 반드시 `--accent` 또는 `--primary` 사용
 - 상태 칩은 pill 형태(`border-radius: 9999px`)로 구현
 - 모달류(AlertDialog 등)는 `--radius-lg` + `--shadow-modal` 조합 사용
-- 모든 색상은 CSS 변수 또는 `rawColors`/`extendedColors` 토큰 사용
+- 모든 색상은 CSS 변수(`var(--...)`) 또는 Tailwind 시맨틱 유틸리티 사용 — TS 값 사본 금지(ADR-0007)
 
 ### Don't
 

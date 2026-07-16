@@ -2,10 +2,21 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
 import { Button } from '@/components/common/Button'
-import { icons, type StatusChipType, statusChipVariants } from '@/styles'
+import { icons } from '@/styles'
 
 import { DataTable } from '.'
 import type { ColumnDef } from './DataTable.type'
+
+/** 스토리 전용 상태 칩 데모 데이터 — 도메인 어휘는 토큰 층이 아닌 사용처가 소유한다(ADR-0007) */
+const statusChipVariants = {
+  접수: 'bg-info/15 text-info border border-info/30 rounded-full',
+  검토중: 'bg-warning/15 text-warning-foreground border border-warning/30 rounded-full',
+  완료: 'bg-success/15 text-success border border-success/30 rounded-full',
+  반려: 'bg-error/15 text-error border border-error/30 rounded-full',
+  보류: 'bg-muted text-muted-foreground border border-border rounded-full',
+} as const
+
+type StatusChipType = keyof typeof statusChipVariants
 
 interface SampleRow {
   id: number

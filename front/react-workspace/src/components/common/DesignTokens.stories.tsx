@@ -1,13 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import {
-  buttonVariants,
-  shadowValues,
-  spacingScale,
-  statusChipVariants,
-  textCombinations,
-} from '@/styles'
+import { textCombinations } from '@/styles'
 
+/**
+ * 디자인 토큰 문서 — CSS 변수(globals.css :root)를 직접 렌더한다(ADR-0007).
+ * TS 사본이 아닌 실물을 보여주므로 이 문서는 구조적으로 drift할 수 없다.
+ */
 const meta: Meta = {
   title: 'Design System/Tokens',
   parameters: {
@@ -45,7 +43,7 @@ export const Color: Story = {
             <div
               key={label}
               className='flex flex-col overflow-hidden rounded'
-              style={{ boxShadow: shadowValues.card }}
+              style={{ boxShadow: 'var(--shadow-base)' }}
             >
               <div
                 className='h-16 flex items-center justify-center text-xs font-mono px-2'
@@ -65,48 +63,37 @@ export const Color: Story = {
       </section>
 
       <section>
-        <h2 className={`${textCombinations.h3} mb-4`}>버튼 Variants</h2>
+        <h2 className={`${textCombinations.h3} mb-4`}>시맨틱 상태 색</h2>
         <div className='flex flex-wrap gap-3'>
-          {(Object.keys(buttonVariants) as Array<keyof typeof buttonVariants>).map(variant => (
-            <button
-              key={variant}
-              className={`px-4 py-2 rounded text-sm ${buttonVariants[variant]}`}
-            >
-              {variant}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <h2 className={`${textCombinations.h3} mb-4`}>상태 칩 (Status Chip)</h2>
-        <div className='flex flex-wrap gap-3'>
-          {(Object.keys(statusChipVariants) as Array<keyof typeof statusChipVariants>).map(
-            status => (
-              <span
-                key={status}
-                className={`px-3 py-1 text-sm ${statusChipVariants[status]}`}
-                style={{ borderRadius: '9999px' }}
-              >
-                {status}
-              </span>
-            ),
-          )}
-        </div>
-      </section>
-
-      <section>
-        <h2 className={`${textCombinations.h3} mb-4`}>섀도우</h2>
-        <div className='flex flex-wrap gap-6'>
-          {(Object.entries(shadowValues) as [string, string][]).map(([name, value]) => (
+          {['success', 'warning', 'error', 'info'].map(name => (
             <div
               key={name}
-              className='w-32 h-16 rounded flex items-center justify-center text-xs font-mono'
-              style={{ boxShadow: value, backgroundColor: 'var(--card)' }}
+              className='px-4 py-2 rounded text-sm'
+              style={{
+                backgroundColor: `var(--${name})`,
+                color: `var(--${name}-foreground)`,
+              }}
             >
-              {name}
+              --{name}
             </div>
           ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 className={`${textCombinations.h3} mb-4`}>섀도우 (CSS 변수)</h2>
+        <div className='flex flex-wrap gap-6'>
+          {['--shadow-sm', '--shadow-base', '--shadow-md', '--shadow-lg', '--shadow-xl'].map(
+            name => (
+              <div
+                key={name}
+                className='w-32 h-16 rounded flex items-center justify-center text-xs font-mono'
+                style={{ boxShadow: `var(${name})`, backgroundColor: 'var(--card)' }}
+              >
+                {name}
+              </div>
+            ),
+          )}
         </div>
       </section>
     </div>
@@ -157,13 +144,25 @@ export const Typography: Story = {
 // Spacing
 // ============================================================================
 
+/** 8px 시맨틱 스케일 — 문서용 예시 값(소스는 Tailwind 기본 스페이싱) */
+const spacingExamples = [
+  { name: 'space-1', value: '4px' },
+  { name: 'space-2', value: '8px' },
+  { name: 'space-3', value: '12px' },
+  { name: 'space-4', value: '16px' },
+  { name: 'space-6', value: '24px' },
+  { name: 'space-8', value: '32px' },
+  { name: 'space-12', value: '48px' },
+  { name: 'space-16', value: '64px' },
+] as const
+
 export const Spacing: Story = {
   render: () => (
     <div className='p-8 flex flex-col gap-8'>
       <section>
         <h2 className={`${textCombinations.h3} mb-4`}>8px 시맨틱 스케일</h2>
         <div className='flex flex-col gap-3'>
-          {(Object.entries(spacingScale) as [string, string][]).map(([name, value]) => (
+          {spacingExamples.map(({ name, value }) => (
             <div key={name} className='flex items-center gap-4'>
               <span
                 className='w-24 shrink-0 text-xs font-mono text-right'
