@@ -27,3 +27,8 @@ OTP가 **무엇을 증명하는지**를 나타내는 차원. 두 용도는 **서
 
 ### TokenUserCodec
 시스템의 인증 주체(principal)와 JWT claims 간 변환을 소유하는 **도메인 제공 adapter**. kernel은 principal의 shape를 모르며, codec bean의 존재 자체가 "이 시스템은 JWT 인증을 쓴다"는 선언이다 — codec이 없는 시스템은 JWT 스택 없이 부팅된다. 회원 도메인이 첫 adapter다([ADR-0004](docs/adr/0004-jwt-session-kernel-codec-seam.md)).
+
+## 메일 (Mail)
+
+### 템플릿 메일 / TemplateMailSender
+"템플릿 이름 + 모델 → 발송" 하나의 interface 뒤에 MIME 조립·발신자·렌더·예외 래핑을 숨긴 kernel module(common-core). **동기 발송**이며, 비동기(`@Async`)·제목·템플릿 파일은 호출하는 도메인이 소유한다 — 메일 문구는 도메인 언어다([ADR-0005](docs/adr/0005-template-mail-kernel.md), ADR-0001 5항 대체).
