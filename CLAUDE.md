@@ -8,6 +8,8 @@ Spring Boot 3.4.2(Spring MVC) + React 19 풀스택 멀티모듈 모노레포.
 
 **이 리포는 발판(base) 리포다.** 새 시스템(개인 서비스, 공공시스템 등)이 필요할 때 이 리포에서 **독립 git 리포지토리를 생성**하고, 그 리포는 이후 독립적으로 성장한다(업스트림 머지 없음). 따라서 아키텍처 판단 기준은 "새 리포가 분기 시점에 무엇을 상속하는가"다 — 발판의 도메인 누수·cruft는 분기 전에 정리하는 것이 가장 싸다.
 
+패키지·모듈명의 "platform"은 인스턴스 이름이 아니라 **발판의 generic 어휘**다 — 분기 리포는 rename하지 않는다. 인스턴스 정체성은 설정 값(`jwt.issuer`, `VITE_APP_NAME`, `cors.allowed-origins`, 메일 계정)으로만 존재한다(ADR-0006).
+
 - **Backend**: Spring Boot 3.4.2(MVC, WebFlux 아님), Spring Security, JOOQ 3.19.18, MyBatis, Flyway 12.6.2, MySQL 8, Redis 7, JWT(auth0 java-jwt), Java 21
 - **Frontend**: React 19, TypeScript, Vite 6, Zustand, TanStack Query, Tailwind CSS v4, Orval(OpenAPI → 코드 생성), Vitest, Storybook, Playwright
 - **Build**: Gradle 8(백엔드), pnpm 10(프론트엔드)
@@ -222,7 +224,7 @@ GitHub Issues(`github.com/hongjeaho/platform-service-v2`)를 `gh` CLI로 사용.
 - 모든 작업은 기능 브랜치에서 진행
 - 브랜치 명명: `type/description` 또는 `type/ISSUE-NUMBER-description`
 - 작업 완료 후 PR을 통해 main 병합
-- **PR 머지 전략은 merge commit.** "Merge pull request" 버튼으로 머지하며 원본 브랜치의 모든 커밋이 `main`에 그대로 반영된다. blocked-by 이슈는 선행 PR 머지를 기다리지 않고 선행 브랜치 위에 스택해서 진행할 수 있다 — 상세는 `docs/adr/0002-branch-strategy-for-blocked-issues.md` 참조.
+- **PR 머지 전략은 rebase merge.** "Rebase and merge" 버튼으로 머지하며 개별 커밋이 SHA 재작성되어 `main`에 선형으로 반영된다. 머지 후 로컬 브랜치는 원격 머지 확인 뒤 `git branch -D`로 정리한다. blocked-by 이슈는 선행 PR 머지를 기다리지 않고 선행 브랜치 위에 스택해서 진행할 수 있다 — 상세는 `docs/adr/0002-branch-strategy-for-blocked-issues.md` 참조.
 
 ### 커밋 메시지
 
