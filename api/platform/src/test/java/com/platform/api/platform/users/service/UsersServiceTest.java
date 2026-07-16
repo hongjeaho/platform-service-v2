@@ -1,6 +1,7 @@
 package com.platform.api.platform.users.service;
 
 import com.platform.api.platform.users.dto.ChangePasswordResponse;
+import com.platform.api.platform.users.email.WelcomeEmailSender;
 import com.platform.api.platform.users.dto.CheckDuplicateResponse;
 import com.platform.api.platform.users.dto.SendOtpResponse;
 import com.platform.api.platform.users.dto.UsersSignupRequest;
@@ -43,6 +44,9 @@ class UsersServiceTest {
 
     @Mock
     private OtpService otpService;
+
+    @Mock
+    private WelcomeEmailSender welcomeEmailSender;
 
     @InjectMocks
     private UsersService usersService;
@@ -113,6 +117,20 @@ class UsersServiceTest {
 
         // Then
         verify(usersRepository).insertUserRole(1L, 1L, 0L);
+    }
+
+    @Test
+    @DisplayName("가입 성공 시 축하 메일을 발송한다")
+    void signup_sendsWelcomeMail_onSuccess() {
+        when(usersRepository.existsByUserId(anyString())).thenReturn(false);
+        when(usersRepository.existsByEmail(anyString())).thenReturn(false);
+        when(passwordEncoder.encode(anyString())).thenReturn("encoded");
+        when(usersRepository.insertUser(any(UsersEntity.class))).thenReturn(1L);
+        when(usersRepository.findRoleSeqByName("USER")).thenReturn(2L);
+
+        usersService.signup(request);
+
+        verify(welcomeEmailSender).send(request.userEmail(), request.userName());
     }
 
     @Test
