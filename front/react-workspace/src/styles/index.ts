@@ -1,50 +1,12 @@
 /**
- * 디자인 토큰 중앙 export
+ * 스타일 TS 헬퍼 중앙 export.
+ *
+ * 색상·스페이싱·섀도우의 단일 소스는 `globals.css`의 CSS 변수(`:root` + `@theme inline`)다 —
+ * TS에 값 사본을 두지 않는다(ADR-0007). 여기서 내보내는 것은 값이 아닌
+ * 클래스 문자열 조합(typography)과 아이콘 매핑(icons)뿐이다.
  */
 
-// Raw tokens (Single Source of Truth)
-export {
-  type DarkModeColorKey,
-  darkModeColors,
-  type ExtendedColorKey,
-  extendedColors,
-  type RawColorKey,
-  rawColors,
-} from './tokens'
-
-// Color tokens
-export {
-  accentColors,
-  borderColors,
-  brandColors,
-  type ButtonVariant,
-  buttonVariants,
-  chartColors,
-  type ColorPalette,
-  colorPalettes,
-  type ColorShade,
-  destructiveColors,
-  neutralColors,
-  secondaryColors,
-  type SemanticColorClass,
-  semanticColorClasses,
-  semanticColors,
-  shadows,
-  type ShadowSize,
-  type ShadowValue,
-  shadowValues,
-  type StatusChipType,
-  statusChipVariants,
-  statusColors,
-  type StatusType,
-  type SurfaceColorKey,
-  surfaceColors,
-  type ThemeColorKey,
-  themeColors,
-  type ThemeMode,
-} from './color'
-
-// Typography tokens
+// Typography — Tailwind 클래스 문자열 조합
 export {
   type Duration,
   durations,
@@ -64,7 +26,7 @@ export {
   type TransitionSpeed,
 } from './typography'
 
-// Icon tokens
+// Icon — lucide-react 매핑
 export {
   type IconKey,
   icons,
@@ -73,25 +35,3 @@ export {
   type IconVariant,
   iconVariants,
 } from './icons'
-
-// Spacing tokens
-export {
-  borderRadius,
-  type BorderRadiusSize,
-  type BorderRadiusValue,
-  borderRadiusValues,
-  breakpoints,
-  type ContainerSize,
-  containerSizes,
-  gap,
-  type GapSize,
-  layouts,
-  margin,
-  type MarginVariant,
-  padding,
-  type PaddingVariant,
-  spacingScale,
-  type SpacingSize,
-  zIndex,
-  type ZIndexLayer,
-} from './spacing'
