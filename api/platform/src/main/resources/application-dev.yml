@@ -16,4 +16,4 @@ jwt:
     #    renew-before: 20000 # 20 * 1000 : 테스트용 (20초)
 
 file:
-  upload-path: /home/staff/filedownload/
+  upload-path: ${FILE_UPLOAD_PATH:/home/staff/filedownload/}
