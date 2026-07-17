@@ -14,6 +14,12 @@
   flex: 1;
 }
 
+/* Input 내부 라벨(text-sm × leading-normal) + 필드 gap(--spacing-1)만큼 내려
+   버튼 상단을 입력창 상단에 맞춘다 — Input 라벨 타이포가 바뀌면 함께 갱신 필요 */
+.fieldRow > button {
+  margin-top: calc(var(--font-size-sm) * var(--line-height-normal) + var(--spacing-1));
+}
+
 .hint {
   margin: calc(var(--spacing-1) * -1) 0 0;
   font-size: var(--font-size-xs);
